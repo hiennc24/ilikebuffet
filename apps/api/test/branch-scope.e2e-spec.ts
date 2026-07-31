@@ -114,8 +114,12 @@ describe("BranchScopeGuard + BranchScopeHelper (H2, C1)", () => {
     prisma = app.get(PrismaService);
     auth = app.get(AuthService);
 
-    const b01 = await prisma.branch.create({ data: { code: "CN01", name: "Branch 01" } });
-    const b02 = await prisma.branch.create({ data: { code: "CN02", name: "Branch 02" } });
+    const b01 = await prisma.branch.create({
+      data: { code: "CN01", name: "Branch 01", address: "Addr 01", phone: "0900000001" },
+    });
+    const b02 = await prisma.branch.create({
+      data: { code: "CN02", name: "Branch 02", address: "Addr 02", phone: "0900000002" },
+    });
     branch01Id = b01.id;
     branch02Id = b02.id;
 

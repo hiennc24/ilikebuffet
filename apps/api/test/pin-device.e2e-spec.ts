@@ -75,7 +75,9 @@ describe("PIN + Device registry (H4, C3, dual-PIN, M1, M2, M3, M4)", () => {
     deviceSvc = app.get(DeviceService);
 
     // Seed branch.
-    const branch = await prisma.branch.create({ data: { code: "PDV1", name: "POS Branch 1" } });
+    const branch = await prisma.branch.create({
+      data: { code: "PDV1", name: "POS Branch 1", address: "Addr 1", phone: "0900000001" },
+    });
     branchId = branch.id;
 
     const passwordHash = await argon2.hash("Password123");
@@ -216,7 +218,9 @@ describe("PIN + Device registry (H4, C3, dual-PIN, M1, M2, M3, M4)", () => {
   // ─── H4.5 + M2: cashier of wrong branch → 403 with generic message ────────
 
   it("H4.5/M2: cashier of different branch → 403, generic error", async () => {
-    const branch2 = await prisma.branch.create({ data: { code: "PDV2", name: "POS Branch 2" } });
+    const branch2 = await prisma.branch.create({
+      data: { code: "PDV2", name: "POS Branch 2", address: "Addr 2", phone: "0900000002" },
+    });
     const passwordHash = await argon2.hash("Password123");
     const cashierPinHash = await argon2.hash("333333");
     const otherCashier = await prisma.appUser.create({

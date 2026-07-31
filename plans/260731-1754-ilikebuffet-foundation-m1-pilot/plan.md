@@ -40,7 +40,7 @@ Trước khi bắt đầu **P6**, phải chốt với khách #2 (giờ ngoài kh
 | 1 | [Scaffolding & Test Harness](./phase-01-scaffolding-test-harness.md) | Done | — (nền kỹ thuật) |
 | 2 | [Audit Foundation (GA-01)](./phase-02-audit-foundation-ga-01.md) | Done | GA-01 |
 | 3 | [Auth RBAC & Branch-Scoping](./phase-03-auth-rbac-branch-scoping.md) | Done | NT-02, NT-04 |
-| 4 | [Branch & Master Data](./phase-04-branch-master-data.md) | Pending | NT-01, NT-03 |
+| 4 | [Branch & Master Data](./phase-04-branch-master-data.md) | Done | NT-01, NT-03 |
 | 5 | [Frontend Foundation & App Shells](./phase-05-frontend-foundation-app-shells.md) | Pending | — (FE nền) |
 | 6 | [Ticket Types & Price Matrix](./phase-06-ticket-types-price-matrix.md) | Pending | VG-01, VG-02, VG-03 |
 | 7 | [Shift Bill Payment & Print](./phase-07-shift-bill-payment-print.md) | Pending | BH-01→04, BH-06, BH-07 |

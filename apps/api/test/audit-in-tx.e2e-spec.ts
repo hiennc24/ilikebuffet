@@ -92,7 +92,6 @@ describe("audit in-transaction semantics (integration)", () => {
     const avgMs = elapsedMs / N;
     // Informational — printed so P7 has a number before building the bill hot path.
     // Generous ceiling only to catch a pathological regression, not to gate perf.
-    // eslint-disable-next-line no-console
     console.log(`[audit-bench] ${N} in-tx audit inserts: ${elapsedMs.toFixed(1)}ms total, ${avgMs.toFixed(2)}ms/insert`);
     expect(avgMs).toBeLessThan(50);
   });

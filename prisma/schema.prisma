@@ -2,7 +2,10 @@
 // parallel migration races (orchestration rule in plan.md).
 //
 // P3 adds: Role enum, Branch, AppUser, UserBranch, Device.
-// Snake_case table names via @@map (Prisma convention for this project).
+// P4 adds: Branch fields (address/phone/operatingHours/bankAccount/billInfo),
+//          IngredientGroup, Ingredient, IngredientPurchaseUnit, Unit,
+//          AccountGroup, Account, Supplier, SupplierIngredient,
+//          HolidayCalendar, HolidayEntry.
 
 generator client {
   provider = "prisma-client-js"
@@ -38,19 +41,62 @@ enum DeviceStatus {
   SUSPENDED
 }
 
+/// Ingredient lifecycle status.
+enum IngredientStatus {
+  ACTIVE
+  INACTIVE // "Ngừng sử dụng" — deactivated after transactions exist (NT-03.2)
+}
+
+/// Account flow type — income (Thu) or expense (Chi).
+enum AccountFlow {
+  INCOME  // Thu
+  EXPENSE // Chi
+}
+
+/// Supplier scope — chain-wide or specific branch.
+enum SupplierScope {
+  CHAIN_WIDE
+  BRANCH_SPECIFIC
+}
+
+/// Supplier approval status for branch-scoped NCC (NT-03.5).
+enum SupplierStatus {
+  ACTIVE
+  PENDING_HQ   // Chờ HQ duyệt
+  INACTIVE
+}
+
 // ─── Domain models ───────────────────────────────────────────────────────────
 
-/// A physical or logical branch (cửa hàng / chi nhánh). Added in P3; extended in P4.
+/// A physical or logical branch (cửa hàng / chi nhánh). Extended in P4 (NT-01).
 model Branch {
-  id        String       @id @default(cuid())
-  /// Short unique code, 2–5 uppercase letters, e.g. "CN01".
-  code      String       @unique @db.VarChar(5)
-  name      String
-  status    BranchStatus @default(ACTIVE)
-  createdAt DateTime     @default(now()) @db.Timestamptz(3)
+  id      String       @id @default(cuid())
+  /// Short unique code, 2–5 uppercase letters, e.g. "CN01". IMMUTABLE after transactions (enforced in service layer).
+  code    String       @unique @db.VarChar(5)
+  name    String
+  status  BranchStatus @default(ACTIVE)
 
-  users   UserBranch[]
-  devices Device[]
+  // NT-01.1 required fields
+  address String
+  phone   String       @db.VarChar(20)
+
+  /// Operating hours per weekday. JSON: { "MON": { "open": "10:30", "close": "22:00" }, ... }
+  /// Keys: MON TUE WED THU FRI SAT SUN. Null = closed that day.
+  operatingHours Json?  @db.JsonB
+
+  // NT-01.2 optional fields
+  /// Bank account for VietQR (BH-03). Stored as JSON { number, bank, holder }.
+  bankAccount    Json?  @db.JsonB
+  /// Bill header override — null = inherit chain default.
+  billInfo       Json?  @db.JsonB
+  /// Logo URL override — null = inherit chain default.
+  logoUrl        String?
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  users     UserBranch[]
+  devices   Device[]
+  suppliers Supplier[]
 
   @@map("branch")
 }
@@ -99,18 +145,184 @@ model UserBranch {
 /// Registered POS device. Server-issued deviceId + per-device secret (argon2-hashed).
 /// Unregistered devices are denied PIN quick-login (Red Team H4).
 model Device {
-  id         String   @id @default(cuid())
+  id         String       @id @default(cuid())
   /// Server-issued, returned once at registration.
-  deviceId   String   @unique @default(cuid())
+  deviceId   String       @unique @default(cuid())
   branchId   String
-  secretHash String   // argon2 hash of the one-time secret
+  secretHash String       // argon2 hash of the one-time secret
   label      String?
   status     DeviceStatus @default(ACTIVE)
-  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+  createdAt  DateTime     @default(now()) @db.Timestamptz(3)
 
   branch Branch @relation(fields: [branchId], references: [id])
 
   @@map("device")
+}
+
+// ─── Master Data: Units ───────────────────────────────────────────────────────
+
+/// Unit of measure catalog (kg, lít, cái, chai, …). Shared across chain.
+model Unit {
+  id        String   @id @default(cuid())
+  code      String   @unique @db.VarChar(20) // e.g. "KG", "LIT", "CAI"
+  name      String   // e.g. "Kilogram", "Lít", "Cái"
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  ingredients      Ingredient[]
+  purchaseUnits    IngredientPurchaseUnit[]
+
+  @@map("unit")
+}
+
+// ─── Master Data: Ingredient Groups & Ingredients ────────────────────────────
+
+/// Ingredient group with default wastage %. HQ-manageable (NT-03.1).
+model IngredientGroup {
+  id              String  @id @default(cuid())
+  name            String  @unique // "Hải sản tươi", "Thịt", etc.
+  /// Default wastage percentage for the group (0–100). Overridable per ingredient.
+  defaultWastagePct Decimal @db.Decimal(5, 2) @default(0)
+  createdAt       DateTime @default(now()) @db.Timestamptz(3)
+
+  ingredients Ingredient[]
+
+  @@map("ingredient_group")
+}
+
+/// Ingredient (nguyên liệu). Code auto-generated, editable before first transaction (NT-03.1).
+model Ingredient {
+  id      String           @id @default(cuid())
+  /// Short code — auto-generated (e.g. "NL001"), editable before any transaction.
+  code    String           @unique @db.VarChar(20)
+  name    String
+  groupId String
+  unitId  String           // base unit
+  /// Wastage % override. Null = inherit from group.
+  wastagePct Decimal?      @db.Decimal(5, 2)
+  /// Default minimum stock level (override per CN in KH-04 later).
+  defaultMinStock Decimal  @db.Decimal(12, 3) @default(0)
+  status  IngredientStatus @default(ACTIVE)
+  createdAt DateTime       @default(now()) @db.Timestamptz(3)
+
+  group         IngredientGroup          @relation(fields: [groupId], references: [id])
+  unit          Unit                     @relation(fields: [unitId], references: [id])
+  purchaseUnits IngredientPurchaseUnit[]
+  suppliers     SupplierIngredient[]
+
+  @@map("ingredient")
+}
+
+/// Up to 3 purchase units per ingredient with conversion factor (NT-03.1).
+/// e.g. thùng = 10 kg (factorToBase = 10).
+model IngredientPurchaseUnit {
+  id           String  @id @default(cuid())
+  ingredientId String
+  unitId       String
+  /// How many base units this purchase unit equals. Must be > 0.
+  factorToBase Decimal @db.Decimal(12, 6)
+
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  unit       Unit       @relation(fields: [unitId], references: [id])
+
+  @@unique([ingredientId, unitId])
+  @@map("ingredient_purchase_unit")
+}
+
+// ─── Master Data: Chart of Accounts ──────────────────────────────────────────
+
+/// Account group (Nhóm khoản) — top level of the 2-level chart of accounts (NT-03.4).
+model AccountGroup {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  accounts Account[]
+
+  @@map("account_group")
+}
+
+/// Account (Khoản thu-chi) — leaf node of the 2-level chart of accounts (NT-03.4).
+model Account {
+  id          String      @id @default(cuid())
+  groupId     String
+  name        String
+  flow        AccountFlow // Thu or Chi
+  /// Approval threshold in integer VND (NT-03.4 — used by TC-01). 0 = no threshold.
+  approvalThresholdVnd Int @default(0)
+  createdAt   DateTime    @default(now()) @db.Timestamptz(3)
+
+  group AccountGroup @relation(fields: [groupId], references: [id])
+
+  @@unique([groupId, name])
+  @@map("account")
+}
+
+// ─── Master Data: Suppliers ───────────────────────────────────────────────────
+
+/// Supplier (NCC — Nhà cung cấp). NT-03.5.
+model Supplier {
+  id          String         @id @default(cuid())
+  name        String
+  taxCode     String?        @db.VarChar(20) // MST
+  contact     String?        // phone/email/address (freeform for MVP)
+  debtTerms   Int            @default(0)   // days
+  scope       SupplierScope  @default(CHAIN_WIDE)
+  status      SupplierStatus @default(ACTIVE)
+  /// Set when scope=BRANCH_SPECIFIC — the branch this supplier is scoped to.
+  branchId    String?
+  createdAt   DateTime       @default(now()) @db.Timestamptz(3)
+
+  branch      Branch?             @relation(fields: [branchId], references: [id])
+  ingredients SupplierIngredient[]
+
+  @@map("supplier")
+}
+
+/// Many-to-many: supplier ↔ ingredient (NT-03.5 "mặt hàng cung cấp").
+model SupplierIngredient {
+  supplierId   String
+  ingredientId String
+
+  supplier   Supplier   @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@id([supplierId, ingredientId])
+  @@map("supplier_ingredient")
+}
+
+// ─── Master Data: Holiday Calendar (Red Team M2) ─────────────────────────────
+
+/// Holiday calendar — P6 (day-type pricing) and P8 (offline price cache) depend on this.
+/// Added in P4 to maintain 1-owner schema rule (plan.md invariant).
+model HolidayCalendar {
+  id        String   @id @default(cuid())
+  /// Year this calendar applies to (solar year, e.g. 2025).
+  year      Int
+  name      String   // e.g. "Lịch lễ 2025"
+  /// Optional branch — null = applies chain-wide.
+  branchId  String?
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  entries HolidayEntry[]
+
+  @@unique([year, branchId])
+  @@map("holiday_calendar")
+}
+
+/// Individual holiday date within a calendar.
+model HolidayEntry {
+  id         String   @id @default(cuid())
+  calendarId String
+  /// The holiday date (date only — stored as Timestamptz at midnight UTC for Prisma compat).
+  date       DateTime @db.Date
+  name       String   // e.g. "Tết Nguyên Đán", "30 Tết", "Giỗ Tổ Hùng Vương"
+  /// True = lunar-calendar date (custom, e.g. "30 Tết") — must be explicitly entered per year.
+  isCustom   Boolean  @default(false)
+
+  calendar HolidayCalendar @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+
+  @@unique([calendarId, date])
+  @@map("holiday_entry")
 }
 
 // ─── Infra probe ─────────────────────────────────────────────────────────────

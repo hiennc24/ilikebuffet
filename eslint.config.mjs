@@ -65,6 +65,11 @@ export default tseslint.config(
     rules: {
       "money/no-unsafe-money-arithmetic": "error",
       "@typescript-eslint/no-explicit-any": "warn",
+      // Allow intentional throwaways prefixed with _ (e.g. destructure-to-omit).
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", ignoreRestSiblings: true },
+      ],
     },
   },
   {
