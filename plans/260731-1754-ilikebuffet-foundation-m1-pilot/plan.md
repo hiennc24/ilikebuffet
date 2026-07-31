@@ -38,7 +38,7 @@ Trước khi bắt đầu **P6**, phải chốt với khách #2 (giờ ngoài kh
 | Phase | Name | Status | Stories |
 |-------|------|--------|---------|
 | 1 | [Scaffolding & Test Harness](./phase-01-scaffolding-test-harness.md) | Done | — (nền kỹ thuật) |
-| 2 | [Audit Foundation (GA-01)](./phase-02-audit-foundation-ga-01.md) | Pending | GA-01 |
+| 2 | [Audit Foundation (GA-01)](./phase-02-audit-foundation-ga-01.md) | Done | GA-01 |
 | 3 | [Auth RBAC & Branch-Scoping](./phase-03-auth-rbac-branch-scoping.md) | Pending | NT-02, NT-04 |
 | 4 | [Branch & Master Data](./phase-04-branch-master-data.md) | Pending | NT-01, NT-03 |
 | 5 | [Frontend Foundation & App Shells](./phase-05-frontend-foundation-app-shells.md) | Pending | — (FE nền) |

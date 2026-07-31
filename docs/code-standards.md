@@ -35,6 +35,30 @@ Living document. Update when a convention changes.
 - One owner for `prisma/schema.prisma` across P4/P6/P7 to avoid parallel migration
   races. Migrations are committed and drift-checked in CI (`prisma migrate diff`).
 
+## Audit (GA-01) — append-only, insider-resistant
+
+- `audit_log` is append-only. Two enforcement layers, both at the DB:
+  1. **REVOKE** UPDATE/DELETE/TRUNCATE from the app role (`prisma/sql/audit-role-grants.sql`).
+  2. A **BEFORE UPDATE/DELETE/TRUNCATE trigger** that blocks every non-superuser,
+     including a table owner (`prisma/sql/audit-immutability.sql`). Superuser is the
+     only escape hatch (DR).
+- These live **outside** Prisma migrations (Prisma models neither triggers nor roles),
+  so the drift check stays exact. Deploy order:
+  `prisma migrate deploy` → apply `prisma/sql/provision-app-roles.sql` (roles) →
+  `scripts/apply-audit-guards.sh` (trigger → **owner segregation** → grants).
+- **Owner segregation (C1):** audit_log, its sequence, and the trigger function are
+  owned by a NOLOGIN `audit_owner`, so no app/DBA role can `DROP`/`DISABLE` the
+  trigger. Only `audit_owner` or a superuser can.
+- The application process connects as the **non-owner** `ilikebuffet_app` role via
+  `APP_DATABASE_URL` — never as superuser/owner — or it bypasses the REVOKE layer.
+  Migrations/tooling use `DATABASE_URL` (owner).
+- Sensitive mutations audit **in their own transaction** via `AuditService.record(tx, …)`
+  (log and change commit/rollback together). Reads / auth events use `@Audited` +
+  `AuditInterceptor` (outside tx). In-tx audit insert measured at ~0.8ms (P2 bench) —
+  no outbox needed for M1.
+- Off-box WORM export (`AuditExportService`) ships the trail append-only to object-lock
+  storage so DB-side deletion stays detectable.
+
 ## Testing
 
 - Integration tests run against a real Postgres via testcontainers

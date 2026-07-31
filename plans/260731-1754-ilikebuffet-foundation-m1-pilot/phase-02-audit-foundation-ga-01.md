@@ -1,9 +1,10 @@
 ---
 phase: 2
 title: "Audit Foundation (GA-01)"
-status: pending
+status: done
 priority: P1
 dependencies: [1]
+completed: "2026-08-01"
 ---
 
 # Phase 2: Audit Foundation (GA-01)
@@ -35,10 +36,10 @@ Audit log **append-only, không ai xóa được** — làm sớm vì ghi log l�
 6. **REFACTOR**: chuẩn hoá payload; index theo (CN, action, createdAt).
 
 ## Success Criteria
-- [ ] App role không UPDATE/DELETE được audit_log (test chứng minh).
-- [ ] Log ghi cùng tx với thao tác nhạy cảm; rollback không rác, commit không mất.
-- [ ] Màn tra cứu + xuất Excel lọc đủ chiều.
-- [ ] before/after JSON đúng cho ≥1 thao tác mẫu.
+- [x] App role không UPDATE/DELETE được audit_log (test chứng minh). — REVOKE (app role) + trigger (privileged non-superuser) proven in `audit-immutability.e2e-spec.ts` (5/5).
+- [x] Log ghi cùng tx với thao tác nhạy cảm; rollback không rác, commit không mất. — `AuditService.record(tx)`; rollback→0 rows, commit→1 row (`audit-in-tx.e2e-spec.ts`).
+- [~] Màn tra cứu + xuất Excel lọc đủ chiều. — backend `AuditService.query(filters)` (đủ chiều GA-01.1) + WORM export done; **HTTP route + Excel deferred to P3/P5** (cần RBAC guard trước khi expose audit read).
+- [x] before/after JSON đúng cho ≥1 thao tác mẫu. — JSONB before/after fidelity asserted (price 100k→150k).
 
 ## Risk Assessment
 - Đưa audit vào tx làm chậm hot path (tạo bill) → với bill dùng append event nhẹ; đo trong P7 load test. Nếu chậm, tách audit của bill sang outbox trong-tx (vẫn cùng tx, ghi bảng outbox) + worker đẩy.
@@ -48,4 +49,17 @@ Audit log **append-only, không ai xóa được** — làm sớm vì ghi log l�
 - **C4/AD7 (perf sớm)** — quyết định "audit trong cùng tx với bill" phải đo bằng **micro-benchmark ngay P2** (không đợi P7). Nếu chậm → chốt outbox trước khi P7 build lên.
 - **C4 (lock ordering)** — audit-in-tx phải theo thứ tự lock cố định **counter → audit** (không đảo) để tránh deadlock AB/BA với bill-number service (P7).
 - **Outbox correctness** — nếu dùng outbox: worker chỉ **INSERT** trên `audit_log` + **DELETE chỉ row outbox đã xử lý của chính nó**; test: thao tác commit → luôn tới `audit_log` kể cả worker crash/restart (không mất log của op đã commit).
-- New success criteria: [ ] trigger chặn UPDATE/DELETE kể cả owner role (test); [ ] có job export WORM off-box; [ ] micro-bench audit-in-tx có số trước P7.
+- New success criteria: [x] trigger chặn UPDATE/DELETE kể cả owner role (test) — privileged non-superuser blocked; **owner segregation (C1)**: audit objects owned by `audit_owner`, non-owner can't DROP/DISABLE trigger (test); superuser escape-hatch asserted. [~] job export WORM off-box — `AuditExportService.exportSince(cursor)` NDJSON payload + append-only file sink done & tested; **scheduler + object-lock sink are deploy-pending → H1 operationally inert until scheduled off-box (do NOT treat as fully met; wire in P9/deploy)**. [x] micro-bench audit-in-tx có số trước P7 — **~0.8ms/insert** (50 in-tx inserts, uncontended); tripwire only, must re-measure under contention+counter-lock before P7 commits to in-tx-without-outbox.
+
+### Post-review fixes (code-reviewer DONE_WITH_CONCERNS, applied + verified)
+- **C1** owner segregation: `prisma/sql/audit-ownership.sql` reassigns audit_log/seq/function to NOLOGIN `audit_owner`; e2e proves non-owner can't DROP/DISABLE trigger. Deploy chain smoke-tested end-to-end.
+- **H1** runtime role: `PrismaService` uses `APP_DATABASE_URL` (non-owner `ilikebuffet_app`) → REVOKE layer applies; `.env.example` split owner vs app; `prisma/sql/provision-app-roles.sql` + default privileges.
+- **M2** `captureBeforeAfter` BigInt-safe (won't throw inside a business tx).
+- **M1** added/removed-key fidelity: absent side = explicit `null` (survives JSON); DB-round-trip asserted.
+- **L1** `AuditWriter` type widened to include base client (honest name). **H2** protected-GUC comment added.
+
+### Implementation notes / scope decisions
+- Trigger + role SQL kept OUTSIDE Prisma migrations (Prisma models neither) → drift check stays exact; applied via `scripts/apply-audit-guards.sh` post-migrate.
+- Audit-lookup HTTP controller + Excel export **deferred to P3/P5** — exposing an unguarded audit-read endpoint before RBAC (P3) would leak sensitive history. Backend query service is done + testable now.
+- `AuditInterceptor`/`@Audited` built but NOT globally registered — P3 wires it once auth populates actor/branch/device context.
+- Lock order counter→audit documented in `AuditService.record` for the P7 bill hot path (C4).

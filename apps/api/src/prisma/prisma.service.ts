@@ -8,6 +8,18 @@ export type TxClient = Prisma.TransactionClient;
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(PrismaService.name);
 
+  constructor() {
+    // The app runtime must connect as the NON-owner `ilikebuffet_app` role so
+    // the audit-log REVOKE layer applies (an owner-class connection bypasses it,
+    // Red Team H1). Migrations/tooling use DATABASE_URL (owner); the running app
+    // sets APP_DATABASE_URL. Falls back to the default (DATABASE_URL) for tests.
+    super(
+      process.env.APP_DATABASE_URL
+        ? { datasources: { db: { url: process.env.APP_DATABASE_URL } } }
+        : undefined,
+    );
+  }
+
   async onModuleInit(): Promise<void> {
     await this.$connect();
     this.logger.log("Prisma connected");

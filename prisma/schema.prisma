@@ -24,3 +24,28 @@ model HealthProbe {
 
   @@map("_health_probe")
 }
+
+/// GA-01 append-only audit trail. Immutability is enforced at the DB level
+/// (REVOKE UPDATE/DELETE on the app role + a BEFORE UPDATE/DELETE trigger that
+/// blocks every non-superuser) — see prisma/sql/audit-immutability.sql and
+/// audit-role-grants.sql. Those are applied OUTSIDE Prisma migrations (Prisma
+/// does not model triggers/roles) so the schema/migration drift check stays clean.
+model AuditLog {
+  id         BigInt   @id @default(autoincrement())
+  actorId    String? // user id; null for system / pre-auth events
+  actorRole  String?
+  action     String // e.g. "bill.cancel", "auth.login_failed"
+  objectType String // e.g. "bill", "user", "session"
+  objectId   String?
+  branchId   String? // CN — cross-branch access is auditable (wired in P3)
+  deviceId   String?
+  before     Json?    @db.JsonB
+  after      Json?    @db.JsonB
+  reason     String?
+  approvedBy String?
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([branchId, action, createdAt])
+  @@index([objectType, objectId])
+  @@map("audit_log")
+}
