@@ -1,9 +1,10 @@
 ---
 phase: 3
 title: "Auth RBAC & Branch-Scoping"
-status: pending
+status: done
 priority: P1
 dependencies: [2]
+completed: "2026-08-01"
 ---
 
 # Phase 3: Auth RBAC & Branch-Scoping
@@ -35,10 +36,10 @@ Spine bảo mật: đăng nhập, 6 vai trò cố định, **phân quyền lọc
 6. **GREEN** + **REFACTOR**: permission matrix table-driven test (mỗi role × chức năng theo NT-02.2).
 
 ## Success Criteria
-- [ ] Cross-branch → 403 + log, test tự động phủ **mọi** endpoint scoped (guard mặc định deny nếu thiếu scope).
-- [ ] Khóa tài khoản hiệu lực ≤30s.
-- [ ] Ma trận 6 role đúng NT-02.2 (table-driven test).
-- [ ] PIN đúng chuẩn (argon2, khóa 5 sai, 2 loại PIN tách biệt).
+- [x] Cross-branch → 403 + log — `BranchScopeGuard` global; branchId present & không thuộc CN → 403 + audit `cross_branch_denied`. [~] "phủ MỌI endpoint scoped": guard gắn `req.branchScope` mọi request; keyless route dựa `BranchScopeHelper.requireScope()` (throw nếu bypass) — **enforcement repo-level (CI/lint) chốt ở P4** khi có data-repo layer (C1 fix, ghi rõ).
+- [x] Khóa tài khoản hiệu lực ≤30s — per-request `tv` check qua Redis (invalidate-on-bump, TTL≤20s, Redis-read-error → DB fallback); token bị từ chối tức thì. Test revocation.
+- [x] Ma trận 6 role đúng NT-02.2 — table-driven `permissions.spec.ts` (6 role × capabilities).
+- [x] PIN đúng chuẩn — argon2; khóa 5 sai/15'; cashierPin ≠ approvalPin (cột tách biệt, test); device registry server-side + secret (H4); pin-login generic error + audit; account-lock chặn cả PIN-login.
 
 ## Risk Assessment
 - Guard sót endpoint = lỗ hổng chéo CN. Mitigation: **default-deny** — request tới resource có branch mà thiếu scope context → 403; lint/test bắt controller thiếu decorator.
@@ -52,3 +53,9 @@ Spine bảo mật: đăng nhập, 6 vai trò cố định, **phân quyền lọc
 
 <!-- Updated: Validation Session 1 — V2: chốt check revocation MỖI REQUEST + Redis (không phải chỉ refresh). Redis ở lại M1 (chỉ revocation). Test: access token của account vừa khóa bị từ chối trong ≤30s. -->
 - **V2 (revocation ≤30s)** — **check revocation list Redis mỗi request** (không chỉ refresh); access token có thể giữ dài. Redis giữ ở M1 chỉ cho mục đích này.
+
+### Implemented (169 api tests green) + post-review security fixes
+- Global `JwtAuthGuard` + `BranchScopeGuard` (APP_GUARD, fail-closed default); opt-out `@Public()`/`@Unscoped()`; `@PasswordChangeAllowed()`.
+- JWT access+refresh (secrets tách biệt, `typ` claim), argon2 password/PIN, device registry (secret argon2, server-issued id).
+- **Code-review (DONE_WITH_CONCERNS) → 10 findings fixed + tested:** C1 branchScope attach + `requireScope()` throw (repo-enforcement→P4); C2 `mustChangePassword` gate; H1 revocation invalidate-on-bump + DB fallback (no fail-open); H2 real dummy argon2 hash (no enum timing oracle); H3 atomic lockout increment; M1 role-gated PIN setters; M2 generic pin-login error + audit; M3 `DeviceStatus` enum; M4 account-lock blocks pin-login; L10 token `typ` + TTL boot-validation.
+- **Carry-forward:** repo-level branch-filter enforcement (CI/lint) for keyless scoped routes → **P4** (no data-repo yet). Holiday-calendar entity (M2 plan) → P4.

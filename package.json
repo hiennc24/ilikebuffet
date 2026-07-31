@@ -22,7 +22,8 @@
       "@prisma/client",
       "@prisma/engines",
       "prisma",
-      "protobufjs"
+      "protobufjs",
+      "argon2"
     ]
   },
   "dependencies": {

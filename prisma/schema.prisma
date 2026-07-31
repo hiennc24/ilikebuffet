@@ -1,10 +1,8 @@
 // ILikeBuffet — single Prisma schema, one owner across P4/P6/P7 to avoid
 // parallel migration races (orchestration rule in plan.md).
 //
-// M1 keeps domain tables out until their phase adds them (Red Team M5: no
-// pre-committed data model while needs-client-confirm items are open).
-// The only table here is an infra probe used by the health/lock harness to
-// prove migrations + row-level FOR UPDATE locking work end-to-end.
+// P3 adds: Role enum, Branch, AppUser, UserBranch, Device.
+// Snake_case table names via @@map (Prisma convention for this project).
 
 generator client {
   provider = "prisma-client-js"
@@ -14,6 +12,108 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+/// 6 fixed roles (NT-02). No custom roles in MVP.
+enum Role {
+  QUAN_TRI_HQ      // Quản trị HQ — system administrator
+  CHU_CHUOI        // Chủ chuỗi — chain owner
+  KE_TOAN_CHUOI    // Kế toán chuỗi — chain accountant
+  QUAN_LY_CN       // Quản lý CN — branch manager
+  THU_NGAN         // Thu ngân — cashier
+  THU_KHO          // Thủ kho — warehouse keeper
+}
+
+/// Branch operational status.
+enum BranchStatus {
+  ACTIVE
+  SUSPENDED
+  CLOSED
+}
+
+/// Device operational status (M3: typed enum, not bare String).
+enum DeviceStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+// ─── Domain models ───────────────────────────────────────────────────────────
+
+/// A physical or logical branch (cửa hàng / chi nhánh). Added in P3; extended in P4.
+model Branch {
+  id        String       @id @default(cuid())
+  /// Short unique code, 2–5 uppercase letters, e.g. "CN01".
+  code      String       @unique @db.VarChar(5)
+  name      String
+  status    BranchStatus @default(ACTIVE)
+  createdAt DateTime     @default(now()) @db.Timestamptz(3)
+
+  users   UserBranch[]
+  devices Device[]
+
+  @@map("branch")
+}
+
+/// App user (staff account). Maps to app_user table (avoids clash with PG reserved "user").
+model AppUser {
+  id                 String    @id @default(cuid())
+  username           String    @unique
+  passwordHash       String
+  role               Role
+  /// true = Chủ chuỗi / Kế toán chuỗi / HQ — access all branches without UserBranch rows.
+  chainWide          Boolean   @default(false)
+  /// Force password change on first login (NT-02.5).
+  mustChangePassword Boolean   @default(true)
+  failedLoginCount   Int       @default(0)
+  /// Absolute timestamp until which the account is locked. Null = not locked.
+  lockedUntil        DateTime? @db.Timestamptz(3)
+  /// Argon2-hashed 6-digit approval PIN for QUAN_LY_CN (NT-02.7). Separate from cashierPinHash.
+  approvalPinHash    String?
+  /// Argon2-hashed 6-digit cashier PIN for THU_NGAN device quick-login (NT-04). Separate from approvalPinHash.
+  cashierPinHash     String?
+  pinFailedCount     Int       @default(0)
+  pinLockedUntil     DateTime? @db.Timestamptz(3)
+  /// Incremented on logout-all or account lock; carried in JWT (tv claim).
+  /// Per-request revocation check in Redis ≤30s (Red Team M4/V2).
+  tokenVersion       Int       @default(0)
+  createdAt          DateTime  @default(now()) @db.Timestamptz(3)
+
+  branches UserBranch[]
+
+  @@map("app_user")
+}
+
+/// Many-to-many: user ↔ branch membership. Chain-wide users have no rows here.
+model UserBranch {
+  userId   String
+  branchId String
+
+  user   AppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  branch Branch  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@id([userId, branchId])
+  @@map("user_branch")
+}
+
+/// Registered POS device. Server-issued deviceId + per-device secret (argon2-hashed).
+/// Unregistered devices are denied PIN quick-login (Red Team H4).
+model Device {
+  id         String   @id @default(cuid())
+  /// Server-issued, returned once at registration.
+  deviceId   String   @unique @default(cuid())
+  branchId   String
+  secretHash String   // argon2 hash of the one-time secret
+  label      String?
+  status     DeviceStatus @default(ACTIVE)
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+
+  branch Branch @relation(fields: [branchId], references: [id])
+
+  @@map("device")
+}
+
+// ─── Infra probe ─────────────────────────────────────────────────────────────
 
 /// Infra-only. NOT domain data. Exists so the test harness can demonstrate a
 /// reproducible migration and a real `SELECT ... FOR UPDATE` row lock.

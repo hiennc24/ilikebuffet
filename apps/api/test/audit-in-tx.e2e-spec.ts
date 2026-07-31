@@ -23,6 +23,10 @@ describe("audit in-transaction semantics (integration)", () => {
   beforeAll(async () => {
     db = await startTestDb();
     process.env.DATABASE_URL = db.url;
+    // AuthModule (now in AppModule) requires JWT + Redis config.
+    process.env.JWT_SECRET = process.env.JWT_SECRET ?? "test-jwt-secret-audit";
+    process.env.JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET ?? "test-jwt-refresh-audit";
+    process.env.REDIS_URL = process.env.REDIS_URL ?? "redis://localhost:6379";
     execFileSync(
       "npx",
       ["prisma", "migrate", "deploy", "--schema", join(__dirname, "..", "..", "..", "prisma", "schema.prisma")],

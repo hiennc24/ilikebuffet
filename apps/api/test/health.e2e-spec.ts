@@ -22,6 +22,10 @@ describe("Health + DB harness (integration)", () => {
   beforeAll(async () => {
     db = await startTestDb();
     process.env.DATABASE_URL = db.url;
+    // AuthModule (now in AppModule) requires these env vars.
+    process.env.JWT_SECRET = process.env.JWT_SECRET ?? "test-jwt-secret-health";
+    process.env.JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET ?? "test-jwt-refresh-health";
+    process.env.REDIS_URL = process.env.REDIS_URL ?? "redis://localhost:6379";
 
     // Apply committed MIGRATIONS to the fresh container (not `db push`) so the
     // real migration path is exercised end-to-end every test run.
