@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-tc-05</span><span style="color: #D5CEC6;">·</span><span>template 4 · nặng bảng</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">/tai-chinh/doi-soat</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Đối soát thanh toán</h1>
+    <p style="margin: 0; max-width: 82ch; font-size: 14px; color: #635B53;">Màn phát hiện thất thoát tiền mặt: <strong style="font-weight: 500;">mọi dòng lệch tô nền danger nhạt</strong>, không chỉ gắn badge. Chênh lệch bằng 0 hiện “—” neutral chứ không hiện “0”. Không rút gọn số ở bất kỳ đâu.</p>
+  </header>
+
+  <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; line-height: 1.1; margin: 0;">Đối soát ngày 27/07/2026</h2>
+        <span style="font-size: 13px; color: #6E665C;">Chi nhánh Quận 1 · {{ shiftLabel }} · người đối soát: Thu Hà</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; flex: none;">
+        <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xuất Excel</button>
+        <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">In biên bản</button>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 16px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px;">
+      <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; cursor: pointer;" style-hover="background: #F4F1ED;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18v16H3zM8 2v6M16 2v6M3 11h18"></path></svg>
+        27/07/2026
+      </span>
+      <div style="display: flex; gap: 4px; padding: 4px; background: #F4F1ED; border-radius: 8px;">
+        <sc-for list="{{ presets }}" as="p" hint-placeholder-count="3">
+          <span onClick="{{ p.onPick }}" tabindex="0" style="{{ p.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ p.label }}</span>
+        </sc-for>
+      </div>
+      <span style="width: 1px; height: 24px; background: #E7E2DC;"></span>
+      <div style="display: flex; gap: 4px; padding: 4px; background: #F4F1ED; border-radius: 8px;">
+        <sc-for list="{{ shiftTabs }}" as="s" hint-placeholder-count="4">
+          <span onClick="{{ s.onPick }}" tabindex="0" style="{{ s.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ s.label }}</span>
+        </sc-for>
+      </div>
+      <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; cursor: pointer;" style-hover="background: #F4F1ED;">Chi nhánh Quận 1</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; gap: 12px; padding: 12px 16px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+        <span style="font-size: 13px; color: #8A5F12;"><strong style="font-weight: 500;">Phiếu kiểm đếm ca tối 27/07 chưa được duyệt.</strong> Ca đã đóng lúc 23:12 với chênh lệch (220.000) nhưng quản lý chưa xác nhận phiếu kiểm — chênh lệch tiền mặt bên dưới là tạm tính, đừng lập phiếu điều chỉnh trước khi duyệt. <a href="#" style="color: #8A5F12;">Mở ca CA-260727-03 →</a></span>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; background: #EEF5FA; border: 1px solid #C7DDEC; border-radius: 8px;">
+        <span style="display: flex; gap: 12px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2C6E9B" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 8v.01M12 11v5"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;"><strong style="font-weight: 500;">Chưa nhập sao kê ngân hàng ngày 27/07.</strong> Thẻ, QR và ví đang đối soát với dữ liệu cổng thanh toán — chưa đối chiếu với tiền thực về tài khoản.</span>
+        </span>
+        <span role="button" tabindex="0" style="height: 36px; flex: none; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; border: 1px solid #C7DDEC; font-size: 13px; font-weight: 500; color: #2C6E9B; cursor: pointer;" style-hover="background: #E3EFF7;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Nhập sao kê</span>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div style="{{ s.cardStyle }}">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <span style="font-size: 13px; color: #6E665C;">{{ s.label }}</span>
+            <span style="{{ s.dirStyle }}">{{ s.dir }}</span>
+          </div>
+          <strong style="{{ s.valueStyle }}">{{ s.value }}</strong>
+          <span style="{{ s.hintStyle }}">{{ s.hint }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <strong style="font-size: 16px; font-weight: 500;">Hệ thống và thực nhận theo phương thức</strong>
+        <span style="font-size: 13px; color: #6E665C;">Bar nhóm · hai cột cạnh nhau cho mỗi phương thức · đơn vị đồng, trục Y từ 0</span>
+      </div>
+      <svg aria-hidden="true" viewBox="0 0 1180 300" style="width: 100%; height: 300px;">
+        {{ barGridEls }}
+        {{ barAxisEls }}
+        <line x1="112" y1="248" x2="1160" y2="248" stroke="#E7E2DC" stroke-width="1"></line>
+        <sc-for list="{{ barRects }}" as="b" hint-placeholder-count="8">
+          <rect x="{{ b.x }}" y="{{ b.y }}" width="{{ b.w }}" height="{{ b.h }}" rx="4" fill="{{ b.fill }}"></rect>
+        </sc-for>
+        {{ barLabelEls }}
+      </svg>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+        <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #2F7168;"></span>Theo hệ thống</span>
+        <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #1F3A5F;"></span>Thực nhận</span>
+        <span style="font-size: 12px; color: #6E665C;">Phương thức có lệch được đánh dấu ngay dưới nhãn trục — không phải đoán từ chênh cao cột.</span>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 1fr 108px 148px 108px 148px 96px 148px 148px; gap: 12px; align-items: center; min-height: 40px; padding: 0 16px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+        <span>Phương thức · giao dịch</span>
+        <span style="text-align: right;">GD hệ thống</span>
+        <span style="text-align: right;">Tiền hệ thống</span>
+        <span style="text-align: right;">GD thực nhận</span>
+        <span style="text-align: right;">Tiền thực nhận</span>
+        <span style="text-align: right;">Lệch GD</span>
+        <span style="text-align: right;">Lệch tiền</span>
+        <span>Trạng thái</span>
+      </div>
+
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+        <div style="{{ r.rowStyle }}" style-hover="background: #F4F1ED;">
+          <span style="{{ r.nameCellStyle }}">
+            <sc-if value="{{ r.canToggle }}" hint-placeholder-val="{{ true }}">
+              <span onClick="{{ r.onToggle }}" role="button" tabindex="0" aria-expanded="{{ r.expanded }}" style="width: 20px; height: 20px; flex: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;" style-hover="background: #F0EBE5;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="{{ r.caretStyle }}"><path d="M9 6l6 6-6 6"></path></svg>
+              </span>
+            </sc-if>
+            <sc-if value="{{ r.noToggle }}" hint-placeholder-val="{{ false }}">
+              <span style="width: 20px; flex: none;"></span>
+            </sc-if>
+            <span style="{{ r.nameStyle }}">{{ r.name }}</span>
+            <span style="{{ r.subStyle }}">{{ r.sub }}</span>
+          </span>
+          <span style="{{ r.cellStyle }}">{{ r.sysCount }}</span>
+          <span style="{{ r.cellStyle }}">{{ r.sysAmount }}</span>
+          <span style="{{ r.cellStyle }}">{{ r.actCount }}</span>
+          <span style="{{ r.cellStyle }}">{{ r.actAmount }}</span>
+          <span style="{{ r.diffCountStyle }}">{{ r.diffCount }}</span>
+          <span style="{{ r.diffAmountStyle }}">{{ r.diffAmount }}</span>
+          <span style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+            <span style="{{ r.badgeStyle }}">{{ r.status }}</span>
+            <sc-if value="{{ r.hasActions }}" hint-placeholder-val="{{ false }}">
+              <span onClick="{{ r.onMenu }}" role="button" tabindex="0" aria-label="Hành động trên giao dịch lệch" style="width: 24px; height: 24px; flex: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;" style-hover="background: #F8E3DF;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#96271B" stroke-width="2" stroke-linecap="round"><path d="M12 5v.01M12 12v.01M12 19v.01"></path></svg>
+              </span>
+            </sc-if>
+          </span>
+        </div>
+        <sc-if value="{{ r.menuOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 16px 10px 64px; background: #FCF0EE; border-bottom: 1px solid #F0EBE5;">
+            <span role="button" tabindex="0" style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; border: 1px solid #E7E2DC; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Đánh dấu đã xử lý</span>
+            <span role="button" tabindex="0" style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; border: 1px solid #E7E2DC; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Ghi chú lý do</span>
+            <span role="button" tabindex="0" style="{{ r.adjustStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Tạo phiếu điều chỉnh</span>
+            <span style="font-size: 12px; color: #96271B;">{{ r.adjustNote }}</span>
+          </div>
+        </sc-if>
+      </sc-for>
+
+      <div style="position: sticky; bottom: 0; z-index: 2; display: grid; grid-template-columns: 1fr 108px 148px 108px 148px 96px 148px 148px; gap: 12px; align-items: center; min-height: 48px; padding: 0 16px; background: #FAF8F6; border-top: 1px solid #E7E2DC; font-size: 13px;">
+        <strong style="font-weight: 500; letter-spacing: 0.02em;">TỔNG · 4 phương thức</strong>
+        <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{ tSysCount }}</strong>
+        <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{ tSysAmount }}</strong>
+        <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ tActCount }}</span>
+        <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ tActAmount }}</span>
+        <strong style="{{ tDiffCountStyle }}">{{ tDiffCount }}</strong>
+        <strong style="{{ tDiffAmountStyle }}">{{ tDiffAmount }}</strong>
+        <span><span style="{{ tBadgeStyle }}">{{ tStatus }}</span></span>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #6E665C;">
+      <span>Nguồn: đơn hàng đã đóng trong ngày (hệ thống) · kiểm đếm két và dữ liệu cổng thanh toán (thực nhận). Sao kê ngân hàng là lớp đối chiếu thứ ba, chưa nhập.</span>
+      <span>Lệch âm nghĩa là thực nhận ít hơn hệ thống — tiền thiếu. Lệch dương nghĩa là thu dư, cũng phải giải trình chứ không bỏ qua.</span>
+      <span>Không rút gọn số ở bất kỳ đâu. Phiếu điều chỉnh ghi vào sổ quỹ và khoá dòng khỏi lần đối soát sau.</span>
+    </div>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">6 state của T4</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">1 · Đang tải</span>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        </div>
+        <span style="height: 140px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Bốn dòng phương thức dựng sẵn. <strong style="font-weight: 500;">Không hiện con số chênh lệch nào cho tới khi cả hai vế cùng về</strong> — hiện một vế rồi tự sửa là cách nhanh nhất để kế toán hốt hoảng.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">2 · Không có giao dịch</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18v16H3zM8 2v6M16 2v6M3 11h18"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Không có giao dịch nào ngày 27/07</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Nhà hàng nghỉ. Không có gì để đối soát — khác với “đã đối soát và khớp hết”.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">3 · Khớp hoàn toàn</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #EDF7F1; border: 1px solid #C3E4D2; border-radius: 4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#256A49" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M8 12l3 3 5-6"></path></svg>
+          <span style="font-size: 13px; color: #1E5B3D;">Khớp cả 48 giao dịch · chênh lệch 0</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Thẻ Chênh lệch chuyển success, cả bốn dòng hiện “—”. Không có dòng nào mở ra được vì không có giao dịch lệch. Nút <strong style="font-weight: 500;">Chốt đối soát</strong> hiện ra ở cuối bảng.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">4 · Ca chưa đóng</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Phiếu kiểm đếm ca tối chưa được duyệt</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Dòng tiền mặt giữ nhãn <strong style="font-weight: 500;">tạm tính</strong> kể cả khi đã có lệch — tông warning chứ không phải danger, vì chưa ai đếm két thì chưa có gì để khẳng định. Nút Tạo phiếu điều chỉnh khoá lại kèm lời giải thích. Ba phương thức còn lại vẫn đối soát bình thường.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">5 · Chưa nhập sao kê</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #EEF5FA; border: 1px solid #C7DDEC; border-radius: 4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2C6E9B" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 8v.01M12 11v5"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Thẻ, QR, ví mới đối soát tới lớp cổng thanh toán</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Trạng thái ba dòng đó là <strong style="font-weight: 500;">khớp một phần</strong> chứ không phải khớp. Phí cổng thanh toán chưa trừ nên tiền về tài khoản sẽ thấp hơn — nói trước để kế toán không tưởng là thất thoát.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">6 · Đã chốt đối soát</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.6" stroke-linecap="round" style="margin-top: 2px; flex-shrink: 0;"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Chốt lúc 09:12 ngày 28/07 · Thu Hà · 2 phiếu điều chỉnh</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Chỉ đọc: bỏ mọi hành động trên dòng lệch, giữ lịch sử xử lý và link tới phiếu điều chỉnh. Muốn sửa phải mở lại đối soát và ghi lý do — thao tác chỉ chủ làm được.</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1100}}">
+const SEG = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #635B53; cursor: pointer;';
+const SEG_ON = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(30,27,25,0.06); font-size: 13px; font-weight: 500; color: #1C4842; cursor: pointer;';
+const DIR_TAG = 'height: 20px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 11px; font-weight: 500; white-space: nowrap; background: #F4F1ED; color: #6E665C;';
+const DIV = { p2: '#3F8560', p1: '#6FA98A', zero: '#6E665C', n1: '#D99A8C', n2: '#C4634F', n3: '#A32E22' };
+
+const B_OK = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #EDF7F1; border: 1px solid #C3E4D2; color: #256A49; font-size: 12px; font-weight: 500; white-space: nowrap;';
+const B_WARN = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FDF6E7; border: 1px solid #F0DDAF; color: #8A5F12; font-size: 12px; font-weight: 500; white-space: nowrap;';
+const B_DANGER = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FCF0EE; border: 1px solid #F1CCC7; color: #96271B; font-size: 12px; font-weight: 500; white-space: nowrap;';
+
+// KHÔNG rút gọn số ở bất kỳ đâu trên màn này
+const vnd = (n) => (n < 0 ? '(' + Math.abs(n).toLocaleString('vi-VN') + ')' : n.toLocaleString('vi-VN'));
+const num = (n) => n.toLocaleString('vi-VN');
+
+// ── Nguồn số liệu · 27/07/2026 Quận 1 · tổng khớp SC-TC-02 (34,1 tr) ──
+// [id, tên, GD hệ thống, tiền hệ thống, GD thực nhận, tiền thực nhận, lớp đối chiếu]
+const METHODS = [
+  // Ba cờ độc lập, không lồng nhau:
+  //   off               · có lệch
+  //   partial           · két chưa kiểm đếm → số chưa xác nhận
+  //   awaitingStatement · mới đối tới lớp cổng, chưa đối sao kê ngân hàng
+  { id: 'tien-mat', name: 'Tiền mặt', sysCount: 18, sysAmount: 12640000, actCount: 18, actAmount: 12420000, layer: 'Kiểm đếm két · phiếu chờ duyệt', partial: true },
+  { id: 'the', name: 'Thẻ ngân hàng', sysCount: 11, sysAmount: 9820000, actCount: 11, actAmount: 9820000, layer: 'Máy POS · chưa đối sao kê', awaitingStatement: true },
+  { id: 'qr', name: 'Chuyển khoản QR', sysCount: 14, sysAmount: 8940000, actCount: 13, actAmount: 8760000, layer: 'Cổng thanh toán · chưa đối sao kê', awaitingStatement: true },
+  { id: 'vi', name: 'Ví điện tử', sysCount: 5, sysAmount: 2700000, actCount: 5, actAmount: 2700000, layer: 'Cổng thanh toán · chưa đối sao kê', awaitingStatement: true }
+];
+
+// giao dịch lệch, gắn theo phương thức
+const TXNS = {
+  'tien-mat': [
+    ['DH-2026-1188', '19:42', 480000, 380000, 'Thiếu tiền lẻ trả lại khách, thu ngân ghi tay', 'Chưa xử lý'],
+    ['DH-2026-1203', '20:15', 320000, 200000, 'Chưa rõ nguyên nhân', 'Chưa xử lý']
+  ],
+  'qr': [
+    ['DH-2026-1211', '20:58', 180000, 0, 'Không thấy giao dịch trên cổng thanh toán', 'Đang tra soát']
+  ]
+};
+
+class Component extends DCLogic {
+  state = { preset: 'Hôm qua', shift: 'all', open: { 'tien-mat': true, 'qr': true }, menu: {} };
+
+  renderVals() {
+    const st = this.state;
+
+    const tSysCount = METHODS.reduce((s, m) => s + m.sysCount, 0);
+    const tSysAmount = METHODS.reduce((s, m) => s + m.sysAmount, 0);
+    const tActCount = METHODS.reduce((s, m) => s + m.actCount, 0);
+    const tActAmount = METHODS.reduce((s, m) => s + m.actAmount, 0);
+    const tDiffAmount = tActAmount - tSysAmount;
+    const tDiffCount = tActCount - tSysCount;
+    const unmatched = Object.keys(TXNS).reduce((s, k) => s + TXNS[k].length, 0);
+    // Phần chênh lệch đến từ phương thức chưa kiểm đếm xong — chưa được coi là đã xác nhận
+    const partialAmount = METHODS.filter(m => m.partial).reduce((s, m) => s + (m.actAmount - m.sysAmount), 0);
+
+    const cellR = 'text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;';
+
+    // Diverging cho chênh lệch · lower-is-better: lệch càng lớn càng xấu, 0 là neutral
+    const diffColor = (v, base) => {
+      if (v === 0) return DIV.zero;
+      const mag = base ? Math.abs(v / base) * 100 : 100;
+      const step = mag >= 2 ? 3 : (mag >= 0.5 ? 2 : 1);
+      return DIV['n' + step];
+    };
+
+    const rows = [];
+    METHODS.forEach(m => {
+      const diffAmount = m.actAmount - m.sysAmount;
+      const diffCount = m.actCount - m.sysCount;
+      const off = diffAmount !== 0 || diffCount !== 0;
+      const open = !!st.open[m.id];
+      const list = TXNS[m.id] || [];
+
+      rows.push({
+        name: m.name,
+        sub: m.layer,
+        // Nhãn phụ co trước, tên phương thức không bao giờ bị cắt
+        subStyle: 'flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 12px; color: #6E665C; white-space: nowrap;',
+        canToggle: list.length > 0,
+        noToggle: list.length === 0,
+        expanded: open,
+        onToggle: list.length ? (() => this.setState(s => ({ open: Object.assign({}, s.open, { [m.id]: !s.open[m.id] }) }))) : (() => {}),
+        caretStyle: 'transition: transform 120ms ease; transform: rotate(' + (open ? 90 : 0) + 'deg);',
+        rowStyle: 'display: grid; grid-template-columns: 1fr 108px 148px 108px 148px 96px 148px 148px; gap: 12px; align-items: center; min-height: 48px; padding: 0 16px; font-size: 13px; border-bottom: 1px solid #F0EBE5; background: '
+          + (off ? (m.partial ? '#FFFCF4' : '#FDF3F1') : '#FFFFFF') + ';',
+        // hover khai báo bằng literal trong template — style-hover không nhận giá trị động
+        nameCellStyle: 'display: flex; align-items: center; gap: 8px; min-width: 0;',
+        nameStyle: 'flex: 0 0 auto; font-weight: 500; white-space: nowrap; color: ' + (off ? (m.partial ? '#8A5F12' : '#96271B') : '#1E1B19') + ';',
+        cellStyle: cellR,
+        sysCount: num(m.sysCount),
+        sysAmount: num(m.sysAmount),
+        actCount: num(m.actCount),
+        actAmount: num(m.actAmount),
+        diffCount: diffCount === 0 ? '—' : (diffCount > 0 ? '+' : '−') + num(Math.abs(diffCount)),
+        diffCountStyle: 'text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (diffCount === 0 ? DIV.zero : DIV.n2) + ';',
+        diffAmount: diffAmount === 0 ? '—' : vnd(diffAmount),
+        diffAmountStyle: 'text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; color: ' + diffColor(diffAmount, m.sysAmount) + ';',
+        // Ghép cả ba cờ, không lồng: mỗi cờ nói một điều khác nhau và đều phải hiện.
+        // “Khớp” chỉ dành cho dòng đã đối chiếu tới lớp cuối cùng — trên màn này chưa có dòng nào.
+        status: (off ? 'Lệch · ' + num(list.length) + ' GD' : (m.awaitingStatement ? 'Khớp một phần' : 'Khớp'))
+          + (m.partial ? ' · tạm tính' : ''),
+        badgeStyle: (m.partial || m.awaitingStatement) ? B_WARN : (off ? B_DANGER : B_OK),
+        hasActions: false,
+        menuOpen: false
+      });
+
+      if (open) {
+        list.forEach(txt => {
+          const d = txt[3] - txt[2];
+          const key = m.id + '|' + txt[0];
+          const menuOpen = !!st.menu[key];
+          rows.push({
+            name: txt[0],
+            sub: txt[1] + ' · ' + txt[4],
+            // Lý do là văn bản tự do, không có ô riêng trong lưới của dòng cha
+            // → xuống dòng thứ hai và xuống dòng tự do, không cắt ngang câu
+            subStyle: 'font-size: 12px; color: #96271B; overflow-wrap: anywhere;',
+            canToggle: false,
+            noToggle: true,
+            expanded: false,
+            onToggle: () => {},
+            caretStyle: '',
+            rowStyle: 'display: grid; grid-template-columns: 1fr 108px 148px 108px 148px 96px 148px 148px; gap: 12px; align-items: center; min-height: 56px; padding: 8px 16px 8px 44px; font-size: 13px; border-bottom: 1px solid #F0EBE5; background: #FDF3F1;',
+            nameCellStyle: 'display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; padding-right: 8px;',
+            nameStyle: 'font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54; white-space: nowrap;',
+            cellStyle: cellR,
+            sysCount: '1',
+            sysAmount: num(txt[2]),
+            actCount: txt[3] === 0 ? '0' : '1',
+            actAmount: num(txt[3]),
+            diffCount: txt[3] === 0 ? '−1' : '—',
+            diffCountStyle: 'text-align: right; font-variant-numeric: tabular-nums; color: ' + (txt[3] === 0 ? DIV.n2 : DIV.zero) + ';',
+            diffAmount: vnd(d),
+            diffAmountStyle: 'text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; color: ' + diffColor(d, txt[2]) + ';',
+            status: txt[5],
+            badgeStyle: txt[5] === 'Chưa xử lý' ? B_DANGER : B_WARN,
+            hasActions: true,
+            onMenu: () => this.setState(s => ({ menu: Object.assign({}, s.menu, { [key]: !s.menu[key] }) })),
+            menuOpen,
+            adjustStyle: m.partial
+              ? 'height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #F4F1ED; font-size: 13px; font-weight: 500; color: #ABA298; cursor: not-allowed;'
+              : 'height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #235B54; font-size: 13px; font-weight: 500; color: #FFFFFF; cursor: pointer;',
+            adjustNote: m.partial
+              ? 'Khoá tới khi đóng ca — chưa kiểm đếm két thì chưa biết chắc thiếu bao nhiêu.'
+              : 'Phiếu điều chỉnh ghi vào sổ quỹ và khoá dòng này khỏi lần đối soát sau.'
+          });
+        });
+      }
+    });
+
+    // ── bar nhóm · viewBox 1180×300 ───────────────────────────────
+    const bTop = 28, bBot = 248, bL = 112, bR = 1160;
+    const rawMax = METHODS.reduce((m, x) => Math.max(m, x.sysAmount, x.actAmount), 0);
+    const stepNice = Math.pow(10, Math.floor(Math.log10(rawMax / 4)));
+    const bMax = Math.ceil(rawMax / (stepNice * 4)) * stepNice * 4;
+    const by = (v) => bBot - (v / bMax) * (bBot - bTop);
+    const slot = (bR - bL) / METHODS.length;
+    const barRects = [];
+    METHODS.forEach((m, i) => {
+      const gx = bL + i * slot;
+      barRects.push({ x: (gx + slot * 0.18).toFixed(1), y: by(m.sysAmount).toFixed(1), w: (slot * 0.28).toFixed(1), h: (bBot - by(m.sysAmount)).toFixed(1), fill: '#2F7168' });
+      barRects.push({ x: (gx + slot * 0.50).toFixed(1), y: by(m.actAmount).toFixed(1), w: (slot * 0.28).toFixed(1), h: (bBot - by(m.actAmount)).toFixed(1), fill: '#1F3A5F' });
+    });
+    const gridVals = [0, bMax * 0.25, bMax * 0.5, bMax * 0.75, bMax];
+
+    const statCard = (s) => ({
+      label: s.label,
+      dir: s.dir === 'higher' ? 'cao hơn tốt hơn' : (s.dir === 'lower' ? 'thấp hơn tốt hơn' : 'trung tính'),
+      dirStyle: DIR_TAG,
+      value: s.value,
+      valueStyle: 'font-size: 22px; font-weight: 500; font-variant-numeric: tabular-nums; color: '
+        + (s.tone === 'bad' ? '#96271B' : (s.tone === 'warn' ? '#8A5F12' : (s.tone === 'good' ? '#256A49' : '#1E1B19'))) + ';',
+      cardStyle: 'border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px; background: '
+        + (s.tone === 'bad' ? '#FDF3F1' : (s.tone === 'warn' ? '#FFFCF4' : '#FFFFFF'))
+        + '; border: 1px solid ' + (s.tone === 'bad' ? '#F1CCC7' : (s.tone === 'warn' ? '#F0DDAF' : '#E7E2DC')) + ';',
+      hint: s.hint,
+      hintStyle: 'font-size: 12px; color: ' + (s.tone === 'bad' ? '#96271B' : (s.tone === 'warn' ? '#8A5F12' : '#6E665C')) + ';'
+    });
+
+    return {
+      shiftLabel: st.shift === 'all' ? 'cả ngày' : st.shift,
+      presets: ['Hôm nay', 'Hôm qua', 'Tuần này'].map(p => ({
+        label: p, style: st.preset === p ? SEG_ON : SEG, onPick: () => this.setState({ preset: p })
+      })),
+      shiftTabs: [['all', 'Cả ngày'], ['Ca sáng', 'Ca sáng'], ['Ca chiều', 'Ca chiều'], ['Ca tối', 'Ca tối']].map(s => ({
+        label: s[1], style: st.shift === s[0] ? SEG_ON : SEG, onPick: () => this.setState({ shift: s[0] })
+      })),
+
+      stats: [
+        { label: 'Tổng thu theo hệ thống', value: num(tSysAmount), dir: 'neutral', hint: num(tSysCount) + ' giao dịch đã đóng đơn' },
+        { label: 'Tổng thực nhận', value: num(tActAmount), dir: 'neutral', hint: num(tActCount) + ' giao dịch đối chiếu được' },
+        { label: 'Chênh lệch', value: vnd(tDiffAmount), dir: 'lower',
+          tone: tDiffAmount === 0 ? 'good' : (partialAmount !== 0 ? 'warn' : 'bad'),
+          hint: tDiffAmount === 0
+            ? 'Khớp tuyệt đối · ngưỡng chấp nhận 0 đ'
+            : (partialAmount !== 0
+                ? 'Trong đó ' + vnd(partialAmount) + ' là tạm tính — phiếu kiểm đếm chưa duyệt. Đã xác nhận ' + vnd(tDiffAmount - partialAmount) + '.'
+                : 'Ngưỡng chấp nhận 0 đ · mọi khác biệt phải giải trình') },
+        { label: 'Giao dịch chưa khớp', value: num(unmatched), dir: 'lower', tone: unmatched === 0 ? 'good' : 'bad',
+          hint: unmatched === 0 ? 'Không có giao dịch nào lệch' : '2 tiền mặt (tạm tính) · 1 chuyển khoản QR' }
+      ].map(statCard),
+
+      barGridEls: gridVals.map(v => React.createElement('line', {
+        key: 'bg' + v, x1: bL, y1: by(v), x2: bR, y2: by(v), stroke: '#F4F1ED', strokeWidth: 1
+      })),
+      barAxisEls: gridVals.map(v => React.createElement('text', {
+        key: 'ba' + v, x: bL - 10, y: by(v) + 4, textAnchor: 'end', fontSize: 12, fill: '#6E665C', fontFamily: 'Be Vietnam Pro'
+      }, num(v))),
+      barRects,
+      barLabelEls: METHODS.reduce((acc, m, i) => {
+        const cx = bL + i * slot + slot / 2;
+        const off = m.actAmount !== m.sysAmount || m.actCount !== m.sysCount;
+        acc.push(React.createElement('text', {
+          key: 'bl' + m.id, x: cx, y: 272, textAnchor: 'middle', fontSize: 12,
+          fill: off ? '#96271B' : '#6E665C', fontFamily: 'Be Vietnam Pro'
+        }, m.name));
+        if (off) {
+          acc.push(React.createElement('text', {
+            key: 'bd' + m.id, x: cx, y: 290, textAnchor: 'middle', fontSize: 12, fill: '#96271B', fontFamily: 'Be Vietnam Pro'
+          }, 'lệch ' + vnd(m.actAmount - m.sysAmount)));
+        }
+        return acc;
+      }, []),
+
+      rows,
+      tSysCount: num(tSysCount),
+      tSysAmount: num(tSysAmount),
+      tActCount: num(tActCount),
+      tActAmount: num(tActAmount),
+      tDiffCount: tDiffCount === 0 ? '—' : (tDiffCount > 0 ? '+' : '−') + num(Math.abs(tDiffCount)),
+      tDiffCountStyle: 'text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; color: ' + (tDiffCount === 0 ? DIV.zero : DIV.n2) + ';',
+      tDiffAmount: tDiffAmount === 0 ? '—' : vnd(tDiffAmount),
+      tDiffAmountStyle: 'text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; color: ' + diffColor(tDiffAmount, tSysAmount) + ';',
+      tStatus: tDiffAmount === 0 ? 'Khớp' : 'Lệch · ' + num(unmatched) + ' GD',
+      tBadgeStyle: tDiffAmount === 0 ? B_OK : B_DANGER
+    };
+  }
+}
+
+</script>
+</body>
+</html>

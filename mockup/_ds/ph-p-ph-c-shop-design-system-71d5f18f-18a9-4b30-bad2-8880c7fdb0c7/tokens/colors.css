@@ -1,0 +1,65 @@
+/* ============================================================
+   COLORS — Pháp Phục Shop
+   A warm, meditative palette drawn from the moodboard
+   (microcement, raw oak, burlwood, terrazzo) fused with the
+   traditional colours of Vietnamese lay-Buddhist robes
+   (áo lam = smoke blue-grey, nâu sồng = monastic brown).
+   ============================================================ */
+:root {
+  /* — Plaster / microcement neutrals (walls, surfaces, backgrounds) — */
+  --plaster-50:  #FAF6EF;   /* lightest lime-plaster */
+  --plaster-100: #F3ECE0;
+  --plaster-200: #E9DECC;
+  --plaster-300: #DCCCB2;   /* warm sand */
+  --plaster-400: #CBB390;   /* tan */
+
+  /* — Wood tones (oak shelving, timber plinths, burl accents) — */
+  --oak-300:     #D2B488;   /* pale ash / light oak */
+  --oak-400:     #B98F5E;   /* natural oak */
+  --oak-500:     #9A7045;   /* aged oak */
+  --burl-500:    #8A5E33;   /* burlwood / caramel accent panel */
+  --walnut-700:  #5C4329;   /* dark walnut trim */
+
+  /* — Ink (text, signage, hardware shadow) — */
+  --ink-900:     #2B231B;   /* warm near-black, primary text */
+  --ink-700:     #4A3F33;
+  --ink-500:     #7A6E5F;   /* muted brown-grey, secondary text */
+  --ink-300:     #A99C8B;   /* faint, captions / disabled */
+
+  /* — Robe accents (the soul of the brand) — */
+  --lam-500:     #6E7B77;   /* áo lam — smoke teal-grey */
+  --lam-700:     #4E5A57;   /* deep lam */
+  --lam-200:     #C3CCC7;   /* pale lam wash */
+  --nau-600:     #6B5644;   /* nâu sồng — monastic brown */
+  --nau-300:     #B49B83;   /* faded brown */
+
+  /* — Metal (slim rails, hardware) — */
+  --steel-300:   #C7C4BD;   /* brushed stainless */
+  --steel-500:   #9C9890;
+  --brass-500:   #A98B53;   /* warm brass */
+
+  /* — Line / hairline — */
+  --line:        #E0D5C4;
+  --line-strong: #C9BBA4;
+
+  /* ---------------- SEMANTIC ALIASES ---------------- */
+  --bg-page:        var(--plaster-50);
+  --bg-surface:     var(--plaster-100);
+  --bg-raised:      #FFFFFF;
+  --bg-sunken:      var(--plaster-200);
+  --bg-inverse:     var(--ink-900);
+
+  --text-primary:   var(--ink-900);
+  --text-secondary: var(--ink-500);
+  --text-muted:     var(--ink-300);
+  --text-on-dark:   var(--plaster-50);
+  --text-accent:    var(--lam-700);
+
+  --border-subtle:  var(--line);
+  --border-default: var(--line-strong);
+  --border-strong:  var(--oak-500);
+
+  --accent:         var(--lam-500);
+  --accent-strong:  var(--lam-700);
+  --accent-warm:    var(--burl-500);
+}

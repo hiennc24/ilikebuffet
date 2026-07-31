@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; text-decoration: none; }
+  a:hover { color: #1C4842; text-decoration: underline; }
+  .ibb-scroll::-webkit-scrollbar { width: 8px; }
+  .ibb-scroll::-webkit-scrollbar-thumb { background: #E7E2DC; border-radius: 999px; }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; align-items: flex-start;">
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">App shell · sidebar mở · ≥1280px</span>
+      <span style="font-size: 12px; color: #6E665C;">1440 × 900</span>
+    </div>
+
+    <div style="width: 1440px; height: 900px; display: flex; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(30,27,25,0.10);">
+
+      <aside style="width: 248px; flex: 0 0 248px; display: flex; flex-direction: column; background: #FFFFFF; border-right: 1px solid #E7E2DC;">
+        <div style="height: 56px; flex: 0 0 56px; display: flex; align-items: center; gap: 12px; padding: 0 16px; border-bottom: 1px solid #E7E2DC;">
+          <span style="width: 28px; height: 28px; border-radius: 6px; background: #C96442; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">i</span>
+          <span style="display: flex; flex-direction: column; line-height: 1.15;">
+            <strong style="font-size: 14px; font-weight: 600;">ilikebuffet</strong>
+            <span style="font-size: 11px; color: #6E665C;">Admin</span>
+          </span>
+        </div>
+
+        <div style="padding: 12px; border-bottom: 1px solid #F4F1ED;">
+          <button style="width: 100%; height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px; cursor: pointer; font-family: inherit; text-align: left; transition: background 200ms;" style-hover="background: #F4F1ED;">
+            <span style="width: 20px; height: 20px; border-radius: 4px; background: #EFF6F5; color: #235B54; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;">Q1</span>
+            <span style="flex: 1; display: flex; flex-direction: column; line-height: 1.2; overflow: hidden;">
+              <span style="font-size: 13px; font-weight: 500; color: #332F2B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Chi nhánh Quận 1</span>
+              <span style="font-size: 11px; color: #6E665C;">4 chi nhánh</span>
+            </span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+          </button>
+        </div>
+
+        <nav class="ibb-scroll" style="flex: 1; overflow-y: auto; padding: 8px 12px 16px; display: flex; flex-direction: column; gap: 2px;">
+          <sc-for list="{{ groups }}" as="group" hint-placeholder-count="6">
+            <div style="display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px;">
+              <sc-if value="{{ group.hasLabel }}" hint-placeholder-val="{{ true }}">
+                <div style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; padding: 10px 10px 4px;">{{ group.label }}</div>
+              </sc-if>
+              <sc-for list="{{ group.items }}" as="item" hint-placeholder-count="5">
+                <sc-if value="{{ item.idle }}" hint-placeholder-val="{{ true }}">
+                  <div onClick="{{ item.onClick }}" tabindex="0" style="position: relative; height: 36px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 6px; cursor: pointer; color: #635B53; font-size: 13px; transition: background 200ms;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg>
+                    <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ item.name }}</span>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ item.active }}" hint-placeholder-val="{{ false }}">
+                  <div onClick="{{ item.onClick }}" tabindex="0" style="position: relative; height: 36px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 6px; cursor: pointer; background: #EFF6F5; color: #1C4842; font-size: 13px; font-weight: 500;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                    <span style="position: absolute; left: 0; top: 6px; bottom: 6px; width: 3px; border-radius: 0 2px 2px 0; background: #2F7168;"></span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#235B54" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ item.d }}"></path></svg>
+                    <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ item.name }}</span>
+                  </div>
+                </sc-if>
+              </sc-for>
+            </div>
+          </sc-for>
+        </nav>
+
+        <div style="border-top: 1px solid #E7E2DC; padding: 8px 12px 12px; display: flex; flex-direction: column; gap: 2px;">
+          <div style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; padding: 8px 12px 4px;">Hệ thống</div>
+          <div style="height: 36px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 6px; cursor: pointer; color: #635B53; font-size: 13px;" style-hover="background: #F4F1ED;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4h10v17M14 9h6v12M8 8h2M8 12h2M8 16h2"></path></svg>
+            <span>Chi nhánh</span>
+          </div>
+          <div style="height: 36px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 6px; cursor: pointer; color: #635B53; font-size: 13px;" style-hover="background: #F4F1ED;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg>
+            <span>Người dùng &amp; vai trò</span>
+          </div>
+          <div style="height: 36px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 6px; cursor: pointer; color: #635B53; font-size: 13px;" style-hover="background: #F4F1ED;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg>
+            <span>Nhật ký</span>
+          </div>
+          <div style="height: 36px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 6px; cursor: pointer; color: #635B53; font-size: 13px;" style-hover="background: #F4F1ED;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8a4 4 0 100 8 4 4 0 000-8M12 2v3M12 19v3M2 12h3M19 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"></path></svg>
+            <span>Cấu hình</span>
+          </div>
+          <div style="height: 36px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 6px; cursor: pointer; color: #635B53; font-size: 13px;" style-hover="background: #F4F1ED;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v18H7zM11 18h2"></path></svg>
+            <span>Thiết bị</span>
+          </div>
+
+          <div style="margin-top: 8px; padding-top: 12px; border-top: 1px solid #F4F1ED; display: flex; align-items: center; gap: 12px;">
+            <span style="width: 32px; height: 32px; border-radius: 999px; background: #E7E2DC; color: #4A443E; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">TL</span>
+            <span style="flex: 1; display: flex; flex-direction: column; line-height: 1.25; overflow: hidden;">
+              <span style="font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Trúc Linh</span>
+              <span style="font-size: 11px; color: #6E665C;">Quản lý chi nhánh</span>
+            </span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+          </div>
+        </div>
+      </aside>
+
+      <div style="flex: 1; display: flex; flex-direction: column; min-width: 0; background: #FAF8F6;">
+        <header style="position: sticky; top: 0; z-index: 100; height: 56px; flex: 0 0 56px; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC;">
+          <nav style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6E665C;">
+            <a href="#" style="color: #6E665C;">Vận hành</a>
+            <span style="color: #D5CEC6;">/</span>
+            <a href="#" style="color: #6E665C;">Đơn hàng</a>
+            <span style="color: #D5CEC6;">/</span>
+            <span style="color: #332F2B; font-weight: 500;">Tất cả đơn</span>
+          </nav>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="display: inline-flex; flex-shrink: 0; white-space: nowrap; align-items: center; gap: 8px; height: 28px; padding: 0 12px; border-radius: 999px; background: #EFF6F5; border: 1px solid #B0D4CF; color: #1C4842; font-size: 12px; font-weight: 500;">
+              <span style="width: 6px; height: 6px; border-radius: 999px; background: #2F7168;"></span>
+              Ca tối · 17:00–22:00 · đang mở
+            </span>
+            <label style="display: flex; align-items: center; gap: 8px; height: 32px; width: 240px; padding: 0 12px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4"></path></svg>
+              <input type="text" placeholder="Tìm đơn, bàn, khách…" style="flex: 1; border: none; outline: none; background: transparent; font-family: inherit; font-size: 13px; color: #332F2B; min-width: 0;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168; border-radius: 4px;">
+            </label>
+            <button style="position: relative; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid #E7E2DC; background: #FFFFFF; border-radius: 6px; cursor: pointer;" style-hover="background: #F4F1ED;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 10-12 0c0 6-2 7-2 7h16s-2-1-2-7M10.3 20a2 2 0 003.4 0"></path></svg>
+              <span style="position: absolute; top: -6px; right: -6px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: #C0392B; color: #FFFFFF; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center;">3</span>
+            </button>
+            <span style="width: 32px; height: 32px; border-radius: 999px; background: #E7E2DC; color: #4A443E; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">TL</span>
+          </div>
+        </header>
+
+        <div class="ibb-scroll" style="flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 24px;">
+          <div style="display: flex; flex-direction: column; gap: 16px; border-bottom: 1px solid #E7E2DC; padding-bottom: 12px;">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <h1 style="margin: 0; font-size: 20px; font-weight: 500; line-height: 28px;">Đơn hàng</h1>
+                <p style="margin: 0; font-size: 13px; color: #6E665C;">Theo dõi đơn tại bàn và mang đi trong ca đang mở.</p>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <button style="height: 32px; padding: 0 12px; white-space: nowrap; flex-shrink: 0; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; cursor: pointer; transition: background 200ms;" style-hover="background: #F4F1ED;">Bộ lọc</button>
+                <button style="height: 32px; padding: 0 12px; white-space: nowrap; flex-shrink: 0; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; cursor: pointer; transition: background 200ms;" style-hover="background: #F4F1ED;">Xuất Excel</button>
+                <button style="height: 32px; padding: 0 14px; white-space: nowrap; flex-shrink: 0; font-family: inherit; font-size: 13px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer; transition: background 200ms;" style-hover="background: #1C4842;">Tạo đơn mới</button>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 24px;">
+              <span style="font-size: 13px; font-weight: 500; color: #1C4842; padding-bottom: 8px; border-bottom: 2px solid #2F7168; margin-bottom: -13px;">Tất cả</span>
+              <span style="font-size: 13px; color: #6E665C; padding-bottom: 8px; cursor: pointer;">Đang phục vụ</span>
+              <span style="font-size: 13px; color: #6E665C; padding-bottom: 8px; cursor: pointer;">Chờ thanh toán</span>
+              <span style="font-size: 13px; color: #6E665C; padding-bottom: 8px; cursor: pointer;">Đã đóng</span>
+            </div>
+          </div>
+
+          <div style="flex: 1; min-height: 420px; border: 1px dashed #D5CEC6; border-radius: 8px; background: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+            <span style="font-size: 13px; color: #6E665C;">Vùng nội dung — full width cho bảng</span>
+            <span style="font-size: 12px; color: #6E665C;">Form cấu hình giới hạn max-width 720px</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 20px; font-size: 12px; color: #6E665C;">
+      <span>≥1280px · sidebar mở 248px</span>
+      <span>1024–1279px · tự thu gọn 64px</span>
+      <span>&lt;1024px · drawer + hamburger trên topbar</span>
+      <span>Chỉ 1 chi nhánh: switcher hiện tên, bỏ mũi tên và không mở dropdown</span>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">Biến thể · sidebar thu gọn · 1024–1279px</span>
+      <span style="font-size: 12px; color: #6E665C;">1180 × 720 · di chuột lên icon để xem tooltip</span>
+    </div>
+
+    <div style="width: 1180px; height: 720px; display: flex; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(30,27,25,0.10);">
+      <aside style="position: relative; width: 64px; flex: 0 0 64px; display: flex; flex-direction: column; align-items: center; background: #FFFFFF; border-right: 1px solid #E7E2DC;">
+        <sc-if value="{{ tipShown }}" hint-placeholder-val="{{ false }}">
+          <span style="position: absolute; left: 56px; z-index: 600; white-space: nowrap; pointer-events: none; background: #332F2B; color: #FAF8F6; font-size: 12px; padding: 5px 10px; border-radius: 6px; box-shadow: 0 4px 12px rgba(30,27,25,0.16); top: {{ tipTop }}px;">{{ tipName }}</span>
+        </sc-if>
+        <div style="height: 56px; flex: 0 0 56px; width: 100%; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #E7E2DC;">
+          <span style="width: 28px; height: 28px; border-radius: 6px; background: #C96442; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">i</span>
+        </div>
+        <div style="width: 100%; padding: 12px 0; display: flex; justify-content: center; border-bottom: 1px solid #F4F1ED;">
+          <span style="width: 36px; height: 36px; border-radius: 6px; background: #EFF6F5; color: #235B54; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;">Q1</span>
+        </div>
+        <nav class="ibb-scroll" style="flex: 1; width: 100%; overflow-y: auto; padding: 8px 0; display: flex; flex-direction: column; align-items: center; gap: 2px;">
+          <sc-for list="{{ railItems }}" as="rail" hint-placeholder-count="12">
+            <div onMouseEnter="{{ rail.onEnter }}" onMouseLeave="{{ leaveRail }}" onClick="{{ rail.onClick }}" style="position: relative; width: 100%; display: flex; justify-content: center;">
+              <sc-if value="{{ rail.divider }}" hint-placeholder-val="{{ false }}">
+                <span style="width: 28px; height: 1px; background: #E7E2DC; margin: 6px 0;"></span>
+              </sc-if>
+              <sc-if value="{{ rail.idle }}" hint-placeholder-val="{{ true }}">
+                <span style="width: 40px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; transition: background 200ms;" style-hover="background: #F4F1ED;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ rail.d }}"></path></svg>
+                </span>
+              </sc-if>
+              <sc-if value="{{ rail.active }}" hint-placeholder-val="{{ false }}">
+                <span style="width: 40px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: #EFF6F5; cursor: pointer;">
+                  <span style="position: absolute; left: 0; top: 6px; bottom: 6px; width: 3px; border-radius: 0 2px 2px 0; background: #2F7168;"></span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#235B54" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ rail.d }}"></path></svg>
+                </span>
+              </sc-if>
+            </div>
+          </sc-for>
+        </nav>
+        <div style="width: 100%; border-top: 1px solid #E7E2DC; padding: 10px 0; display: flex; justify-content: center;">
+          <span style="width: 32px; height: 32px; border-radius: 999px; background: #E7E2DC; color: #4A443E; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">TL</span>
+        </div>
+      </aside>
+
+      <div style="flex: 1; display: flex; flex-direction: column; min-width: 0;">
+        <header style="height: 56px; flex: 0 0 56px; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC;">
+          <nav style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6E665C;">
+            <a href="#" style="color: #6E665C;">Vận hành</a>
+            <span style="color: #D5CEC6;">/</span>
+            <span style="color: #332F2B; font-weight: 500;">Đơn hàng</span>
+          </nav>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="display: inline-flex; align-items: center; gap: 8px; height: 28px; padding: 0 12px; white-space: nowrap; flex-shrink: 0; border-radius: 999px; background: #EFF6F5; border: 1px solid #B0D4CF; color: #1C4842; font-size: 12px; font-weight: 500;">
+              <span style="width: 6px; height: 6px; border-radius: 999px; background: #2F7168;"></span>
+              Ca tối · đang mở
+            </span>
+            <label style="display: flex; align-items: center; gap: 8px; height: 32px; width: 200px; padding: 0 12px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4"></path></svg>
+              <input type="text" placeholder="Tìm kiếm…" style="flex: 1; border: none; outline: none; background: transparent; font-family: inherit; font-size: 13px; min-width: 0;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168; border-radius: 4px;">
+            </label>
+            <button style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid #E7E2DC; background: #FFFFFF; border-radius: 6px; cursor: pointer;" style-hover="background: #F4F1ED;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 10-12 0c0 6-2 7-2 7h16s-2-1-2-7M10.3 20a2 2 0 003.4 0"></path></svg>
+            </button>
+            <span style="width: 32px; height: 32px; border-radius: 999px; background: #E7E2DC; color: #4A443E; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">TL</span>
+          </div>
+        </header>
+        <div style="flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 24px; background: #FAF8F6;">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; border-bottom: 1px solid #E7E2DC; padding-bottom: 16px;">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <h1 style="margin: 0; font-size: 20px; font-weight: 500; line-height: 28px;">Đơn hàng</h1>
+              <p style="margin: 0; font-size: 13px; color: #6E665C;">Theo dõi đơn tại bàn và mang đi trong ca đang mở.</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <button style="height: 32px; padding: 0 12px; white-space: nowrap; flex-shrink: 0; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; cursor: pointer;" style-hover="background: #F4F1ED;">Bộ lọc</button>
+              <button style="height: 32px; padding: 0 14px; white-space: nowrap; flex-shrink: 0; font-family: inherit; font-size: 13px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;" style-hover="background: #1C4842;">Tạo đơn mới</button>
+            </div>
+          </div>
+          <div style="flex: 1; border: 1px dashed #D5CEC6; border-radius: 8px; background: #FFFFFF; display: flex; align-items: center; justify-content: center;">
+            <span style="font-size: 13px; color: #6E665C;">Vùng nội dung — full width cho bảng</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1504,&quot;height&quot;:1000},&quot;activeItem&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Đơn hàng&quot;,&quot;options&quot;:[&quot;Tổng quan&quot;,&quot;Đơn hàng&quot;,&quot;Sơ đồ bàn&quot;,&quot;Gói buffet&quot;,&quot;Nguyên liệu&quot;,&quot;Doanh thu&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Trạng thái&quot;}}">
+const ICON = {
+  dashboard: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z',
+  receipt: 'M5 2v20l3-2 3 2 3-2 3 2 3-2V2l-3 2-3-2-3 2-3-2zM9 9h6M9 13h6',
+  tables: 'M3 3h18v18H3zM3 9h18M9 3v18',
+  calendar: 'M3 5h18v16H3zM8 2v6M16 2v6M3 11h18',
+  clock: 'M12 3a9 9 0 100 18 9 9 0 000-18M12 7v5l3 2',
+  users: 'M16 19v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M9 3a4 4 0 100 8 4 4 0 000-8M22 19v-2a4 4 0 00-3-3.9',
+  package: 'M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8',
+  utensils: 'M7 2v9a3 3 0 006 0V2M10 11v11M18 2c-1.5 2-2 4-2 7v13',
+  scale: 'M12 3v18M5 21h14M3 9l4-6 4 6a4 4 0 01-8 0zM13 9l4-6 4 6a4 4 0 01-8 0z',
+  tag: 'M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0l-7.2-7.2A2 2 0 013 12V5a2 2 0 012-2h7a2 2 0 011.4.6l7.2 7.2a2 2 0 010 2.6zM7.5 7.5h.01',
+  leaf: 'M4 20c0-8 5-13 16-13 0 9-5 14-13 14H4zM8 18c2-4 5-7 9-8',
+  inboxIn: 'M12 3v9M8 8l4 4 4-4M3 15h6l1 3h4l1-3h6v6H3z',
+  inboxOut: 'M12 12V3M8 7l4-4 4 4M3 15h6l1 3h4l1-3h6v6H3z',
+  clipboard: 'M9 3h6v3H9zM8 5H6v16h12V5h-2M9 12h6M9 16h4',
+  trendDown: 'M3 7l6 6 4-4 8 8M21 17v-5h-5',
+  truck: 'M3 6h11v9H3zM14 9h4l3 3v3h-7zM7 19a2 2 0 100-4 2 2 0 000 4M18 19a2 2 0 100-4 2 2 0 000 4',
+  wallet: 'M3 6h15a2 2 0 012 2v9a2 2 0 01-2 2H3zM3 6a2 2 0 012-2h11M17 12h.01',
+  checkDouble: 'M2 12l4 4 8-9M12 16l2 2 8-9',
+  coins: 'M12 4c4 0 7 1.3 7 3s-3 3-7 3-7-1.3-7-3 3-3 7-3zM5 7v5c0 1.7 3 3 7 3s7-1.3 7-3V7M5 12v5c0 1.7 3 3 7 3s7-1.3 7-3v-5',
+  card: 'M2 6h20v12H2zM2 10h20M6 15h4',
+  file: 'M14 3H6v18h12V7zM14 3v4h4M9 13h6M9 17h4',
+  user: 'M12 3a4 4 0 100 8 4 4 0 000-8M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1',
+  fingerprint: 'M12 3a9 9 0 019 9M12 7a5 5 0 015 5v3M12 11v6M8 21a9 9 0 01-2-6 6 6 0 016-6',
+  shuffle: 'M3 6h4l10 12h4M3 18h4l3-3.6M21 6l-3 0 0 3M21 18l-3 0 0-3',
+  banknote: 'M2 6h20v12H2zM12 9a3 3 0 100 6 3 3 0 000-6M5 9h.01M19 15h.01',
+  plane: 'M2 13l20-8-8 20-2-8-10-4z',
+  chart: 'M4 20V10M10 20V4M16 20v-7M22 20H2',
+  pie: 'M12 3v9h9a9 9 0 10-9-9M21 12a9 9 0 01-9 9',
+  cost: 'M12 4v16M8.5 8h5a2.5 2.5 0 010 5h-3a2.5 2.5 0 000 5h5',
+  trendUp: 'M3 17l6-6 4 4 8-8M21 7v5h-5'
+};
+
+const GROUPS = [
+  { label: null, items: [['Tổng quan', ICON.dashboard]] },
+  { label: 'Vận hành', items: [['Đơn hàng', ICON.receipt], ['Sơ đồ bàn', ICON.tables], ['Đặt bàn', ICON.calendar], ['Ca làm việc', ICON.clock], ['Khách hàng', ICON.users]] },
+  { label: 'Thực đơn', items: [['Gói buffet', ICON.package], ['Món ăn', ICON.utensils], ['Định lượng món', ICON.scale], ['Khuyến mãi', ICON.tag]] },
+  { label: 'Kho', items: [['Nguyên liệu', ICON.leaf], ['Phiếu nhập', ICON.inboxIn], ['Phiếu xuất', ICON.inboxOut], ['Kiểm kê', ICON.clipboard], ['Hao hụt', ICON.trendDown], ['Nhà cung cấp', ICON.truck]] },
+  { label: 'Tài chính', items: [['Sổ quỹ thu chi', ICON.wallet], ['Đối soát thanh toán', ICON.checkDouble], ['Công nợ nhà cung cấp', ICON.coins], ['Chi phí vận hành', ICON.card], ['Hóa đơn VAT', ICON.file]] },
+  // Chấm công = SC-NS-04 (ops) · Xếp ca là màn riêng, office — quyết định #9
+  { label: 'Nhân sự', items: [['Nhân viên', ICON.user], ['Chấm công', ICON.fingerprint], ['Xếp ca', ICON.shuffle], ['Bảng lương', ICON.banknote], ['Nghỉ phép', ICON.plane]] },
+  { label: 'Báo cáo', items: [['Doanh thu', ICON.chart], ['Lãi lỗ', ICON.pie], ['Food cost', ICON.cost], ['Xu hướng món', ICON.trendUp]] }
+];
+
+const RAIL = [
+  ['Tổng quan', ICON.dashboard], ['divider'],
+  ['Đơn hàng', ICON.receipt], ['Sơ đồ bàn', ICON.tables], ['Ca làm việc', ICON.clock], ['divider'],
+  ['Gói buffet', ICON.package], ['Món ăn', ICON.utensils], ['divider'],
+  ['Nguyên liệu', ICON.leaf], ['Kiểm kê', ICON.clipboard], ['divider'],
+  ['Sổ quỹ thu chi', ICON.wallet], ['Nhân viên', ICON.user], ['Doanh thu', ICON.chart]
+];
+
+class Component extends DCLogic {
+  state = { active: null, hover: -1, tipTop: 0, tipName: '' };
+
+  renderVals() {
+    const active = this.state.active ?? this.props.activeItem ?? 'Đơn hàng';
+    const setActive = (name) => () => this.setState({ active: name });
+
+    const groups = GROUPS.map(g => ({
+      label: g.label ? g.label : '',
+      hasLabel: !!g.label,
+      items: g.items.map(([name, d]) => ({
+        name, d,
+        active: name === active,
+        idle: name !== active,
+        onClick: setActive(name)
+      }))
+    }));
+
+    const railItems = RAIL.map(([name, d], i) => {
+      const isDiv = name === 'divider';
+      return {
+        name, d,
+        divider: isDiv,
+        active: !isDiv && name === active,
+        idle: !isDiv && name !== active,
+        onEnter: isDiv ? undefined : (e) => {
+          const el = e.currentTarget;
+          const aside = el.closest('aside');
+          const top = aside ? el.getBoundingClientRect().top - aside.getBoundingClientRect().top + 6 : 0;
+          this.setState({ hover: i, tipTop: Math.round(top), tipName: name });
+        },
+        onClick: isDiv ? undefined : setActive(name)
+      };
+    });
+
+    return {
+      groups,
+      railItems,
+      tipShown: this.state.hover >= 0,
+      tipTop: this.state.tipTop,
+      tipName: this.state.tipName,
+      leaveRail: () => this.setState({ hover: -1 })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

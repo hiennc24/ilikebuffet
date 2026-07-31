@@ -1,0 +1,57 @@
+/* ============================================================
+   MATERIALS — Pháp Phục Shop
+   The shop is built from real surfaces. These tokens are
+   CSS approximations of the moodboard's material palette so
+   digital artdefacts (floor plans, lookbooks, signage mocks)
+   can read the same warmth. Apply as `background`.
+   ============================================================ */
+:root {
+  /* Microcement / lime plaster wall — soft mottled warm sand */
+  --mat-plaster:
+    radial-gradient(120% 80% at 30% 20%, rgba(255,255,255,0.5), transparent 60%),
+    radial-gradient(90% 90% at 80% 90%, rgba(203,179,144,0.35), transparent 55%),
+    linear-gradient(160deg, #F3ECE0, #E4D7C2); /* @kind other */
+
+  /* Light oak wood grain */
+  --mat-oak:
+    repeating-linear-gradient(92deg,
+      rgba(154,112,69,0.00) 0 6px,
+      rgba(154,112,69,0.10) 6px 7px,
+      rgba(255,245,228,0.10) 7px 13px),
+    linear-gradient(170deg, #D2B488, #B98F5E); /* @kind other */
+
+  /* Burlwood / caramel accent panel */
+  --mat-burl:
+    radial-gradient(60% 50% at 35% 40%, rgba(255,224,180,0.30), transparent 70%),
+    radial-gradient(50% 60% at 70% 75%, rgba(60,38,18,0.25), transparent 70%),
+    linear-gradient(150deg, #9A6A38, #7C5026); /* @kind other */
+
+  /* Walnut */
+  --mat-walnut:
+    repeating-linear-gradient(90deg,
+      rgba(0,0,0,0.06) 0 5px, rgba(255,255,255,0.04) 5px 11px),
+    linear-gradient(160deg, #6B4E30, #4D3820); /* @kind other */
+
+  /* Terrazzo floor — speckled cream */
+  --mat-terrazzo:
+    radial-gradient(circle at 20% 30%, var(--nau-300) 0 3px, transparent 4px),
+    radial-gradient(circle at 70% 20%, var(--lam-500) 0 2px, transparent 3px),
+    radial-gradient(circle at 40% 70%, var(--oak-400) 0 4px, transparent 5px),
+    radial-gradient(circle at 85% 65%, var(--ink-300) 0 2px, transparent 3px),
+    radial-gradient(circle at 55% 45%, var(--burl-500) 0 2px, transparent 3px),
+    radial-gradient(circle at 12% 80%, var(--lam-700) 0 2px, transparent 3px),
+    #EFE7D7;
+  --mat-terrazzo-size: 90px 90px;
+
+  /* Brushed stainless / steel rail */
+  --mat-steel:
+    repeating-linear-gradient(90deg,
+      rgba(255,255,255,0.35) 0 1px, rgba(0,0,0,0.05) 1px 3px),
+    linear-gradient(180deg, #DAD7D0, #B4B0A8); /* @kind other */
+
+  /* Brass hardware */
+  --mat-brass: linear-gradient(180deg, #C6A968, #9A7C42); /* @kind other */
+
+  /* Warm gallery floor (large-format beige tile) */
+  --mat-floor: linear-gradient(170deg, #EFE3CF, #E0D0B5); /* @kind other */
+}

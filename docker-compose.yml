@@ -1,0 +1,36 @@
+# Local dev infra for ILikeBuffet M1.
+# Postgres 16 = same major as CI/prod (lock/tx semantics must match hot path; no SQLite).
+# Redis = revocation list only at M1 (BullMQ/worker deferred to finance/reporting wave, H9).
+services:
+  postgres:
+    image: postgres:16.4
+    container_name: ilikebuffet-postgres
+    environment:
+      POSTGRES_USER: ilikebuffet
+      POSTGRES_PASSWORD: ilikebuffet
+      POSTGRES_DB: ilikebuffet
+      TZ: Asia/Ho_Chi_Minh
+      PGTZ: Asia/Ho_Chi_Minh
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ilikebuffet -d ilikebuffet"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: ilikebuffet-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-data:

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  @keyframes ibb-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-kho-12</span><span style="color: #D5CEC6;">·</span><span>template t2 · section</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">/kho/nha-cung-cap/NCC-0031</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Chi tiết nhà cung cấp</h1>
+    <p style="margin: 0; max-width: 78ch; font-size: 14px; color: #635B53;">Section chứ không tab: kế toán đọc từ điều khoản xuống công nợ theo tuổi rồi tới giá nhập — ba phần này chỉ có nghĩa khi đọc liền nhau. Mục 5 là nơi phát hiện tăng giá bất thường, cột biến động dùng nghĩa <strong style="font-weight: 500;">tăng là xấu</strong>. Bấm nút trạng thái để xem NCC bị tạm ngưng.</p>
+    <div style="display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap;">
+      <sc-for list="{{ modes }}" as="m" hint-placeholder-count="2">
+        <span onClick="{{ m.onPick }}" tabindex="0" style="{{ m.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ m.label }}</span>
+      </sc-for>
+    </div>
+  </header>
+
+  <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); overflow: hidden;">
+
+    <div style="padding: 20px 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC; display: flex; flex-direction: column; gap: 12px;">
+      <nav style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6E665C;">
+        <a href="#" style="color: #6E665C; text-decoration: none;">Kho</a><span style="color: #D5CEC6;">/</span>
+        <a href="#" style="color: #6E665C; text-decoration: none;">Nhà cung cấp</a><span style="color: #D5CEC6;">/</span>
+        <span style="color: #332F2B; font-weight: 500;">Hải sản Bình Minh</span>
+      </nav>
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; line-height: 1.1; margin: 0;">Hải sản Bình Minh</h2>
+          <span style="{{ badgeStyle }}">{{ badgeLabel }}</span>
+          <span style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">NCC-0031</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; flex: none;">
+          <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Sửa</button>
+          <sc-if value="{{ active }}" hint-placeholder-val="{{ true }}">
+            <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4zM4 10h16M8 14h4"></path></svg>
+              Lập phiếu chi
+            </button>
+          </sc-if>
+          <sc-if value="{{ suspended }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size: 12px; color: #6E665C; max-width: 208px;">NCC đang tạm ngưng — mở lại trước khi lập phiếu chi mới</span>
+          </sc-if>
+          <span onClick="{{ toggleMenu }}" tabindex="0" role="button" aria-label="Hành động khác" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="2" stroke-linecap="round"><path d="M12 5v.01M12 12v.01M12 19v.01"></path></svg>
+          </span>
+        </div>
+      </div>
+      <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="align-self: flex-end; width: 232px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 4px; display: flex; flex-direction: column;">
+          <sc-for list="{{ menuItems }}" as="mi" hint-placeholder-count="2">
+            <span onClick="{{ mi.onPick }}" style="{{ mi.style }}">{{ mi.label }}</span>
+          </sc-for>
+          <span style="display: block; padding: 8px 12px 12px; font-size: 12px; color: #6E665C;">{{ menuNote }}</span>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="padding: 20px 24px 0; display: flex; flex-direction: column; gap: 16px;">
+      <sc-if value="{{ overdueBanner }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; gap: 12px; padding: 12px 16px; background: #FCF0EE; border: 1px solid #C0392B; border-radius: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+          <div style="display: flex; flex-direction: column; gap: 8px; flex: 1;">
+            <strong style="font-size: 13px; color: #96271B;">{{ overdueTitle }}</strong>
+            <span style="font-size: 13px; color: #96271B;">{{ overdueDetail }}</span>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <span style="height: 28px; display: inline-flex; align-items: center; padding: 0 12px; background: #C0392B; border-radius: 4px; font-size: 13px; font-weight: 500; color: #FFFFFF; cursor: pointer;">Lập phiếu chi ngay</span>
+              <span style="height: 28px; display: inline-flex; align-items: center; padding: 0 12px; background: #FFFFFF; border: 1px solid #F1CCC7; border-radius: 4px; font-size: 13px; color: #96271B; cursor: pointer;">Gửi nhắc công nợ</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ suspended }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; gap: 12px; padding: 12px 16px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M9 9h2v6H9M13 9h2v6h-2"></path></svg>
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <strong style="font-size: 13px; color: #4A443E;">Tạm ngưng từ 20/07/2026 · Trúc Linh</strong>
+            <span style="font-size: 13px; color: #635B53;">Lý do: 3 lần giao hàng lỗi trong tháng 7 (hàu không đạt độ tươi). Không tạo được phiếu nhập mới; công nợ cũ vẫn phải thanh toán bình thường.</span>
+          </div>
+        </div>
+      </sc-if>
+
+      <div style="display: flex; align-items: stretch; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden; background: #FFFFFF;">
+        <sc-for list="{{ summary }}" as="s" hint-placeholder-count="4">
+          <div style="{{ s.cellStyle }}">
+            <span style="font-size: 12px; color: #6E665C;">{{ s.label }}</span>
+            <strong style="{{ s.valueStyle }}">{{ s.value }}</strong>
+            <span style="{{ s.hintStyle }}">{{ s.hint }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: flex-start; gap: 24px; padding: 20px 24px 24px;">
+      <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <strong style="font-size: 16px; font-weight: 500;">1 · Thông tin</strong>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px 24px;">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Mã NCC</span>
+              <span style="font-family: ui-monospace, Menlo, monospace; font-size: 13px;">NCC-0031</span>
+            </div>
+            <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Tên nhà cung cấp</span>
+              <span style="font-size: 13px; font-weight: 500;">Công ty TNHH Hải sản Bình Minh</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Mã số thuế</span>
+              <span style="font-family: ui-monospace, Menlo, monospace; font-size: 13px; font-variant-numeric: tabular-nums;">0312 884 077</span>
+            </div>
+            <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Địa chỉ</span>
+              <span style="font-size: 13px;">142 Nguyễn Văn Quỳ, P.Phú Thuận, Q.7, TP.HCM</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Người liên hệ</span>
+              <span style="font-size: 13px;">Ông Lê Bình</span>
+              <span style="font-size: 12px; color: #6E665C;">Phụ trách kinh doanh</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Điện thoại</span>
+              <span style="font-size: 13px; font-variant-numeric: tabular-nums;">0918 442 070</span>
+            </div>
+            <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Email</span>
+              <span style="font-size: 13px;">binh.le@haisanbinhminh.vn</span>
+            </div>
+            <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 12px; color: #6E665C;">Nhóm hàng cung cấp</span>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <span style="height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #F4F1ED; font-size: 12px; color: #4A443E;">Hải sản</span>
+                <span style="height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #F4F1ED; font-size: 12px; color: #4A443E;">Đồ khô</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <strong style="font-size: 16px; font-weight: 500;">2 · Điều khoản</strong>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px 24px;">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Điều khoản thanh toán</span>
+              <span style="font-size: 13px; font-variant-numeric: tabular-nums;">30 ngày</span>
+              <span style="font-size: 12px; color: #6E665C;">Tính từ ngày nhận hàng</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Hạn mức công nợ</span>
+              <span style="font-size: 13px; font-variant-numeric: tabular-nums;">80.000.000 đ</span>
+              <span style="{{ limitHintStyle }}">{{ limitHint }}</span>
+            </div>
+            <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Tài khoản ngân hàng</span>
+              <span style="font-family: ui-monospace, Menlo, monospace; font-size: 13px; font-variant-numeric: tabular-nums;">0071 000 884 220 · Vietcombank</span>
+              <span style="font-size: 12px; color: #6E665C;">CT TNHH HAI SAN BINH MINH · CN Tân Thuận</span>
+            </div>
+            <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Chiết khấu thoả thuận</span>
+              <span style="font-size: 13px; font-variant-numeric: tabular-nums;">2,0% · đơn từ 20.000.000 đ</span>
+              <span style="font-size: 12px; color: #6E665C;">Hợp đồng HĐ-2026-014 · hiệu lực tới 31/12/2026</span>
+            </div>
+            <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Hạn mức đã dùng</span>
+              <span style="height: 4px; margin-top: 6px; border-radius: 999px; background: #F4F1ED; overflow: hidden;"><span style="{{ limitBarStyle }}"></span></span>
+              <span style="font-size: 12px; color: #6E665C;">{{ limitUsedLabel }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px;">
+            <strong style="font-size: 16px; font-weight: 500;">3 · Công nợ theo tuổi</strong>
+            <span style="font-size: 12px; color: #6E665C;">Số đầy đủ, không rút gọn</span>
+          </div>
+          <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); align-items: center; gap: 0; height: 40px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+              <sc-for list="{{ agingHead }}" as="h" hint-placeholder-count="5">
+                <span style="{{ h.style }}">{{ h.label }}</span>
+              </sc-for>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); align-items: stretch; gap: 0; min-height: 72px;">
+              <sc-for list="{{ agingCells }}" as="c" hint-placeholder-count="5">
+                <div style="{{ c.cellStyle }}">
+                  <span style="{{ c.valueStyle }}">{{ c.value }}</span>
+                  <span style="{{ c.metaStyle }}">{{ c.meta }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <span style="font-size: 12px; color: #6E665C;">Nền dùng sequential ramp 5 bậc của nhóm data-viz (CL3 · heatmap), đậm dần theo tuổi nợ. Cột “Tổng” để nền trắng, không nằm trong thang. Màu không phải dấu hiệu duy nhất — mỗi ô luôn kèm số tiền và số phiếu.</span>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px;">
+            <strong style="font-size: 16px; font-weight: 500;">4 · Lịch sử nhập hàng</strong>
+            <a href="#">Xem tất cả 47 phiếu · lọc theo NCC này →</a>
+          </div>
+          <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 150px 110px 1fr 130px 150px 130px; align-items: center; gap: 8px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+              <span>Mã phiếu</span><span>Ngày nhập</span><span>Nội dung</span><span style="text-align: right;">Giá trị</span><span>Thanh toán</span><span>Trạng thái</span>
+            </div>
+            <sc-for list="{{ receipts }}" as="r" hint-placeholder-count="10">
+              <div style-hover="background: #FAF8F6;" style="display: grid; grid-template-columns: 150px 110px 1fr 130px 150px 130px; align-items: center; gap: 8px; min-height: 44px; padding: 6px 12px; border-bottom: 1px solid #F0EBE5; font-size: 13px;">
+                <a href="#" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px;">{{ r.code }}</a>
+                <span style="font-variant-numeric: tabular-nums; color: #4A443E;">{{ r.date }}</span>
+                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #4A443E;">{{ r.note }}</span>
+                <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums;">{{ r.value }}</span>
+                <span style="{{ r.dueStyle }}">{{ r.due }}</span>
+                <span style="{{ r.statusStyle }}">{{ r.status }}</span>
+              </div>
+            </sc-for>
+            <div style="position: sticky; bottom: 0; z-index: 2; display: grid; grid-template-columns: 150px 110px 1fr 130px 150px 130px; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC; box-shadow: 0 -2px 8px rgba(30,27,25,0.06); font-size: 13px; font-weight: 500;">
+              <span>Tổng 10 phiếu</span><span></span><span></span>
+              <span style="text-align: right; font-variant-numeric: tabular-nums;">{{ receiptTotal }}</span>
+              <span style="font-size: 12px; font-weight: 400; color: #6E665C;">{{ receiptFootNote }}</span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px;">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <strong style="font-size: 16px; font-weight: 500;">5 · Nguyên liệu cung cấp</strong>
+              <span style="font-size: 13px; color: #635B53;">Biến động so với giá TB 3 tháng · <strong style="font-weight: 500; color: #A32E22;">tăng giá là xấu</strong>, tô về phía âm của diverging ramp (data-viz), luôn kèm nhãn số.</span>
+            </div>
+            <span style="{{ abnormalBadgeStyle }}">{{ abnormalBadge }}</span>
+          </div>
+          <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 1fr 80px 150px 170px 130px 130px; align-items: center; gap: 8px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+              <span>Nguyên liệu</span><span>ĐVT</span><span style="text-align: right;">Giá nhập gần nhất</span><span style="text-align: right;">Giá TB 3 tháng</span><span style="text-align: right;">Biến động</span><span style="text-align: right;">Lần nhập cuối</span>
+            </div>
+            <sc-for list="{{ materials }}" as="mt" hint-placeholder-count="6">
+              <div style="{{ mt.rowStyle }}" style-hover="background: #FAF8F6;">
+                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ mt.name }}</span>
+                <span style="color: #635B53;">{{ mt.unit }}</span>
+                <span style="text-align: right; font-variant-numeric: tabular-nums; font-weight: 500;">{{ mt.last }}</span>
+                <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ mt.avg }}</span>
+                <span style="{{ mt.deltaStyle }}">{{ mt.delta }}</span>
+                <span style="text-align: right; font-variant-numeric: tabular-nums; color: #635B53;">{{ mt.date }}</span>
+              </div>
+              <sc-if value="{{ mt.hasAlert }}" hint-placeholder-val="{{ false }}">
+                <div style="padding: 0 12px 8px 12px;"><span style="font-size: 12px; color: #C0392B;">{{ mt.alert }}</span></div>
+              </sc-if>
+            </sc-for>
+          </div>
+          <span style="font-size: 12px; color: #6E665C;">Ngưỡng cảnh báo: tăng quá 10% so với TB 3 tháng. Giá giảm tô success nhưng vẫn kiểm chất lượng — giảm sâu bất thường thường đi kèm hàng kém.</span>
+        </div>
+      </div>
+
+      <aside style="width: 320px; flex: 0 0 320px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="{{ dueCardStyle }}">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+            <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Hạn thanh toán gần nhất</span>
+            <span style="{{ dueBadgeStyle }}">{{ dueBadge }}</span>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 8px;">
+            <span style="{{ dueValueStyle }}">{{ dueValue }}</span>
+            <span style="font-size: 12px; color: #96271B;">tính tới hôm nay 29/07</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+            <div style="display: flex; justify-content: space-between;"><span style="color: #635B53;">Phiếu</span><a href="#">{{ dueCode }}</a></div>
+            <div style="display: flex; justify-content: space-between;"><span style="color: #635B53;">Số tiền</span><span style="font-variant-numeric: tabular-nums;">{{ dueAmount }}</span></div>
+            <div style="display: flex; justify-content: space-between;"><span style="color: #635B53;">Hạn</span><span style="font-variant-numeric: tabular-nums;">{{ dueDate }}</span></div>
+          </div>
+          <span style="{{ dueNoteStyle }}">{{ dueNote }}</span>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+            <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Đánh giá 12 tháng</span>
+            <span style="height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FDF6E7; border: 1px solid #F0DDAF; color: #8A5F12; font-size: 12px; font-weight: 500;">Cần theo dõi</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div style="display: flex; justify-content: space-between; font-size: 13px;"><span style="color: #635B53;">Giao trễ</span><span style="font-variant-numeric: tabular-nums; color: #8A5F12;">6 / 47 lần</span></div>
+              <span style="height: 4px; border-radius: 999px; background: #F4F1ED; overflow: hidden;"><span style="display: block; width: 13%; height: 4px; background: #8A5F12;"></span></span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div style="display: flex; justify-content: space-between; font-size: 13px;"><span style="color: #635B53;">Hàng lỗi</span><span style="font-variant-numeric: tabular-nums; color: #C0392B;">4 / 47 lần</span></div>
+              <span style="height: 4px; border-radius: 999px; background: #F4F1ED; overflow: hidden;"><span style="display: block; width: 9%; height: 4px; background: #C0392B;"></span></span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div style="display: flex; justify-content: space-between; font-size: 13px;"><span style="color: #635B53;">Giao đúng hẹn</span><span style="font-variant-numeric: tabular-nums; color: #256A49;">87%</span></div>
+              <span style="height: 4px; border-radius: 999px; background: #F4F1ED; overflow: hidden;"><span style="display: block; width: 87%; height: 4px; background: #256A49;"></span></span>
+            </div>
+          </div>
+          <span style="font-size: 12px; color: #6E665C;">3 lần hàng lỗi gần nhất đều là hàu — cân nhắc đổi NCC riêng cho nhóm hàu.</span>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+          <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Thao tác trên NCC</span>
+          <div style="display: flex; flex-direction: column;">
+            <sc-for list="{{ audit }}" as="a" hint-placeholder-count="4">
+              <div style="display: grid; grid-template-columns: 16px 1fr; gap: 12px;">
+                <span style="display: flex; flex-direction: column; align-items: center;">
+                  <span style="{{ a.dotStyle }}"></span>
+                  <sc-if value="{{ a.hasLine }}" hint-placeholder-val="{{ true }}">
+                    <span style="flex: 1; width: 1px; background: #E7E2DC;"></span>
+                  </sc-if>
+                </span>
+                <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 16px;">
+                  <span style="font-size: 13px;">{{ a.action }}</span>
+                  <span style="font-size: 12px; color: #6E665C;">{{ a.meta }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <a href="#">Xem nhật ký đầy đủ →</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">4 state chuẩn của T2</h2>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Loading · skeleton giữ đúng bố cục</span>
+        <span style="width: 38%; height: 12px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="width: 32%; height: 28px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <div style="display: flex; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+          <div style="flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #F0EBE5;">
+            <span style="width: 52px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 84px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+          <div style="flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #F0EBE5;">
+            <span style="width: 52px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 72px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+          <div style="flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #F0EBE5;">
+            <span style="width: 52px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 40px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+          <div style="flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px;">
+            <span style="width: 52px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 92px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Đúng 4 ô summary và 5 khung section · bảng công nợ theo tuổi giữ 5 cột, không tô nền khi chưa có số.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Không tìm thấy</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4"></path></svg>
+        </span>
+        <strong style="font-size: 15px; font-weight: 500;">Không có nhà cung cấp NCC-0031</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">NCC không tồn tại, hoặc đã bị gộp vào một NCC khác khi dọn dữ liệu trùng.</span>
+        <div style="display: flex; gap: 8px; margin-top: 4px;">
+          <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;">Xem NCC đã gộp</span>
+          <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 4px; background: #235B54; color: #FFFFFF; font-size: 13px; font-weight: 500; cursor: pointer;">Về danh sách NCC</span>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Không có quyền xem</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z"></path></svg>
+        </span>
+        <strong style="font-size: 15px; font-weight: 500;">Bạn không xem được điều khoản và công nợ</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Thủ kho xem được mục 1, 4, 5 để đối chiếu hàng; mục 2 Điều khoản và mục 3 Công nợ chỉ dành cho kế toán và chủ.</span>
+        <span style="font-size: 12px; color: #6E665C;">Hai mục bị ẩn hoàn toàn cùng hai ô summary liên quan — không hiện khung xám rỗng.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Đã lưu trữ</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.6" stroke-linecap="round" style="margin-top: 2px; flex-shrink: 0;"><path d="M3 6h18v4H3zM5 10v10h14V10M10 14h4"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Lưu trữ ngày 12/06/2026 sau khi tất toán công nợ. Toàn trang chỉ đọc.</span>
+        </div>
+        <span style="font-size: 13px; color: #635B53;">Bỏ nút Sửa và Lập phiếu chi, menu chỉ còn “Mở lại NCC” và “Xem nhật ký”. Mục 5 vẫn giữ để tra cứu giá lịch sử khi đàm phán với NCC khác.</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1100}}">
+const MODE = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; background: #FFFFFF; font-size: 12px; color: #4A443E; cursor: pointer;';
+const MODE_ON = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #B0D4CF; border-radius: 4px; background: #EFF6F5; font-size: 12px; font-weight: 500; color: #1C4842; cursor: pointer;';
+const MENU = 'height: 28px; display: flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;';
+
+const CARD = 'background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;';
+const CARD_DANGER = 'background: #FDF6F5; border: 1px solid #F1CCC7; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;';
+
+const B_OK = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #EDF7F1; border: 1px solid #C3E4D2; color: #256A49; font-size: 12px; font-weight: 500;';
+const B_WARN = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FDF6E7; border: 1px solid #F0DDAF; color: #8A5F12; font-size: 12px; font-weight: 500;';
+const B_DANGER = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FCF0EE; border: 1px solid #F1CCC7; color: #96271B; font-size: 12px; font-weight: 500;';
+const B_NEUTRAL = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #F4F1ED; border: 1px solid #E7E2DC; color: #4A443E; font-size: 12px; font-weight: 500;';
+
+// công nợ theo tuổi — sequential ramp 5 bậc của nhóm data-viz (CL3 · heatmap)
+// #F4F1ED → #D8E6E2 → #A2C6C0 → #5C918A → #1C4842
+// Bậc tuổi nợ — nhãn, ngưỡng ngày, nền (sequential ramp CL3), màu giá trị, màu meta.
+// Số tiền và số phiếu KHÔNG viết tay: tính từ RECEIPTS bên dưới, một nguồn số duy nhất.
+const AGING_BUCKETS = [
+  ['Trong hạn', 0, 0, '#F4F1ED', '#1E1B19', '#6E665C'],
+  ['1–15 ngày', 1, 15, '#D8E6E2', '#1E1B19', '#1C4842'],
+  ['16–30 ngày', 16, 30, '#A2C6C0', '#1C4842', '#1C4842'],
+  ['Trên 30 ngày', 31, 9999, '#1C4842', '#FFFFFF', 'rgba(255,255,255,0.82)']
+];
+
+// mã, ngày nhập, nội dung, giá trị, hạn, đã thanh toán, số ngày quá hạn (0 = còn trong hạn)
+const RECEIPTS = [
+  ['PN-2026-0812', '26/07', 'Tôm sú, hàu sống, nghêu', 8420000, '25/08', false, 0],
+  ['PN-2026-0798', '22/07', 'Cá hồi phi lê, mực ống', 12640000, '21/08', false, 0],
+  ['PN-2026-0781', '18/07', 'Tôm sú size 20, bạch tuộc', 6180000, '17/08', false, 0],
+  ['PN-2026-0764', '14/07', 'Hàu sống Pháp, sò điệp', 7060000, '13/08', false, 0],
+  ['PN-2026-0752', '10/07', 'Cá hồi, cua thịt', 9880000, '09/08', false, 0],
+  ['PN-2026-0741', '06/07', 'Tôm sú, nghêu, mực', 5940000, '05/08', false, 0],
+  ['PN-2026-0736', '02/07', 'Hàu sống, sò huyết', 5940000, '19/07', false, 10],
+  ['PN-2026-0728', '28/06', 'Cá hồi phi lê', 4260000, '28/07', true, 0],
+  ['PN-2026-0712', '06/06', 'Tôm sú, hàu, cá hồi', 12480000, '06/07', false, 23],
+  ['PN-2026-0704', '02/06', 'Mực ống, bạch tuộc', 3820000, '02/07', true, 0]
+];
+
+const UNPAID = RECEIPTS.filter(r => !r[5]);
+const DEBT_TOTAL = UNPAID.reduce((a, r) => a + r[3], 0);
+const OVERDUE_ROWS = UNPAID.filter(r => r[6] > 0);
+const OVERDUE_TOTAL = OVERDUE_ROWS.reduce((a, r) => a + r[3], 0);
+const MAX_OVERDUE = OVERDUE_ROWS.reduce((a, r) => Math.max(a, r[6]), 0);
+const WORST = OVERDUE_ROWS.slice().sort((a, b) => b[6] - a[6])[0] || RECEIPTS[0];
+
+// tên, đvt, giá gần nhất, giá TB 3 tháng, ngày
+const MATERIALS = [
+  ['Hàu sống Pháp size 3', 'kg', 148000, 122000, '26/07'],
+  ['Tôm sú size 20', 'kg', 412000, 385000, '26/07'],
+  ['Cá hồi Na Uy phi lê', 'kg', 596000, 620000, '22/07'],
+  ['Mực ống loại 1', 'kg', 268000, 262000, '22/07'],
+  ['Nghêu Bến Tre', 'kg', 62000, 74000, '26/07'],
+  ['Sò điệp Nhật', 'kg', 528000, 512000, '14/07']
+];
+
+const vnd = (n) => n.toLocaleString('vi-VN');
+const pct = (n) => (n > 0 ? '+' : '') + n.toFixed(1).replace('.', ',') + '%';
+
+class Component extends DCLogic {
+  state = { mode: 'active', menuOpen: false };
+
+  renderVals() {
+    const st = this.state;
+    const suspended = st.mode === 'suspended';
+    const active = !suspended;
+
+    const totalDebt = DEBT_TOTAL;
+    const overdue = OVERDUE_TOTAL;
+    const limit = 80000000;
+    const usedPct = Math.round((totalDebt / limit) * 100);
+
+    const receiptTotal = RECEIPTS.reduce((a, r) => a + r[3], 0);
+
+    const buckets = AGING_BUCKETS.map(b => {
+      const rows = UNPAID.filter(r => (b[1] === 0 ? r[6] === 0 : r[6] >= b[1] && r[6] <= b[2]));
+      return { label: b[0], sum: rows.reduce((a, r) => a + r[3], 0), count: rows.length, bg: b[3], fg: b[4], meta: b[5] };
+    });
+    buckets.push({ label: 'Tổng', sum: totalDebt, count: UNPAID.length, bg: '#FFFFFF', fg: '#1E1B19', meta: '#6E665C' });
+
+    return {
+      modes: [['active', 'Đang hợp tác'], ['suspended', 'Tạm ngưng']].map(m => ({
+        label: m[1],
+        style: st.mode === m[0] ? MODE_ON : MODE,
+        onPick: () => this.setState({ mode: m[0], menuOpen: false })
+      })),
+      active,
+      suspended,
+      badgeLabel: suspended ? 'Tạm ngưng' : 'Đang hợp tác',
+      badgeStyle: (suspended ? B_NEUTRAL : 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #EFF6F5; border: 1px solid #B0D4CF; color: #1C4842; font-size: 12px; font-weight: 500;')
+        .replace('height: 22px', 'height: 24px').replace('padding: 0 8px', 'padding: 0 12px'),
+      menuOpen: st.menuOpen,
+      toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen })),
+      menuItems: [
+        { label: 'Gửi nhắc công nợ', onPick: () => this.setState({ menuOpen: false }) },
+        { label: suspended ? 'Mở lại hợp tác' : 'Tạm ngưng NCC', onPick: () => this.setState(s => ({ mode: s.mode === 'suspended' ? 'active' : 'suspended', menuOpen: false })) }
+      ].map(x => ({ label: x.label, style: MENU, onPick: x.onPick })),
+      menuNote: suspended
+        ? 'Mở lại sẽ cho phép tạo phiếu nhập mới ngay.'
+        : 'Tạm ngưng chỉ chặn phiếu nhập mới, không xoá công nợ đang có.',
+      overdueBanner: OVERDUE_ROWS.length > 0,
+      overdueTitle: 'Quá hạn ' + vnd(OVERDUE_TOTAL) + ' đ · ' + OVERDUE_ROWS.length + ' phiếu',
+      overdueDetail: OVERDUE_ROWS.map(r => 'Phiếu ' + r[0] + ' quá hạn ' + r[6] + ' ngày').join(', ')
+        + '. Vượt hạn mức công nợ ' + vnd(limit) + ' đ sẽ bị chặn tạo phiếu nhập mới.',
+      dueCode: WORST[0],
+      dueAmount: vnd(WORST[3]) + ' đ',
+      dueDate: WORST[4] + '/2026',
+
+      summary: [
+        { label: 'Tổng công nợ', value: vnd(totalDebt) + ' đ', hint: UNPAID.length + ' phiếu chưa tất toán', tone: 'n' },
+        { label: 'Quá hạn', value: vnd(overdue) + ' đ', hint: OVERDUE_ROWS.length + ' phiếu · lâu nhất ' + MAX_OVERDUE + ' ngày', tone: 'd' },
+        { label: 'Phiếu chưa thanh toán', value: String(UNPAID.length), hint: 'Trên 47 phiếu 12 tháng', tone: 'n' },
+        { label: 'Giá trị nhập 12 tháng', value: '742.180.000 đ', hint: 'NCC lớn thứ 2 của kho', tone: 'n' }
+      ].map((s, i) => ({
+        label: s.label,
+        value: s.value,
+        hint: s.hint,
+        cellStyle: 'flex: 1; min-width: 0; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px;' + (i < 3 ? ' border-right: 1px solid #F0EBE5;' : ''),
+        valueStyle: 'font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (s.tone === 'd' ? '#C0392B' : '#1E1B19') + ';',
+        hintStyle: 'font-size: 12px; color: ' + (s.tone === 'd' ? '#C0392B' : '#6E665C') + ';'
+      })),
+
+      limitHint: 'Đã dùng ' + usedPct + '% · còn ' + vnd(limit - totalDebt) + ' đ',
+      limitHintStyle: 'font-size: 12px; color: ' + (usedPct > 70 ? '#8A5F12' : '#6E665C') + ';',
+      limitBarStyle: 'display: block; height: 4px; border-radius: 999px; width: ' + usedPct + '%; background: ' + (usedPct > 70 ? '#8A5F12' : '#2F7168') + ';',
+      limitUsedLabel: vnd(totalDebt) + ' / ' + vnd(limit) + ' đ · vượt hạn mức sẽ chặn tạo phiếu nhập',
+
+      agingHead: buckets.map((b, i) => ({
+        label: b.label,
+        style: 'padding: 0 16px; display: flex; align-items: center; height: 100%;' + (i < buckets.length - 1 ? ' border-right: 1px solid #E7E2DC;' : ' justify-content: flex-end;')
+      })),
+      agingCells: buckets.map((b, i) => {
+        const isTotal = i === buckets.length - 1;
+        return {
+          value: vnd(b.sum) + ' đ',
+          meta: b.count + ' phiếu',
+          cellStyle: 'padding: 14px 16px; display: flex; flex-direction: column; justify-content: center; gap: 2px; background: ' + b.bg + ';'
+            + (i < buckets.length - 1 ? ' border-right: 1px solid #E7E2DC;' : ' align-items: flex-end;'),
+          valueStyle: 'font-size: ' + (isTotal ? '18px' : '16px') + '; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + b.fg + ';',
+          metaStyle: 'font-size: 12px; color: ' + b.meta + ';'
+        };
+      }),
+
+      receipts: RECEIPTS.map(r => {
+        const tone = r[5] ? 'ok' : (r[6] > 15 ? 'd' : (r[6] > 0 ? 'w' : 'n'));
+        return {
+          code: r[0],
+          date: r[1],
+          note: r[2],
+          value: vnd(r[3]),
+          due: r[4],
+          dueStyle: 'font-size: 13px; font-variant-numeric: tabular-nums; color: ' + (tone === 'd' ? '#C0392B' : (tone === 'w' ? '#8A5F12' : '#635B53')) + ';',
+          status: r[5] ? 'Đã thanh toán' : (r[6] > 0 ? 'Quá hạn ' + r[6] + ' ngày' : 'Trong hạn'),
+          statusStyle: (tone === 'd' ? B_DANGER : (tone === 'w' ? B_WARN : (tone === 'ok' ? B_OK : B_NEUTRAL))) + ' justify-self: end;'
+        };
+      }),
+      receiptTotal: vnd(receiptTotal),
+      receiptFootNote: OVERDUE_ROWS.length + ' phiếu quá hạn · ' + UNPAID.length + ' phiếu chưa thanh toán',
+
+      abnormalBadge: (() => {
+        const n = MATERIALS.filter(m => ((m[2] - m[3]) / m[3]) * 100 > 10).length;
+        return n ? n + (n === 1 ? ' mặt hàng tăng bất thường' : ' mặt hàng tăng bất thường') : 'Không có tăng bất thường';
+      })(),
+      abnormalBadgeStyle: MATERIALS.filter(m => ((m[2] - m[3]) / m[3]) * 100 > 10).length ? B_DANGER : B_OK,
+
+      materials: MATERIALS.map(m => {
+        const d = ((m[2] - m[3]) / m[3]) * 100;
+        const bad = d > 10;
+        const up = d > 0;
+        return {
+          name: m[0],
+          unit: m[1],
+          last: vnd(m[2]),
+          avg: vnd(m[3]),
+          delta: pct(d),
+          date: m[4],
+          rowStyle: 'display: grid; grid-template-columns: 1fr 80px 150px 170px 130px 130px; align-items: center; gap: 8px; min-height: 44px; padding: 6px 12px; border-bottom: 1px solid #F0EBE5; font-size: 13px;'
+            + (bad ? ' background: #FCF0EE;' : ''),
+          // Cột biến động là trục chênh lệch âm/dương → diverging ramp --ibb-chart-div-{-3…+3},
+          // KHÔNG dùng semantic. Tăng giá là xấu nên nằm phía âm của ramp. Luôn kèm nhãn số.
+          deltaStyle: 'text-align: right; font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; color: '
+            + (up ? (bad ? '#A32E22' : '#D07A6C') : '#1E5C3F') + ';',
+          hasAlert: bad,
+          alert: 'Tăng ' + pct(d) + ' so với TB 3 tháng — vượt ngưỡng 10%. Đối chiếu giá thị trường trước khi nhập tiếp.'
+        };
+      }),
+
+      dueCardStyle: CARD_DANGER,
+      dueBadge: 'Đã quá hạn',
+      dueBadgeStyle: B_DANGER,
+      dueValue: MAX_OVERDUE + ' ngày',
+      dueValueStyle: 'font-size: 24px; font-weight: 500; font-variant-numeric: tabular-nums; color: #C0392B;',
+      dueNote: 'Quá 30 ngày sẽ tính vào nhóm nợ xấu ở báo cáo công nợ và tự khoá tạo phiếu nhập cho NCC này.',
+      dueNoteStyle: 'font-size: 12px; color: #96271B;',
+
+      audit: [
+        [suspended ? 'Tạm ngưng NCC' : 'Cập nhật chiết khấu 2,0%', suspended ? '20/07 · Trúc Linh' : '20/07 · Ngọc Hân', true],
+        ['Ghi nhận hàng lỗi · hàu sống', '14/07 · Mỹ Duyên', true],
+        ['Gửi nhắc công nợ lần 2', '10/07 · hệ thống', true],
+        ['Nâng hạn mức lên 80.000.000 đ', '02/05 · Chủ', true]
+      ].map((a, i, arr) => ({
+        action: a[0],
+        meta: a[1],
+        hasLine: i < arr.length - 1,
+        dotStyle: 'width: 7px; height: 7px; flex: none; margin-top: 6px; border-radius: 999px; background: ' + (i === 0 ? '#235B54' : '#D5CEC6') + ';'
+      }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

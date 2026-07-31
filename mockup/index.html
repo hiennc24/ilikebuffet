@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ilikebuffet Admin — Mockup</title>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<style>
+  :root {
+    --bg: #F4F1ED; --panel: #FFFFFF; --canvas: #FAF8F6;
+    --line: #E7E2DC; --line-soft: #F4F1ED;
+    --ink: #1E1B19; --ink-2: #332F2B; --muted: #6E665C; --muted-2: #635B53;
+    --brand: #C96442; --accent: #235B54; --accent-bg: #EFF6F5; --accent-line: #2F7168;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px;
+    color: var(--ink); background: var(--bg); overflow: hidden;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  .app { display: flex; height: 100vh; }
+
+  /* ---- sidebar ---- */
+  aside {
+    width: 264px; flex: 0 0 264px; display: flex; flex-direction: column;
+    background: var(--panel); border-right: 1px solid var(--line);
+  }
+  .brand {
+    height: 56px; flex: 0 0 56px; display: flex; align-items: center; gap: 12px;
+    padding: 0 16px; border-bottom: 1px solid var(--line);
+  }
+  .brand .logo {
+    width: 28px; height: 28px; border-radius: 6px; background: var(--brand);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 600;
+  }
+  .brand strong { font-size: 14px; font-weight: 600; }
+  .brand .sub { font-size: 11px; color: var(--muted); }
+
+  .search { padding: 12px; border-bottom: 1px solid var(--line-soft); }
+  .search input {
+    width: 100%; height: 36px; padding: 0 12px; font: inherit; font-size: 13px;
+    background: var(--canvas); border: 1px solid var(--line); border-radius: 6px;
+    color: var(--ink); outline: none;
+  }
+  .search input:focus { border-color: var(--accent-line); box-shadow: 0 0 0 3px rgba(47,113,104,0.12); }
+
+  nav { flex: 1; overflow-y: auto; padding: 8px 10px 24px; }
+  nav::-webkit-scrollbar { width: 8px; }
+  nav::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
+
+  .group { margin-bottom: 8px; }
+  .group-head {
+    display: flex; align-items: center; gap: 8px; width: 100%;
+    padding: 8px 10px; border: 0; background: none; cursor: pointer;
+    font: inherit; text-align: left; color: var(--muted);
+    text-transform: uppercase; font-size: 11px; letter-spacing: 0.06em;
+  }
+  .group-head svg { flex: 0 0 16px; }
+  .group-head .count { margin-left: auto; font-size: 10px; color: #ABA298; letter-spacing: 0; }
+  .group-head .chev { flex: 0 0 12px; transition: transform 180ms; }
+  .group.collapsed .chev { transform: rotate(-90deg); }
+  .group.collapsed .items { display: none; }
+
+  .items { display: flex; flex-direction: column; gap: 1px; padding-bottom: 4px; }
+  .item {
+    position: relative; display: flex; align-items: center; gap: 8px;
+    min-height: 32px; padding: 5px 10px 5px 30px; border-radius: 6px;
+    cursor: pointer; color: var(--muted-2); font-size: 13px; line-height: 1.25;
+    transition: background 150ms;
+  }
+  .item:hover { background: var(--line-soft); }
+  .item .code {
+    flex: 0 0 auto; font-size: 10px; color: #ABA298;
+    font-family: ui-monospace, Menlo, monospace;
+  }
+  .item .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .item.active { background: var(--accent-bg); color: #1C4842; font-weight: 500; }
+  .item.active .code { color: var(--accent-line); }
+  .item.active::before {
+    content: ''; position: absolute; left: 12px; top: 6px; bottom: 6px;
+    width: 3px; border-radius: 0 2px 2px 0; background: var(--accent-line);
+  }
+
+  /* ---- main ---- */
+  main { flex: 1; display: flex; flex-direction: column; min-width: 0; background: var(--canvas); }
+  header {
+    height: 56px; flex: 0 0 56px; display: flex; align-items: center;
+    justify-content: space-between; gap: 16px; padding: 0 20px;
+    background: var(--panel); border-bottom: 1px solid var(--line);
+  }
+  .crumbs { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); min-width: 0; }
+  .crumbs .sep { color: #D5CEC6; }
+  .crumbs .cur { color: var(--ink-2); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .crumbs .badge {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--accent);
+    background: var(--accent-bg); padding: 2px 7px; border-radius: 999px;
+  }
+  .actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px;
+    font: inherit; font-size: 13px; border: 1px solid var(--line); border-radius: 6px;
+    background: var(--panel); color: var(--ink-2); cursor: pointer; text-decoration: none;
+    transition: background 150ms;
+  }
+  .btn:hover { background: var(--line-soft); }
+  .btn svg { flex: 0 0 15px; }
+  .navbtn {
+    width: 32px; height: 32px; padding: 0; justify-content: center;
+  }
+  .navbtn:disabled { opacity: 0.4; cursor: default; }
+
+  .stage { flex: 1; overflow: auto; position: relative; }
+  .stage iframe { display: block; width: 100%; height: 100%; border: 0; background: var(--bg); }
+  .empty {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand">
+      <span class="logo">i</span>
+      <span style="display:flex;flex-direction:column;line-height:1.15;">
+        <strong>ilikebuffet</strong>
+        <span class="sub">Admin · 73 màn</span>
+      </span>
+    </div>
+    <div class="search">
+      <input id="q" type="search" placeholder="Tìm màn hình…" autocomplete="off">
+    </div>
+    <nav id="nav"></nav>
+  </aside>
+
+  <main>
+    <header>
+      <div class="crumbs">
+        <button class="btn navbtn" id="back" title="Quay lại" aria-label="Quay lại">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="btn navbtn" id="fwd" title="Tiến tới" aria-label="Tiến tới">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <span class="badge" id="crumbBadge"></span>
+        <span class="sep">/</span>
+        <span class="cur" id="crumbTitle">—</span>
+      </div>
+      <div class="actions">
+        <button class="btn navbtn" id="bell" title="Trung tâm thông báo" aria-label="Thông báo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/></svg>
+        </button>
+        <a class="btn" id="openNew" href="#" target="_blank" rel="noopener">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+          Mở tab mới
+        </a>
+      </div>
+    </header>
+    <div class="stage">
+      <iframe id="frame" title="Màn hình"></iframe>
+    </div>
+  </main>
+</div>
+
+<script>
+const MANIFEST = {"groups": [{"id": "TQ", "label": "Tổng quan", "icon": "M3 13h8V3H3zM13 21h8V11h-8zM13 3v6h8V3zM3 21h8v-6H3z", "items": [{"file": "SC-TQ-01 Dashboard tổng quan.dc.html", "mod": "TQ", "code": "SC-TQ-01", "num": 1, "title": "Dashboard tổng quan"}]}, {"id": "VH", "label": "Vận hành", "icon": "M9 11l3 3 8-8M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9", "items": [{"file": "SC-VH-01 Đơn hàng.dc.html", "mod": "VH", "code": "SC-VH-01", "num": 1, "title": "Đơn hàng"}, {"file": "SC-VH-02 Chi tiết đơn hàng.dc.html", "mod": "VH", "code": "SC-VH-02", "num": 2, "title": "Chi tiết đơn hàng"}, {"file": "SC-VH-03 Đặt bàn.dc.html", "mod": "VH", "code": "SC-VH-03", "num": 3, "title": "Đặt bàn"}, {"file": "SC-VH-04 Đặt bàn (drawer).dc.html", "mod": "VH", "code": "SC-VH-04", "num": 4, "title": "Đặt bàn (drawer)"}, {"file": "SC-VH-05 Khách hàng.dc.html", "mod": "VH", "code": "SC-VH-05", "num": 5, "title": "Khách hàng"}, {"file": "SC-VH-06 Chi tiết đặt bàn.dc.html", "mod": "VH", "code": "SC-VH-06", "num": 6, "title": "Chi tiết đặt bàn"}, {"file": "SC-VH-07 Hồ sơ khách hàng.dc.html", "mod": "VH", "code": "SC-VH-07", "num": 7, "title": "Hồ sơ khách hàng"}, {"file": "SC-VH-08 Ca bán hàng và đóng ca.dc.html", "mod": "VH", "code": "SC-VH-08", "num": 8, "title": "Ca bán hàng và đóng ca"}, {"file": "SC-VH-09 Phản hồi và đánh giá.dc.html", "mod": "VH", "code": "SC-VH-09", "num": 9, "title": "Phản hồi và đánh giá"}, {"file": "SC-VH-10 Sơ đồ bàn.dc.html", "mod": "VH", "code": "SC-VH-10", "num": 10, "title": "Sơ đồ bàn"}]}, {"id": "TD", "label": "Thực đơn", "icon": "M4 3h16v4H4zM4 10h16M4 14h10M4 18h7", "items": [{"file": "SC-TD-01 Gói buffet.dc.html", "mod": "TD", "code": "SC-TD-01", "num": 1, "title": "Gói buffet"}, {"file": "SC-TD-02 Tạo sửa gói buffet.dc.html", "mod": "TD", "code": "SC-TD-02", "num": 2, "title": "Tạo sửa gói buffet"}, {"file": "SC-TD-03 Món ăn.dc.html", "mod": "TD", "code": "SC-TD-03", "num": 3, "title": "Món ăn"}, {"file": "SC-TD-04 Tạo sửa món ăn.dc.html", "mod": "TD", "code": "SC-TD-04", "num": 4, "title": "Tạo sửa món ăn"}, {"file": "SC-TD-05 Khuyến mãi.dc.html", "mod": "TD", "code": "SC-TD-05", "num": 5, "title": "Khuyến mãi"}, {"file": "SC-TD-06 Tạo sửa khuyến mãi.dc.html", "mod": "TD", "code": "SC-TD-06", "num": 6, "title": "Tạo sửa khuyến mãi"}]}, {"id": "KHO", "label": "Kho", "icon": "M3 9l9-6 9 6v10a1 1 0 01-1 1H4a1 1 0 01-1-1zM9 22V12h6v10", "items": [{"file": "SC-KHO-01 Nguyên liệu.dc.html", "mod": "KHO", "code": "SC-KHO-01", "num": 1, "title": "Nguyên liệu"}, {"file": "SC-KHO-02 Định lượng món.dc.html", "mod": "KHO", "code": "SC-KHO-02", "num": 2, "title": "Định lượng món"}, {"file": "SC-KHO-03 Phiếu nhập.dc.html", "mod": "KHO", "code": "SC-KHO-03", "num": 3, "title": "Phiếu nhập"}, {"file": "SC-KHO-04 Tạo phiếu nhập kho.dc.html", "mod": "KHO", "code": "SC-KHO-04", "num": 4, "title": "Tạo phiếu nhập kho"}, {"file": "SC-KHO-05 Phiếu xuất.dc.html", "mod": "KHO", "code": "SC-KHO-05", "num": 5, "title": "Phiếu xuất"}, {"file": "SC-KHO-06 Tạo phiếu xuất kho.dc.html", "mod": "KHO", "code": "SC-KHO-06", "num": 6, "title": "Tạo phiếu xuất kho"}, {"file": "SC-KHO-07 Kiểm kê.dc.html", "mod": "KHO", "code": "SC-KHO-07", "num": 7, "title": "Kiểm kê"}, {"file": "SC-KHO-08 Tạo phiếu kiểm kê.dc.html", "mod": "KHO", "code": "SC-KHO-08", "num": 8, "title": "Tạo phiếu kiểm kê"}, {"file": "SC-KHO-09 Hao hụt.dc.html", "mod": "KHO", "code": "SC-KHO-09", "num": 9, "title": "Hao hụt"}, {"file": "SC-KHO-10 Ghi nhận hao hụt (modal).dc.html", "mod": "KHO", "code": "SC-KHO-10", "num": 10, "title": "Ghi nhận hao hụt (modal)"}, {"file": "SC-KHO-11 Nhà cung cấp.dc.html", "mod": "KHO", "code": "SC-KHO-11", "num": 11, "title": "Nhà cung cấp"}, {"file": "SC-KHO-12 Chi tiết nhà cung cấp.dc.html", "mod": "KHO", "code": "SC-KHO-12", "num": 12, "title": "Chi tiết nhà cung cấp"}, {"file": "SC-KHO-13 Chi tiết nguyên liệu (drawer).dc.html", "mod": "KHO", "code": "SC-KHO-13", "num": 13, "title": "Chi tiết nguyên liệu (drawer)"}]}, {"id": "NS", "label": "Nhân sự", "icon": "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 7a4 4 0 100 8 4 4 0 000-8M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75", "items": [{"file": "SC-NS-01 Nhân viên.dc.html", "mod": "NS", "code": "SC-NS-01", "num": 1, "title": "Nhân viên"}, {"file": "SC-NS-02 Tạo nhân viên.dc.html", "mod": "NS", "code": "SC-NS-02", "num": 2, "title": "Tạo nhân viên"}, {"file": "SC-NS-03 Hồ sơ nhân viên.dc.html", "mod": "NS", "code": "SC-NS-03", "num": 3, "title": "Hồ sơ nhân viên"}, {"file": "SC-NS-04 Chấm công.dc.html", "mod": "NS", "code": "SC-NS-04", "num": 4, "title": "Chấm công"}, {"file": "SC-NS-06 Bảng lương.dc.html", "mod": "NS", "code": "SC-NS-06", "num": 6, "title": "Bảng lương"}, {"file": "SC-NS-07 Phiếu lương chi tiết.dc.html", "mod": "NS", "code": "SC-NS-07", "num": 7, "title": "Phiếu lương chi tiết"}, {"file": "SC-NS-08 Nghỉ phép.dc.html", "mod": "NS", "code": "SC-NS-08", "num": 8, "title": "Nghỉ phép"}, {"file": "SC-NS-10 Thưởng phạt.dc.html", "mod": "NS", "code": "SC-NS-10", "num": 10, "title": "Thưởng phạt"}]}, {"id": "TC", "label": "Tài chính", "icon": "M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6", "items": [{"file": "SC-TC-01 Tổng quan tài chính.dc.html", "mod": "TC", "code": "SC-TC-01", "num": 1, "title": "Tổng quan tài chính"}, {"file": "SC-TC-02 Doanh thu theo ca ngày.dc.html", "mod": "TC", "code": "SC-TC-02", "num": 2, "title": "Doanh thu theo ca ngày"}, {"file": "SC-TC-03 Sổ quỹ thu chi.dc.html", "mod": "TC", "code": "SC-TC-03", "num": 3, "title": "Sổ quỹ thu chi"}, {"file": "SC-TC-04 Phiếu thu chi (drawer).dc.html", "mod": "TC", "code": "SC-TC-04", "num": 4, "title": "Phiếu thu chi (drawer)"}, {"file": "SC-TC-05 Đối soát thanh toán.dc.html", "mod": "TC", "code": "SC-TC-05", "num": 5, "title": "Đối soát thanh toán"}, {"file": "SC-TC-06 Công nợ nhà cung cấp.dc.html", "mod": "TC", "code": "SC-TC-06", "num": 6, "title": "Công nợ nhà cung cấp"}, {"file": "SC-TC-07 Chi tiết công nợ nhà cung cấp.dc.html", "mod": "TC", "code": "SC-TC-07", "num": 7, "title": "Chi tiết công nợ nhà cung cấp"}, {"file": "SC-TC-08 Chi phí vận hành.dc.html", "mod": "TC", "code": "SC-TC-08", "num": 8, "title": "Chi phí vận hành"}, {"file": "SC-TC-09 Tạo chi phí vận hành.dc.html", "mod": "TC", "code": "SC-TC-09", "num": 9, "title": "Tạo chi phí vận hành"}, {"file": "SC-TC-10 Hóa đơn VAT.dc.html", "mod": "TC", "code": "SC-TC-10", "num": 10, "title": "Hóa đơn VAT"}, {"file": "SC-TC-11 Báo cáo lãi lỗ.dc.html", "mod": "TC", "code": "SC-TC-11", "num": 11, "title": "Báo cáo lãi lỗ"}]}, {"id": "BC", "label": "Báo cáo", "icon": "M3 3v18h18M7 15l4-4 3 3 5-6", "items": [{"file": "SC-BC-03 Báo cáo food cost.dc.html", "mod": "BC", "code": "SC-BC-03", "num": 3, "title": "Báo cáo food cost"}, {"file": "SC-BC-05 Xu hướng món.dc.html", "mod": "BC", "code": "SC-BC-05", "num": 5, "title": "Xu hướng món"}]}, {"id": "HT", "label": "Hệ thống", "icon": "M12 8a4 4 0 100 8 4 4 0 000-8M12 2v3M12 19v3M2 12h3M19 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1", "items": [{"file": "SC-HT-01 Đăng nhập · 2FA · chọn chi nhánh.dc.html", "mod": "HT", "code": "SC-HT-01", "num": 1, "title": "Đăng nhập · 2FA · chọn chi nhánh"}, {"file": "SC-HT-02 Người dùng và vai trò.dc.html", "mod": "HT", "code": "SC-HT-02", "num": 2, "title": "Người dùng và vai trò"}, {"file": "SC-HT-04 Nhật ký hoạt động.dc.html", "mod": "HT", "code": "SC-HT-04", "num": 4, "title": "Nhật ký hoạt động"}, {"file": "SC-HT-06 Trung tâm thông báo.dc.html", "mod": "HT", "code": "SC-HT-06", "num": 6, "title": "Trung tâm thông báo"}]}, {"id": "DS", "label": "Design System", "icon": "M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z", "items": [{"file": "App Shell - ilikebuffet Admin.dc.html", "title": "App Shell - ilikebuffet Admin"}, {"file": "Design Tokens - ilikebuffet Admin.dc.html", "title": "Design Tokens - ilikebuffet Admin"}, {"file": "Template 1+2 - List & Detail.dc.html", "title": "Template 1+2 - List & Detail"}, {"file": "Template 3 - Form & Overlay.dc.html", "title": "Template 3 - Form & Overlay"}, {"file": "Template 4 - Report.dc.html", "title": "Template 4 - Report"}, {"file": "Template 5 - Settings.dc.html", "title": "Template 5 - Settings"}, {"file": "Template 6 - Auth.dc.html", "title": "Template 6 - Auth"}, {"file": "Template 7 - Dashboard.dc.html", "title": "Template 7 - Dashboard"}, {"file": "Template 8 - Row List.dc.html", "title": "Template 8 - Row List"}, {"file": "Pattern 1 - Data Table.dc.html", "title": "Pattern 1 - Data Table"}, {"file": "Pattern 2 - Form.dc.html", "title": "Pattern 2 - Form"}, {"file": "Pattern 3 - Overlays.dc.html", "title": "Pattern 3 - Overlays"}, {"file": "Component Library 1 - Form controls.dc.html", "title": "Component Library 1 - Form controls"}, {"file": "Component Library 2 - Display & feedback.dc.html", "title": "Component Library 2 - Display & feedback"}, {"file": "Component Library 3 - Data visualization.dc.html", "title": "Component Library 3 - Data visualization"}, {"file": "Component Library 4 - Transfer list & pickers.dc.html", "title": "Component Library 4 - Transfer list & pickers"}, {"file": "ShiftGrid.dc.html", "title": "ShiftGrid"}, {"file": "TableStates.dc.html", "title": "TableStates"}]}]};
+const DEFAULT_FILE = "SC-TQ-01 Dashboard tổng quan.dc.html";
+const FLOWS = {"SC-VH-01": {"rows": "SC-VH-02"}, "SC-VH-02": {"back": "SC-VH-01", "buttons": [["phát hành hoá đơn", "SC-TC-10"]]}, "SC-VH-03": {"rows": "SC-VH-06", "buttons": [["tạo đặt bàn", "SC-VH-04"]]}, "SC-VH-04": {"back": "SC-VH-03"}, "SC-VH-05": {"rows": "SC-VH-07"}, "SC-VH-06": {"back": "SC-VH-03", "buttons": [["mở sơ đồ bàn", "SC-VH-10"], ["xác nhận đặt bàn", "SC-VH-03"]]}, "SC-VH-07": {"back": "SC-VH-05"}, "SC-VH-08": {"back": "SC-VH-01", "buttons": [["xác nhận đóng ca", "SC-TQ-01"]]}, "SC-VH-09": {"rows": "SC-VH-07"}, "SC-KHO-01": {"rows": "SC-KHO-13"}, "SC-KHO-03": {"rows": "SC-KHO-04", "buttons": [["tạo phiếu nhập", "SC-KHO-04"]]}, "SC-KHO-04": {"back": "SC-KHO-03"}, "SC-KHO-05": {"rows": "SC-KHO-06", "buttons": [["tạo phiếu xuất", "SC-KHO-06"]]}, "SC-KHO-06": {"back": "SC-KHO-05"}, "SC-KHO-07": {"rows": "SC-KHO-08", "buttons": [["tạo phiếu kiểm kê", "SC-KHO-08"]]}, "SC-KHO-08": {"back": "SC-KHO-07"}, "SC-KHO-09": {"rows": "SC-KHO-10", "buttons": [["ghi nhận hao hụt", "SC-KHO-10"]]}, "SC-KHO-10": {"back": "SC-KHO-09"}, "SC-KHO-11": {"rows": "SC-KHO-12"}, "SC-KHO-12": {"back": "SC-KHO-11"}, "SC-KHO-13": {"back": "SC-KHO-01"}, "SC-NS-01": {"rows": "SC-NS-03", "buttons": [["thêm nhân viên", "SC-NS-02"]]}, "SC-NS-02": {"back": "SC-NS-01"}, "SC-NS-03": {"back": "SC-NS-01"}, "SC-NS-04": {"rows": "SC-NS-03"}, "SC-NS-06": {"rows": "SC-NS-07"}, "SC-NS-07": {"back": "SC-NS-06"}, "SC-NS-08": {"rows": "SC-NS-03"}, "SC-NS-10": {"rows": "SC-NS-03"}, "SC-TC-01": {"keywords": [[["chi phí vận hành", "chi phí"], "SC-TC-08"], [["lợi nhuận", "lãi lỗ", "lãi/lỗ"], "SC-TC-11"], [["đối soát", "thanh toán"], "SC-TC-05"], [["công nợ"], "SC-TC-06"], [["hoá đơn", "hóa đơn", "vat"], "SC-TC-10"], [["sổ quỹ", "thu chi"], "SC-TC-03"], [["doanh thu"], "SC-TC-02"]]}, "SC-TC-03": {"rows": "SC-TC-04"}, "SC-TC-04": {"back": "SC-TC-03"}, "SC-TC-06": {"rows": "SC-TC-07"}, "SC-TC-07": {"back": "SC-TC-06"}, "SC-TC-08": {"rows": "SC-TC-09", "buttons": [["thêm chi phí", "SC-TC-09"]]}, "SC-TC-09": {"back": "SC-TC-08", "buttons": [["chỉ lưu chi phí", "SC-TC-08"], ["lưu và tạo phiếu chi", "SC-TC-03"]]}, "SC-TD-01": {"rows": "SC-TD-02", "buttons": [["tạo gói buffet", "SC-TD-02"]]}, "SC-TD-02": {"back": "SC-TD-01"}, "SC-TD-03": {"rows": "SC-TD-04", "buttons": [["thêm món", "SC-TD-04"]]}, "SC-TD-04": {"back": "SC-TD-03", "buttons": [["thiết lập ngay", "SC-KHO-02"]]}, "SC-TD-05": {"rows": "SC-TD-06", "buttons": [["tạo khuyến mãi", "SC-TD-06"]]}, "SC-TD-06": {"back": "SC-TD-05"}, "SC-KHO-02": {"back": "SC-TD-03"}, "SC-HT-01": {"buttons": [["đăng nhập", "SC-TQ-01"]]}, "SC-HT-02": {"rows": "SC-HT-04"}, "SC-TQ-01": {"keywords": [[["sắp hết", "tồn kho", "nguyên liệu"], "SC-KHO-01"], [["phiếu nhập"], "SC-KHO-03"], [["công nợ"], "SC-TC-06"], [["đơn nghỉ", "nghỉ phép", "đơn nghỉ np"], "SC-NS-08"], [["food cost"], "SC-BC-03"], [["đơn đang phục vụ", "đang phục vụ"], "SC-VH-01"], [["đặt bàn sắp tới"], "SC-VH-03"], [["doanh thu"], "SC-TC-01"]]}};
+
+const navEl = document.getElementById('nav');
+const frame = document.getElementById('frame');
+const crumbBadge = document.getElementById('crumbBadge');
+const crumbTitle = document.getElementById('crumbTitle');
+const openNew = document.getElementById('openNew');
+const qEl = document.getElementById('q');
+const backBtn = document.getElementById('back');
+const fwdBtn = document.getElementById('fwd');
+
+// flat index: file -> {code,title,group}  and  code -> file
+const byFile = {};
+const byCode = {};
+MANIFEST.groups.forEach(g => g.items.forEach(it => {
+  byFile[it.file] = { code: it.code || '', title: it.title, group: g.label };
+  if (it.code) byCode[it.code] = it.file;
+}));
+
+let currentFile = null;
+
+function icon(path) {
+  return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="'+path+'"/></svg>';
+}
+function chev() {
+  return '<svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+}
+
+function renderNav() {
+  navEl.innerHTML = '';
+  MANIFEST.groups.forEach(g => {
+    const grp = document.createElement('div');
+    grp.className = 'group';
+    grp.dataset.group = g.id;
+
+    const head = document.createElement('button');
+    head.className = 'group-head';
+    head.innerHTML = icon(g.icon) + '<span>'+g.label+'</span><span class="count">'+g.items.length+'</span>' + chev();
+    head.addEventListener('click', () => grp.classList.toggle('collapsed'));
+    grp.appendChild(head);
+
+    const items = document.createElement('div');
+    items.className = 'items';
+    g.items.forEach(it => {
+      const el = document.createElement('div');
+      el.className = 'item';
+      el.dataset.file = it.file;
+      el.title = (it.code ? it.code + ' · ' : '') + it.title;
+      const codeHtml = it.code ? '<span class="code">'+it.code+'</span>' : '';
+      el.innerHTML = codeHtml + '<span class="t">'+it.title+'</span>';
+      el.addEventListener('click', () => { location.hash = encodeURIComponent(it.file); });
+      items.appendChild(el);
+    });
+    grp.appendChild(items);
+    navEl.appendChild(grp);
+  });
+}
+
+function setActive(file) {
+  document.querySelectorAll('.item').forEach(el => {
+    const on = el.dataset.file === file;
+    el.classList.toggle('active', on);
+    if (on) {
+      el.closest('.group').classList.remove('collapsed');
+      el.scrollIntoView({ block: 'nearest' });
+    }
+  });
+}
+
+function load(file) {
+  const meta = byFile[file];
+  if (!meta) return;
+  currentFile = file;
+  frame.src = './' + encodeURI(file);
+  crumbBadge.textContent = meta.code || meta.group;
+  crumbBadge.style.display = meta.code ? '' : 'none';
+  crumbTitle.textContent = meta.title;
+  document.title = meta.title + ' — ilikebuffet Admin';
+  openNew.href = './' + encodeURI(file);
+  setActive(file);
+}
+
+function currentFromHash() {
+  const raw = location.hash.slice(1);
+  if (!raw) return null;
+  try { const f = decodeURIComponent(raw); return byFile[f] ? f : null; } catch { return null; }
+}
+
+function route() {
+  const file = currentFromHash() || DEFAULT_FILE;
+  load(file);
+  updateNavButtons();
+}
+
+window.addEventListener('hashchange', route);
+backBtn.addEventListener('click', () => history.back());
+fwdBtn.addEventListener('click', () => history.forward());
+const bell = document.getElementById('bell');
+if (byCode['SC-HT-06']) bell.addEventListener('click', () => { location.hash = encodeURIComponent(byCode['SC-HT-06']); });
+else bell.style.display = 'none';
+function updateNavButtons() { /* browser handles enable state; keep simple */ }
+
+// search filter
+qEl.addEventListener('input', () => {
+  const q = qEl.value.trim().toLowerCase();
+  MANIFEST.groups.forEach(g => {
+    const grpEl = navEl.querySelector('[data-group="'+g.id+'"]');
+    let visible = 0;
+    grpEl.querySelectorAll('.item').forEach(el => {
+      const meta = byFile[el.dataset.file];
+      const hay = (meta.code + ' ' + meta.title + ' ' + meta.group).toLowerCase();
+      const show = !q || hay.includes(q);
+      el.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    grpEl.style.display = (q && visible === 0) ? 'none' : '';
+    if (q) grpEl.classList.remove('collapsed');
+  });
+});
+
+// ---- in-screen linking: wire buttons / rows / back inside each iframe ----
+function norm(el) {
+  return ((el.innerText || el.textContent || '')).replace(/\s+/g, ' ').trim().toLowerCase();
+}
+function isBackText(t) {
+  return t === 'quay lại' || t === 'đóng' || t.startsWith('lưu') ||
+         t.startsWith('huỷ') || t.startsWith('hủy') ||
+         t.startsWith('về danh sách') || t.startsWith('trở về') ||
+         t.startsWith('hoàn tất') || t.startsWith('gửi duyệt');
+}
+function goCode(code) {
+  const f = byCode[code];
+  if (f) location.hash = encodeURIComponent(f);
+}
+
+frame.addEventListener('load', () => {
+  let doc;
+  try { doc = frame.contentDocument; } catch (e) { return; }   // cross-origin (file://) — skip
+  if (!doc || doc.__ibbWired) return;
+  const meta = byFile[currentFile];
+  const rule = meta && FLOWS[meta.code];
+  if (!rule) return;
+  doc.__ibbWired = true;
+
+  // affordance styles
+  const st = doc.createElement('style');
+  st.textContent =
+    '.ibb-lrow{cursor:pointer!important}' +
+    '.ibb-lrow:hover{background:#EFF6F5!important}' +
+    '.ibb-lbtn{cursor:pointer!important}' +
+    '.ibb-lbtn:hover{outline:2px solid #2F7168;outline-offset:2px;border-radius:6px}';
+  (doc.head || doc.documentElement).appendChild(st);
+
+  // click interception (capture so we pre-empt the mock's own handlers).
+  // Walk up the ancestor chain matching on TEXT — the mock's CTAs and back
+  // links are often bare <div onClick={{..}}> with no button/a tag, so a
+  // tag-based selector would miss them. A length guard keeps a big container's
+  // text from spuriously matching a short rule substring.
+  doc.addEventListener('click', (e) => {
+    const nav = (code) => { e.preventDefault(); e.stopPropagation(); goCode(code); };
+    let el = e.target;
+    for (let i = 0; i < 6 && el && el !== doc.body && el.nodeType === 1; i++, el = el.parentElement) {
+      // data row -> detail (row text is long, so it never trips the button/back rules)
+      if (rule.rows && el.matches && el.matches('tbody tr')) { nav(rule.rows); return; }
+      const t = norm(el);
+      if (!t) continue;
+      if (t.length <= 44) {
+        if (rule.buttons) {
+          for (const pair of rule.buttons) if (t.includes(pair[0])) { nav(pair[1]); return; }
+        }
+        if (rule.back && isBackText(t)) { nav(rule.back); return; }
+      }
+      // keyword router (hub screens: heterogeneous rows/cards -> specialised screen)
+      if (rule.keywords && t.length <= 120) {
+        for (const grp of rule.keywords) if (grp[0].some(k => t.includes(k))) { nav(grp[1]); return; }
+      }
+    }
+  }, true);
+
+  // decorate matched targets so they look clickable (re-run as the mock re-renders)
+  function decorate() {
+    try {
+      if (rule.rows) doc.querySelectorAll('tbody tr').forEach(tr => tr.classList.add('ibb-lrow'));
+      if (rule.buttons) {
+        doc.querySelectorAll('button, a, [role="button"]').forEach(b => {
+          const t = norm(b);
+          if (rule.buttons.some(p => t.includes(p[0]))) b.classList.add('ibb-lbtn');
+        });
+      }
+    } catch (e) {}
+  }
+  decorate();
+  try {
+    const mo = new MutationObserver(() => { clearTimeout(mo._t); mo._t = setTimeout(decorate, 120); });
+    mo.observe(doc.body, { childList: true, subtree: true });
+  } catch (e) {}
+});
+
+renderNav();
+route();
+</script>
+</body>
+</html>

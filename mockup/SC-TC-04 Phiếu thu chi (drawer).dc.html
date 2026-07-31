@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  input, textarea { font-family: inherit; }
+  @keyframes ibb-spin { to { transform: rotate(360deg); } }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-tc-04</span><span style="color: #D5CEC6;">·</span><span>template t3 trong drawer 560</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">/tai-chinh/so-quy</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Phiếu thu / phiếu chi</h1>
+    <p style="margin: 0; max-width: 78ch; font-size: 14px; color: #635B53;">T3 chạy được trong drawer mà không đổi cấu trúc: bỏ cột phụ, thanh breadcrumb thành header drawer, sticky save bar thành footer drawer. Sổ quỹ phía sau vẫn thấy được — đó là lý do chọn drawer. Đổi Thu / Chi hoặc sửa số tiền để thấy cảnh báo số dư.</p>
+  </header>
+
+  <div style="position: relative; height: 760px; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden; background: #FAF8F6;">
+
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; gap: 16px; padding: 24px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">sc-tc-03 · sổ quỹ thu chi</span>
+          <strong style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 28px;">Sổ quỹ · 28/07/2026</strong>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 14px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#256A49" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Phiếu thu
+          </span>
+          <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 14px; background: #235B54; border: 1px solid #235B54; border-radius: 4px; font-size: 13px; font-weight: 500; color: #FFFFFF;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"><path d="M5 12h14"></path></svg>Phiếu chi
+          </span>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 12px; color: #6E665C;">Tồn đầu ngày</span>
+          <span style="font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums;">42.180.000</span>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 12px; color: #6E665C;">Thu trong ngày</span>
+          <span style="font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums; color: #256A49;">18.640.000</span>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 12px; color: #6E665C;">Chi trong ngày</span>
+          <span style="font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums; color: #C0392B;">12.560.000</span>
+        </div>
+        <div style="background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 12px; color: #1C4842;">Số dư hiện tại</span>
+          <span style="font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums; color: #1C4842;">48.260.000</span>
+        </div>
+      </div>
+
+      <div style="flex: 1; min-height: 0; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 140px 90px 1fr 150px 130px 130px; gap: 12px; align-items: center; padding: 10px 16px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+          <span>mã phiếu</span><span>loại</span><span>diễn giải</span><span>đối tượng</span><span style="text-align: right;">số tiền</span><span style="text-align: right;">số dư</span>
+        </div>
+        <sc-for list="{{ ledger }}" as="l" hint-placeholder-count="8">
+          <div style="display: grid; grid-template-columns: 140px 90px 1fr 150px 130px 130px; gap: 12px; align-items: center; padding: 10px 16px; border-bottom: 1px solid #F0EBE5; font-size: 13px;">
+            <span style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #4A443E;">{{ l.code }}</span>
+            <span style="{{ l.tagStyle }}">{{ l.kind }}</span>
+            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ l.note }}</span>
+            <span style="color: #635B53; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ l.party }}</span>
+            <span style="{{ l.amountStyle }}">{{ l.amount }}</span>
+            <span style="text-align: right; font-variant-numeric: tabular-nums; color: #635B53;">{{ l.balance }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="position: absolute; inset: 0; background: rgba(30,27,25,0.32);"></div>
+
+    <div style="position: absolute; top: 0; right: 0; bottom: 0; width: 560px; background: #FFFFFF; border-left: 1px solid #E7E2DC; box-shadow: -16px 0 40px rgba(30,27,25,0.16); display: flex; flex-direction: column; overflow: hidden;">
+      <div style="height: 56px; flex: 0 0 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #E7E2DC;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <strong style="font-size: 16px; font-weight: 500;">{{ title }}</strong>
+          <sc-if value="{{ dirty }}" hint-placeholder-val="{{ true }}">
+            <span style="display: inline-flex; align-items: center; gap: 8px; height: 22px; padding: 0 8px; border-radius: 4px; background: #FDF6E7; border: 1px solid #F0DDAF; color: #8A5F12; font-size: 12px; font-weight: 500;">
+              <span style="width: 6px; height: 6px; border-radius: 999px; background: #8A5F12;"></span>Chưa lưu
+            </span>
+          </sc-if>
+        </div>
+        <span aria-label="Đóng drawer" tabindex="0" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </span>
+      </div>
+
+      <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+
+        <sc-if value="{{ hasErrors }}" hint-placeholder-val="{{ false }}">
+          <div style="background: #FCF0EE; border: 1px solid #C0392B; border-radius: 8px; padding: 12px 16px; display: flex; gap: 12px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <strong style="font-size: 13px;">{{ errorTitle }}</strong>
+              <sc-for list="{{ errors }}" as="e" hint-placeholder-count="1">
+                <a href="#" style="font-size: 13px; color: #C0392B;">{{ e.text }}</a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Loại phiếu</label>
+              <div style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 4px;">
+                <span style="{{ kindTagStyle }}">{{ kindLabel }}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z"></path></svg>
+              </div>
+              <span onClick="{{ toggleKind }}" tabindex="0" style="font-size: 12px; color: #235B54; cursor: pointer;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xác định từ nút đã bấm · bấm để xem loại còn lại</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Mã phiếu</label>
+              <div style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 4px; font-family: ui-monospace, Menlo, monospace; font-size: 13px; color: #4A443E;">{{ code }}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z"></path></svg>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Ngày <span style="color: #C0392B;">*</span></label>
+              <div style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px;">28/07/2026
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18v16H3zM8 2v6M16 2v6M3 11h18"></path></svg>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Ca <span style="color: #C0392B;">*</span></label>
+              <div style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px;">Ca chiều · 14:00–22:00
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+              </div>
+            </div>
+            <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Nhóm khoản mục <span style="color: #C0392B;">*</span></label>
+              <div style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px;">{{ category }}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+              </div>
+              <span style="font-size: 12px; color: #6E665C;">{{ categoryHint }}</span>
+            </div>
+            <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Đối tượng <span style="color: #C0392B;">*</span></label>
+              <div style="height: 36px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4"></path></svg>
+                <span style="flex: 1; font-size: 13px;">{{ party }}</span>
+                <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">{{ partyType }}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+              </div>
+              <span style="font-size: 12px; color: #6E665C;">Khách hàng · nhà cung cấp · nhân viên · khác.</span>
+            </div>
+            <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Diễn giải <span style="color: #C0392B;">*</span></label>
+              <div style="height: 36px; display: flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px;">{{ note }}</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="{{ amountLabelStyle }}">Số tiền <span style="color: #C0392B;">*</span></label>
+              <div style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 4px; border: 1px solid {{ amountBorder }};">
+                <input type="text" value="{{ amount }}" onChange="{{ onAmount }}" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 13px; text-align: right; font-variant-numeric: tabular-nums;">
+                <span style="font-size: 12px; color: #6E665C;">đ</span>
+              </div>
+              <span style="{{ amountHintStyle }}">{{ amountHint }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Phương thức <span style="color: #C0392B;">*</span></label>
+              <div style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px;">Tiền mặt
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+              </div>
+            </div>
+            <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">{{ personLabel }} <span style="color: #C0392B;">*</span></label>
+              <div style="height: 36px; display: flex; align-items: center; gap: 12px; padding: 0 12px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 4px;">
+                <span style="width: 22px; height: 22px; border-radius: 999px; background: #E7E2DC; color: #4A443E; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;">PV</span>
+                <span style="font-size: 13px; color: #4A443E;">Phương Vy · Thu ngân ca chiều</span>
+              </div>
+            </div>
+          </div>
+
+          <sc-if value="{{ overBalance }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; gap: 12px; padding: 12px 16px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <strong style="font-size: 13px; color: #8A5F12;">Vượt số dư quỹ</strong>
+                <span style="font-size: 13px; color: #8A5F12;">Quỹ hiện có {{ balanceLabel }}. Chi {{ amountValue }} sẽ làm số dư còn {{ afterLabel }}. Vẫn lưu được — kế toán cần nạp quỹ hoặc chuyển sang chuyển khoản.</span>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px; padding-top: 20px; border-top: 1px solid #F0EBE5;">
+          <strong style="font-size: 14px; font-weight: 500;">Chứng từ &amp; ghi chú</strong>
+          <div tabindex="0" style="min-height: 84px; border: 1px dashed #D5CEC6; border-radius: 8px; background: #FAF8F6; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer;" style-hover="border-color: #2F7168; background: #EFF6F5;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M8 8l4-4 4 4M4 16v4h16v-4"></path></svg>
+            <span style="font-size: 13px; color: #4A443E;">Kéo thả hoặc <span style="color: #235B54; font-weight: 500;">chọn tệp</span></span>
+            <span style="font-size: 12px; color: #6E665C;">Ảnh biên lai · PDF · tối đa 10MB</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; align-items: baseline; justify-content: space-between;">
+              <label style="font-size: 13px; font-weight: 500;">Ghi chú</label>
+              <span style="font-size: 12px; color: #6E665C;">0 / 200</span>
+            </div>
+            <textarea placeholder="Ví dụ: chi tạm ứng mua đá, hoàn chứng từ trước cuối ca." style="min-height: 64px; padding: 8px 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; outline: none; resize: vertical;" style-focus="border-color: #4F958D; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; background: #FAF8F6; border-top: 1px solid #E7E2DC;">
+        <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;">Huỷ</span>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 12px; color: #6E665C;">{{ footerHint }}</span>
+          <button style="height: 36px; padding: 0 14px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Lưu và in</button>
+          <button style="height: 36px; padding: 0 16px; font-family: inherit; font-size: 13px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 4px; cursor: pointer;" style-hover="background: #1C4842;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Lưu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">T3 trong drawer · quy ước</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 160px 1fr; gap: 10px 16px; font-size: 13px;">
+        <span style="color: #6E665C;">khung</span><span style="color: #4A443E;">Drawer phải 560 (Pattern 3 · 03) · body cuộn riêng · footer sticky</span>
+        <span style="color: #6E665C;">bỏ</span><span style="color: #4A443E;">Cột phụ 320 và thanh breadcrumb — drawer không có ngữ cảnh điều hướng riêng</span>
+        <span style="color: #6E665C;">chuyển</span><span style="color: #4A443E;">Sticky save bar → footer drawer · chip “chưa lưu” → cạnh tiêu đề drawer</span>
+        <span style="color: #6E665C;">giữ</span><span style="color: #4A443E;">Thứ tự section, lỗi 3 cấp, validate khi rời ô, nút Lưu luôn bật</span>
+        <span style="color: #6E665C;">trường/hàng</span><span style="color: #4A443E;">Tối đa 2 cột trong drawer; trường tiền và đối tượng chiếm cả hàng khi cần</span>
+        <span style="color: #6E665C;">đóng</span><span style="color: #4A443E;">Esc hoặc click nền → nếu có thay đổi chưa lưu thì hỏi xác nhận, không đóng ngay</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Khi nào drawer, khi nào trang</span>
+        <span style="font-size: 13px; color: #4A443E;">Drawer khi form ngắn (≤ 12 trường), không có bảng dòng động, và người dùng cần thấy danh sách phía sau để không mất mạch — phiếu thu chi, ghi nhận thanh toán, sửa nhanh một dòng.</span>
+        <span style="font-size: 13px; color: #4A443E;">Trang riêng khi form có bảng dòng động, cột phụ mang thông tin quyết định, hoặc cần chia sẻ URL — phiếu nhập, phiếu xuất, gói buffet, hồ sơ nhân viên.</span>
+        <span style="font-size: 12px; color: #6E665C;">Không dùng drawer lồng drawer; nếu trong drawer cần chọn phức tạp thì mở modal lớp 2 (Pattern 3 · 05).</span>
+      </div>
+    </div>
+
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">State của drawer</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Tạo mới</span>
+        <span style="font-size: 13px; color: #635B53;">Loại phiếu khoá theo nút đã bấm, ngày = hôm nay, ca = ca đang mở, con trỏ ở Nhóm khoản mục.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Đang tải để sửa</span>
+        <span style="height: 12px; width: 50%; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="height: 36px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Drawer mở ngay với skeleton, không chờ dữ liệu mới trượt vào.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Đang lưu</span>
+        <span style="font-size: 13px; color: #635B53;">Footer khoá, body vẫn cuộn được; lưu xong drawer đóng và dòng mới sáng nhẹ trong sổ quỹ.</span>
+        <span style="height: 36px; display: inline-flex; align-self: flex-start; align-items: center; gap: 12px; padding: 0 16px; border-radius: 4px; background: #235B54; color: #FFFFFF; font-size: 13px; font-weight: 500; opacity: 0.9;">
+          <span style="width: 16px; height: 16px; border-radius: 999px; border: 1.5px solid rgba(255,255,255,0.35); border-top-color: #FFFFFF; animation: ibb-spin 700ms linear infinite;"></span>Đang lưu…
+        </span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Lưu lỗi</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #FCF0EE; border: 1px solid #F1CCC7; border-radius: 4px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" style="margin-top: 2px; flex-shrink: 0;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 8v5M12 16v.01"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Ca chiều đã chốt quỹ lúc 22:05 · ERR-4410. Không ghi được phiếu vào ca đã chốt.</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Drawer không đóng, dữ liệu giữ nguyên.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Chỉ đọc · ca đã chốt</span>
+        <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; height: 24px; padding: 0 12px; border-radius: 4px; background: #EDF7F1; border: 1px solid #C3E4D2; color: #256A49; font-size: 12px; font-weight: 500;">Đã chốt ca · 22:05</span>
+        <span style="font-size: 13px; color: #635B53;">Footer chỉ còn “In lại” và “Đóng”; mọi ô chuyển nền neutral-50 kèm ổ khoá.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Thay đổi chưa lưu</span>
+        <div style="border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+          <strong style="font-size: 14px;">Đóng phiếu mà chưa lưu?</strong>
+          <span style="font-size: 13px; color: #635B53;">Phiếu chi có 4 thay đổi chưa lưu. Đây là modal lớp 2 trên drawer.</span>
+          <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <span style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;">Tiếp tục nhập</span>
+            <span style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #C0392B; color: #FFFFFF; font-size: 13px; font-weight: 500; cursor: pointer;">Đóng và bỏ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1100}}">
+const BALANCE = 48260000;
+const LEDGER = [
+  ['PT-2026-0912', 'in', 'Doanh thu ca trưa · tiền mặt', 'Khách lẻ', 8420000],
+  ['PC-2026-0881', 'out', 'Mua đá và gas bếp', 'Cửa hàng Tân Phát', -1240000],
+  ['PT-2026-0913', 'in', 'Đặt cọc tiệc 12 khách', 'Chị Hồng Nhung', 3000000],
+  ['PC-2026-0882', 'out', 'Tạm ứng lương ca', 'Ngọc Hân', -2000000],
+  ['PT-2026-0914', 'in', 'Doanh thu ca chiều · thẻ', 'Khách lẻ', 7220000],
+  ['PC-2026-0883', 'out', 'Thanh toán hải sản', 'Hải sản Bình Minh', -9320000]
+];
+
+const TAG_IN = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #EDF7F1; border: 1px solid #C3E4D2; color: #256A49; font-size: 12px; font-weight: 500;';
+const TAG_OUT = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FCF0EE; border: 1px solid #F1CCC7; color: #96271B; font-size: 12px; font-weight: 500;';
+
+const num = (s) => parseInt(String(s).replace(/[^0-9]/g, ''), 10) || 0;
+const vnd = (n) => n.toLocaleString('vi-VN');
+
+class Component extends DCLogic {
+  state = { kind: 'out', amount: '9.320.000', dirty: true };
+
+  renderVals() {
+    const st = this.state;
+    const out = st.kind === 'out';
+    const amount = num(st.amount);
+    const after = BALANCE - amount;
+    const over = out && amount > BALANCE;
+
+    const errors = [];
+    if (amount <= 0) errors.push({ text: 'Số tiền phải lớn hơn 0.' });
+
+    let bal = 42180000;
+    const ledger = LEDGER.map(l => {
+      bal += l[4];
+      return {
+        code: l[0],
+        kind: l[1] === 'in' ? 'Thu' : 'Chi',
+        tagStyle: l[1] === 'in' ? TAG_IN : TAG_OUT,
+        note: l[2],
+        party: l[3],
+        amount: l[4] < 0 ? '(' + vnd(Math.abs(l[4])) + ')' : vnd(l[4]),
+        amountStyle: 'text-align: right; font-variant-numeric: tabular-nums; color: ' + (l[4] < 0 ? '#C0392B' : '#256A49') + ';',
+        balance: vnd(bal)
+      };
+    });
+
+    return {
+      ledger,
+      dirty: st.dirty,
+      hasErrors: errors.length > 0,
+      errors,
+      errorTitle: 'Còn ' + errors.length + ' lỗi cần sửa',
+
+      title: out ? 'Phiếu chi mới' : 'Phiếu thu mới',
+      kindLabel: out ? 'Phiếu chi' : 'Phiếu thu',
+      kindTagStyle: out ? TAG_OUT : TAG_IN,
+      code: out ? 'PC-2026-0884' : 'PT-2026-0915',
+      toggleKind: () => this.setState(s => ({
+        kind: s.kind === 'out' ? 'in' : 'out',
+        amount: s.kind === 'out' ? '3.000.000' : '9.320.000'
+      })),
+      category: out ? 'Thanh toán nhà cung cấp' : 'Đặt cọc tiệc',
+      categoryHint: out
+        ? 'Danh mục chi: NCC · lương · vận hành · tạm ứng · khác.'
+        : 'Danh mục thu: doanh thu ca · đặt cọc · hoàn ứng · khác.',
+      party: out ? 'Hải sản Bình Minh' : 'Chị Hồng Nhung',
+      partyType: out ? 'nhà cung cấp' : 'khách hàng',
+      note: out ? 'Thanh toán hoá đơn HD-BM-14208' : 'Đặt cọc tiệc 12 khách ngày 03/08',
+      personLabel: out ? 'Người chi' : 'Người nộp',
+
+      amount: st.amount,
+      onAmount: e => this.setState({ amount: e.target.value, dirty: true }),
+      amountBorder: amount <= 0 ? '#C0392B' : (over ? '#E6C98C' : '#E7E2DC'),
+      amountLabelStyle: amount <= 0 ? 'font-size: 13px; font-weight: 500; color: #C0392B;' : 'font-size: 13px; font-weight: 500;',
+      amountHintStyle: amount <= 0 ? 'font-size: 12px; color: #C0392B;' : (over ? 'font-size: 12px; color: #8A5D0E;' : 'font-size: 12px; color: #6E665C;'),
+      amountHint: amount <= 0 ? 'Số tiền phải lớn hơn 0.'
+        : (out ? 'Số dư sau khi chi: ' + vnd(after) + ' đ' : 'Số dư sau khi thu: ' + vnd(BALANCE + amount) + ' đ'),
+      amountValue: vnd(amount) + ' đ',
+      balanceLabel: vnd(BALANCE) + ' đ',
+      afterLabel: vnd(after) + ' đ',
+      overBalance: over,
+      footerHint: out ? 'Chi ' + vnd(amount) + ' đ · tiền mặt' : 'Thu ' + vnd(amount) + ' đ · tiền mặt'
+    };
+  }
+}
+
+</script>
+</body>
+</html>

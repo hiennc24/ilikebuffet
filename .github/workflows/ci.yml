@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    # Two empty Postgres DBs for the URL-to-URL drift check (see drift step).
+    # Integration tests spin their own testcontainers and don't use these.
+    services:
+      postgres-migrations:
+        image: postgres:16.4
+        env:
+          POSTGRES_USER: drift
+          POSTGRES_PASSWORD: drift
+          POSTGRES_DB: drift
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U drift" --health-interval 5s
+          --health-timeout 5s --health-retries 10
+      postgres-schema:
+        image: postgres:16.4
+        env:
+          POSTGRES_USER: drift
+          POSTGRES_PASSWORD: drift
+          POSTGRES_DB: drift
+        ports: ["5433:5432"]
+        options: >-
+          --health-cmd "pg_isready -U drift" --health-interval 5s
+          --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.14.0
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm prisma:generate
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Build
+        run: pnpm build
+
+      # Fails if prisma/schema.prisma has drifted from committed migrations.
+      - name: Schema/migration drift check
+        env:
+          MIGRATIONS_DB_URL: postgresql://drift:drift@localhost:5432/drift
+          SCHEMA_DB_URL: postgresql://drift:drift@localhost:5433/drift
+        run: bash scripts/check-migration-drift.sh
+
+      # Integration tests use testcontainers; Docker is available on ubuntu runners.
+      - name: Test (unit + integration)
+        run: pnpm test

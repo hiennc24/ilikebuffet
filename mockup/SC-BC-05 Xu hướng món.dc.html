@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-bc-05</span><span style="color: #D5CEC6;">·</span><span>template 4 · nặng bảng</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">/bao-cao/xu-huong-mon</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Xu hướng món</h1>
+    <p style="margin: 0; max-width: 82ch; font-size: 14px; color: #635B53;">Cột <strong style="font-weight: 500;">phân loại</strong> dùng badge CL2 · 14, tự tính từ ma trận lượt gọi × giá vốn với ngưỡng là trung vị của tập món đang xét — không phải số cố định.</p>
+  </header>
+
+  <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; line-height: 1.1; margin: 0;">30 ngày · 29/06 — 28/07/2026</h2>
+        <span style="font-size: 13px; color: #6E665C;">Chi nhánh Quận 1 · {{ shiftLabel }} · so với 30/05 — 28/06</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; flex: none;">
+        <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xuất Excel</button>
+        <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xuất PDF</button>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; cursor: pointer;" style-hover="background: #F4F1ED;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18v16H3zM8 2v6M16 2v6M3 11h18"></path></svg>
+          29/06 — 28/07/2026
+        </span>
+        <div style="display: flex; gap: 4px; padding: 4px; background: #F4F1ED; border-radius: 8px;">
+          <sc-for list="{{ presets }}" as="p" hint-placeholder-count="4">
+            <span onClick="{{ p.onPick }}" tabindex="0" style="{{ p.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ p.label }}</span>
+          </sc-for>
+        </div>
+        <span style="width: 1px; height: 24px; background: #E7E2DC;"></span>
+        <div style="display: flex; gap: 4px; padding: 4px; background: #F4F1ED; border-radius: 8px;">
+          <sc-for list="{{ shiftTabs }}" as="s" hint-placeholder-count="3">
+            <span onClick="{{ s.onPick }}" tabindex="0" style="{{ s.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ s.label }}</span>
+          </sc-for>
+        </div>
+      </div>
+      <span onClick="{{ toggleCompare }}" tabindex="0" style="{{ compareStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">So kỳ trước</span>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 8px;">
+      <span style="display: flex; gap: 12px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+        <span style="font-size: 13px; color: #8A5F12;"><strong style="font-weight: 500;">{{ missingCount }} món chưa có định lượng</strong>, không tính được giá vốn và không phân loại được. Lượt gọi của những món này vẫn vào tổng.</span>
+      </span>
+      <a href="#" style="color: #8A5F12; flex: none;">Mở định lượng món · SC-TD-03 →</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <span style="font-size: 13px; color: #6E665C;">{{ s.label }}</span>
+            <span style="{{ s.dirStyle }}">{{ s.dir }}</span>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 8px;">
+            <strong style="{{ s.valueStyle }}">{{ s.value }}</strong>
+            <span style="{{ s.deltaStyle }}">{{ s.delta }}</span>
+          </div>
+          <sc-if value="{{ s.hasSpark }}" hint-placeholder-val="{{ true }}">
+            <svg width="100%" height="28" viewBox="0 0 200 28" preserveAspectRatio="none" aria-hidden="true">
+              <path d="{{ s.spark }}" stroke="#2F7168" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+            </svg>
+          </sc-if>
+          <span style="{{ s.hintStyle }}">{{ s.hint }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <strong style="font-size: 16px; font-weight: 500;">{{ chartTitle }}</strong>
+          <span style="font-size: 13px; color: #6E665C;">{{ chartSub }}</span>
+        </div>
+        <div style="display: flex; gap: 4px; padding: 4px; background: #F4F1ED; border-radius: 8px; flex: none;">
+          <sc-for list="{{ chartViews }}" as="v" hint-placeholder-count="3">
+            <span onClick="{{ v.onPick }}" tabindex="0" style="{{ v.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ v.label }}</span>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <sc-for list="{{ hbars }}" as="b" hint-placeholder-count="15">
+          <div style="display: grid; grid-template-columns: 240px 1fr 132px; gap: 12px; align-items: center;">
+            <a href="#" style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ b.label }}</a>
+            <span style="position: relative; height: 20px; background: #F4F1ED; border-radius: 4px;">
+              <span style="{{ b.barStyle }}"></span>
+              <span style="{{ b.prevMarkStyle }}"></span>
+            </span>
+            <span style="display: flex; align-items: baseline; justify-content: flex-end; gap: 8px;">
+              <span style="font-size: 13px; font-variant-numeric: tabular-nums;">{{ b.value }}</span>
+              <span style="{{ b.deltaStyle }}">{{ b.delta }}</span>
+            </span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+        <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;"><span style="width: 12px; height: 12px; border-radius: 2px; background: #2F7168;"></span>Kỳ này</span>
+        <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;"><span style="width: 2px; height: 14px; background: #4A443E;"></span>Mốc kỳ trước</span>
+        <span style="font-size: 12px; color: #6E665C;">Vạch dọc là mức của kỳ trước — cột vượt qua vạch nghĩa là tăng.</span>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 44px 1fr 116px 96px 92px 92px 96px 108px 116px 136px 72px 132px; gap: 10px; align-items: center; min-height: 40px; padding: 0 16px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+        <span></span>
+        <span>Món</span>
+        <span>Nhóm</span>
+        <span>Thuộc gói</span>
+        <span style="text-align: right;">Kỳ này</span>
+        <span style="text-align: right;">Kỳ trước</span>
+        <span style="text-align: right;">Biến động</span>
+        <span style="text-align: right;">/100 khách</span>
+        <span style="text-align: right;">Giá vốn/suất</span>
+        <span style="text-align: right;">Tổng giá vốn</span>
+        <span style="text-align: right;">Hạng</span>
+        <span>Phân loại</span>
+      </div>
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="12">
+        <div style="{{ r.rowStyle }}" style-hover="background: #FAF8F6;">
+          <span style="{{ r.thumbStyle }}">{{ r.thumbInitial }}</span>
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+            <a href="#" style="font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.name }}</a>
+            <span style="font-size: 12px; color: #6E665C; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.code }}</span>
+          </span>
+          <span style="font-size: 13px; color: #4A443E; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.group }}</span>
+          <span style="{{ r.packStyle }}">{{ r.pack }}</span>
+          <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums;">{{ r.now }}</span>
+          <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ r.prev }}</span>
+          <span style="{{ r.deltaStyle }}">{{ r.delta }}</span>
+          <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ r.per100 }}</span>
+          <span style="{{ r.costStyle }}">{{ r.cost }}</span>
+          <span style="{{ r.totalCostStyle }}">{{ r.totalCost }}</span>
+          <span style="text-align: right; font-variant-numeric: tabular-nums; color: #6E665C;">{{ r.rank }}</span>
+          <span><span style="{{ r.classStyle }}" title="{{ r.classTitle }}">{{ r.className }}</span></span>
+        </div>
+      </sc-for>
+      <div style="position: sticky; bottom: 0; z-index: 2; display: grid; grid-template-columns: 44px 1fr 116px 96px 92px 92px 96px 108px 116px 136px 72px 132px; gap: 10px; align-items: center; min-height: 48px; padding: 0 16px; background: #FAF8F6; border-top: 1px solid #E7E2DC; font-size: 13px;">
+        <span></span>
+        <strong style="font-weight: 500; letter-spacing: 0.02em;">TỔNG · {{ dishCount }} món</strong>
+        <span></span><span></span>
+        <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{ tNow }}</strong>
+        <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ tPrev }}</span>
+        <strong style="{{ tDeltaStyle }}">{{ tDelta }}</strong>
+        <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ tPer100 }}</span>
+        <span></span>
+        <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{ tTotalCost }}</strong>
+        <span></span><span></span>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #6E665C;">
+      <span>Nguồn: dòng món trên đơn đã đóng · định lượng món hiện hành · giá nhập bình quân gia quyền trong kỳ.</span>
+      <span>Lượt gọi/100 khách chuẩn hoá theo số khách để so được giữa hai kỳ dài ngắn khác nhau. Tổng giá vốn tiêu hao đã trừ hao hụt sơ chế.</span>
+      <span><strong style="font-weight: 500;">Dòng tổng chỉ cộng {{ dishCount }} món trong bảng — chiếm {{ cogsShare }} giá vốn hàng bán của kỳ.</strong> Phần còn lại là đồ uống, gia vị chung, hao hụt và các món ngoài danh sách này; con số đầy đủ nằm ở SC-TC-01.</span>
+      <span>Phân loại lấy trung vị của {{ classifiedCount }} món có đủ định lượng làm ngưỡng — lượt gọi {{ medianCalls }} và giá vốn {{ medianCost }}. Món mới dưới 14 ngày không phân loại.</span>
+    </div>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">6 state của T4</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">1 · Đang tải</span>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        </div>
+        <span style="height: 140px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Ảnh thumbnail tải lười riêng, ô ảnh giữ đúng 32px từ đầu để bảng không nhảy khi ảnh về.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">2 · Không dữ liệu trong kỳ</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18v16H3zM8 2v6M16 2v6M3 11h18"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Không có lượt gọi nào trong kỳ</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Ca sáng chưa mở bán trong 30 ngày qua. Bỏ lọc ca hoặc chọn kỳ dài hơn.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">3 · Thiếu định lượng</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">2 món chưa có định lượng</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Ba cột giá vốn ghi “—”, cột phân loại <strong style="font-weight: 500;">để trống kèm link</strong> chứ không rơi mặc định vào “tiềm năng”. Trung vị tính trên tập món có đủ định lượng, không tính món thiếu.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">4 · Món mới trong kỳ</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #F4F1ED; border: 1px solid #E7E2DC; color: #6E665C; font-size: 12px;">Chưa đủ dữ liệu</span>
+          <span style="font-size: 12px; color: #6E665C;">món bán dưới 14 ngày</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Cột kỳ trước ghi “—” chứ không ghi 0, biến động % để trống. Không phân loại — một tuần dữ liệu không đủ để gọi một món là “cần xem lại”.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">5 · Không có quyền xem</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Chỉ chủ và quản lý</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Bếp trưởng xem được lượt gọi ở báo cáo bếp, nhưng ba cột giá vốn và cột phân loại thì không.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">6 · Lỗi tải một phần</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; background: #FCF0EE; border: 1px solid #F1CCC7; border-radius: 4px;">
+          <span style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+            <span style="font-size: 13px; color: #96271B;">Không tải được vùng biểu đồ</span>
+          </span>
+          <span style="height: 28px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 13px; font-weight: 500; color: #96271B; cursor: pointer; flex: none;">Thử lại</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Bảng phân tích và stat strip vẫn hoạt động. Biểu đồ tải lười nên hỏng riêng được — phải báo riêng thay vì bỏ trống một khoảng cao 400px.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">7 · Món đã ngừng bán</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.6" stroke-linecap="round" style="margin-top: 2px; flex-shrink: 0;"><path d="M3 6h18v4H3zM5 10v10h14V10M10 14h4"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Món ngừng bán giữa kỳ · vẫn có lượt gọi trước khi ngừng</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Vẫn hiện trong bảng, tên gạch nhạt, không phân loại và không tính vào trung vị. Bỏ hẳn khỏi bảng thì tổng lượt gọi sẽ không khớp với báo cáo doanh thu.</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1100}}">
+const SEG = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #635B53; cursor: pointer;';
+const SEG_ON = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(30,27,25,0.06); font-size: 13px; font-weight: 500; color: #1C4842; cursor: pointer;';
+const DIR_TAG = 'height: 20px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 11px; font-weight: 500; white-space: nowrap; background: #F4F1ED; color: #6E665C;';
+const DIV = { p3: '#1E5C3F', p2: '#3F8560', p1: '#6FA98A', zero: '#6E665C', n1: '#D99A8C', n2: '#C4634F', n3: '#A32E22' };
+
+// Badge phân loại món · CL2 · 14
+const CLASSES = {
+  sao:     { label: 'Ngôi sao',    style: 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #EDF7F1; border: 1px solid #C3E4D2; color: #256A49; font-size: 12px; font-weight: 500; white-space: nowrap;' },
+  chuluc:  { label: 'Chủ lực',     style: 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #EEF5FA; border: 1px solid #C7DDEC; color: #2C6E9B; font-size: 12px; font-weight: 500; white-space: nowrap;' },
+  tiemnang:{ label: 'Tiềm năng',   style: 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #F4F1ED; border: 1px solid #E7E2DC; color: #4A443E; font-size: 12px; font-weight: 500; white-space: nowrap;' },
+  xemlai:  { label: 'Cần xem lại', style: 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FCF0EE; border: 1px solid #F1CCC7; color: #96271B; font-size: 12px; font-weight: 500; white-space: nowrap;' },
+  chua:    { label: 'Chưa đủ dữ liệu', style: 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FAF8F6; border: 1px dashed #C6BEB4; color: #8A8178; font-size: 12px; white-space: nowrap;' }
+};
+
+const num = (n) => n.toLocaleString('vi-VN');
+const dec1 = (n) => n.toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+const GUESTS = 3420;        // tổng lượt khách trong kỳ
+const GUESTS_PREV = 3218;
+
+// [mã, tên, nhóm, thuộc gói, lượt gọi kỳ này, kỳ trước, giá vốn/suất (đ), cờ]
+// cờ: 'new' món mới · 'nodef' thiếu định lượng · 'stopped' đã ngừng bán
+// Khối lượng khớp SC-KHO-13: bò Mỹ ba chỉ 42 phần/ngày → 1.260 phần/30 ngày,
+// bò cuộn nấm kim châm 31 phần/ngày → 930. Giá vốn/suất cũng khớp SC-KHO-13
+// (0,18 kg × 385.000 đ/kg = 69.300 đ). 18 món này là phần lớn nhưng KHÔNG phải
+// toàn bộ giá vốn nguyên liệu của kỳ — xem chú thích dưới bảng.
+const DISHES = [
+  ['M-014', 'Bò Mỹ ba chỉ nướng tảng', 'Thịt nướng', 'Tối cao cấp', 1260, 1136, 69300],
+  ['M-002', 'Lẩu thái hải sản', 'Lẩu', 'Mọi gói', 1050, 1068, 41200],
+  ['M-021', 'Hàu nướng mỡ hành', 'Hải sản', 'Tối cao cấp', 852, 633, 58400],
+  ['M-008', 'Bò cuộn nấm kim châm', 'Thịt nướng', 'Mọi gói', 930, 763, 27600],
+  ['M-033', 'Tôm sú nướng muối ớt', 'Hải sản', 'Tối cao cấp', 660, 713, 62800],
+  ['M-017', 'Mực trứng nướng sa tế', 'Hải sản', 'Tối tiêu chuẩn', 540, 568, 44100],
+  ['M-005', 'Ba chỉ heo nướng riềng', 'Thịt nướng', 'Mọi gói', 510, 438, 21400],
+  ['M-041', 'Chè khúc bạch', 'Tráng miệng', 'Mọi gói', 435, 411, 8600],
+  ['M-026', 'Cánh gà chiên mắm', 'Món chiên', 'Trưa', 390, 476, 18900],
+  ['M-050', 'Rau củ nướng thập cẩm', 'Rau', 'Mọi gói', 336, 319, 9400],
+  ['M-062', 'Salad cá ngừ sốt mè', 'Khai vị', 'Tối cao cấp', 186, 219, 52300],
+  ['M-058', 'Sò điệp nướng phô mai', 'Hải sản', 'Tối cao cấp', 162, 142, 71600],
+  ['M-071', 'Nem hải sản chiên giòn', 'Món chiên', 'Mọi gói', 144, 154, 14200],
+  ['M-044', 'Kem dừa non', 'Tráng miệng', 'Mọi gói', 120, 112, 11800],
+  ['M-079', 'Bạch tuộc nướng sa tế', 'Hải sản', 'Tối cao cấp', 78, null, 66400, 'new'],
+  ['M-083', 'Gỏi ngó sen tôm thịt', 'Khai vị', 'Trưa', 54, 62, null, 'nodef'],
+  ['M-084', 'Súp bí đỏ kem tươi', 'Khai vị', 'Trưa', 27, 41, null, 'nodef'],
+  ['M-037', 'Cá hồi áp chảo', 'Hải sản', 'Đã ngừng', 96, 263, 78200, 'stopped']
+];
+
+// Giá vốn hàng bán cả kỳ, lấy từ SC-TC-01 — dùng để nói rõ bảng này chiếm bao nhiêu phần
+const PERIOD_COGS = 523520000;
+
+function median(arr) {
+  const s = arr.slice().sort((a, b) => a - b);
+  const m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+
+class Component extends DCLogic {
+  state = { preset: '30 ngày', shift: 'all', compare: true, view: 'luot' };
+
+  renderVals() {
+    const st = this.state;
+
+    // Tập món được phân loại: đang bán, có định lượng, không phải món mới
+    const classifiable = DISHES.filter(d => !d[7]);
+    const medCalls = median(classifiable.map(d => d[4]));
+    const medCost = median(classifiable.map(d => d[6]));
+
+    const enriched = DISHES.map(d => {
+      const flag = d[7] || null;
+      const now = d[4], prev = d[5], cost = d[6];
+      const totalCost = cost === null ? null : now * cost;
+      let cls = null;
+      if (!flag) {
+        const many = now >= medCalls;
+        const pricey = cost >= medCost;
+        cls = many ? (pricey ? 'chuluc' : 'sao') : (pricey ? 'xemlai' : 'tiemnang');
+      } else if (flag === 'new' || flag === 'stopped') {
+        cls = 'chua';
+      }
+      return { code: d[0], name: d[1], group: d[2], pack: d[3], now, prev, cost, totalCost, flag, cls };
+    });
+
+    const ranked = enriched.slice().sort((a, b) => b.now - a.now);
+    const rankOf = {};
+    ranked.forEach((d, i) => { rankOf[d.code] = i + 1; });
+
+    const tNow = enriched.reduce((s, d) => s + d.now, 0);
+    const tPrev = enriched.reduce((s, d) => s + (d.prev || 0), 0);
+    const tTotalCost = enriched.reduce((s, d) => s + (d.totalCost || 0), 0);
+    const missingCount = enriched.filter(d => d.flag === 'nodef').length;
+    const stoppedCount = enriched.filter(d => d.flag === 'stopped').length;
+    const newCount = enriched.filter(d => d.flag === 'new').length;
+    const zeroCalls = 6;   // món trong thực đơn không ai gọi trong kỳ
+    const serving = enriched.filter(d => d.flag !== 'stopped').length + zeroCalls;
+    const avgCostPerCall = Math.round(tTotalCost / enriched.filter(d => d.totalCost !== null).reduce((s, d) => s + d.now, 0));
+    const cogsShare = (tTotalCost / PERIOD_COGS) * 100;
+
+    // Sparkline suy từ chính tổng lượt gọi: 6 kỳ con 5 ngày, cộng lại đúng bằng tổng
+    const SHAPE = [0.150, 0.158, 0.166, 0.174, 0.176, 0.176];
+    const buckets = SHAPE.map(w => Math.round(tNow * w));
+    buckets[buckets.length - 1] = tNow - buckets.slice(0, -1).reduce((s, v) => s + v, 0);
+
+    const divColor = (pct) => {
+      if (pct === null || pct === 0) return DIV.zero;
+      const mag = Math.abs(pct);
+      const step = mag >= 15 ? 3 : (mag >= 5 ? 2 : 1);
+      return pct > 0 ? DIV['p' + step] : DIV['n' + step];
+    };
+
+    const statCard = (s) => {
+      const up = s.delta >= 0;
+      const good = s.dir === 'higher' ? up : (s.dir === 'lower' ? !up : null);
+      return {
+        label: s.label,
+        dir: s.dir === 'higher' ? 'cao hơn tốt hơn' : (s.dir === 'lower' ? 'thấp hơn tốt hơn' : 'trung tính'),
+        dirStyle: DIR_TAG,
+        value: s.value,
+        valueStyle: 'font-size: 24px; font-weight: 500; font-variant-numeric: tabular-nums;',
+        delta: s.delta === null ? '' : (up ? '+' : '−') + dec1(Math.abs(s.delta)) + '%',
+        deltaStyle: 'font-size: 13px; font-variant-numeric: tabular-nums; color: '
+          + (good === true ? '#256A49' : (good === false ? '#C0392B' : '#635B53')) + ';',
+        hasSpark: !!s.spark,
+        spark: s.spark ? (function (vals) {
+          const mx = Math.max.apply(null, vals), mn = Math.min.apply(null, vals), sp = mx - mn || 1;
+          return vals.map((v, i) => (i === 0 ? 'M' : 'L') + ((i / (vals.length - 1)) * 200).toFixed(1) + ' ' + (24 - ((v - mn) / sp) * 20).toFixed(1)).join(' ');
+        })(s.spark) : '',
+        hint: s.hint,
+        hintStyle: 'font-size: 12px; color: #6E665C;'
+      };
+    };
+
+    // ── bar ngang · 15 dòng, ba kiểu xem ─────────────────────────
+    let barSource, barTitle, barSub, barFmt;
+    if (st.view === 'luot') {
+      barSource = ranked.slice(0, 15).map(d => ({ label: d.name, now: d.now, prev: d.prev }));
+      barTitle = 'Top 15 món theo lượt gọi';
+      barSub = 'Vạch dọc là mức kỳ trước · món mới chưa có vạch';
+      barFmt = (v) => num(v) + ' lượt';
+    } else if (st.view === 'giavon') {
+      barSource = enriched.filter(d => d.totalCost !== null).sort((a, b) => b.totalCost - a.totalCost).slice(0, 15)
+        .map(d => ({ label: d.name, now: d.totalCost, prev: d.prev === null ? null : d.prev * d.cost }));
+      barTitle = 'Top 15 món theo giá vốn tiêu hao';
+      barSub = 'Đơn vị đồng · món tiêu hao nhiều nhất chưa chắc là món gọi nhiều nhất';
+      barFmt = (v) => num(v);
+    } else {
+      const byGroup = {};
+      enriched.forEach(d => {
+        if (!byGroup[d.group]) byGroup[d.group] = { now: 0, prev: 0 };
+        byGroup[d.group].now += d.now;
+        byGroup[d.group].prev += d.prev || 0;
+      });
+      barSource = Object.keys(byGroup).map(g => ({ label: g, now: byGroup[g].now, prev: byGroup[g].prev }))
+        .sort((a, b) => b.now - a.now);
+      barTitle = 'Lượt gọi theo nhóm món';
+      barSub = 'Gộp cả thực đơn · vạch dọc là mức kỳ trước của cùng nhóm';
+      barFmt = (v) => num(v) + ' lượt';
+    }
+    const barMax = barSource.reduce((m, b) => Math.max(m, b.now, b.prev || 0), 0);
+
+    return {
+      shiftLabel: st.shift === 'all' ? 'tất cả ca' : st.shift,
+      presets: ['7 ngày', '30 ngày', 'Quý này', 'Năm nay'].map(p => ({
+        label: p, style: st.preset === p ? SEG_ON : SEG, onPick: () => this.setState({ preset: p })
+      })),
+      shiftTabs: [['all', 'Tất cả ca'], ['Ca trưa', 'Ca trưa'], ['Ca tối', 'Ca tối']].map(s => ({
+        label: s[1], style: st.shift === s[0] ? SEG_ON : SEG, onPick: () => this.setState({ shift: s[0] })
+      })),
+      compareStyle: 'height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; cursor: pointer; flex: none; border: 1px solid '
+        + (st.compare ? '#B0D4CF' : '#E7E2DC') + '; background: ' + (st.compare ? '#EFF6F5' : '#FFFFFF') + '; color: ' + (st.compare ? '#1C4842' : '#4A443E') + '; font-weight: ' + (st.compare ? 500 : 400) + ';',
+      toggleCompare: () => this.setState(s => ({ compare: !s.compare })),
+
+      missingCount: num(missingCount),
+      classifiedCount: num(classifiable.length),
+      medianCalls: num(medCalls) + ' lượt',
+      medianCost: num(medCost) + ' đ/suất',
+      cogsShare: dec1(cogsShare) + '%',
+
+      stats: [
+        { label: 'Tổng lượt gọi', value: num(tNow), delta: ((tNow - tPrev) / tPrev) * 100, dir: 'higher',
+          spark: buckets, hint: 'Trên ' + num(GUESTS) + ' lượt khách · 6 kỳ con 5 ngày' },
+        { label: 'Số món đang phục vụ', value: num(serving), delta: null, dir: 'neutral',
+          hint: num(stoppedCount) + ' món ngừng giữa kỳ · ' + num(newCount) + ' món mới · ' + num(zeroCalls) + ' món không ai gọi' },
+        { label: 'Món không ai gọi', value: num(zeroCalls), delta: 20.0, dir: 'lower',
+          hint: 'Không có lượt gọi nào trong 30 ngày' },
+        { label: 'Giá vốn TB/lượt gọi', value: num(avgCostPerCall), delta: 3.4, dir: 'lower',
+          hint: 'Đồng · tính trên món có đủ định lượng' }
+      ].map(statCard),
+
+      chartTitle: barTitle,
+      chartSub: barSub,
+      chartViews: [['luot', 'Lượt gọi'], ['giavon', 'Giá vốn tiêu hao'], ['nhom', 'Theo nhóm món']].map(v => ({
+        label: v[1], style: st.view === v[0] ? SEG_ON : SEG, onPick: () => this.setState({ view: v[0] })
+      })),
+      hbars: barSource.map(b => {
+        const pct = b.prev ? ((b.now - b.prev) / b.prev) * 100 : null;
+        return {
+          label: b.label,
+          value: barFmt(b.now),
+          barStyle: 'position: absolute; left: 0; top: 0; display: block; height: 20px; border-radius: 4px; background: #2F7168; width: '
+            + ((b.now / barMax) * 100).toFixed(1) + '%;',
+          prevMarkStyle: b.prev
+            ? 'position: absolute; top: -2px; left: ' + ((b.prev / barMax) * 100).toFixed(1) + '%; width: 2px; height: 24px; background: #4A443E;'
+            : 'display: none;',
+          delta: pct === null ? 'mới' : (pct >= 0 ? '+' : '−') + dec1(Math.abs(pct)) + '%',
+          deltaStyle: 'font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; color: ' + (pct === null ? '#8A8178' : divColor(pct)) + ';'
+        };
+      }),
+
+      rows: enriched.map((d, i) => {
+        const pct = d.prev === null ? null : ((d.now - d.prev) / d.prev) * 100;
+        const stopped = d.flag === 'stopped';
+        const nodef = d.flag === 'nodef';
+        const cls = d.cls ? CLASSES[d.cls] : null;
+        return {
+          thumbInitial: d.name.charAt(0),
+          thumbStyle: 'width: 32px; height: 32px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 4px; background: #F4F1ED; border: 1px solid #E7E2DC; font-size: 13px; font-weight: 500; color: #8A8178;',
+          name: d.name,
+          code: d.code + (stopped ? ' · đã ngừng bán' : ''),
+          group: d.group,
+          pack: d.pack,
+          packStyle: 'font-size: 12px; color: ' + (stopped ? '#8A8178' : '#4A443E') + '; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;',
+          now: num(d.now),
+          prev: d.prev === null ? '—' : num(d.prev),
+          delta: pct === null ? '—' : (pct >= 0 ? '+' : '−') + dec1(Math.abs(pct)) + '%',
+          deltaStyle: 'text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (pct === null ? '#ABA298' : divColor(pct)) + ';',
+          per100: dec1((d.now / GUESTS) * 100),
+          cost: d.cost === null ? '—' : num(d.cost),
+          costStyle: 'text-align: right; font-variant-numeric: tabular-nums; color: ' + (d.cost === null ? '#ABA298' : '#4A443E') + ';',
+          totalCost: d.totalCost === null ? '—' : num(d.totalCost),
+          totalCostStyle: 'text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (d.totalCost === null ? '#ABA298' : '#1E1B19') + ';',
+          rank: num(rankOf[d.code]),
+          className: nodef ? 'Thiếu định lượng' : (cls ? cls.label : '—'),
+          classStyle: nodef
+            ? 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FDF6E7; border: 1px dashed #F0DDAF; color: #8A5F12; font-size: 12px; white-space: nowrap;'
+            : (cls ? cls.style : 'font-size: 13px; color: #ABA298;'),
+          classTitle: nodef
+            ? 'Chưa có định lượng nên không có trục giá vốn — mở SC-TD-03 để bổ sung'
+            : (d.flag
+                ? (d.flag === 'new' ? 'Món mới dưới 14 ngày, chưa đủ dữ liệu để phân loại' : 'Món đã ngừng bán giữa kỳ, không phân loại và không tính vào trung vị')
+                : num(d.now) + ' lượt gọi (trung vị ' + num(medCalls) + ') · giá vốn ' + num(d.cost) + ' đ/suất (trung vị ' + num(medCost) + ' đ)'),
+          rowStyle: 'display: grid; grid-template-columns: 44px 1fr 116px 96px 92px 92px 96px 108px 116px 136px 72px 132px; gap: 10px; align-items: center; min-height: 52px; padding: 0 16px; font-size: 13px; border-bottom: 1px solid #F0EBE5;'
+            + (stopped ? ' background: #FAF8F6;' : '')
+        };
+      }),
+
+      dishCount: num(enriched.length),
+      tNow: num(tNow),
+      tPrev: num(tPrev),
+      tDelta: (tNow >= tPrev ? '+' : '−') + dec1(Math.abs(((tNow - tPrev) / tPrev) * 100)) + '%',
+      tDeltaStyle: 'text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; color: ' + divColor(((tNow - tPrev) / tPrev) * 100) + ';',
+      tPer100: dec1((tNow / GUESTS) * 100),
+      tTotalCost: num(tTotalCost)
+    };
+  }
+}
+
+</script>
+</body>
+</html>

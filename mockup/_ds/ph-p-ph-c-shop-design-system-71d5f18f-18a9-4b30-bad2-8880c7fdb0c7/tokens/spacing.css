@@ -1,0 +1,44 @@
+/* ============================================================
+   SPACING, RADII, SHADOWS — Pháp Phục Shop
+   Calm, architectural rhythm. Soft, low, warm shadows only —
+   nothing harsh. Radii are gentle, never pill-round on surfaces.
+   ============================================================ */
+:root {
+  /* 4px base scale */
+  --space-1:  0.25rem;  /* 4 */
+  --space-2:  0.5rem;   /* 8 */
+  --space-3:  0.75rem;  /* 12 */
+  --space-4:  1rem;     /* 16 */
+  --space-5:  1.5rem;   /* 24 */
+  --space-6:  2rem;     /* 32 */
+  --space-7:  3rem;     /* 48 */
+  --space-8:  4rem;     /* 64 */
+  --space-9:  6rem;     /* 96 */
+  --space-10: 8rem;     /* 128 */
+
+  /* Corner radii — soft, hand-finished feel */
+  --radius-xs:  2px;
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  14px;
+  --radius-xl:  22px;
+  --radius-arch: 999px 999px 0 0;  /* the doorway arch motif */
+  --radius-full: 999px;
+
+  /* Shadows — warm-tinted, diffuse, like soft gallery light */
+  --shadow-xs: 0 1px 2px rgba(43, 35, 27, 0.05);
+  --shadow-sm: 0 2px 8px rgba(43, 35, 27, 0.06);
+  --shadow-md: 0 8px 24px rgba(43, 35, 27, 0.08);
+  --shadow-lg: 0 18px 48px rgba(43, 35, 27, 0.10);
+  --shadow-inset: inset 0 1px 3px rgba(43, 35, 27, 0.06);
+
+  /* Motion — slow, settled, never bouncy */
+  --ease-calm: cubic-bezier(0.22, 0.61, 0.36, 1); /* @kind other */
+  --dur-fast: 160ms; /* @kind other */
+  --dur-base: 280ms; /* @kind other */
+  --dur-slow: 520ms; /* @kind other */
+
+  /* Layout */
+  --container: 1200px; /* @kind spacing */
+  --gutter: var(--space-5); /* @kind spacing */
+}

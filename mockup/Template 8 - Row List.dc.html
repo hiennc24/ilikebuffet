@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 40px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">ilikebuffet admin · template 8</div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Danh sách dạng dòng</h1>
+    <p style="margin: 0; max-width: 82ch; font-size: 14px; color: #635B53;">Kế thừa page header, tabs, filter bar, bulk bar và phân trang của T1. Thay slot bảng cột bằng <strong style="font-weight: 500;">dải dòng có tiêu đề nhóm</strong>. Dùng khi mỗi bản ghi là một câu chuyện ngắn cần đọc, không phải một hàng số cần so.</p>
+    <div style="display: flex; gap: 12px; margin-top: 4px; flex-wrap: wrap;">
+      <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #235B54;"></span>bắt buộc</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;"><span style="width: 10px; height: 10px; border-radius: 2px; border: 1px dashed #ABA298;"></span>tuỳ chọn</span>
+    </div>
+  </header>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Hợp đồng slot</h2>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 40px 200px 120px 280px 1fr; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+        <span style="padding: 12px;">#</span><span style="padding: 12px;">Slot</span><span style="padding: 12px;">Yêu cầu</span><span style="padding: 12px;">Component nguồn</span><span style="padding: 12px;">Khác T1 ở chỗ nào · khi rỗng</span>
+      </div>
+      <sc-for list="{{ slots }}" as="s" hint-placeholder-count="7">
+        <div style="display: grid; grid-template-columns: 40px 200px 120px 280px 1fr; border-bottom: 1px solid #F4F1ED; font-size: 13px; align-items: start;">
+          <span style="padding: 12px; color: #6E665C;">{{ s.n }}</span>
+          <span style="padding: 12px; font-weight: 500;">{{ s.name }}</span>
+          <span style="padding: 12px;"><span style="{{ s.tagStyle }}">{{ s.req }}</span></span>
+          <span style="padding: 12px;"><code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">{{ s.source }}</code></span>
+          <span style="padding: 12px; color: #635B53;">{{ s.note }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+      <strong style="font-size: 15px; font-weight: 500;">Luật riêng của T8</strong>
+      <sc-for list="{{ rules }}" as="r" hint-placeholder-count="7">
+        <div style="display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start;">
+          <span style="width: 6px; height: 6px; margin-top: 8px; border-radius: 999px; background: #235B54;"></span>
+          <span style="font-size: 13px; color: #4A443E;">{{ r.text }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">chọn T1 hay T8</span><span style="color: #4A443E;">Người dùng <strong style="font-weight: 500;">so sánh giữa các dòng</strong> (số tiền, ngày, số lượng) → T1. Người dùng <strong style="font-weight: 500;">đọc từng dòng rồi rời đi</strong> → T8. Nếu bạn thấy mình muốn thêm dòng tổng, đó là T1.</span>
+      <span style="color: #6E665C;">không có</span><span style="color: #4A443E;">Không header cột · không sắp xếp theo cột · không dòng tổng · không chọn cột hiển thị. Cần những thứ đó thì màn đó là T1.</span>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">T8 · a</span>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Nhóm theo thời gian</h2>
+      <span style="font-size: 13px; color: #6E665C;">trung tâm thông báo · dòng đồng nhất, nhóm là mốc ngày</span>
+    </div>
+
+    <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+
+      <div style="border: 1px solid #B0D4CF; border-radius: 8px; padding: 8px 12px 12px;">
+        <span style="display: inline-flex; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #1C4842; background: #EFF6F5; border-radius: 4px; padding: 2px 8px;">slot 1 · page header</span>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-top: 10px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <h3 style="margin: 0; font-size: 20px; font-weight: 500;">Thông báo</h3>
+            <span style="font-size: 13px; color: #6E665C;">Nội dung theo quyền của bạn</span>
+          </div>
+          <div style="display: flex; gap: 8px; flex: none;">
+            <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E;">Đánh dấu tất cả đã đọc</span>
+            <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E;">Cấu hình thông báo</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="border: 1px solid #B0D4CF; border-radius: 8px; padding: 8px 12px 12px;">
+        <span style="display: inline-flex; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #1C4842; background: #EFF6F5; border-radius: 4px; padding: 2px 8px;">slot 2 · tabs</span>
+        <div style="display: flex; align-items: flex-end; gap: 4px; margin-top: 10px; border-bottom: 1px solid #E7E2DC;">
+          <sc-for list="{{ demoTabs }}" as="t" hint-placeholder-count="3">
+            <span style="{{ t.style }}">{{ t.label }}<span style="{{ t.countStyle }}">{{ t.count }}</span></span>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="border: 1px dashed #ABA298; border-radius: 8px; padding: 8px 12px 12px;">
+        <span style="display: inline-flex; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #635B53; background: #F4F1ED; border-radius: 4px; padding: 2px 8px;">slot 3 · filter bar</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px;">Loại: tất cả
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8178" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg>
+            </span>
+            <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px;">Mức độ: tất cả
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8178" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg>
+            </span>
+            <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.8" stroke-linecap="round"><path d="M3 5h18M6 12h12M10 19h4"></path></svg>
+              Bộ lọc nâng cao
+            </span>
+          </div>
+          <span style="font-size: 13px; color: #6E665C; font-variant-numeric: tabular-nums;">14 thông báo · 5 chưa đọc</span>
+        </div>
+      </div>
+
+      <div style="border: 1px solid #B0D4CF; border-radius: 8px; padding: 8px 12px 12px;">
+        <span style="display: inline-flex; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #1C4842; background: #EFF6F5; border-radius: 4px; padding: 2px 8px;">slot 5 · dải dòng có nhóm</span>
+        <div style="margin-top: 10px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+          <sc-for list="{{ timeGroups }}" as="g" hint-placeholder-count="2">
+            <div style="display: flex; flex-direction: column;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 16px; background: #FAF8F6; border-bottom: 1px solid #F0EBE5;">
+                <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">{{ g.label }}</span>
+                <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ g.count }}</span>
+              </div>
+              <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="3">
+                <div style="{{ r.rowStyle }}" style-hover="background: #FAF8F6;">
+                  <span style="{{ r.dotStyle }}"></span>
+                  <span style="{{ r.iconStyle }}">{{ r.icon }}</span>
+                  <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                    <span style="{{ r.titleStyle }}">{{ r.title }}</span>
+                    <span style="font-size: 12px; color: #6E665C; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.body }}</span>
+                  </span>
+                  <a href="#" style="font-size: 12px; white-space: nowrap;">{{ r.target }}</a>
+                  <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums; white-space: nowrap;">{{ r.time }}</span>
+                  <span style="display: flex; justify-content: flex-end;">
+                    <sc-if value="{{ r.hasAction }}" hint-placeholder-val="{{ false }}">
+                      <span style="{{ r.actionStyle }}">{{ r.actionLabel }}</span>
+                    </sc-if>
+                  </span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+        <span style="display: block; margin-top: 8px; font-size: 12px; color: #6E665C;">Dòng dùng component CL2 · 17. Tiêu đề nhóm sticky khi cuộn; nhóm rỗng bỏ hẳn, không hiện tiêu đề trống.</span>
+      </div>
+
+      <div style="border: 1px dashed #ABA298; border-radius: 8px; padding: 8px 12px 12px;">
+        <span style="display: inline-flex; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #635B53; background: #F4F1ED; border-radius: 4px; padding: 2px 8px;">slot 6 · phân trang</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 10px;">
+          <span style="font-size: 13px; color: #6E665C; font-variant-numeric: tabular-nums;">1–14 / 128 thông báo</span>
+          <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E;">Tải thêm 20 dòng</span>
+        </div>
+        <span style="display: block; margin-top: 8px; font-size: 12px; color: #6E665C;">Danh sách nhóm theo thời gian dùng <strong style="font-weight: 500;">tải thêm</strong> thay vì số trang — cắt dòng thời gian thành trang 1, 2, 3 làm mất cảm giác liên tục.</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">T8 · b</span>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Nhóm theo loại đối tượng</h2>
+      <span style="font-size: 13px; color: #6E665C;">kết quả tìm kiếm · mỗi nhóm tối đa 5 dòng + link xem tất cả</span>
+    </div>
+
+    <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A8178" stroke-width="1.8" stroke-linecap="round" style="flex: none;"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4"></path></svg>
+        <span style="flex: 1; font-size: 15px;">nguyễn</span>
+        <span style="font-size: 13px; color: #6E665C; font-variant-numeric: tabular-nums;">28 kết quả</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+        <sc-for list="{{ typeGroups }}" as="g" hint-placeholder-count="3">
+          <div style="display: flex; flex-direction: column;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 16px; background: #FAF8F6; border-bottom: 1px solid #F0EBE5;">
+              <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">{{ g.label }}</span>
+              <a href="#" style="font-size: 12px;">{{ g.more }}</a>
+            </div>
+            <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="3">
+              <div style="{{ r.rowStyle }}" style-hover="background: #FAF8F6;">
+                <span style="{{ r.iconStyle }}">{{ r.icon }}</span>
+                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                  <span style="font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.titlePre }}<mark style="background: #DDECEA; color: #1C4842; padding: 0 1px; border-radius: 2px;">{{ r.titleHit }}</mark>{{ r.titlePost }}</span>
+                  <span style="font-size: 12px; color: #6E665C; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.sub }}</span>
+                </span>
+                <span style="{{ r.badgeStyle }}">{{ r.badge }}</span>
+                <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums; white-space: nowrap;">{{ r.when }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+      <span style="font-size: 12px; color: #6E665C;">Từ khoá khớp tô nền <code style="font-family: ui-monospace, Menlo, monospace;">bg-accent</code>, không in đậm — in đậm trộn với weight của tiêu đề dòng.</span>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">5 state bắt buộc</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">1 · Đang tải</span>
+        <span style="height: 20px; width: 96px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="height: 56px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="height: 56px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="height: 56px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Skeleton giữ đúng chiều cao dòng của biến thể đang dùng (56px hoặc 60px), và giữ cả tiêu đề nhóm đầu tiên.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">2 · Rỗng do bộ lọc</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18M6 12h12M10 19h4"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Không có dòng nào khớp bộ lọc</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Nêu đúng bộ lọc đang chặn và cho gỡ ngay tại đây.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">3 · Rỗng thật</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #EDF7F1; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#256A49" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M8 12l3 3 5-6"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Không có gì để đọc</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Với hàng chờ việc, rỗng là tin tốt — nói bằng giọng tích cực, không dùng minh hoạ buồn.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">4 · Lọc theo quyền</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.6" stroke-linecap="round" style="margin-top: 2px; flex-shrink: 0;"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Nhóm ngoài quyền biến mất khỏi dải, badge đếm cũng không tính</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;"><strong style="font-weight: 500;">Lọc quyền TRƯỚC khi đếm.</strong> Đếm rồi mới lọc sẽ cho badge 12 nhưng bấm vào thì trống — lỗi này phá niềm tin nhanh hơn cả việc thiếu chức năng.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">5 · Lỗi tải</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #FCF0EE; border: 1px solid #F1CCC7; border-radius: 4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+          <span style="font-size: 13px; color: #96271B;">Không tải được danh sách</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Badge đếm trên tab ẩn theo. Giữ số cũ khi không tải được là nói dối về khối lượng việc còn lại.</span>
+      </div>
+      <div style="background: #FAF8F6; border: 1px dashed #C6BEB4; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Khi nào KHÔNG dùng T8</span>
+        <span style="font-size: 13px; color: #4A443E;">Cần so sánh số giữa các dòng, cần dòng tổng, cần sắp xếp theo cột, cần xuất Excel đúng cấu trúc bảng → T1. Một danh sách dòng mà người dùng cứ muốn “sắp theo cột này” là dấu hiệu nó nên là bảng.</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">widthTier</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">widthTier · ops</h2>
+      <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">KẾ THỪA <span>widthTier</span> từ T1 — định nghĩa hai lớp và ba mức nằm ở “widthTier · lớp chiều rộng” trong Template 1+2, không mô tả lại ở đây</code>
+      <span style="font-size: 13px; color: #635B53; max-width: 84ch;">Sàn <code style="font-family: ui-monospace, Menlo, monospace;">--ibb-min-ops</code> 768px. T8 chịu ops <strong style="font-weight: 500;">dễ hơn T1</strong>: dòng danh sách không có header cột nên không có lưới nào phải giữ thẳng — dữ kiện trong dòng tự xuống hàng được. Không dùng <code style="font-family: ui-monospace, Menlo, monospace;">essentialColumns</code>: T8 không có cột.</span>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 152px 1fr; gap: 16px; align-items: center; min-height: 40px; padding: 0 20px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+        <span>Mức</span><span>Phần riêng của T8</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 152px 1fr; gap: 16px; align-items: start; padding: 16px 20px; border-bottom: 1px solid #F0EBE5;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <strong style="font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums;">1024 – 1279px</strong>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">--ibb-bp-md → --ibb-bp-lg</code>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #ABA298;">·</span><span><strong style="font-weight: 500;">Giữ nguyên.</strong> Dòng danh sách vốn đã linh hoạt — một cột nội dung <code style="font-family: ui-monospace, Menlo, monospace;">1fr</code> và một cụm phải cố định.</span></span>
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #ABA298;">·</span><span>Chỉ sidebar thu 64px theo luật chung T1.</span></span>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 152px 1fr; gap: 16px; align-items: start; padding: 16px 20px; background: #FAFDFC;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <strong style="font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums;">768 – 1023px</strong>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">--ibb-min-ops → --ibb-bp-md</code>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #ABA298;">·</span><span>Thông tin phụ trên dòng <strong style="font-weight: 500;">xuống hàng thứ hai</strong>. Hàng một giữ định danh và nội dung chính; hàng hai là ngữ cảnh.</span></span>
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #ABA298;">·</span><span>Badge trạng thái và thời điểm <strong style="font-weight: 500;">gom về hàng hai</strong>, cùng một hàng, cách nhau bằng <code style="font-family: ui-monospace, Menlo, monospace;">gap: 8px</code> — không dùng dấu · phân cách khi đã xuống hàng.</span></span>
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #ABA298;">·</span><span>Nút hành động trực tiếp trên dòng <strong style="font-weight: 500;">gom vào menu ba chấm</strong> 44×44 ở cạnh phải. Dòng cao lên tối thiểu 72px để chứa hai hàng.</span></span>
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #ABA298;">·</span><span>Cả dòng vẫn là vùng chạm mở chi tiết — menu ba chấm phải <code style="font-family: ui-monospace, Menlo, monospace;">stopPropagation</code>, cách dòng ít nhất 8px.</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">không làm</span><span style="color: #4A443E;">Không ẩn dữ kiện nào ở 768. T8 <strong style="font-weight: 500;">xếp lại</strong>, không <strong style="font-weight: 500;">cắt</strong> — dòng đã ít dữ kiện, ẩn thêm thì không nhận ra dòng nào là dòng nào.</span>
+      <span style="color: #6E665C;">màn thuộc lớp này</span><span style="color: #4A443E;">SC-HT-06 Trung tâm thông báo · SC-VH-09 Phản hồi (nếu chuyển sang lớp B)</span>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1100}}">
+const SLOTS = [
+  ['Page header', 'bắt buộc', 'KẾ THỪA T1 slot 1', 'Nguyên văn T1 · danh sách dòng thường không tạo bản ghi mới nên hay không có nút primary'],
+  ['Tabs', 'tuỳ chọn', 'KẾ THỪA T1 slot 2', 'Nguyên văn T1 · thêm một luật: badge đếm phải lọc theo quyền TRƯỚC khi đếm'],
+  ['Filter bar', 'tuỳ chọn', 'KẾ THỪA T1 slot 3', 'Nguyên văn T1, không sửa gì'],
+  ['Bulk bar', 'tuỳ chọn', 'KẾ THỪA T1 slot 4', 'Nguyên văn T1 · chỉ khi dòng có checkbox'],
+  ['Dải dòng có nhóm', 'bắt buộc', 'CL2 · 13/17 hoặc dòng riêng của màn', 'THAY bảng cột của T1 · tiêu đề nhóm sticky · không header cột, không dòng tổng'],
+  ['Phân trang', 'tuỳ chọn', 'Pattern 1 · pagination hoặc “Tải thêm”', 'Nhóm theo thời gian dùng Tải thêm; nhóm theo loại thường không phân trang'],
+  ['Chú thích', 'tuỳ chọn', 'text 12px neutral-500', 'Nguồn dữ liệu và phạm vi quyền khi nội dung thay đổi theo vai trò']
+];
+
+const RULES = [
+  'Dòng là một component có tên, khai báo ở Component Library — không vẽ dòng ngay trong màn. Cùng một dòng phải dùng lại được ở popover, drawer và trang.',
+  'Chiều cao dòng cố định trong một dải: 56px cho dòng hai hàng chữ, 44px cho dòng một hàng. Không để dòng tự co giãn theo nội dung.',
+  'Tiêu đề nhóm chỉ mang nhãn và số đếm, KHÔNG mang hành động. Muốn thao tác cả nhóm thì đó là bulk action, chọn dòng rồi làm.',
+  'Nhóm rỗng bỏ hẳn khỏi dải, không hiện tiêu đề trống — trừ khi sự vắng mặt là thông tin, khi đó dùng một dòng trạng thái tích cực.',
+  'Tối đa một nút hành động trên mỗi dòng. Nhiều hơn thì đưa vào menu ba chấm hoặc mở drawer chi tiết.',
+  'Bấm vào thân dòng luôn mở đối tượng liên quan. Cả dòng là role="link" + tabindex="0", Enter mở như bấm chuột, viền focus dùng inset để không bị overflow của khung cắt mất. Checkbox và menu ba chấm là điểm dừng tab riêng.',
+  'Mỗi dòng mang aria-label gộp đủ thông tin các cột — trình đọc màn hình không quét được bố cục lưới, và nhiều cột chỉ là icon hoặc badge.',
+  'Nhóm theo loại thì mỗi nhóm tối đa 5 dòng + link “Xem tất cả N” dẫn sang tab của loại đó. Không cho cuộn dài vô tận trong một nhóm.',
+  'Không có dòng tổng. Cần tổng nghĩa là người dùng đang so sánh số, và màn đó thuộc về T1.'
+];
+
+class Component extends DCLogic {
+  renderVals() {
+    const reqTag = (req) => {
+      const on = req === 'bắt buộc';
+      return 'display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 4px; font-size: 11px; font-weight: 500; white-space: nowrap; color: '
+        + (on ? '#1C4842' : '#635B53') + '; background: ' + (on ? '#EFF6F5' : '#F4F1ED') + '; border: 1px solid ' + (on ? '#B0D4CF' : '#E7E2DC') + ';';
+    };
+
+    const TONE = { info: ['#4A443E', '#F4F1ED'], warn: ['#8A5F12', '#FDF6E7'], danger: ['#96271B', '#FCF0EE'] };
+    const notif = (n, i, arr) => {
+      const t = TONE[n[1]];
+      return {
+        rowStyle: 'display: grid; grid-template-columns: 6px 28px 1fr 132px 56px 116px; gap: 12px; align-items: center; min-height: 60px; padding: 10px 16px; font-size: 13px; cursor: pointer;'
+          + (i < arr.length - 1 ? ' border-bottom: 1px solid #F0EBE5;' : '')
+          + (n[0] ? ' background: #F7FBFA;' : ''),
+        dotStyle: 'width: 6px; height: 6px; border-radius: 999px; background: ' + (n[0] ? '#235B54' : 'transparent') + ';',
+        iconStyle: 'width: 28px; height: 28px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 999px; font-size: 13px; font-weight: 600; background: ' + t[1] + '; color: ' + t[0] + ';',
+        icon: n[2],
+        title: n[3],
+        titleStyle: 'font-size: 13px; font-weight: ' + (n[0] ? 500 : 400) + '; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;',
+        body: n[4], target: n[5], time: n[6],
+        hasAction: !!n[7],
+        actionLabel: n[7] || '',
+        actionStyle: 'height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; font-weight: 500; white-space: nowrap; cursor: pointer; '
+          + (n[1] === 'danger' ? 'background: #235B54; color: #FFFFFF;' : 'background: #FFFFFF; border: 1px solid #E7E2DC; color: #4A443E;')
+      };
+    };
+
+    const TODAY = [
+      [true, 'danger', '!', 'Bò Mỹ ba chỉ sắp hết', 'Còn 2,9 ngày tồn, dưới ngưỡng 3 ngày', 'NL-0142', '18:12', 'Đặt hàng'],
+      [true, 'warn', '~', 'Phiếu nhập chờ duyệt 2 ngày', 'Thực phẩm Tân Bình · 23.520.000 đ', 'PN-2026-0412', '16:40', 'Duyệt'],
+      [true, 'info', 'i', 'Phản hồi 1 điểm từ khách', 'Đỗ Minh Khoa · chất lượng món, phục vụ', 'FB-0412', '14:22', null]
+    ];
+    const YESTERDAY = [
+      [false, 'info', 'i', 'Ca tối 27/07 đã đóng', 'Lệch quỹ (220.000) · chờ duyệt phiếu kiểm', 'CA-260727-03', '23:12', null],
+      [false, 'info', 'i', 'Kỳ lương 07/2026 đã tính xong', '32 phiếu · chờ nhân sự chốt', 'Kỳ 07/2026', '09:05', null]
+    ];
+
+    const searchRow = (r, i, arr) => ({
+      rowStyle: 'display: grid; grid-template-columns: 28px 1fr 132px 96px; gap: 12px; align-items: center; min-height: 56px; padding: 8px 16px; font-size: 13px; cursor: pointer;'
+        + (i < arr.length - 1 ? ' border-bottom: 1px solid #F0EBE5;' : ''),
+      iconStyle: 'width: 28px; height: 28px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: #F4F1ED; color: #635B53; font-size: 12px; font-weight: 600;',
+      icon: r[0],
+      titlePre: r[1], titleHit: r[2], titlePost: r[3],
+      sub: r[4],
+      badge: r[5],
+      badgeStyle: 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; background: '
+        + (r[6] === 'ok' ? '#EDF7F1' : '#F4F1ED') + '; border: 1px solid ' + (r[6] === 'ok' ? '#C3E4D2' : '#E7E2DC') + '; color: ' + (r[6] === 'ok' ? '#256A49' : '#4A443E') + ';',
+      when: r[7]
+    });
+
+    return {
+      slots: SLOTS.map(([name, req, source, note], i) => ({ n: i + 1, name, req, source, note, tagStyle: reqTag(req) })),
+      rules: RULES.map(text => ({ text })),
+
+      demoTabs: [['Tất cả', '14', true], ['Chưa đọc', '5', false], ['Cần hành động', '2', false]].map(t => ({
+        label: t[0],
+        count: t[1],
+        countStyle: 'display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; margin-left: 8px; padding: 0 6px; border-radius: 999px; font-size: 12px; font-weight: 500; '
+          + (t[2] ? 'background: #EFF6F5; color: #1C4842;' : 'background: #F4F1ED; color: #6E665C;'),
+        style: 'height: 44px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 4px 4px 0 0; font-size: 13px; '
+          + (t[2]
+              ? 'background: #FFFFFF; border: 1px solid #E7E2DC; border-bottom: 1px solid #FFFFFF; margin-bottom: -1px; font-weight: 500; color: #1C4842;'
+              : 'border: 1px solid transparent; color: #635B53;')
+      })),
+
+      timeGroups: [
+        { label: 'Hôm nay', count: '3 thông báo · 3 chưa đọc', rows: TODAY.map(notif) },
+        { label: 'Hôm qua', count: '2 thông báo', rows: YESTERDAY.map(notif) }
+      ],
+
+      typeGroups: [
+        {
+          label: 'Nhân viên · 12 kết quả', more: 'Xem tất cả 12 kết quả →',
+          rows: [
+            ['NV', '', 'Nguyễn', ' Văn A · NV-0148', 'Bếp chính · chi nhánh Quận 1', 'Đang làm việc', 'ok', '08/2023'],
+            ['NV', '', 'Nguyễn', ' Thanh Tùng · NV-0203', 'Phục vụ · chi nhánh Quận 1', 'Đang làm việc', 'ok', '03/2025'],
+            ['NV', 'Trần Thị ', 'Nguyên', ' · NV-0176', 'Thu ngân · chi nhánh Quận 7', 'Đã nghỉ việc', 'n', '11/2024']
+          ].map(searchRow)
+        },
+        {
+          label: 'Khách hàng · 9 kết quả', more: 'Xem tất cả 9 kết quả →',
+          rows: [
+            ['KH', '', 'Nguyễn', ' Thanh Tùng · KH-01455', '0908 552 741 · 6 lần đến', 'Hạng Bạc', 'n', '26/07'],
+            ['KH', '', 'Nguyễn', ' Bá Long · KH-00982', '0921 774 330 · 3 lần đến', 'Hạng Đồng', 'n', '14/06']
+          ].map(searchRow)
+        },
+        {
+          label: 'Nhà cung cấp · 2 kết quả', more: 'Xem tất cả 2 kết quả →',
+          rows: [
+            ['NCC', 'Thực phẩm ', 'Nguyên', ' Phát · NCC-0044', 'Rau củ · công nợ 12.400.000 đ', 'Đang hợp tác', 'ok', '21/07']
+          ].map(searchRow)
+        }
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>

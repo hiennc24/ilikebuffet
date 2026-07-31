@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; }
+  td, th { text-align: left; font-weight: inherit; }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 24px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-ns-04</span><span style="color: #D5CEC6;">·</span><span>lưới ca · chế độ chấm công</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">/nhan-su/cham-cong</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Chấm công</h1>
+    <p style="margin: 0; max-width: 82ch; font-size: 14px; color: #635B53;">Quyết định #9: chế độ chấm công là <code style="font-family: ui-monospace, Menlo, monospace;">ops</code> — quản lý ca mở giữa ca ở quầy để sửa giờ vào ra. Chế độ xếp ca là <code style="font-family: ui-monospace, Menlo, monospace;">office</code> và nằm ở màn khác. Một người một ca mỗi ngày; ca vắt qua 00:00 ghi <strong style="font-weight: 500;">⁺</strong> và tính trọn cho ngày bắt đầu.</p>
+  </header>
+
+  <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); overflow: hidden;">
+
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding: 24px 24px 16px; background: #FFFFFF;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 500;">Tuần 27/07 – 02/08/2026</h2>
+        <span style="font-size: 13px; color: #6E665C;">Chi nhánh Quận 1 · 8 nhân viên có ca trong tuần · {{ lockHint }}</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xuất Excel</span>
+        <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Mở màn Xếp ca</span>
+        <button style="height: 32px; padding: 0 14px; font-family: inherit; font-size: 13px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap;" style-hover="background: #1C4842;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Chốt công tuần</button>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 0 24px 16px; background: #FFFFFF;">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div style="{{ s.cardStyle }}">
+          <span style="font-size: 13px; color: #6E665C;">{{ s.label }}</span>
+          <strong style="{{ s.valueStyle }}">{{ s.value }}</strong>
+          <span style="font-size: 12px; color: #6E665C;">{{ s.hint }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <label style="width: 260px; height: 32px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4"></path></svg>
+          <input type="text" value="{{ query }}" onChange="{{ onQuery }}" placeholder="Tìm nhân viên, vị trí…" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 13px; color: #1E1B19;">
+        </label>
+        <span style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; background: #FFFFFF; border-radius: 6px; font-size: 13px; color: #1E1B19; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;">Bộ phận
+          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+        </span>
+        <span style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; background: #FFFFFF; border-radius: 6px; font-size: 13px; color: #1E1B19; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;">Chỉ ca có bất thường
+          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+        </span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <sc-for list="{{ views }}" as="v" hint-placeholder-count="2">
+          <span onClick="{{ v.onClick }}" tabindex="0" style="{{ v.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ v.label }}</span>
+        </sc-for>
+      </div>
+    </div>
+
+    <sc-if value="{{ isDay }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 16px 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC;">
+        <sc-for list="{{ dayChips }}" as="c" hint-placeholder-count="7">
+          <span onClick="{{ c.onClick }}" role="button" tabindex="0" aria-pressed="{{ c.pressed }}" style="{{ c.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            <span style="{{ c.nameStyle }}">{{ c.name }}</span>
+            <span style="{{ c.dateStyle }}">{{ c.date }}</span>
+          </span>
+        </sc-for>
+      </div>
+      <div style="overflow-x: auto; background: #FFFFFF;">
+        <table style="table-layout: fixed; width: 968px;">
+          <thead>
+            <tr>
+              <th style="position: sticky; top: 0; left: 0; z-index: 30; width: 240px; height: 40px; padding: 0 12px 0 24px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; box-shadow: 1px 0 0 #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Nhân viên</th>
+              <th style="position: sticky; top: 0; z-index: 20; width: 148px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Trạng thái</th>
+              <th style="position: sticky; top: 0; z-index: 20; width: 120px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Giờ vào</th>
+              <th style="position: sticky; top: 0; z-index: 20; width: 120px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Giờ ra</th>
+              <th style="position: sticky; top: 0; z-index: 20; width: 120px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; text-align: right;">Giờ công</th>
+              <th style="position: sticky; top: 0; right: 0; z-index: 30; width: 220px; height: 40px; padding: 0 24px 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; box-shadow: -1px 0 0 #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Ghi chú</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ dayRows }}" as="r" hint-placeholder-count="8">
+              <tr>
+                <td style="{{ r.nameCellStyle }}" title="{{ r.name }}">
+                  <span style="display: flex; align-items: center; gap: 12px;">
+                    <span style="{{ r.avatarStyle }}">{{ r.initials }}</span>
+                    <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0;">
+                      <span style="font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.name }}</span>
+                      <span style="font-size: 12px; color: #6E665C; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.role }}</span>
+                    </span>
+                  </span>
+                </td>
+                <td style="{{ r.cellStyle }}"><span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span></td>
+                <td style="{{ r.cellStyle }}"><span onClick="{{ r.onClick }}" role="button" tabindex="0" aria-label="{{ r.ariaFrom }}" style="{{ r.timeBoxStyle }}" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 3px #2F7168;">{{ r.from }}</span></td>
+                <td style="{{ r.cellStyle }}"><span onClick="{{ r.onClick }}" role="button" tabindex="0" aria-label="{{ r.ariaTo }}" style="{{ r.timeBoxStyle }}" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 3px #2F7168;">{{ r.to }}</span></td>
+                <td style="{{ r.hoursCellStyle }}">{{ r.hours }}</td>
+                <td style="{{ r.noteCellStyle }}" title="{{ r.note }}">{{ r.note }}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td style="position: sticky; left: 0; z-index: 10; height: 52px; padding: 0 12px 0 24px; background: #FAF8F6; border-top: 1px solid #E7E2DC; box-shadow: 1px 0 0 #E7E2DC; font-size: 13px; font-weight: 500;">{{ dayFootLabel }}</td>
+              <td style="height: 52px; padding: 0 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC;"></td>
+              <td style="height: 52px; padding: 0 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC;"></td>
+              <td style="height: 52px; padding: 0 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC;"></td>
+              <td style="height: 52px; padding: 0 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC; text-align: right; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">{{ dayTotal }}</td>
+              <td style="position: sticky; right: 0; z-index: 10; height: 52px; padding: 0 24px 0 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC; box-shadow: -1px 0 0 #E7E2DC; font-size: 12px; color: #6E665C;">{{ dayFootHint }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isWeek }}" hint-placeholder-val="{{ true }}">
+    <div style="overflow-x: auto; background: #FFFFFF;">
+      <table style="table-layout: fixed; width: 1248px;">
+        <thead>
+          <tr>
+            <th style="position: sticky; top: 0; left: 0; z-index: 30; width: 240px; height: 40px; padding: 0 12px 0 24px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; box-shadow: 1px 0 0 #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Nhân viên</th>
+            <sc-for list="{{ days }}" as="d" hint-placeholder-count="7">
+              <th style="{{ d.thStyle }}">
+                <span style="display: flex; flex-direction: column; gap: 1px;">
+                  <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">{{ d.name }}</span>
+                  <span style="{{ d.dateStyle }}">{{ d.date }}</span>
+                </span>
+              </th>
+            </sc-for>
+            <th style="position: sticky; top: 0; right: 0; z-index: 30; width: 112px; height: 40px; padding: 0 24px 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; box-shadow: -1px 0 0 #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; text-align: right;">Giờ tuần</th>
+          </tr>
+        </thead>
+        <tbody>
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+            <tr>
+              <td style="{{ r.nameCellStyle }}" title="{{ r.name }}">
+                <span style="display: flex; align-items: center; gap: 12px;">
+                  <span style="{{ r.avatarStyle }}">{{ r.initials }}</span>
+                  <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0;">
+                    <span style="font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.name }}</span>
+                    <span style="font-size: 12px; color: #6E665C; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.role }}</span>
+                  </span>
+                </span>
+              </td>
+              <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="7">
+                <td style="{{ c.tdStyle }}">
+                  <span onClick="{{ c.onClick }}" role="button" tabindex="0" aria-label="{{ c.aria }}" style="{{ c.boxStyle }}" style-hover="{{ c.hoverStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 3px #2F7168;">
+                    <span style="{{ c.timeStyle }}">{{ c.time }}</span>
+                    <span style="{{ c.metaStyle }}">{{ c.meta }}</span>
+                  </span>
+                </td>
+              </sc-for>
+              <td style="{{ r.totalCellStyle }}">
+                <span style="display: flex; flex-direction: column; gap: 1px; align-items: flex-end;">
+                  <strong style="{{ r.totalStyle }}">{{ r.total }}</strong>
+                  <span style="{{ r.totalHintStyle }}">{{ r.totalHint }}</span>
+                </span>
+              </td>
+            </tr>
+          </sc-for>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td style="position: sticky; left: 0; z-index: 10; height: 52px; padding: 0 12px 0 24px; background: #FAF8F6; border-top: 1px solid #E7E2DC; box-shadow: 1px 0 0 #E7E2DC; font-size: 13px; font-weight: 500;">Tổng giờ theo ngày</td>
+            <sc-for list="{{ dayTotals }}" as="dt" hint-placeholder-count="7">
+              <td style="{{ dt.style }}">{{ dt.value }}</td>
+            </sc-for>
+            <td style="position: sticky; right: 0; z-index: 10; height: 52px; padding: 0 24px 0 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC; box-shadow: -1px 0 0 #E7E2DC; text-align: right; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">{{ weekTotal }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ hasOpen }}" hint-placeholder-val="{{ true }}">
+      <div style="border-top: 1px solid #E7E2DC; background: #FAFDFC; padding: 20px 24px; display: flex; align-items: flex-start; gap: 24px;">
+        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <strong style="font-size: 15px; font-weight: 500;">{{ open.title }}</strong>
+            <span style="{{ open.badgeStyle }}">{{ open.statusLabel }}</span>
+          </div>
+          <span style="font-size: 13px; color: #6E665C;">{{ open.subtitle }}</span>
+        </div>
+        <div style="flex: none; display: flex; align-items: flex-end; gap: 16px;">
+          <sc-for list="{{ open.fields }}" as="f" hint-placeholder-count="2">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 12px; color: #6E665C;">{{ f.label }}</span>
+              <div style="display: flex; align-items: center; gap: 0;">
+                <span onClick="{{ f.onMinus }}" role="button" tabindex="0" aria-label="{{ f.ariaMinus }}" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 1px solid #E7E2DC; border-radius: 6px 0 0 6px; background: #FFFFFF; cursor: pointer; color: #4A443E; font-size: 18px;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">−</span>
+                <span style="width: 84px; height: 44px; display: flex; align-items: center; justify-content: center; border-top: 1px solid #E7E2DC; border-bottom: 1px solid #E7E2DC; background: #FFFFFF; font-size: 15px; font-variant-numeric: tabular-nums;">{{ f.value }}</span>
+                <span onClick="{{ f.onPlus }}" role="button" tabindex="0" aria-label="{{ f.ariaPlus }}" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 1px solid #E7E2DC; border-radius: 0 6px 6px 0; background: #FFFFFF; cursor: pointer; color: #4A443E; font-size: 18px;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">+</span>
+              </div>
+            </div>
+          </sc-for>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 12px; color: #6E665C;">Giờ tính công</span>
+            <div style="height: 44px; display: flex; align-items: center; padding: 0 16px; background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 6px; font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums; color: #1C4842;">{{ open.hours }}</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span onClick="{{ closeOpen }}" tabindex="0" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 16px; border: 1px solid #E7E2DC; border-radius: 6px; background: #FFFFFF; font-size: 14px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Bỏ</span>
+            <span onClick="{{ saveOpen }}" tabindex="0" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 6px; background: #235B54; font-size: 14px; font-weight: 500; color: #FFFFFF; cursor: pointer;" style-hover="background: #1C4842;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Lưu giờ</span>
+          </div>
+        </div>
+      </div>
+      <div style="border-top: 1px solid #E7E2DC; background: #FFFFFF; padding: 12px 24px; display: flex; gap: 12px; align-items: flex-start;">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 7v5l3 2"></path></svg>
+        <span style="font-size: 13px; color: #8A5F12;">Sửa tay ghi vào nhật ký kèm tên người sửa và giờ máy chấm ban đầu. Giờ máy không bị ghi đè — bảng lương lấy giờ đã sửa, đối chiếu lấy giờ máy.</span>
+      </div>
+    </sc-if>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 24px; background: #FFFFFF; border-top: 1px solid #E7E2DC;">
+      <div style="display: flex; gap: 12px 20px; flex-wrap: wrap; align-items: center;">
+        <sc-for list="{{ legend }}" as="l" hint-placeholder-count="6">
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;">
+            <span style="{{ l.swatchStyle }}"></span>{{ l.label }}
+          </span>
+        </sc-for>
+      </div>
+      <span style="font-size: 12px; color: #6E665C;">{{ pageLabel }}</span>
+    </div>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Ghi cho dev</h2>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">widthTier</span><span style="color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">ops</code> · sàn 768px. Chế độ xếp ca cùng dữ liệu này nhưng là <code style="font-family: ui-monospace, Menlo, monospace;">office</code> và là màn riêng — <strong style="font-weight: 500;">không nhồi hai chế độ vào một màn có switch</strong>, vì một chế độ dùng ở quầy còn một chế độ cần thấy cả tuần.</span>
+      <span style="color: #6E665C;">essentialColumns</span><span style="color: #4A443E;">Không áp dụng: <strong style="font-weight: 500;">7 cột ngày là dữ liệu, không phải cột phụ trợ</strong>. Không được ẩn ngày nào — ẩn thứ Tư thì bảng nói sai.</span>
+      <span style="color: #6E665C;">1024 – 1279</span><span style="color: #4A443E;">Giữ đủ 7 ngày. Bảng tuần rộng <strong style="font-weight: 500;">1248px</strong> (240 tên + 7×128 ngày + 112 giờ tuần) nên vừa nguyên ở mức này, chỉ cần sidebar thu 64px. Cột tên ghim trái và cột giờ tuần ghim phải vẫn hoạt động.</span>
+      <span style="color: #6E665C;">768 – 1023</span><span style="color: #4A443E;">1248px <strong style="font-weight: 500;">không vừa</strong> trong 768. Chuyển sang <strong style="font-weight: 500;">xem theo ngày</strong> — chế độ đã dựng sẵn ở màn này, bấm “Theo ngày” để xem: dải 7 chip ngày ở đầu bảng, bảng còn 968px với một ngày, mỗi dòng một nhân viên kèm giờ vào–ra–công–ghi chú. Ở 768 dải chip cuộn ngang được, còn bảng thì không cuộn — cuộn ngang giữa ca là mất dấu người đang tìm.</span>
+      <span style="color: #6E665C;">vì sao không cuộn</span><span style="color: #4A443E;">Ở lưới ca, cuộn ngang buộc người dùng nhớ dòng nào là ai khi cột tên trôi. Sticky giải được ở 1024 nhưng ở 768 cột tên chiếm 1/4 màn — còn 3 ngày rưỡi hiện ra, không đủ để so mà đủ để lạc. Một ngày rõ ràng hơn ba ngày rưỡi.</span>
+      <span style="color: #6E665C;">vùng chạm ô</span><span style="color: #4A443E;">Ô trong lưới là <strong style="font-weight: 500;">vùng chạm 44px trở lên ở mọi mức</strong> — ở đây mỗi ô cao 60px, rộng tối thiểu 108px. Ô rỗng (không có ca) cũng chạm được để thêm ca, không để chết.</span>
+      <span style="color: #6E665C;">stepper</span><span style="color: #4A443E;">Nút −/+ giờ là <strong style="font-weight: 500;">44×44</strong>, bước 5 phút, giữ để chạy nhanh. Không dùng ô nhập giờ tự do trên tablet: gõ “17:0” rồi mất focus là dữ liệu sai.</span>
+      <span style="color: #6E665C;">chốt công</span><span style="color: #4A443E;">Chốt tuần khoá mọi ô của tuần đó, ô chuyển nền neutral và không chạm được nữa. Mở lại cần quyền nhân sự và ghi lý do — đây là dữ liệu tính lương.</span>
+      <span style="color: #6E665C;">dùng lại component</span><span style="color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">ShiftGrid</code> (CL3 · 11) là <strong style="font-weight: 500;">chế độ đọc một người theo tháng</strong>, nhúng ở SC-NS-03 tab 3. Màn này là nhiều người theo tuần và có sửa — hai lưới khác nhau về trục, không gộp.</span>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1240},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;tuan&quot;,&quot;options&quot;:[&quot;tuan&quot;,&quot;ngay&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Trạng thái màn&quot;}}">
+const K = {
+  du:         { label: 'Làm đủ',           accent: '#235B54', bg: '#FFFFFF', fg: '#1E1B19' },
+  muon:       { label: 'Đi muộn',          accent: '#8A5F12', bg: '#FDF6E7', fg: '#8A5F12' },
+  som:        { label: 'Về sớm',           accent: '#8A5F12', bg: '#FDF6E7', fg: '#8A5F12' },
+  otime:      { label: 'Làm thêm giờ',     accent: '#2F7168', bg: '#EFF6F5', fg: '#1C4842' },
+  vang:       { label: 'Vắng không phép',  accent: '#C0392B', bg: '#FCF0EE', fg: '#96271B' },
+  phep:       { label: 'Nghỉ phép',        accent: '#4F958D', bg: '#F7FAFA', fg: '#1C4842' },
+  chuacham:   { label: 'Chưa chấm',        accent: '#C6BEB4', bg: '#FFFFFF', fg: '#8A8178' }
+};
+
+const DAYS = [['Thứ hai', '27/07'], ['Thứ ba', '28/07'], ['Thứ tư', '29/07'], ['Thứ năm', '30/07'], ['Thứ sáu', '31/07'], ['Thứ bảy', '01/08'], ['Chủ nhật', '02/08']];
+const TODAY_IDX = 1;
+
+// [tên, vị trí, 7 ngày: null | [kiểu, vào, ra, giờ, ghi chú]]
+const PEOPLE = [
+  ['Nguyễn Thị An', 'Phục vụ · ca tối', [
+    ['du', '17:00', '22:30', 5.5], ['muon', '17:12', '22:30', 5.3, '12 phút'], ['du', '17:00', '22:30', 5.5],
+    ['otime', '16:30', '23:30', 7.0, '+1,5 h'], ['otime', '16:00', '00:30', 8.5, '+2,5 h'], null, ['chuacham', '17:00', '22:30', 5.5]
+  ]],
+  ['Trần Thị Mai', 'Phục vụ · ca tối', [
+    ['du', '17:00', '22:30', 5.5], ['du', '17:00', '22:30', 5.5], ['phep', null, null, 0, 'phép năm'],
+    ['du', '17:00', '22:30', 5.5], ['otime', '16:30', '23:30', 7.0, '+1,5 h'], ['otime', '16:00', '00:30', 8.5, '+2,5 h'], null
+  ]],
+  ['Lê Văn Bình', 'Bếp · ca trưa', [
+    ['du', '10:00', '14:30', 4.5], ['du', '10:00', '14:30', 4.5], ['du', '10:00', '14:30', 4.5],
+    ['som', '10:00', '13:45', 3.8, 'sớm 45 phút'], ['du', '10:00', '14:30', 4.5], ['du', '10:00', '15:30', 5.5], ['chuacham', '10:00', '14:30', 4.5]
+  ]],
+  ['Phạm Quốc Huy', 'Bếp · ca tối', [
+    ['otime', '15:30', '23:30', 8.0, '+1,0 h'], ['du', '16:00', '23:00', 7.0], ['du', '16:00', '23:00', 7.0],
+    ['du', '16:00', '23:00', 7.0], ['otime', '15:30', '00:00', 8.5, '+1,5 h'], ['otime', '15:30', '00:30', 9.0, '+2,0 h'], null
+  ]],
+  ['Vũ Thị Minh', 'Thu ngân · ca tối', [
+    ['du', '16:30', '22:30', 6.0], ['du', '16:30', '22:30', 6.0], ['vang', null, null, 0, 'không phép'],
+    ['du', '16:30', '22:30', 6.0], ['du', '16:30', '22:30', 6.0], ['otime', '16:00', '23:30', 7.5, '+1,5 h'], ['chuacham', '16:30', '22:30', 6.0]
+  ]],
+  ['Đỗ Minh Trí', 'Phục vụ · ca trưa', [
+    ['du', '10:30', '14:30', 4.0], ['muon', '10:48', '14:30', 3.7, '18 phút'], ['du', '10:30', '14:30', 4.0],
+    ['du', '10:30', '14:30', 4.0], null, ['du', '10:30', '15:30', 5.0], ['chuacham', '10:30', '14:30', 4.0]
+  ]],
+  ['Hồ Thị Sang', 'Lễ tân · ca tối', [
+    ['du', '17:00', '22:00', 5.0], ['du', '17:00', '22:00', 5.0], ['du', '17:00', '22:00', 5.0],
+    ['phep', null, null, 0, 'phép năm'], ['du', '17:00', '22:00', 5.0], ['otime', '16:30', '23:00', 6.5, '+1,5 h'], null
+  ]],
+  ['Đinh Văn Hà', 'Bảo vệ · ca đêm', [
+    ['du', '18:00', '00:00', 6.0], ['du', '18:00', '00:00', 6.0], ['du', '18:00', '00:00', 6.0],
+    ['du', '18:00', '00:00', 6.0], ['du', '18:00', '00:30', 6.5], ['du', '18:00', '00:30', 6.5], ['chuacham', '18:00', '00:00', 6.0]
+  ]]
+];
+
+const vnNum = (n, d) => n.toLocaleString('vi-VN', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 });
+const initials = (name) => name.split(' ').filter(w => w).slice(-2).map(w => w[0]).join('').toUpperCase();
+const toMin = (t) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+const fromMin = (m) => { const h = Math.floor(((m % 1440) + 1440) % 1440 / 60); const mm = ((m % 60) + 60) % 60; return String(h).padStart(2, '0') + ':' + String(mm).padStart(2, '0'); };
+
+class Component extends DCLogic {
+  state = { query: '', view: this.props.view ?? 'tuan', day: TODAY_IDX, open: null, adj: { from: 0, to: 0 } };
+
+  cellOf(pi, di) {
+    const c = PEOPLE[pi][2][di];
+    return c || null;
+  }
+
+  renderVals() {
+    const st = this.state;
+    const q = st.query.trim().toLowerCase();
+
+    const people = PEOPLE.map((p, pi) => ({ pi, name: p[0], role: p[1], days: p[2] }))
+      .filter(p => !q || p.name.toLowerCase().indexOf(q) >= 0 || p.role.toLowerCase().indexOf(q) >= 0);
+
+    const dayTotalsRaw = DAYS.map((d, di) => PEOPLE.reduce((s, p) => s + ((p[2][di] && p[2][di][3]) || 0), 0));
+    const weekTotalRaw = dayTotalsRaw.reduce((s, v) => s + v, 0);
+
+    const lateCount = PEOPLE.reduce((s, p) => s + p[2].filter(c => c && c[0] === 'muon').length, 0);
+    const absentCount = PEOPLE.reduce((s, p) => s + p[2].filter(c => c && c[0] === 'vang').length, 0);
+    const todayPresent = PEOPLE.filter(p => p[2][TODAY_IDX] && p[2][TODAY_IDX][0] !== 'vang' && p[2][TODAY_IDX][0] !== 'phep').length;
+    const notCheckedIn = PEOPLE.filter(p => p[2][TODAY_IDX] && p[2][TODAY_IDX][0] === 'chuacham').length;
+
+    const statCard = (label, value, hint, fg, bg, bd) => ({
+      label, value, hint,
+      cardStyle: 'display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: 8px; border: 1px solid ' + (bd || '#E7E2DC') + '; background: ' + (bg || '#FAF8F6') + ';',
+      valueStyle: 'font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; color: ' + (fg || '#1E1B19') + ';'
+    });
+
+    const cellBase = 'height: 60px; padding: 4px 6px; border-bottom: 1px solid #E7E2DC; vertical-align: middle;';
+
+    const open = st.open;
+    let openVals = null;
+    if (open) {
+      const src = this.cellOf(open.pi, open.di);
+      const fromM = toMin(src[1] || '17:00') + st.adj.from * 5;
+      const toM = toMin(src[2] || '22:30') + st.adj.to * 5;
+      const hours = Math.max(0, ((toM <= fromM ? toM + 1440 : toM) - fromM) / 60);
+      const k = K[src[0]] || K.du;
+      openVals = {
+        title: PEOPLE[open.pi][0] + ' · ' + DAYS[open.di][0] + ' ' + DAYS[open.di][1],
+        subtitle: 'Giờ máy chấm ' + (src[1] || '—') + '–' + (src[2] || '—') + ' · ' + PEOPLE[open.pi][1] + (src[4] ? ' · ' + src[4] : ''),
+        statusLabel: k.label,
+        badgeStyle: 'display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: ' + k.bg + '; color: ' + k.fg + '; border: 1px solid ' + k.accent + '33;',
+        hours: vnNum(hours, 1) + ' h',
+        fields: [
+          {
+            label: 'Giờ vào', value: fromMin(fromM),
+            ariaMinus: 'Giảm giờ vào 5 phút', ariaPlus: 'Tăng giờ vào 5 phút',
+            onMinus: () => this.setState(p => ({ adj: { from: p.adj.from - 1, to: p.adj.to } })),
+            onPlus: () => this.setState(p => ({ adj: { from: p.adj.from + 1, to: p.adj.to } }))
+          },
+          {
+            label: 'Giờ ra', value: fromMin(toM),
+            ariaMinus: 'Giảm giờ ra 5 phút', ariaPlus: 'Tăng giờ ra 5 phút',
+            onMinus: () => this.setState(p => ({ adj: { from: p.adj.from, to: p.adj.to - 1 } })),
+            onPlus: () => this.setState(p => ({ adj: { from: p.adj.from, to: p.adj.to + 1 } }))
+          }
+        ]
+      };
+    }
+
+    return {
+      lockHint: 'chốt công vào 08:00 thứ hai tuần sau',
+      query: st.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      stats: [
+        statCard('Có mặt hôm nay', todayPresent + '/' + PEOPLE.length, notCheckedIn ? notCheckedIn + ' người chưa chấm vào' : 'Đã chấm vào đủ'),
+        statCard('Đi muộn tuần này', String(lateCount) + ' lần', 'Tính từ 5 phút trở lên', '#8A5F12', '#FDF6E7', '#F0DDAF'),
+        statCard('Vắng không phép', String(absentCount) + ' lần', absentCount ? 'Vũ Thị Minh · 29/07' : 'Không có', absentCount ? '#C0392B' : '#1E1B19', absentCount ? '#FCF0EE' : '#FAF8F6', absentCount ? '#F1CCC7' : '#E7E2DC'),
+        statCard('Giờ công tuần', vnNum(weekTotalRaw, 1) + ' h', 'Gồm ' + vnNum(PEOPLE.reduce((s, p) => s + p[2].filter(c => c && c[0] === 'otime').length, 0)) + ' ca làm thêm giờ')
+      ],
+      views: [['tuan', 'Theo tuần'], ['ngay', 'Theo ngày']].map(([id, label]) => {
+        const on = st.view === id;
+        return {
+          label,
+          onClick: () => this.setState({ view: id }),
+          style: 'height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 6px; font-size: 13px; cursor: pointer; white-space: nowrap; border: 1px solid '
+            + (on ? '#B0D4CF' : '#E7E2DC') + '; background: ' + (on ? '#EFF6F5' : '#FFFFFF') + '; color: ' + (on ? '#1C4842' : '#4A443E') + '; font-weight: ' + (on ? '500' : '400') + ';'
+        };
+      }),
+      isWeek: st.view === 'tuan',
+      isDay: st.view === 'ngay',
+      dayChips: DAYS.map((d, i) => {
+        const on = st.day === i;
+        return {
+          name: d[0], date: d[1],
+          pressed: on ? 'true' : 'false',
+          onClick: () => this.setState({ day: i, open: null, adj: { from: 0, to: 0 } }),
+          style: 'display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 96px; min-height: 52px; padding: 6px 12px; border-radius: 8px; cursor: pointer; border: 1px solid '
+            + (on ? '#B0D4CF' : '#E7E2DC') + '; background: ' + (on ? '#EFF6F5' : '#FFFFFF') + ';',
+          nameStyle: 'font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: ' + (on ? '#1C4842' : '#6E665C') + ';',
+          dateStyle: 'font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (on ? '#1C4842' : '#1E1B19') + ';'
+        };
+      }),
+      dayRows: people.map(p => {
+        const c = p.days[st.day];
+        const k = c ? (K[c[0]] || K.du) : K.chuacham;
+        const isOpen = open && open.pi === p.pi && open.di === st.day;
+        return {
+          name: p.name,
+          role: p.role,
+          initials: initials(p.name),
+          avatarStyle: 'flex: none; width: 32px; height: 32px; border-radius: 999px; background: #EFF6F5; color: #1C4842; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;',
+          nameCellStyle: 'position: sticky; left: 0; z-index: 10; height: 60px; padding: 0 12px 0 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC; box-shadow: 1px 0 0 #E7E2DC; overflow: hidden;',
+          cellStyle: 'height: 60px; padding: 4px 12px; border-bottom: 1px solid #E7E2DC;',
+          statusLabel: c ? k.label : 'Nghỉ tuần',
+          badgeStyle: 'display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; background: '
+            + (c ? k.bg : '#F4F1ED') + '; color: ' + (c ? k.fg : '#8A8178') + '; border-left: 3px solid ' + (c ? k.accent : '#D5CEC6') + ';',
+          from: c && c[1] ? c[1] : '—',
+          to: c && c[2] ? (c[2] + (c[2] === '00:00' || c[2] === '00:30' ? '⁺' : '')) : '—',
+          ariaFrom: p.name + ' · giờ vào ' + ((c && c[1]) || 'chưa có') + ' · chạm để sửa',
+          ariaTo: p.name + ' · giờ ra ' + ((c && c[2]) || 'chưa có') + ' · chạm để sửa',
+          onClick: () => this.setState({ open: { pi: p.pi, di: st.day }, adj: { from: 0, to: 0 } }),
+          timeBoxStyle: 'min-width: 88px; min-height: 44px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 6px; font-size: 14px; font-variant-numeric: tabular-nums; cursor: pointer; background: #FFFFFF; border: 1px solid '
+            + (isOpen ? '#4F958D' : '#E7E2DC') + ';' + (isOpen ? ' box-shadow: 0 0 0 3px rgba(47,113,104,0.18);' : ''),
+          hours: c ? vnNum(c[3], 1) + ' h' : '—',
+          hoursCellStyle: 'height: 60px; padding: 0 12px; border-bottom: 1px solid #E7E2DC; text-align: right; font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (c && c[3] > 8 ? '#8A5F12' : '#1E1B19') + ';',
+          note: c ? (c[4] || (c[0] === 'chuacham' ? 'Ca theo lịch, chưa chấm vào' : 'Đúng lịch')) : 'Không xếp ca ngày này',
+          noteCellStyle: 'position: sticky; right: 0; z-index: 10; height: 60px; padding: 0 24px 0 12px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC; box-shadow: -1px 0 0 #E7E2DC; font-size: 13px; color: #4A443E; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'
+        };
+      }),
+      dayFootLabel: 'Tổng ' + DAYS[st.day][0].toLowerCase() + ' ' + DAYS[st.day][1],
+      dayTotal: vnNum(dayTotalsRaw[st.day], 1) + ' h',
+      dayFootHint: PEOPLE.filter(p => p[2][st.day]).length + ' người có ca · ' + PEOPLE.filter(p => p[2][st.day] && p[2][st.day][0] === 'chuacham').length + ' chưa chấm',
+      days: DAYS.map((d, i) => ({
+        name: d[0], date: d[1],
+        thStyle: 'position: sticky; top: 0; z-index: 20; width: 128px; height: 40px; padding: 0 8px; background: ' + (i === TODAY_IDX ? '#EFF6F5' : '#FAF8F6') + '; border-bottom: 1px solid #E7E2DC;',
+        dateStyle: 'font-size: 12px; font-variant-numeric: tabular-nums; color: ' + (i === TODAY_IDX ? '#1C4842' : '#4A443E') + '; font-weight: ' + (i === TODAY_IDX ? '500' : '400') + ';'
+      })),
+      rows: people.map(p => {
+        const total = p.days.reduce((s, c) => s + ((c && c[3]) || 0), 0);
+        const over = total > 48;
+        return {
+          name: p.name,
+          role: p.role,
+          initials: initials(p.name),
+          avatarStyle: 'flex: none; width: 32px; height: 32px; border-radius: 999px; background: #EFF6F5; color: #1C4842; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;',
+          nameCellStyle: 'position: sticky; left: 0; z-index: 10; height: 60px; padding: 0 12px 0 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC; box-shadow: 1px 0 0 #E7E2DC; overflow: hidden;',
+          cells: p.days.map((c, di) => {
+            const isOpen = open && open.pi === p.pi && open.di === di;
+            if (!c) {
+              return {
+                aria: p.name + ' · ' + DAYS[di][0] + ' · không có ca, chạm để thêm',
+                onClick: () => this.setState({ open: { pi: p.pi, di }, adj: { from: 0, to: 0 } }),
+                tdStyle: cellBase + ' background: ' + (di === TODAY_IDX ? '#FAFDFC' : '#FAF8F6') + ';',
+                boxStyle: 'display: flex; flex-direction: column; justify-content: center; gap: 2px; min-height: 52px; padding: 6px 8px; border-radius: 6px; border: 1px dashed #E7E2DC; cursor: pointer; background: transparent;',
+                hoverStyle: 'border-color: #4F958D; background: #FFFFFF;',
+                time: 'Nghỉ tuần',
+                timeStyle: 'font-size: 12px; color: #ABA298;',
+                meta: 'Chạm để thêm ca',
+                metaStyle: 'font-size: 11px; color: #C6BEB4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;'
+              };
+            }
+            const k = K[c[0]] || K.du;
+            const night = c[2] === '00:00' || c[2] === '00:30';
+            const dashed = c[0] === 'chuacham';
+            const noTime = !c[1];
+            return {
+              aria: p.name + ' · ' + DAYS[di][0] + ' · ' + k.label + (c[1] ? ' · ' + c[1] + ' đến ' + c[2] : '') + ' · chạm để sửa giờ',
+              onClick: () => this.setState({ open: { pi: p.pi, di }, adj: { from: 0, to: 0 } }),
+              tdStyle: cellBase + ' background: ' + (di === TODAY_IDX ? '#FAFDFC' : '#FFFFFF') + ';',
+              boxStyle: 'display: flex; flex-direction: column; justify-content: center; gap: 2px; min-height: 52px; padding: 6px 8px; border-radius: 6px; cursor: pointer; background: ' + k.bg + ';'
+                + ' border-left: 3px ' + (dashed ? 'dashed' : 'solid') + ' ' + k.accent + ';'
+                + (isOpen ? ' box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 3px #2F7168;' : ''),
+              hoverStyle: 'background: #F4F1ED;',
+              time: noTime ? k.label : (c[1] + '–' + c[2] + (night ? '⁺' : '')),
+              timeStyle: 'font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; color: ' + (noTime ? k.fg : '#1E1B19') + '; font-weight: ' + (noTime ? '500' : '400') + ';',
+              meta: noTime ? (c[4] || '') : (vnNum(c[3], 1) + ' h' + (c[4] ? ' · ' + c[4] : '')),
+              metaStyle: 'font-size: 11px; font-variant-numeric: tabular-nums; color: ' + k.fg + '; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;'
+            };
+          }),
+          total: vnNum(total, 1) + ' h',
+          totalHint: over ? 'vượt ' + vnNum(total - 48, 1) + ' h' : 'trần 48 h',
+          totalCellStyle: 'position: sticky; right: 0; z-index: 10; height: 60px; padding: 0 24px 0 12px; background: ' + (over ? '#FDF6E7' : '#FFFFFF') + '; border-bottom: 1px solid #E7E2DC; box-shadow: -1px 0 0 #E7E2DC;',
+          totalStyle: 'font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (over ? '#8A5F12' : '#1E1B19') + ';',
+          totalHintStyle: 'font-size: 11px; font-variant-numeric: tabular-nums; color: ' + (over ? '#8A5F12' : '#6E665C') + ';'
+        };
+      }),
+      dayTotals: dayTotalsRaw.map((v, i) => ({
+        value: vnNum(v, 1) + ' h',
+        style: 'height: 52px; padding: 0 8px; background: ' + (i === TODAY_IDX ? '#EFF6F5' : '#FAF8F6') + '; border-top: 1px solid #E7E2DC; font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; color: #1E1B19;'
+      })),
+      weekTotal: vnNum(weekTotalRaw, 1) + ' h',
+      hasOpen: !!open,
+      open: openVals || { title: '', subtitle: '', statusLabel: '', badgeStyle: 'display: none;', hours: '', fields: [] },
+      closeOpen: () => this.setState({ open: null, adj: { from: 0, to: 0 } }),
+      saveOpen: () => this.setState({ open: null, adj: { from: 0, to: 0 } }),
+      legend: Object.keys(K).map(key => ({
+        label: K[key].label,
+        swatchStyle: 'width: 3px; height: 14px; border-radius: 999px; background: ' + K[key].accent + ';'
+      })),
+      pageLabel: 'Hiển thị ' + people.length + '/' + PEOPLE.length + ' nhân viên · tuần 27/07 – 02/08/2026'
+    };
+  }
+}
+</script>
+</body>
+</html>

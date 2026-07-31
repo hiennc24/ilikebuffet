@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-tc-11</span><span style="color: #D5CEC6;">·</span><span>template 4 · nặng bảng</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">/bao-cao/lai-lo</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Báo cáo lãi lỗ</h1>
+    <p style="margin: 0; max-width: 82ch; font-size: 14px; color: #635B53;">Màn nghiêm ngặt nhất về số liệu: <strong style="font-weight: 500;">không rút gọn bất kỳ số nào, kể cả trong stat card</strong> — ghi đè luật chung của T4. Cột % doanh thu luôn tính trên doanh thu thuần.</p>
+  </header>
+
+  <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; line-height: 1.1; margin: 0;">Kết quả kinh doanh tháng 06/2026</h2>
+        <span style="font-size: 13px; color: #6E665C;">Chi nhánh Quận 1 · so với tháng 05/2026 · đã chốt sổ 05/07/2026</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; flex: none;">
+        <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xuất Excel</button>
+        <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xuất PDF</button>
+        <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">In</button>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; cursor: pointer;" style-hover="background: #F4F1ED;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18v16H3zM8 2v6M16 2v6M3 11h18"></path></svg>
+          01/06 — 30/06/2026
+        </span>
+        <div style="display: flex; gap: 4px; padding: 4px; background: #F4F1ED; border-radius: 8px;">
+          <sc-for list="{{ presets }}" as="p" hint-placeholder-count="4">
+            <span onClick="{{ p.onPick }}" tabindex="0" style="{{ p.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ p.label }}</span>
+          </sc-for>
+        </div>
+        <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; cursor: pointer;" style-hover="background: #F4F1ED;">Chi nhánh Quận 1</span>
+      </div>
+      <span onClick="{{ toggleCompare }}" tabindex="0" style="{{ compareStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">So kỳ trước · 05/2026</span>
+    </div>
+
+    <div style="display: flex; gap: 12px; padding: 12px 16px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 8px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+      <span style="font-size: 13px; color: #8A5F12;"><strong style="font-weight: 500;">Thiếu dữ liệu ở 1 nhóm chi phí:</strong> Bảo trì và vật tư — 2 hoá đơn sửa bếp tháng 06 chưa về, ước khoảng 8.400.000 đ. Lợi nhuận ròng đang cao hơn thực tế. <a href="#" style="color: #8A5F12;">Xem phiếu chờ →</a></span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <span style="font-size: 13px; color: #6E665C;">{{ s.label }}</span>
+            <span style="{{ s.dirStyle }}">{{ s.dir }}</span>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">
+            <strong style="{{ s.valueStyle }}">{{ s.value }}</strong>
+            <span style="{{ s.deltaStyle }}">{{ s.delta }}</span>
+          </div>
+          <sc-if value="{{ s.hasBar }}" hint-placeholder-val="{{ false }}">
+            <span style="position: relative; display: block; height: 8px; border-radius: 999px; background: #E7E2DC;">
+              <span style="{{ s.barStyle }}"></span>
+              <span style="{{ s.markStyle }}"></span>
+            </span>
+          </sc-if>
+          <span style="{{ s.hintStyle }}">{{ s.hint }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <strong style="font-size: 16px; font-weight: 500;">Từ doanh thu thuần xuống lợi nhuận ròng</strong>
+        <span style="font-size: 13px; color: #6E665C;">Waterfall · cột giảm dùng phía âm của diverging ramp, cột mốc dùng neutral · đơn vị triệu đồng</span>
+      </div>
+      <svg aria-hidden="true" viewBox="0 0 1180 320" style="width: 100%; height: 320px;">
+        {{ wfGridEls }}
+        {{ wfAxisEls }}
+        <line x1="88" y1="248" x2="1160" y2="248" stroke="#E7E2DC" stroke-width="1"></line>
+        <sc-for list="{{ wfConnectors }}" as="c" hint-placeholder-count="6">
+          <line x1="{{ c.x1 }}" y1="{{ c.y }}" x2="{{ c.x2 }}" y2="{{ c.y }}" stroke="#D5CEC6" stroke-width="1" stroke-dasharray="4 4"></line>
+        </sc-for>
+        <sc-for list="{{ wfBars }}" as="b" hint-placeholder-count="7">
+          <rect x="{{ b.x }}" y="{{ b.y }}" width="{{ b.w }}" height="{{ b.h }}" rx="4" fill="{{ b.fill }}"></rect>
+        </sc-for>
+        {{ wfValueEls }}
+        {{ wfLabelEls }}
+      </svg>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+        <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #D5CEC6;"></span>Cột mốc · doanh thu thuần và các mức lợi nhuận</span>
+        <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #C4634F;"></span>Khoản trừ ra</span>
+        <span style="font-size: 12px; color: #6E665C;">Mỗi cột ghi sẵn số, không cần rê chuột.</span>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 1fr 168px 96px 168px 96px 168px 108px; gap: 12px; align-items: center; min-height: 40px; padding: 0 16px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+        <span>Khoản mục</span>
+        <span style="text-align: right;">Tháng 06/2026</span>
+        <span style="text-align: right;">% DT thuần</span>
+        <span style="text-align: right;">Tháng 05/2026</span>
+        <span style="text-align: right;">% DT thuần</span>
+        <span style="text-align: right;">Chênh lệch</span>
+        <span style="text-align: right;">% chênh</span>
+      </div>
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="22">
+        <div style="{{ r.rowStyle }}" style-hover="background: #F4F1ED;">
+          <span style="{{ r.nameCellStyle }}">
+            <sc-if value="{{ r.canToggle }}" hint-placeholder-val="{{ true }}">
+              <span onClick="{{ r.onToggle }}" role="button" tabindex="0" aria-expanded="{{ r.expanded }}" style="width: 20px; height: 20px; flex: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;" style-hover="background: #F0EBE5;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="{{ r.caretStyle }}"><path d="M9 6l6 6-6 6"></path></svg>
+              </span>
+            </sc-if>
+            <sc-if value="{{ r.noToggle }}" hint-placeholder-val="{{ false }}">
+              <span style="width: 20px; flex: none;"></span>
+            </sc-if>
+            <span style="{{ r.nameStyle }}">{{ r.name }}</span>
+            <sc-if value="{{ r.hasDirTag }}" hint-placeholder-val="{{ false }}">
+              <span style="{{ r.dirTagStyle }}">{{ r.dirTag }}</span>
+            </sc-if>
+          </span>
+          <span style="{{ r.nowStyle }}">{{ r.now }}</span>
+          <span style="{{ r.nowPctStyle }}">{{ r.nowPct }}</span>
+          <span style="{{ r.prevStyle }}">{{ r.prev }}</span>
+          <span style="{{ r.prevPctStyle }}">{{ r.prevPct }}</span>
+          <span style="{{ r.diffStyle }}">{{ r.diff }}</span>
+          <span style="{{ r.pctStyle }}">{{ r.pct }}</span>
+        </div>
+      </sc-for>
+      <div style="position: sticky; bottom: 0; z-index: 2; display: grid; grid-template-columns: 1fr 168px 96px 168px 96px 168px 108px; gap: 12px; align-items: center; min-height: 52px; padding: 0 16px; background: #EFF6F5; border-top: 2px solid #B0D4CF; font-size: 14px;">
+        <strong style="font-weight: 600; letter-spacing: 0.02em; color: #1C4842;">LỢI NHUẬN RÒNG</strong>
+        <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; color: #1C4842;">{{ netNow }}</strong>
+        <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; color: #1C4842;">{{ netNowPct }}</strong>
+        <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ netPrev }}</span>
+        <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ netPrevPct }}</span>
+        <strong style="{{ netDiffStyle }}">{{ netDiff }}</strong>
+        <strong style="{{ netPctStyle }}">{{ netPct }}</strong>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #6E665C;">
+      <span><strong style="font-weight: 500;">Cột “% DT thuần” luôn tính trên doanh thu thuần của chính kỳ đó</strong> — không phải trên doanh thu gộp, không phải trên doanh thu kỳ này. Nhờ vậy hai cột % so sánh được trực tiếp với nhau.</span>
+      <span>Doanh thu thuần = doanh thu gộp − giảm giá và khuyến mãi. Thuế thu nhập doanh nghiệp tạm tính 20% trên lợi nhuận trước thuế.</span>
+      <span>Không rút gọn số ở bất kỳ đâu trên màn này, kể cả stat card. Xuất PDF giữ nguyên cấu trúc phân cấp và trạng thái gập hiện tại; xuất Excel luôn xuất đủ mọi dòng.</span>
+    </div>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Ghi cho dev</h2>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">không rút gọn</span><span style="color: #4A443E;">Ghi đè luật chung của T4: stat card ở màn này hiện đủ chữ số. Người đọc báo cáo lãi lỗ đối chiếu với sổ sách, “1,4 tỷ” là vô dụng.</span>
+      <span style="color: #6E665C;">phân cấp 3 tầng</span><span style="color: #4A443E;">Cấp 1 in đậm + nền nhấn · cấp 2 thụt 28px · cấp 3 thụt 56px và chữ nhạt hơn một bậc. Dòng kết quả (=) dùng nền primary-50 và viền trên.</span>
+      <span style="color: #6E665C;">chiều nghĩa đảo</span><span style="color: #4A443E;">Doanh thu và mọi dòng lợi nhuận <code style="font-family: ui-monospace, Menlo, monospace;">higher-is-better</code> · giá vốn, chi phí, giảm giá <code style="font-family: ui-monospace, Menlo, monospace;">lower-is-better</code> · thuế <code style="font-family: ui-monospace, Menlo, monospace;">neutral</code> (thuế tăng vì lãi tăng, không phải tin xấu). Ramp map theo <code style="font-family: ui-monospace, Menlo, monospace;">direction</code>, không map theo dấu.</span>
+      <span style="color: #6E665C;">xuất PDF</span><span style="color: #4A443E;">Giữ đúng thụt lề và dòng kết quả; mỗi trang lặp lại header cột và tên kỳ. Không cắt một nhóm ra hai trang — nhóm dài hơn một trang thì bắt đầu ở trang mới.</span>
+      <span style="color: #6E665C;">quản lý chi nhánh</span><span style="color: #4A443E;">Chỉ chi nhánh mình; bộ chọn chi nhánh khoá ở giá trị đó thay vì ẩn, để họ biết con số này thuộc phạm vi nào.</span>
+      <span style="color: #6E665C;">thiếu dữ liệu</span><span style="color: #4A443E;">Nhóm thiếu vẫn hiện với số có được và gắn nhãn; banner liệt kê đích danh nhóm nào. Không bao giờ ngầm coi thiếu là 0 ở một báo cáo lãi lỗ.</span>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">6 state của T4</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">1 · Đang tải</span>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        </div>
+        <span style="height: 160px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Bảng dựng đúng 3 nhóm cấp 1 và 4 dòng kết quả — bố cục không nhảy khi số về.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">2 · Không dữ liệu trong kỳ</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18v16H3zM8 2v6M16 2v6M3 11h18"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Chi nhánh Quận 7 chưa hoạt động trong 06/2026</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Khai trương 12/07/2026. Chọn kỳ khác hoặc chi nhánh khác.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">3 · Thiếu dữ liệu chi phí</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Bảo trì và vật tư · 2 hoá đơn chưa về</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Dòng thiếu gắn nhãn <strong style="font-weight: 500;">chưa đủ</strong> cạnh tên, mọi dòng lợi nhuận phía dưới gắn nhãn <strong style="font-weight: 500;">tạm tính</strong>. Đây là state của báo cáo này, không phải cảnh báo chung.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">4 · Kỳ chưa chốt sổ</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #EEF5FA; border: 1px solid #C7DDEC; border-radius: 4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2C6E9B" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 8v.01M12 11v5"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Tháng 07/2026 đang chạy · số liệu tạm tính</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Chọn “Tháng này” thì báo cáo vẫn xem được nhưng gắn nhãn tạm tính ở mọi dòng lợi nhuận, và nút Xuất PDF cảnh báo trước khi xuất.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">5 · Không có quyền xem</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Chỉ chủ và kế toán xem toàn hệ thống</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Quản lý xem được chi nhánh mình, nhưng không thấy dòng thuế và không xuất được PDF toàn hệ thống.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">6 · Kỳ lỗ</span>
+        <div style="display: grid; grid-template-columns: 1fr 132px; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; background: #FCF0EE; border: 1px solid #F1CCC7; border-radius: 4px; font-size: 13px;">
+          <strong style="font-weight: 600; color: #96271B;">LỢI NHUẬN RÒNG</strong>
+          <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; color: #96271B;">(24.180.000)</strong>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Lỗ hiện trong ngoặc, nền danger nhạt thay cho nền primary. Waterfall vẽ cột cuối xuống dưới trục 0 — trục Y nới xuống âm, không cắt cột.</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1100}}">
+const SEG = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #635B53; cursor: pointer;';
+const SEG_ON = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(30,27,25,0.06); font-size: 13px; font-weight: 500; color: #1C4842; cursor: pointer;';
+const DIR_TAG = 'height: 20px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 11px; font-weight: 500; white-space: nowrap; background: #F4F1ED; color: #6E665C;';
+const DIV = { p3: '#1E5C3F', p2: '#3F8560', p1: '#6FA98A', zero: '#6E665C', n1: '#D99A8C', n2: '#C4634F', n3: '#A32E22' };
+
+// KHÔNG rút gọn ở bất kỳ đâu trên màn này, kể cả stat card
+const vnd = (n) => (n < 0 ? '(' + Math.abs(n).toLocaleString('vi-VN') + ')' : n.toLocaleString('vi-VN'));
+const dec1 = (n) => n.toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const dec2 = (n) => n.toLocaleString('vi-VN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+// ── Nguồn số liệu · 06/2026 khớp “kỳ trước” của SC-TC-01 ─────────
+// [tên, cấp, kỳ này, kỳ trước, direction, con?]
+const TREE = [
+  { name: 'DOANH THU', level: 1, dir: 'higher', id: 'dt', children: [
+    { name: 'Doanh thu gói buffet', level: 2, now: 1264900000, prev: 1278400000, dir: 'higher' },
+    { name: 'Doanh thu gọi thêm', level: 2, now: 176100000, prev: 178200000, dir: 'higher' },
+    { name: 'Doanh thu khác · đồ uống, bán mang về', level: 2, now: 59600000, prev: 60300000, dir: 'higher' }
+  ], after: [
+    // Khoản trừ luôn lưu số DƯƠNG, dấu trừ chỉ nằm ở nhãn — cùng quy ước với dòng thuế.
+    // Nhờ vậy dòng nhóm là doanh thu gộp, dòng kết quả mới là doanh thu thuần.
+    { name: '(−) Giảm giá và khuyến mãi', level: 2, now: 62400000, prev: 62900000, dir: 'lower' }
+  ], result: { name: 'DOANH THU THUẦN', dir: 'higher' } },
+
+  { name: 'GIÁ VỐN HÀNG BÁN', level: 1, dir: 'lower', id: 'gv', negative: true, children: [
+    { name: 'Nguyên liệu tiêu hao', level: 2, dir: 'lower', id: 'nl', children: [
+      { name: 'Thực phẩm tươi', level: 3, now: 371640000, prev: 376800000, dir: 'lower' },
+      { name: 'Đồ khô và gia vị', level: 3, now: 74280000, prev: 75200000, dir: 'lower' },
+      { name: 'Nguyên liệu đồ uống', level: 3, now: 16220000, prev: 16200000, dir: 'lower' }
+    ] },
+    { name: 'Hao hụt và huỷ bỏ', level: 2, now: 23580000, prev: 22100000, dir: 'lower' }
+  ], result: { name: 'LỢI NHUẬN GỘP', dir: 'higher' } },
+
+  { name: 'CHI PHÍ VẬN HÀNH', level: 1, dir: 'lower', id: 'cp', negative: true, children: [
+    { name: 'Chi phí nhân công', level: 2, dir: 'lower', id: 'nc', children: [
+      { name: 'Lương cơ bản và ca', level: 3, now: 386400000, prev: 384200000, dir: 'lower' },
+      { name: 'Bảo hiểm và phụ cấp', level: 3, now: 62500000, prev: 61900000, dir: 'lower' },
+      { name: 'Thưởng và tip chia', level: 3, now: 20000000, prev: 20000000, dir: 'lower' }
+    ] },
+    { name: 'Thuê mặt bằng', level: 2, now: 180000000, prev: 180000000, dir: 'lower' },
+    { name: 'Điện nước gas', level: 2, now: 88240000, prev: 84600000, dir: 'lower' },
+    { name: 'Marketing', level: 2, now: 51200000, prev: 58400000, dir: 'lower' },
+    { name: 'Bảo trì và vật tư', level: 2, now: 19860000, prev: 17240000, dir: 'lower', partial: true },
+    { name: 'Chi phí khác và khấu hao', level: 2, now: 56140000, prev: 57034000, dir: 'lower' }
+  ], result: { name: 'LỢI NHUẬN TRƯỚC THUẾ', dir: 'higher' } }
+];
+
+const TAX_RATE = 0.20;
+const NET_TARGET = 90000000;
+const MARGIN_FLOOR = 4.0;     // Cấu hình → Chỉ tiêu tài chính
+const MARGIN_TARGET = 6.0;
+
+function nodeSum(n, key) {
+  if (n.children) return n.children.reduce((s, c) => s + nodeSum(c, key), 0);
+  return n[key];
+}
+
+class Component extends DCLogic {
+  state = {
+    preset: 'Tháng trước',
+    compare: true,
+    open: { dt: true, gv: true, cp: true, nl: false, nc: false }
+  };
+
+  renderVals() {
+    const st = this.state;
+
+    const discount = TREE[0].after[0];
+    const gross = nodeSum(TREE[0], 'now');              // doanh thu gộp, trước giảm giá
+    const grossP = nodeSum(TREE[0], 'prev');
+    const netRev = gross - discount.now;
+    const netRevP = grossP - discount.prev;
+    const cogs = nodeSum(TREE[1], 'now'), cogsP = nodeSum(TREE[1], 'prev');
+    const grossProfit = netRev - cogs, grossProfitP = netRevP - cogsP;
+    const opex = nodeSum(TREE[2], 'now'), opexP = nodeSum(TREE[2], 'prev');
+    const ebt = grossProfit - opex, ebtP = grossProfitP - opexP;
+    const tax = Math.round(ebt * TAX_RATE), taxP = Math.round(ebtP * TAX_RATE);
+    const net = ebt - tax, netP = ebtP - taxP;
+    const netMargin = (net / netRev) * 100, netMarginP = (netP / netRevP) * 100;
+
+    const divColor = (pct, dir) => {
+      if (dir === 'neutral' || pct === 0) return DIV.zero;
+      const good = dir === 'higher' ? pct > 0 : pct < 0;
+      const mag = Math.abs(pct);
+      const step = mag >= 15 ? 3 : (mag >= 5 ? 2 : 1);
+      return good ? DIV['p' + step] : DIV['n' + step];
+    };
+
+    const rows = [];
+    const cellR = 'text-align: right; font-variant-numeric: tabular-nums;';
+
+    const pushRow = (o) => {
+      const diff = o.now - o.prev;
+      // chia cho |prev| — khoản trừ lưu dương nhưng phòng trường hợp dữ liệu âm lọt vào
+      const pct = o.prev === 0 ? 0 : (diff / Math.abs(o.prev)) * 100;
+      const color = divColor(pct, o.dir);
+      const flat = diff === 0;
+      const isL1 = o.level === 1;
+      const isResult = !!o.result;
+      const weight = isResult ? 600 : (isL1 ? 500 : 400);
+      rows.push({
+        name: o.name + (o.partial ? ' · chưa đủ' : ''),
+        canToggle: !!o.toggleId,
+        noToggle: !o.toggleId,
+        expanded: !!o.expanded,
+        onToggle: o.onToggle || (() => {}),
+        caretStyle: 'transition: transform 120ms ease; transform: rotate(' + (o.expanded ? 90 : 0) + 'deg);',
+        hasDirTag: isL1 && !isResult,
+        dirTag: o.dir === 'higher' ? 'tăng là tốt' : (o.dir === 'lower' ? 'tăng là xấu' : 'trung tính'),
+        dirTagStyle: DIR_TAG,
+        rowStyle: 'display: grid; grid-template-columns: 1fr 168px 96px 168px 96px 168px 108px; gap: 12px; align-items: center; min-height: 44px; padding: 0 16px; font-size: 13px; border-bottom: 1px solid #F0EBE5;'
+          + (isResult ? ' background: #EFF6F5; border-top: 1px solid #B0D4CF;' : (isL1 ? ' background: #FAF8F6;' : '')),
+        nameCellStyle: 'display: flex; align-items: center; gap: 8px; min-width: 0; padding-left: ' + ((o.level - 1) * 28) + 'px;',
+        nameStyle: 'overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: ' + weight
+          + '; color: ' + (isResult ? '#1C4842' : (o.level === 3 ? '#4A443E' : '#1E1B19')) + ';',
+        now: vnd(o.now),
+        nowStyle: cellR + ' font-weight: ' + weight + '; color: ' + (isResult ? '#1C4842' : '#1E1B19') + ';',
+        nowPct: dec1((Math.abs(o.now) / netRev) * 100) + '%',
+        nowPctStyle: cellR + ' color: #6E665C;',
+        prev: vnd(o.prev),
+        prevStyle: cellR + ' color: #4A443E;',
+        prevPct: dec1((Math.abs(o.prev) / netRevP) * 100) + '%',
+        prevPctStyle: cellR + ' color: #6E665C;',
+        diff: flat ? '—' : (diff > 0 ? '+' : '') + vnd(diff),
+        diffStyle: cellR + ' font-weight: 500; color: ' + (flat ? '#6E665C' : color) + ';',
+        pct: (o.prev === 0 || flat) ? '—' : (pct > 0 ? '+' : '−') + dec1(Math.abs(pct)) + '%',
+        pctStyle: cellR + ' color: ' + (flat ? '#6E665C' : color) + ';'
+      });
+    };
+
+    const toggle = (id) => () => this.setState(s => ({ open: Object.assign({}, s.open, { [id]: !s.open[id] }) }));
+
+    const walk = (node) => {
+      const now = nodeSum(node, 'now'), prev = nodeSum(node, 'prev');
+      const open = node.id ? !!st.open[node.id] : true;
+      pushRow({
+        name: node.name, level: node.level, now, prev, dir: node.dir,
+        toggleId: node.children ? node.id : null,
+        expanded: open,
+        onToggle: node.id ? toggle(node.id) : null,
+        partial: node.partial
+      });
+      if (node.children && open) node.children.forEach(walk);
+      if (node.after && open) node.after.forEach(walk);
+    };
+
+    TREE.forEach((grp, gi) => {
+      walk(grp);
+      if (gi === 0) pushRow({ name: 'DOANH THU THUẦN', level: 1, now: netRev, prev: netRevP, dir: 'higher', result: true });
+      if (gi === 1) pushRow({ name: 'LỢI NHUẬN GỘP', level: 1, now: grossProfit, prev: grossProfitP, dir: 'higher', result: true });
+      if (gi === 2) {
+        pushRow({ name: 'LỢI NHUẬN TRƯỚC THUẾ', level: 1, now: ebt, prev: ebtP, dir: 'higher', result: true });
+        pushRow({ name: '(−) Thuế thu nhập doanh nghiệp · 20%', level: 2, now: tax, prev: taxP, dir: 'neutral' });
+      }
+    });
+
+    const statCard = (s) => {
+      const up = s.delta >= 0;
+      const good = s.dir === 'higher' ? up : (s.dir === 'lower' ? !up : null);
+      return {
+        label: s.label,
+        dir: s.dir === 'higher' ? 'cao hơn tốt hơn' : (s.dir === 'lower' ? 'thấp hơn tốt hơn' : 'trung tính'),
+        dirStyle: DIR_TAG,
+        value: s.value,
+        valueStyle: 'font-size: 20px; font-weight: 500; font-variant-numeric: tabular-nums; color: '
+          + (s.tone === 'warn' ? '#8A5F12' : (s.tone === 'bad' ? '#C0392B' : '#1E1B19')) + ';',
+        delta: (up ? '+' : '−') + dec1(Math.abs(s.delta)) + '%',
+        deltaStyle: 'font-size: 13px; font-variant-numeric: tabular-nums; color: '
+          + (good === true ? '#256A49' : (good === false ? '#C0392B' : '#635B53')) + ';',
+        hasBar: !!s.bar,
+        barStyle: s.bar ? 'position: absolute; left: 0; top: 0; display: block; height: 8px; border-radius: 999px; width: '
+          + Math.min(100, s.barPct).toFixed(1) + '%; background: ' + (s.tone === 'bad' ? '#C0392B' : (s.tone === 'warn' ? '#8A5F12' : '#235B54')) + ';' : '',
+        markStyle: s.bar ? 'position: absolute; top: -2px; left: ' + Math.min(100, s.markPct).toFixed(1) + '%; width: 2px; height: 12px; border-radius: 999px; background: #4A443E;' : '',
+        hint: s.hint,
+        hintStyle: 'font-size: 12px; color: ' + (s.tone === 'warn' || s.tone === 'bad' ? '#8A5F12' : '#6E665C') + ';'
+      };
+    };
+
+    // ── waterfall · viewBox 1180×320 ──────────────────────────────
+    const steps = [
+      { label: 'Doanh thu thuần', value: netRev, type: 'total' },
+      { label: 'Giá vốn', value: -cogs, type: 'down' },
+      { label: 'Lợi nhuận gộp', value: grossProfit, type: 'total' },
+      { label: 'Chi phí vận hành', value: -opex, type: 'down' },
+      { label: 'LN trước thuế', value: ebt, type: 'total' },
+      { label: 'Thuế TNDN', value: -tax, type: 'down' },
+      { label: 'Lợi nhuận ròng', value: net, type: 'total' }
+    ];
+    const wTop = 40, wBot = 248, wL = 88, wR = 1160;
+    const wMax = 1600000000;
+    const wy = (v) => wBot - (v / wMax) * (wBot - wTop);
+    const wSlot = (wR - wL) / steps.length;
+    const wBars = [];
+    const wConnectors = [];
+    const wValueEls = [];
+    let cursor = 0;
+    steps.forEach((s, i) => {
+      const x = wL + i * wSlot + wSlot * 0.24;
+      const w = wSlot * 0.52;
+      let top, bottom;
+      if (s.type === 'total') { top = s.value; bottom = 0; cursor = s.value; }
+      else { top = cursor; bottom = cursor + s.value; cursor = bottom; }
+      const yTop = wy(Math.max(top, bottom));
+      const h = Math.abs(wy(bottom) - wy(top));
+      wBars.push({
+        x: x.toFixed(1), y: yTop.toFixed(1), w: w.toFixed(1), h: Math.max(2, h).toFixed(1),
+        fill: s.type === 'total' ? '#D5CEC6' : DIV.n2
+      });
+      wValueEls.push(React.createElement('text', {
+        key: 'wv' + i, x: x + w / 2, y: yTop - 8, textAnchor: 'middle', fontSize: 12,
+        fill: s.type === 'total' ? '#4A443E' : '#A32E22', fontFamily: 'Be Vietnam Pro'
+      }, (s.value < 0 ? '−' : '') + dec1(Math.abs(s.value) / 1000000)));
+      if (i < steps.length - 1) {
+        wConnectors.push({
+          x1: (x + w).toFixed(1),
+          x2: (wL + (i + 1) * wSlot + wSlot * 0.24).toFixed(1),
+          y: wy(cursor).toFixed(1)
+        });
+      }
+    });
+
+    return {
+      presets: ['Tháng này', 'Tháng trước', 'Quý này', 'Năm nay'].map(p => ({
+        label: p, style: st.preset === p ? SEG_ON : SEG, onPick: () => this.setState({ preset: p })
+      })),
+      compareStyle: 'height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; cursor: pointer; flex: none; border: 1px solid '
+        + (st.compare ? '#B0D4CF' : '#E7E2DC') + '; background: ' + (st.compare ? '#EFF6F5' : '#FFFFFF') + '; color: ' + (st.compare ? '#1C4842' : '#4A443E') + '; font-weight: ' + (st.compare ? 500 : 400) + ';',
+      toggleCompare: () => this.setState(s => ({ compare: !s.compare })),
+
+      stats: [
+        { label: 'Doanh thu thuần', value: vnd(netRev), delta: ((netRev - netRevP) / netRevP) * 100, dir: 'higher',
+          hint: 'Doanh thu gộp ' + vnd(gross) + ' − giảm giá ' + vnd(discount.now) },
+        { label: 'Lợi nhuận gộp', value: vnd(grossProfit), delta: ((grossProfit - grossProfitP) / grossProfitP) * 100, dir: 'higher',
+          hint: 'Biên gộp ' + dec1((grossProfit / netRev) * 100) + '% · kỳ trước ' + dec1((grossProfitP / netRevP) * 100) + '%' },
+        { label: 'Lợi nhuận ròng', value: vnd(net), delta: ((net - netP) / netP) * 100, dir: 'higher',
+          bar: true, barPct: (net / NET_TARGET) * 100, markPct: 100,
+          tone: net < NET_TARGET ? 'warn' : 'ok',
+          hint: 'Mục tiêu ' + vnd(NET_TARGET) + ' · đạt ' + dec1((net / NET_TARGET) * 100) + '%' },
+        { label: 'Biên lợi nhuận ròng', value: dec2(netMargin) + '%', delta: netMargin - netMarginP, dir: 'higher',
+          bar: true, barPct: (netMargin / MARGIN_TARGET) * 100, markPct: (MARGIN_FLOOR / MARGIN_TARGET) * 100,
+          tone: netMargin < MARGIN_FLOOR ? 'bad' : (netMargin < MARGIN_TARGET ? 'warn' : 'ok'),
+          hint: 'Sàn ' + dec1(MARGIN_FLOOR) + '% · mục tiêu ' + dec1(MARGIN_TARGET) + '% · từ Cấu hình' }
+      ].map(statCard),
+
+      wfGridEls: [0, 400000000, 800000000, 1200000000, 1600000000].map(v => React.createElement('line', {
+        key: 'wg' + v, x1: wL, y1: wy(v), x2: wR, y2: wy(v), stroke: '#F4F1ED', strokeWidth: 1
+      })),
+      wfAxisEls: [0, 400000000, 800000000, 1200000000, 1600000000].map(v => React.createElement('text', {
+        key: 'wa' + v, x: wL - 10, y: wy(v) + 4, textAnchor: 'end', fontSize: 12, fill: '#6E665C', fontFamily: 'Be Vietnam Pro'
+      }, (v / 1000000).toLocaleString('vi-VN'))),
+      wfBars: wBars,
+      wfConnectors: wConnectors,
+      wfValueEls: wValueEls,
+      wfLabelEls: steps.map((s, i) => React.createElement('text', {
+        key: 'wl' + i, x: wL + i * wSlot + wSlot / 2, y: 274, textAnchor: 'middle', fontSize: 12,
+        fill: s.type === 'total' ? '#1E1B19' : '#6E665C', fontFamily: 'Be Vietnam Pro'
+      }, s.label)),
+
+      rows,
+      netNow: vnd(net),
+      netNowPct: dec1(netMargin) + '%',
+      netPrev: vnd(netP),
+      netPrevPct: dec1(netMarginP) + '%',
+      netDiff: (net - netP >= 0 ? '+' : '') + vnd(net - netP),
+      netDiffStyle: 'text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; color: ' + divColor(((net - netP) / netP) * 100, 'higher') + ';',
+      netPct: (net >= netP ? '+' : '−') + dec1(Math.abs(((net - netP) / netP) * 100)) + '%',
+      netPctStyle: 'text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; color: ' + divColor(((net - netP) / netP) * 100, 'higher') + ';'
+    };
+  }
+}
+
+</script>
+</body>
+</html>

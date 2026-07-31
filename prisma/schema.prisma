@@ -1,0 +1,26 @@
+// ILikeBuffet — single Prisma schema, one owner across P4/P6/P7 to avoid
+// parallel migration races (orchestration rule in plan.md).
+//
+// M1 keeps domain tables out until their phase adds them (Red Team M5: no
+// pre-committed data model while needs-client-confirm items are open).
+// The only table here is an infra probe used by the health/lock harness to
+// prove migrations + row-level FOR UPDATE locking work end-to-end.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Infra-only. NOT domain data. Exists so the test harness can demonstrate a
+/// reproducible migration and a real `SELECT ... FOR UPDATE` row lock.
+model HealthProbe {
+  id        Int      @id @default(autoincrement())
+  label     String   @unique
+  updatedAt DateTime @updatedAt
+
+  @@map("_health_probe")
+}

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px; max-width: 84ch;">
+    <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">ilikebuffet admin · template 3</div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Form &amp; Overlay</h1>
+    <p style="margin: 0; font-size: 14px; color: #635B53;">File <strong style="font-weight: 500;">mỏng có chủ đích</strong>: chỉ hợp đồng slot, luật chọn vật chứa và <span>widthTier</span>. Chi tiết bên trong không nằm ở đây — thân form ở <a href="#">Pattern 2 · Form</a>, vật chứa và hành vi overlay ở <a href="#">Pattern 3 · Overlays</a>, control ở <a href="#">Component Library 1</a>. Có file này để <strong style="font-weight: 500;">11 màn ghi “template t3” ở header tra được về một chỗ</strong>.</p>
+  </header>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">T3 là gì · không là gì</h2>
+      <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">T3 = một form tạo/sửa một bản ghi · không phải danh sách, không phải báo cáo, không phải cấu hình</code>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #B0D4CF; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 10px;">
+        <strong style="font-size: 15px; font-weight: 500; color: #1C4842;">Chọn T3 khi</strong>
+        <sc-for list="{{ pick }}" as="p" hint-placeholder-count="4">
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #4F958D;">·</span><span>{{ p.text }}</span></span>
+        </sc-for>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 10px;">
+        <strong style="font-size: 15px; font-weight: 500;">Không chọn T3 khi</strong>
+        <sc-for list="{{ avoid }}" as="a" hint-placeholder-count="4">
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #ABA298;">·</span><span>{{ a.text }}</span></span>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Hợp đồng slot</h2>
+      <span style="font-size: 13px; color: #635B53; max-width: 84ch;">Bảy slot theo thứ tự dọc. Slot bắt buộc thiếu là lỗi template, không phải lựa chọn của màn.</span>
+    </div>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 40px 200px 116px 1fr; gap: 16px; align-items: center; min-height: 40px; padding: 0 20px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+        <span>#</span><span>Slot</span><span>Bắt buộc</span><span>Khi trống thì sao</span>
+      </div>
+      <sc-for list="{{ slots }}" as="s" hint-placeholder-count="7">
+        <div style="{{ s.rowStyle }}">
+          <span style="font-size: 13px; font-variant-numeric: tabular-nums; color: #8A8178;">{{ s.n }}</span>
+          <strong style="font-size: 13px; font-weight: 500;">{{ s.name }}</strong>
+          <span style="{{ s.tagStyle }}">{{ s.req }}</span>
+          <span style="font-size: 13px; color: #4A443E;">{{ s.empty }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Vật chứa · chọn cái nào</h2>
+      <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">quyết định theo NGỮ CẢNH người dùng cần thấy, không theo số lượng ô nhập</code>
+    </div>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 148px 132px 1fr 200px; gap: 16px; align-items: center; min-height: 40px; padding: 0 20px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+        <span>Vật chứa</span><span>Token rộng</span><span>Dùng khi</span><span>Màn đang dùng</span>
+      </div>
+      <sc-for list="{{ hosts }}" as="h" hint-placeholder-count="5">
+        <div style="{{ h.rowStyle }}">
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">{{ h.name }}</code>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">{{ h.token }}</code>
+          <span style="font-size: 13px; color: #4A443E;">{{ h.when }}</span>
+          <span style="font-size: 12px; color: #6E665C;">{{ h.screens }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;"><span>widthTier</span> · ops</h2>
+    <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">KẾ THỪA <span>widthTier</span> từ T1 — định nghĩa hai lớp và ba mức nằm ở Template 1+2, không mô tả lại ở đây</code>
+    <div style="background: #FFFFFF; border: 1px solid #B0D4CF; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">giá trị</span><span style="color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">ops</code> cho form nhập giữa ca (SC-VH-04 đặt bàn, SC-KHO-10 hao hụt, SC-VH-08 đóng ca) · <code style="font-family: ui-monospace, Menlo, monospace;">office</code> cho form nhiều dòng ở bàn giấy (phiếu nhập, phiếu xuất, kiểm kê, gói buffet, món ăn).</span>
+      <span style="color: #6E665C;">768 · vật chứa</span><span style="color: #4A443E;">Pattern 3 đổi hình thức: <code style="font-family: ui-monospace, Menlo, monospace;">drawer-md/lg</code> → <strong style="font-weight: 500;">bottom sheet 90vh</strong>, <code style="font-family: ui-monospace, Menlo, monospace;">modal-md/lg</code> → <strong style="font-weight: 500;">full-screen</strong>. Màn không quyết định việc này, chỉ khai token kích thước.</span>
+      <span style="color: #6E665C;">768 · thân form</span><span style="color: #4A443E;">Mọi nhóm về <strong style="font-weight: 500;">một cột</strong> · nhãn trên ô, không cạnh ô · control size lg 44px · stepper số lượng 44×44 · ô nhập số mở bàn phím số.</span>
+      <span style="color: #6E665C;">768 · sticky footer</span><span style="color: #4A443E;">Neo bằng <code style="font-family: ui-monospace, Menlo, monospace;">visualViewport</code>, KHÔNG <code style="font-family: ui-monospace, Menlo, monospace;">position: fixed; bottom: 0</code> — bàn phím ảo đẩy footer ra khỏi màn và người dùng không thấy nút Lưu.</span>
+      <span style="color: #6E665C;">bảng nhập dòng</span><span style="color: #4A443E;">Ở 768 bảng nhập nhiều dòng (CL1 · 09) chuyển <strong style="font-weight: 500;">mỗi dòng thành một thẻ</strong>, không cuộn ngang: nhãn cột thành nhãn trong thẻ. Đây là ngoại lệ duy nhất của luật “không đổi hình bảng”, vì ô nhập hẹp hơn 88px thì không gõ được.</span>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Tra chi tiết ở đâu</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+      <sc-for list="{{ refs }}" as="r" hint-placeholder-count="3">
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 8px;">
+          <strong style="font-size: 15px; font-weight: 500;">{{ r.title }}</strong>
+          <span style="font-size: 13px; color: #4A443E;">{{ r.what }}</span>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">{{ r.file }}</code>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">11 màn đang dùng T3</h2>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+      <sc-for list="{{ users }}" as="u" hint-placeholder-count="11">
+        <div style="{{ u.rowStyle }}">
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54; width: 96px; flex: none;">{{ u.code }}</code>
+          <span style="flex: 1; min-width: 0; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ u.name }}</span>
+          <span style="{{ u.hostStyle }}">{{ u.host }}</span>
+          <span style="width: 72px; flex: none; text-align: right; font-size: 12px; color: #6E665C;">{{ u.tier }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1100}}">
+const PICK = [
+  'Tạo hoặc sửa MỘT bản ghi nghiệp vụ: phiếu nhập, đơn đặt bàn, nhân viên, món ăn.',
+  'Có một cụm Lưu / Huỷ duy nhất cho cả form, và một trạng thái “chưa lưu”.',
+  'Người dùng vào đây có mục đích rõ, làm xong thì đi ra — không ở lại đọc.',
+  'Có thể chứa bảng nhập nhiều dòng (CL1 · 09), nhưng bảng đó là một phần của bản ghi.'
+];
+
+const AVOID = [
+  'Sửa cấu hình dùng lâu dài → T5 Settings (nhiều nhóm, mỗi nhóm một save bar).',
+  'Chỉ xem, không sửa → T2 chi tiết bản ghi.',
+  'Có danh sách kèm phân trang và bộ lọc → T1.',
+  'Xác nhận một câu, một hai nút → không phải form: dùng modal-sm của Pattern 3.'
+];
+
+const SLOTS = [
+  ['Tiêu đề + ngữ cảnh bản ghi', 'bắt buộc', 'Không được trống. Sửa thì mang định danh bản ghi (“Phiếu nhập PN-2026-0412”), tạo mới thì mang loại (“Phiếu nhập kho”).'],
+  ['Cụm hành động phụ ở header', 'tuỳ chọn', 'Bỏ hẳn. Không để chỗ trống cân đối.'],
+  ['Banner cảnh báo cấp form', 'tuỳ chọn', 'Không chiếm chỗ khi không có. Xuất hiện thì đẩy nội dung xuống, không phủ lên.'],
+  ['Thân form theo nhóm', 'bắt buộc', 'Không được trống. Từ 2 nhóm trở lên mới cần tiêu đề nhóm; một nhóm thì bỏ tiêu đề.'],
+  ['Bảng nhập nhiều dòng', 'tuỳ chọn', 'Bỏ cả khối kèm nút Thêm dòng. Không hiện bảng rỗng có header.'],
+  ['Cột phụ 320px', 'tuỳ chọn', 'Thân form giãn full width. KHÔNG để cột trống — form một cột 720px là hợp lệ.'],
+  ['Sticky footer Lưu / Huỷ', 'bắt buộc', 'Không được trống, kể cả form chỉ đọc (khi đó footer chỉ có Đóng).']
+];
+
+const HOSTS = [
+  ['trang riêng', '--ibb-form-narrow 720', 'Bản ghi cần link chia sẻ được, hoặc form dài quá 2 lần chiều cao màn. Người dùng KHÔNG cần thấy danh sách phía sau.', 'SC-KHO-04 · 06 · 08 · SC-NS-02 · SC-TD-02 · 04 · 06 · SC-TC-09'],
+  ['drawer-sm', '--ibb-drawer-sm 400', 'Sửa nhanh 1–3 ô, cần thấy dòng đang chọn phía sau.', 'lọc nâng cao ở SC-VH-01'],
+  ['drawer-md', '--ibb-drawer-md 560', 'Form vừa, ngữ cảnh phía sau là lý do mở drawer.', 'SC-VH-04 · SC-TC-04 · SC-VH-08 đóng ca'],
+  ['drawer-lg', '--ibb-drawer-lg 720', 'Form kèm bảng nhỏ hoặc tab, vẫn cần ngữ cảnh.', 'SC-KHO-13'],
+  ['modal-md', '--ibb-modal-md 560', 'Việc ngắn nhưng cần chặn hẳn: nhập một sự kiện, chọn từ danh sách dài.', 'SC-KHO-10']
+];
+
+const REFS = [
+  ['Pattern 2 · Form', 'Nhóm ô, thứ tự tab, nhãn, validate, khi nào báo lỗi, trạng thái chưa lưu, luật rời trang.', 'Pattern 2 - Form.dc.html'],
+  ['Pattern 3 · Overlays', 'Drawer/modal: kích thước, focus trap, Esc, overlay lồng nhau, và luật đổi hình thức ở 768.', 'Pattern 3 - Overlays.dc.html'],
+  ['Component Library 1', 'Từng control: input, select, stepper, date, upload, bảng nhập nhiều dòng (mục 09).', 'Component Library 1 - Form controls.dc.html']
+];
+
+const USERS = [
+  ['SC-VH-04', 'Đặt bàn', 'drawer-md', 'ops'],
+  ['SC-KHO-04', 'Tạo phiếu nhập kho', 'trang riêng', 'office'],
+  ['SC-KHO-06', 'Tạo phiếu xuất kho', 'trang riêng', 'office'],
+  ['SC-KHO-08', 'Tạo phiếu kiểm kê', 'trang riêng', 'office'],
+  ['SC-KHO-10', 'Ghi nhận hao hụt', 'modal-md', 'ops'],
+  ['SC-NS-02', 'Tạo nhân viên', 'trang riêng', 'office'],
+  ['SC-TC-04', 'Phiếu thu chi', 'drawer-md', 'office'],
+  ['SC-TC-09', 'Tạo chi phí vận hành', 'trang riêng', 'office'],
+  ['SC-TD-02', 'Tạo/sửa gói buffet', 'trang riêng', 'office'],
+  ['SC-TD-04', 'Tạo/sửa món ăn', 'trang riêng', 'office'],
+  ['SC-TD-06', 'Tạo/sửa khuyến mãi', 'trang riêng', 'office']
+];
+
+class Component extends DCLogic {
+  renderVals() {
+    const row = (i, len, cols) => 'display: grid; grid-template-columns: ' + cols + '; gap: 16px; align-items: center; min-height: 48px; padding: 8px 20px; font-size: 13px;'
+      + (i < len - 1 ? ' border-bottom: 1px solid #F0EBE5;' : '');
+    const reqTag = (req) => {
+      const on = req === 'bắt buộc';
+      return 'display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; background: '
+        + (on ? '#EFF6F5' : '#F4F1ED') + '; color: ' + (on ? '#1C4842' : '#6E665C') + ';';
+    };
+    return {
+      pick: PICK.map(text => ({ text })),
+      avoid: AVOID.map(text => ({ text })),
+      slots: SLOTS.map(([name, req, empty], i) => ({
+        n: i + 1, name, req, empty,
+        tagStyle: reqTag(req),
+        rowStyle: row(i, SLOTS.length, '40px 200px 116px 1fr')
+      })),
+      hosts: HOSTS.map(([name, token, when, screens], i) => ({
+        name, token, when, screens,
+        rowStyle: row(i, HOSTS.length, '148px 132px 1fr 200px')
+      })),
+      refs: REFS.map(([title, what, file]) => ({ title, what, file })),
+      users: USERS.map(([code, name, host, tier], i) => ({
+        code, name, host, tier,
+        rowStyle: 'display: flex; align-items: center; gap: 16px; min-height: 44px; padding: 0 20px;' + (i < USERS.length - 1 ? ' border-bottom: 1px solid #F0EBE5;' : ''),
+        hostStyle: 'width: 132px; flex: none; font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: ' + (host === 'trang riêng' ? '#6E665C' : '#235B54') + ';'
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

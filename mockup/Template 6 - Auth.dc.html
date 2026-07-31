@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  input { font-family: inherit; }
+  @keyframes ibb-spin { to { transform: rotate(360deg); } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px; max-width: 76ch;">
+    <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">ilikebuffet admin · template 6</div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Auth</h1>
+    <p style="margin: 0; font-size: 14px; color: #635B53;">Không sidebar, không topbar. Card 400px căn giữa, mọi control size lg 44px cho tablet ở quầy. Không có link đăng ký — tài khoản do quản trị viên mời.</p>
+  </header>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E665C;">1 · Đăng nhập · mặc định</span>
+      <div style="width: 480px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px; display: flex; justify-content: center;">
+        <div style="width: 400px; display: flex; flex-direction: column; gap: 24px;">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+            <span style="width: 48px; height: 48px; border-radius: 12px; background: #AC4E31; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 600;">i</span>
+            <span style="display: flex; flex-direction: column; align-items: center;">
+              <strong style="font-size: 20px; font-weight: 500;">ilikebuffet Admin</strong>
+              <span style="font-size: 13px; color: #635B53;">Đăng nhập để quản lý chi nhánh</span>
+            </span>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 14px; font-weight: 500;">Email hoặc số điện thoại</label>
+              <input type="text" placeholder="ban@ilikebuffet.vn" style="height: 44px; padding: 0 16px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 14px; outline: none; color: #1E1B19;" style-focus="border-color: #4F958D; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 14px; font-weight: 500;">Mật khẩu</label>
+              <div style="height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 16px; border: 1px solid #E7E2DC; border-radius: 6px;">
+                <span style="flex: 1; font-size: 14px; letter-spacing: 0.18em;">••••••••</span>
+                <span onClick="{{ togglePw }}" style="cursor: pointer; display: flex;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ eyePath }}"></path></svg>
+                </span>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+              <span onClick="{{ toggleRemember }}" style="display: flex; align-items: center; gap: 12px; cursor: pointer; min-height: 44px;">
+                <span style="{{ rememberBox }}">
+                  <sc-if value="{{ remember }}" hint-placeholder-val="{{ true }}">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"><path d="M4 12l5 5L20 6"></path></svg>
+                  </sc-if>
+                </span>
+                <span style="font-size: 14px;">Ghi nhớ đăng nhập</span>
+              </span>
+              <a href="#" style="font-size: 14px; text-decoration: none;">Quên mật khẩu?</a>
+            </div>
+            <button style="height: 44px; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;" style-hover="background: #1C4842;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Đăng nhập</button>
+          </div>
+          <span style="font-size: 12px; color: #6E665C; text-align: center;">Chưa có tài khoản? Liên hệ quản lý chi nhánh để được mời.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E665C;">1 · Đăng nhập · đang xử lý</span>
+      <div style="width: 480px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px; display: flex; justify-content: center;">
+        <div style="width: 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 14px; font-weight: 500; color: #635B53;">Email hoặc số điện thoại</label>
+            <div style="height: 44px; display: flex; align-items: center; padding: 0 16px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 14px; color: #4A443E;">han.tran@ilikebuffet.vn</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 14px; font-weight: 500; color: #635B53;">Mật khẩu</label>
+            <div style="height: 44px; display: flex; align-items: center; padding: 0 16px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 14px; letter-spacing: 0.18em; color: #4A443E;">••••••••</div>
+          </div>
+          <button style="height: 44px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; font-family: inherit; font-size: 14px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: progress; opacity: 0.9;">
+            <span style="width: 16px; height: 16px; border-radius: 999px; border: 1.5px solid rgba(255,255,255,0.35); border-top-color: #FFFFFF; animation: ibb-spin 700ms linear infinite;"></span>
+            Đang đăng nhập…
+          </button>
+          <span style="font-size: 12px; color: #6E665C; text-align: center;">Các ô nhập khoá tạm, nút giữ nguyên vị trí — không nhảy layout.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E665C;">1 · Sai thông tin · lỗi cấp form</span>
+      <div style="width: 480px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px; display: flex; justify-content: center;">
+        <div style="width: 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; gap: 12px; padding: 12px 16px; background: #FCF0EE; border: 1px solid #F1CCC7; border-radius: 6px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 8v5M12 16v.01"></path></svg>
+            <span style="font-size: 14px; color: #4A443E;">Thông tin đăng nhập không đúng. Kiểm tra lại email hoặc mật khẩu.</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 14px; font-weight: 500;">Email hoặc số điện thoại</label>
+            <div style="height: 44px; display: flex; align-items: center; padding: 0 16px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 14px;">han.tran@ilikebuffet.vn</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 14px; font-weight: 500;">Mật khẩu</label>
+            <div style="height: 44px; display: flex; align-items: center; padding: 0 16px; border: 1px solid #4F958D; border-radius: 6px; font-size: 14px; letter-spacing: 0.18em; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">•••••</div>
+          </div>
+          <button style="height: 44px; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;">Đăng nhập</button>
+          <span style="font-size: 12px; color: #6E665C;">Không báo lỗi theo từng ô và không nói email có tồn tại hay không.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E665C;">1 · Tài khoản bị khoá</span>
+      <div style="width: 480px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px; display: flex; justify-content: center;">
+        <div style="width: 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; gap: 12px; padding: 12px 16px; background: #FCF0EE; border: 1px solid #F1CCC7; border-radius: 6px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5zM12 14v3"></path></svg>
+            <span style="display: flex; flex-direction: column; gap: 4px;">
+              <strong style="font-size: 14px;">Tài khoản đã bị khoá</strong>
+              <span style="font-size: 14px; color: #4A443E;">Quản trị viên đã khoá tài khoản này ngày 26/07. Liên hệ quản lý chi nhánh để mở lại.</span>
+            </span>
+          </div>
+          <div style="height: 44px; display: flex; align-items: center; padding: 0 16px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 14px; color: #ABA298;">han.tran@ilikebuffet.vn</div>
+          <div style="height: 44px; display: flex; align-items: center; padding: 0 16px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 14px; color: #ABA298;">••••••••</div>
+          <button style="height: 44px; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; cursor: pointer;">Liên hệ quản lý</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E665C;">1 · Quá nhiều lần thử</span>
+      <div style="width: 480px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px; display: flex; justify-content: center;">
+        <div style="width: 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; gap: 12px; padding: 12px 16px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 6px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 7v5l3 2"></path></svg>
+            <span style="display: flex; flex-direction: column; gap: 4px;">
+              <strong style="font-size: 14px;">Tạm khoá đăng nhập 5 phút</strong>
+              <span style="font-size: 14px; color: #4A443E;">Đã sai 5 lần liên tiếp. Thử lại sau <strong style="font-variant-numeric: tabular-nums;">04:32</strong>.</span>
+            </span>
+          </div>
+          <div style="height: 44px; display: flex; align-items: center; padding: 0 16px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 14px; color: #ABA298;">han.tran@ilikebuffet.vn</div>
+          <button style="height: 44px; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer; opacity: 0.5;">Đăng nhập lại sau 04:32</button>
+          <a href="#" style="font-size: 14px; text-align: center; text-decoration: none;">Quên mật khẩu?</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E665C;">2 · Quên mật khẩu</span>
+      <div style="width: 480px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px; display: flex; justify-content: center;">
+        <div style="width: 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <strong style="font-size: 20px; font-weight: 500;">Quên mật khẩu</strong>
+            <span style="font-size: 14px; color: #635B53;">Nhập email của bạn, chúng tôi sẽ gửi hướng dẫn đặt lại.</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 14px; font-weight: 500;">Email</label>
+            <input type="text" placeholder="ban@ilikebuffet.vn" style="height: 44px; padding: 0 16px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 14px; outline: none;" style-focus="border-color: #4F958D; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+          </div>
+          <button style="height: 44px; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;">Gửi hướng dẫn</button>
+          <a href="#" style="font-size: 14px; text-align: center; text-decoration: none;">Quay lại đăng nhập</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E665C;">2 · Đã gửi · thông điệp trung tính</span>
+      <div style="width: 480px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px; display: flex; justify-content: center;">
+        <div style="width: 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center;">
+          <span style="width: 56px; height: 56px; border-radius: 999px; background: #EFF6F5; display: flex; align-items: center; justify-content: center;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#235B54" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18v12H3zM3 6l9 7 9-7"></path></svg>
+          </span>
+          <strong style="font-size: 20px; font-weight: 500;">Kiểm tra hộp thư</strong>
+          <span style="font-size: 14px; color: #635B53;">Nếu email tồn tại trong hệ thống, chúng tôi đã gửi hướng dẫn đặt lại mật khẩu. Liên kết có hiệu lực 30 phút.</span>
+          <button style="height: 44px; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; cursor: pointer;">Gửi lại sau 00:58</button>
+          <a href="#" style="font-size: 14px; text-decoration: none;">Quay lại đăng nhập</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E665C;">3 · Đặt lại mật khẩu · gõ thử để xem thanh đo</span>
+      <div style="width: 480px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px; display: flex; justify-content: center;">
+        <div style="width: 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <strong style="font-size: 20px; font-weight: 500;">Đặt mật khẩu mới</strong>
+            <span style="font-size: 14px; color: #635B53;">Cho tài khoản han.tran@ilikebuffet.vn</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 14px; font-weight: 500;">Mật khẩu mới</label>
+            <div style="height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 16px; border: 1px solid #E7E2DC; border-radius: 6px;">
+              <input type="text" value="{{ pw }}" onChange="{{ onPw }}" placeholder="Nhập mật khẩu mới" style="flex: 1; min-width: 0; border: none; outline: none; font-size: 14px; color: #1E1B19;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="cursor: pointer;"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7zM12 9a3 3 0 100 6 3 3 0 000-6"></path></svg>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 12px; color: #635B53;">Độ mạnh</span>
+              <span style="{{ strengthLabelStyle }}">{{ strengthLabel }}</span>
+            </div>
+            <span style="height: 4px; background: #F4F1ED; border-radius: 999px; overflow: hidden; display: block;"><span style="{{ strengthBarStyle }}"></span></span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <sc-for list="{{ rules }}" as="r" hint-placeholder-count="4">
+              <span style="display: flex; align-items: center; gap: 12px;">
+                <span style="{{ r.dotStyle }}">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="{{ r.tick }}" stroke-width="3" stroke-linecap="round"><path d="M4 12l5 5L20 6"></path></svg>
+                </span>
+                <span style="{{ r.textStyle }}">{{ r.label }}</span>
+              </span>
+            </sc-for>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 14px; font-weight: 500;">Nhập lại mật khẩu</label>
+            <input type="text" placeholder="Nhập lại" style="height: 44px; padding: 0 16px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 14px; outline: none;" style-focus="border-color: #4F958D; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+          </div>
+          <button style="height: 44px; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;">Đặt lại mật khẩu</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E665C;">3 · Link hết hạn · link đã dùng</span>
+      <div style="width: 480px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px; display: flex; flex-direction: column; gap: 24px; align-items: center;">
+        <div style="width: 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center;">
+          <span style="width: 56px; height: 56px; border-radius: 999px; background: #FDF6E7; display: flex; align-items: center; justify-content: center;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.5" stroke-linecap="round"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 7v5l3 2"></path></svg>
+          </span>
+          <strong style="font-size: 20px; font-weight: 500;">Liên kết đã hết hạn</strong>
+          <span style="font-size: 14px; color: #635B53;">Liên kết đặt lại chỉ dùng được trong 30 phút. Gửi lại để nhận liên kết mới.</span>
+          <button style="height: 44px; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;">Gửi lại liên kết</button>
+        </div>
+        <div style="width: 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center;">
+          <span style="width: 56px; height: 56px; border-radius: 999px; background: #F4F1ED; display: flex; align-items: center; justify-content: center;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.5" stroke-linecap="round"><path d="M4 12l5 5L20 6"></path></svg>
+          </span>
+          <strong style="font-size: 20px; font-weight: 500;">Liên kết đã được dùng</strong>
+          <span style="font-size: 14px; color: #635B53;">Mật khẩu đã được đặt lại lúc 14:02 hôm nay. Đăng nhập bằng mật khẩu mới.</span>
+          <button style="height: 44px; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; cursor: pointer;">Về trang đăng nhập</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E665C;">4 · Kích hoạt tài khoản</span>
+      <div style="width: 480px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px; display: flex; justify-content: center;">
+        <div style="width: 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <strong style="font-size: 20px; font-weight: 500;">Kích hoạt tài khoản</strong>
+            <span style="font-size: 14px; color: #635B53;">Bạn được Trúc Linh mời vào chi nhánh Quận 1.</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; padding: 16px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;">
+            <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="color: #635B53;">Họ tên</span><span>Trần Ngọc Hân</span></div>
+            <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="color: #635B53;">Vai trò</span><span>Thủ kho</span></div>
+            <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="color: #635B53;">Chi nhánh</span><span>Quận 1</span></div>
+            <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #6E665C;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z"></path></svg>
+              Chỉ đọc · liên hệ quản lý nếu thông tin sai
+            </span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 14px; font-weight: 500;">Đặt mật khẩu</label>
+            <input type="text" placeholder="Tối thiểu 8 ký tự" style="height: 44px; padding: 0 16px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 14px; outline: none;" style-focus="border-color: #4F958D; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+          </div>
+          <span style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
+            <span style="width: 20px; height: 20px; border: 1px solid #235B54; border-radius: 4px; background: #235B54; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"><path d="M4 12l5 5L20 6"></path></svg></span>
+            <span style="font-size: 14px; color: #4A443E;">Tôi đã đọc và đồng ý <a href="#" style="text-decoration: none;">nội quy sử dụng hệ thống</a></span>
+          </span>
+          <button style="height: 44px; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;">Kích hoạt tài khoản</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E665C;">5 · Xác thực 2 lớp · gõ thử, dán được cả chuỗi</span>
+      <div style="width: 480px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px; display: flex; justify-content: center;">
+        <div style="width: 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <strong style="font-size: 20px; font-weight: 500;">Nhập mã xác thực</strong>
+            <span style="font-size: 14px; color: #635B53;">Mã 6 số đã gửi tới ••••••89. Mã có hiệu lực 5 phút.</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <sc-for list="{{ otp }}" as="d" hint-placeholder-count="6">
+              <input type="text" maxlength="1" value="{{ d.value }}" onChange="{{ d.onChange }}" onPaste="{{ onPaste }}" style="width: 56px; height: 56px; text-align: center; font-size: 20px; font-weight: 500; border: 1px solid #E7E2DC; border-radius: 6px; outline: none; color: #1E1B19;" style-focus="border-color: #4F958D; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            </sc-for>
+          </div>
+          <button style="height: 44px; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;">Xác nhận</button>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+            <span style="font-size: 14px; color: #635B53;">Gửi lại sau <strong style="font-variant-numeric: tabular-nums;">00:42</strong></span>
+            <a href="#" style="font-size: 14px; text-decoration: none;">Dùng mã dự phòng</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E665C;">5 · Mã sai · mã hết hạn</span>
+      <div style="width: 480px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px; display: flex; flex-direction: column; gap: 24px; align-items: center;">
+        <div style="width: 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; gap: 12px; padding: 12px 16px; background: #FCF0EE; border: 1px solid #F1CCC7; border-radius: 6px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 8v5M12 16v.01"></path></svg>
+            <span style="font-size: 14px; color: #4A443E;">Mã không đúng · còn 2 lần thử.</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <span style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border: 1px solid #C0392B; background: #FCF0EE; border-radius: 6px; font-size: 20px; font-weight: 500;">4</span>
+            <span style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border: 1px solid #C0392B; background: #FCF0EE; border-radius: 6px; font-size: 20px; font-weight: 500;">1</span>
+            <span style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border: 1px solid #C0392B; background: #FCF0EE; border-radius: 6px; font-size: 20px; font-weight: 500;">9</span>
+            <span style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border: 1px solid #C0392B; background: #FCF0EE; border-radius: 6px; font-size: 20px; font-weight: 500;">0</span>
+            <span style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border: 1px solid #C0392B; background: #FCF0EE; border-radius: 6px; font-size: 20px; font-weight: 500;">7</span>
+            <span style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border: 1px solid #C0392B; background: #FCF0EE; border-radius: 6px; font-size: 20px; font-weight: 500;">3</span>
+          </div>
+          <button style="height: 44px; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;">Xác nhận</button>
+        </div>
+        <div style="width: 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; gap: 12px; padding: 12px 16px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 6px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 7v5l3 2"></path></svg>
+            <span style="font-size: 14px; color: #4A443E;">Mã đã hết hạn sau 5 phút. Gửi mã mới để tiếp tục.</span>
+          </div>
+          <div style="display: flex; gap: 8px; opacity: 0.5;">
+            <span style="width: 56px; height: 56px; border: 1px solid #E7E2DC; border-radius: 6px;"></span>
+            <span style="width: 56px; height: 56px; border: 1px solid #E7E2DC; border-radius: 6px;"></span>
+            <span style="width: 56px; height: 56px; border: 1px solid #E7E2DC; border-radius: 6px;"></span>
+            <span style="width: 56px; height: 56px; border: 1px solid #E7E2DC; border-radius: 6px;"></span>
+            <span style="width: 56px; height: 56px; border: 1px solid #E7E2DC; border-radius: 6px;"></span>
+            <span style="width: 56px; height: 56px; border: 1px solid #E7E2DC; border-radius: 6px;"></span>
+          </div>
+          <button style="height: 44px; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;">Gửi mã mới</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E665C;">6 · Chọn chi nhánh</span>
+      <div style="width: 480px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px; display: flex; justify-content: center;">
+        <div style="width: 400px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <strong style="font-size: 20px; font-weight: 500;">Chọn chi nhánh</strong>
+            <span style="font-size: 14px; color: #635B53;">Tài khoản của bạn thuộc 4 chi nhánh.</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <sc-for list="{{ branches }}" as="b" hint-placeholder-count="4">
+              <div onClick="{{ b.onSelect }}" style="{{ b.cardStyle }}">
+                <span style="{{ b.iconStyle }}">{{ b.code }}</span>
+                <span style="flex: 1; display: flex; flex-direction: column; line-height: 1.35;">
+                  <span style="font-size: 14px; font-weight: 500;">{{ b.name }}</span>
+                  <span style="font-size: 13px; color: #635B53;">{{ b.meta }}</span>
+                </span>
+                <sc-if value="{{ b.selected }}" hint-placeholder-val="{{ false }}">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#235B54" stroke-width="2" stroke-linecap="round"><path d="M4 12l5 5L20 6"></path></svg>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <span onClick="{{ toggleRememberBranch }}" style="display: flex; align-items: center; gap: 12px; cursor: pointer; min-height: 44px;">
+            <span style="{{ rememberBranchBox }}">
+              <sc-if value="{{ rememberBranch }}" hint-placeholder-val="{{ true }}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"><path d="M4 12l5 5L20 6"></path></svg>
+              </sc-if>
+            </span>
+            <span style="font-size: 14px;">Ghi nhớ lựa chọn cho lần sau</span>
+          </span>
+          <button style="height: 44px; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;">Vào chi nhánh {{ selectedBranch }}</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E665C;">7 · Phiên hết hạn · đăng nhập lại tại chỗ</span>
+      <div style="position: relative; width: 720px; height: 480px; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden; background: #FAF8F6;">
+        <div style="position: absolute; inset: 0; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="height: 40px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; display: flex; align-items: center; padding: 0 16px; font-size: 13px; color: #635B53;">Kho / Phiếu nhập / PN-20260728-005 · bản nháp đang mở</div>
+          <div style="flex: 1; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <span style="height: 12px; width: 40%; background: #F4F1ED; border-radius: 4px;"></span>
+            <span style="height: 44px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;"></span>
+            <span style="height: 44px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;"></span>
+            <span style="height: 12px; width: 30%; background: #F4F1ED; border-radius: 4px;"></span>
+          </div>
+        </div>
+        <div style="position: absolute; inset: 0; background: rgba(30,27,25,0.32); display: flex; align-items: center; justify-content: center;">
+          <div style="width: 400px; background: #FFFFFF; border-radius: 8px; box-shadow: 0 16px 40px rgba(30,27,25,0.16); padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <strong style="font-size: 20px; font-weight: 500;">Phiên làm việc đã hết hạn</strong>
+              <span style="font-size: 14px; color: #635B53;">Đăng nhập lại để tiếp tục. Phiếu nhập đang mở vẫn được giữ nguyên, không mất dữ liệu đã nhập.</span>
+            </div>
+            <div style="height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 16px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;">
+              <span style="width: 28px; height: 28px; border-radius: 999px; background: #E7E2DC; color: #4A443E; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;">NH</span>
+              <span style="font-size: 14px; color: #4A443E;">han.tran@ilikebuffet.vn</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 14px; font-weight: 500;">Mật khẩu</label>
+              <input type="password" placeholder="Nhập mật khẩu" style="height: 44px; padding: 0 16px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 14px; outline: none;" style-focus="border-color: #4F958D; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            </div>
+            <button style="height: 44px; width: 100%; font-family: inherit; font-size: 14px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;">Mở khoá và tiếp tục</button>
+            <a href="#" style="font-size: 14px; text-align: center; text-decoration: none;">Đăng xuất và lưu nháp</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section style="display: flex; flex-direction: column; gap: 20px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">8 · trang lỗi</div>
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Bốn trang lỗi</h2>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">cùng khung với auth: khối 400px căn giữa, không sidebar, không topbar</code>
+        <span style="font-size: 13px; color: #635B53; max-width: 84ch;">Ba câu, đúng thứ tự: <strong style="font-weight: 500;">chuyện gì xảy ra · vì sao · làm gì tiếp</strong>. Không hiện mã lỗi kỹ thuật, không stack trace, không “Error 500”. Người vận hành nhà hàng không debug — họ cần biết bấm vào đâu để làm tiếp việc đang dở.</span>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+        <sc-for list="{{ errorPages }}" as="e" hint-placeholder-count="4">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6E665C;">{{ e.kicker }}</span>
+            <div style="width: 480px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px; display: flex; justify-content: center;">
+              <div style="width: 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center;">
+                <span style="{{ e.iconWrapStyle }}">
+                  <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ e.stroke }}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ e.icon }}"></path></svg>
+                </span>
+                <span style="display: flex; flex-direction: column; gap: 6px;">
+                  <strong style="font-size: 20px; font-weight: 500;">{{ e.title }}</strong>
+                  <span style="font-size: 14px; color: #4A443E;">{{ e.body }}</span>
+                </span>
+                <sc-if value="{{ e.hasHint }}" hint-placeholder-val="{{ true }}">
+                  <span style="{{ e.hintStyle }}">{{ e.hint }}</span>
+                </sc-if>
+                <span style="width: 100%; display: flex; flex-direction: column; gap: 8px;">
+                  <span style="height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 14px; font-weight: 500; color: #FFFFFF; background: #235B54; cursor: pointer;" style-hover="background: #1C4842;">{{ e.primary }}</span>
+                  <span style="height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 14px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; cursor: pointer;" style-hover="background: #F4F1ED;">{{ e.secondary }}</span>
+                </span>
+              </div>
+            </div>
+            <span style="width: 480px; font-size: 12px; color: #6E665C;">{{ e.note }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+        <span style="color: #6E665C;">không hiện gì</span><span style="color: #4A443E;">Không mã HTTP, không “ERR-5031”, không tên service, không đường dẫn. <strong style="font-weight: 500;">Mã lỗi chỉ nằm trong nút “Sao chép thông tin lỗi”</strong> ở trang 500 — để người dùng gửi cho hỗ trợ khi cần, không bày ra mặt.</span>
+        <span style="color: #6E665C;">403 gợi ý ai</span><span style="color: #4A443E;">Nói <strong style="font-weight: 500;">tên người có quyền cấp</strong>, không nói “liên hệ quản trị viên”: hệ thống biết ai là chủ và ai là quản lý chi nhánh của người này. Nút chính mở thẳng ô nhắn cho người đó.</span>
+        <span style="color: #6E665C;">404 khác 403</span><span style="color: #4A443E;">Không dùng 404 để che 403 và ngược lại. Bản ghi <strong style="font-weight: 500;">đã bị xoá</strong> thì nói đã xoá kèm thời điểm; <strong style="font-weight: 500;">không có quyền</strong> thì nói không có quyền. Giấu nhau làm người dùng đi tìm vô ích.</span>
+        <span style="color: #6E665C;">mất kết nối</span><span style="color: #4A443E;">Là <strong style="font-weight: 500;">dải chặn trong trang</strong>, không phải trang riêng — giữ nguyên màn đang mở phía sau và mọi thứ đã nhập. Tự thử lại mỗi 5 giây, có nút thử ngay. Khi có mạng lại thì tự biến mất, không bắt tải lại trang.</span>
+        <span style="color: #6E665C;">việc đang dở</span><span style="color: #4A443E;">Trang 500 và dải mất kết nối phải nói rõ <strong style="font-weight: 500;">dữ liệu đã nhập còn hay mất</strong>. Form T3 giữ nháp trong bộ nhớ phiên — câu chữ phải khớp với hành vi thật, không hứa suông.</span>
+        <span style="color: #6E665C;">vùng chạm</span><span style="color: #4A443E;">Cả bốn trang: nút 44px, xếp dọc, nút chính trên nút phụ. Ở 768 khối vẫn 400px căn giữa — không có gì để co.</span>
+        <span style="color: #6E665C;">màn cần dựng</span><span style="color: #4A443E;">Bốn trang này <strong style="font-weight: 500;">chưa có file màn</strong>. Đặc tả xong ở đây; khi dựng thì gộp một file <code style="font-family: ui-monospace, Menlo, monospace;">SC-HT-12 Trang lỗi</code> với switch 4 trạng thái, không tách bốn file.</span>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">widthTier</div>
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">widthTier · ops</h2>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">KẾ THỪA <span>widthTier</span> từ T1 — định nghĩa hai lớp và ba mức nằm ở “widthTier · lớp chiều rộng” trong Template 1+2, không mô tả lại ở đây</code>
+        <span style="font-size: 13px; color: #635B53; max-width: 84ch;">T6 là template <strong style="font-weight: 500;">ops dễ nhất</strong>: không sidebar, không topbar, không bảng. Chỉ một khối căn giữa trên nền trống. Ba mức của T1 hầu hết không có gì để áp — phần riêng dưới đây là toàn bộ những gì T6 phải làm.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #B0D4CF; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+        <span style="color: #6E665C;">giá trị</span><span style="color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">ops</code> · sàn <code style="font-family: ui-monospace, Menlo, monospace;">--ibb-min-ops</code> 768px. Nhân viên đăng nhập từ chính thiết bị họ dùng giữa ca — nếu màn làm việc chạy được ở 768 thì cửa vào cũng phải chạy được.</span>
+        <span style="color: #6E665C;">≥1024</span><span style="color: #4A443E;">Không đổi gì so với 1440. Khối form vốn đã <code style="font-family: ui-monospace, Menlo, monospace;">--ibb-form-narrow</code> hẹp, thừa chỗ ở mọi mức.</span>
+        <span style="color: #6E665C;">768 · form</span><span style="color: #4A443E;">Form <strong style="font-weight: 500;">max 400px, căn giữa cả hai chiều</strong>, padding ngoài tối thiểu 24px mỗi bên để form không dán vào cạnh màn.</span>
+        <span style="color: #6E665C;">768 · vùng chạm</span><span style="color: #4A443E;">Mọi input và nút chuyển sang <strong style="font-weight: 500;">size lg 44px</strong> — kể cả checkbox “ghi nhớ thiết bị” và link “quên mật khẩu” (padding dọc để đạt 44px, không đổi cỡ chữ).</span>
+        <span style="color: #6E665C;">768 · logo</span><span style="color: #4A443E;">Logo thu nhỏ một bậc, khoảng cách logo–form giảm từ 40px về 24px. Nhường chỗ dọc cho form khi bàn phím ảo mở.</span>
+        <span style="color: #6E665C;">768 · không cần làm</span><span style="color: #4A443E;">Không có sidebar để thu, không có topbar để thêm hamburger, không có bảng để ẩn cột. <strong style="font-weight: 500;">Ba việc lớn nhất của ops không áp cho T6.</strong></span>
+        <span style="color: #6E665C;">ô mã 2FA</span><span style="color: #4A443E;">Sáu ô rời ở 768: mỗi ô tối thiểu <strong style="font-weight: 500;">44×48</strong>, gap 8px — tổng 6×44 + 5×8 = 304px, vừa trong 400px. Ô nhập mở bàn phím số.</span>
+        <span style="color: #6E665C;">chọn chi nhánh</span><span style="color: #4A443E;">Danh sách chi nhánh ở 768: mỗi dòng cao tối thiểu 56px, không dùng radio 20px — <strong style="font-weight: 500;">cả dòng là vùng chạm</strong>.</span>
+        <span style="color: #6E665C;">màn lỗi</span><span style="color: #4A443E;">403 · 404 · 500 · mất mạng dùng cùng luật: khối căn giữa max 400px, một nút primary 44px. Không có gì khác để co.</span>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Điều kiện dùng</h2>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 160px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">chọn khi</span><span style="color: #4A443E;">Màn <strong style="font-weight: 500;">ngoài App Shell</strong>: chưa đăng nhập, hoặc phiên đã mất hiệu lực. Không có sidebar, không có topbar, không có chuông thông báo.</span>
+      <span style="color: #6E665C;">gồm những màn</span><span style="color: #4A443E;">Đăng nhập · quên mật khẩu · đặt lại mật khẩu · kích hoạt tài khoản từ lời mời · xác thực hai lớp · phiên hết hạn.</span>
+      <span style="color: #6E665C;">không chọn khi</span><span style="color: #4A443E;">Người dùng đã đăng nhập và đang đổi mật khẩu của chính mình → đó là nhóm Bảo mật trong <strong style="font-weight: 500;">T5</strong>, có App Shell đầy đủ.</span>
+      <span style="color: #6E665C;">luật riêng</span><span style="color: #4A443E;">Không bao giờ nói rõ email có tồn tại hay không · lỗi đăng nhập gộp thành một thông điệp · không có đường dẫn nào ra ngoài trừ liên hệ hỗ trợ.</span>
+      <span style="color: #6E665C;">dấu hiệu sai</span><span style="color: #4A443E;">Màn có breadcrumb · có nút quay lại trang trước · hiện tên người dùng ở góc.</span>
+    </div>
+  </section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1000}}">
+const RULES = [
+  ['Tối thiểu 8 ký tự', (p) => p.length >= 8],
+  ['Có chữ hoa và chữ thường', (p) => /[a-z]/.test(p) && /[A-Z]/.test(p)],
+  ['Có ít nhất 1 chữ số', (p) => /\d/.test(p)],
+  ['Có ký tự đặc biệt', (p) => /[^A-Za-z0-9]/.test(p)]
+];
+
+const BRANCHES = [
+  ['Q1', 'Chi nhánh Quận 1', '128 Nguyễn Huệ · ca tối đang mở'],
+  ['Q3', 'Chi nhánh Quận 3', '45 Võ Văn Tần · ca tối đang mở'],
+  ['PN', 'Chi nhánh Phú Nhuận', '12 Phan Xích Long · đã đóng ca'],
+  ['TD', 'Chi nhánh Thủ Đức', '88 Võ Văn Ngân · sắp khai trương']
+];
+
+const box = (on) => 'width: 20px; height: 20px; border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 1px solid ' + (on ? '#235B54' : '#D5CEC6') + '; background: ' + (on ? '#235B54' : '#FFFFFF') + ';';
+
+// Bốn trang lỗi · ba câu: chuyện gì · vì sao · làm gì tiếp. Không mã lỗi kỹ thuật.
+const ERR_PAGES = [
+  {
+    kicker: '8 · 403 không có quyền',
+    tone: 'warn',
+    icon: 'M6 10V7a6 6 0 0112 0v3M5 10h14v10H5zM12 14v3',
+    title: 'Bạn không có quyền vào phần này',
+    body: 'Mục Bảng lương chỉ dành cho vai trò Kế toán và Chủ. Vai trò của bạn hiện là Quản lý ca.',
+    hint: 'Người cấp được quyền này: Nguyễn Trúc Linh · chủ · và Đỗ Minh Trí · kế toán.',
+    primary: 'Nhắn cho Trúc Linh xin quyền',
+    secondary: 'Về Tổng quan',
+    note: 'Nêu thẳng mục nào và vai trò nào được vào, kèm tên người cấp quyền thật — không nói “liên hệ quản trị viên”.'
+  },
+  {
+    kicker: '8 · 404 không tìm thấy',
+    tone: 'neutral',
+    icon: 'M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4',
+    title: 'Không tìm thấy phiếu này',
+    body: 'Phiếu nhập PN-2026-0412 đã bị xoá lúc 14:02 ngày 26/07 bởi Đỗ Minh Trí. Đường dẫn cũ không còn dùng được.',
+    hint: '',
+    primary: 'Về danh sách phiếu nhập',
+    secondary: 'Xem trong nhật ký hoạt động',
+    note: 'Nếu biết bản ghi đã bị xoá thì nói rõ ai xoá và khi nào. Không biết thì chỉ nói không tìm thấy — không đoán.'
+  },
+  {
+    kicker: '8 · 500 lỗi hệ thống',
+    tone: 'danger',
+    icon: 'M12 3a9 9 0 100 18 9 9 0 000-18M12 8v5M12 16v.01',
+    title: 'Hệ thống đang gặp sự cố',
+    body: 'Chúng tôi chưa lưu được thay đổi vừa rồi. Nội dung bạn đã nhập vẫn còn, không cần gõ lại.',
+    hint: 'Đội kỹ thuật đã nhận được báo lỗi tự động lúc 19:42.',
+    primary: 'Thử lưu lại',
+    secondary: 'Sao chép thông tin lỗi để gửi hỗ trợ',
+    note: 'Mã lỗi nằm sau nút Sao chép, không bày ra mặt. Nói rõ dữ liệu còn hay mất — và phải đúng với hành vi thật.'
+  },
+  {
+    kicker: '8 · mất kết nối · dải chặn trong trang',
+    tone: 'warn',
+    icon: 'M4 4l16 16M5 12a12 12 0 013.5-2.4M12 20v.01M8.5 16.5a5 5 0 013-1.4M2 8.8A18 18 0 0112 5c3.6 0 7 1.3 9.6 3.5',
+    title: 'Mất kết nối mạng',
+    body: 'Không gửi được dữ liệu lên máy chủ. Đơn đang mở và mọi thứ bạn đã nhập vẫn giữ nguyên trên máy này.',
+    hint: 'Tự thử lại sau 5 giây · lần thử thứ 2',
+    primary: 'Thử lại ngay',
+    secondary: 'Xem việc đang chờ gửi (3)',
+    note: 'Không phải trang riêng: phủ lên màn đang mở, giữ nguyên phía sau. Có mạng lại thì tự tắt, không bắt tải lại trang.'
+  }
+];
+
+const ERR_TONES = {
+  neutral: { bg: '#F4F1ED', stroke: '#635B53', hintBg: '#F4F1ED', hintBd: '#E7E2DC', hintFg: '#4A443E' },
+  warn: { bg: '#FDF6E7', stroke: '#8A5F12', hintBg: '#FDF6E7', hintBd: '#F0DDAF', hintFg: '#8A5F12' },
+  danger: { bg: '#FCF0EE', stroke: '#C0392B', hintBg: '#FCF0EE', hintBd: '#F1CCC7', hintFg: '#96271B' }
+};
+
+class Component extends DCLogic {
+  state = { pw: 'Buffet2026', showPw: false, remember: true, rememberBranch: true, branch: 'Q1', otp: ['4', '1', '9', '', '', ''] };
+
+  setDigit(i, v) {
+    const d = (v || '').replace(/\D/g, '').slice(-1);
+    this.setState(s => {
+      const otp = s.otp.slice();
+      otp[i] = d;
+      return { otp };
+    });
+  }
+
+  renderVals() {
+    const pw = this.state.pw;
+    const passed = RULES.map(([label, test]) => ({ label, ok: test(pw) }));
+    const score = passed.filter(r => r.ok).length;
+    const levels = [
+      { label: 'Chưa đạt', color: '#C0392B', pct: 8 },
+      { label: 'Yếu', color: '#C0392B', pct: 25 },
+      { label: 'Trung bình', color: '#8A5F12', pct: 50 },
+      { label: 'Khá', color: '#2F7168', pct: 75 },
+      { label: 'Mạnh', color: '#256A49', pct: 100 }
+    ];
+    const lv = levels[pw.length === 0 ? 0 : score];
+
+    return {
+      errorPages: ERR_PAGES.map(e => {
+        const t = ERR_TONES[e.tone];
+        return {
+          kicker: e.kicker, title: e.title, body: e.body, hint: e.hint,
+          primary: e.primary, secondary: e.secondary, note: e.note,
+          icon: e.icon, stroke: t.stroke,
+          hasHint: !!e.hint,
+          iconWrapStyle: 'width: 56px; height: 56px; border-radius: 999px; display: flex; align-items: center; justify-content: center; background: ' + t.bg + ';',
+          hintStyle: 'width: 100%; padding: 10px 12px; border-radius: 6px; font-size: 13px; text-align: left; background: ' + t.hintBg + '; border: 1px solid ' + t.hintBd + '; color: ' + t.hintFg + ';'
+        };
+      }),
+      pw,
+      onPw: (e) => this.setState({ pw: e.target.value }),
+      eyePath: this.state.showPw
+        ? 'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7zM12 9a3 3 0 100 6 3 3 0 000-6'
+        : 'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7zM12 9a3 3 0 100 6 3 3 0 000-6M3 3l18 18',
+      togglePw: () => this.setState(s => ({ showPw: !s.showPw })),
+      remember: this.state.remember,
+      rememberBox: box(this.state.remember),
+      toggleRemember: () => this.setState(s => ({ remember: !s.remember })),
+      strengthLabel: lv.label,
+      strengthLabelStyle: 'font-size: 12px; font-weight: 500; color: ' + lv.color + ';',
+      strengthBarStyle: 'display: block; height: 100%; border-radius: 999px; transition: width 280ms cubic-bezier(.25,.1,.25,1); background: ' + lv.color + '; width: ' + lv.pct + '%;',
+      rules: passed.map(r => ({
+        label: r.label,
+        tick: r.ok ? '#FFFFFF' : '#E7E2DC',
+        dotStyle: 'width: 20px; height: 20px; border-radius: 999px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: ' + (r.ok ? '#256A49' : '#F4F1ED') + ';',
+        textStyle: 'font-size: 13px; color: ' + (r.ok ? '#4A443E' : '#6E665C') + ';'
+      })),
+      otp: this.state.otp.map((value, i) => ({
+        value,
+        onChange: (e) => this.setDigit(i, e.target.value)
+      })),
+      onPaste: (e) => {
+        const text = (e.clipboardData && e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 6);
+        if (!text) return;
+        e.preventDefault();
+        const otp = ['', '', '', '', '', ''];
+        text.split('').forEach((c, i) => { otp[i] = c; });
+        this.setState({ otp });
+      },
+      branches: BRANCHES.map(([code, name, meta]) => {
+        const on = this.state.branch === code;
+        return {
+          code, name, meta,
+          selected: on,
+          onSelect: () => this.setState({ branch: code }),
+          cardStyle: 'min-height: 72px; display: flex; align-items: center; gap: 16px; padding: 16px; border-radius: 8px; cursor: pointer; background: ' + (on ? '#EFF6F5' : '#FFFFFF') + '; border: 1px solid ' + (on ? '#2F7168' : '#E7E2DC') + ';',
+          iconStyle: 'width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; background: ' + (on ? '#D8EAE7' : '#F4F1ED') + '; color: ' + (on ? '#1C4842' : '#4A443E') + ';'
+        };
+      }),
+      selectedBranch: (BRANCHES.find(b => b[0] === this.state.branch) || BRANCHES[0])[1].replace('Chi nhánh ', ''),
+      rememberBranch: this.state.rememberBranch,
+      rememberBranchBox: box(this.state.rememberBranch),
+      toggleRememberBranch: () => this.setState(s => ({ rememberBranch: !s.rememberBranch }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

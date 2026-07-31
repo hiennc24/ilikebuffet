@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; }
+  td, th { text-align: left; font-weight: inherit; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  @keyframes ibb-spin { to { transform: rotate(360deg); } }
+  input { font-family: inherit; }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 24px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-ht-02</span><span style="color: #D5CEC6;">·</span><span>template t1</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">/he-thong/nguoi-dung</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Người dùng &amp; vai trò</h1>
+    <p style="margin: 0; max-width: 76ch; font-size: 14px; color: #635B53;">Chỉ chủ truy cập được màn này. Dòng của chính bạn không có hành động “Buộc đăng xuất” và “Khoá tài khoản”; khoá tài khoản người khác đi qua confirm mức nguy hiểm.</p>
+  </header>
+
+  <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); overflow: hidden;">
+
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding: 24px 24px 16px; background: #FFFFFF;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 500;">Người dùng &amp; vai trò</h2>
+        <span style="font-size: 13px; color: #6E665C;">Tài khoản truy cập hệ thống quản trị của 4 chi nhánh.</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xuất Excel</span>
+        <button style="height: 32px; padding: 0 14px; font-family: inherit; font-size: 13px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap;" style-hover="background: #1C4842;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Mời người dùng</button>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 0 24px 16px; background: #FFFFFF;">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div style="{{ s.cardStyle }}">
+          <span style="font-size: 13px; color: #6E665C;">{{ s.label }}</span>
+          <strong style="{{ s.valueStyle }}">{{ s.value }}</strong>
+          <span style="font-size: 12px; color: #6E665C;">{{ s.hint }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 24px; padding: 0 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC;">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+        <span onClick="{{ t.onClick }}" tabindex="0" style="{{ t.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168; border-radius: 4px;">
+          {{ t.label }}<span style="{{ t.badgeStyle }}">{{ t.count }}</span>
+        </span>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ noSelection }}" hint-placeholder-val="{{ true }}">
+      <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <label style="width: 280px; height: 32px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4"></path></svg>
+            <input type="text" value="{{ query }}" onChange="{{ onQuery }}" placeholder="Tìm tên hoặc email…" aria-label="Tìm người dùng" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 13px; color: #1E1B19;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168; border-radius: 4px;">
+            <span onClick="{{ clearQuery }}" role="button" tabindex="0" aria-label="Xoá từ khoá" style="width: 16px; height: 16px; border-radius: 999px; background: #E7E2DC; color: #635B53; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">×</span>
+          </label>
+          <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #B0D4CF; background: #EFF6F5; border-radius: 6px; font-size: 13px; color: #1C4842; cursor: pointer; white-space: nowrap;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Vai trò · 2
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#235B54" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+          </span>
+          <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; background: #FFFFFF; border-radius: 6px; font-size: 13px; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Trạng thái
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+          </span>
+          <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; background: #FFFFFF; border-radius: 6px; font-size: 13px; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Chi nhánh
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+          </span>
+          <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; background: #FFFFFF; border-radius: 6px; font-size: 13px; color: #4A443E; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"></path></svg>Bộ lọc
+            <span style="height: 18px; min-width: 18px; padding: 2px 8px; border-radius: 999px; background: #235B54; color: #FFFFFF; font-size: 11px; display: inline-flex; align-items: center; justify-content: center;">3</span>
+          </span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; background: #FFFFFF; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Cột</span>
+          <span onClick="{{ toggleDensity }}" tabindex="0" style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; background: #FFFFFF; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ densityLabel }}</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ hasSelection }}" hint-placeholder-val="{{ false }}">
+      <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 24px; background: #EFF6F5; border-bottom: 1px solid #B0D4CF;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <strong style="font-size: 13px; color: #1C4842;">{{ selectionLabel }}</strong>
+          <span onClick="{{ clearSelection }}" tabindex="0" style="font-size: 13px; color: #235B54; cursor: pointer; text-decoration: underline;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Bỏ chọn</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <sc-if value="{{ selfInSelection }}" hint-placeholder-val="{{ false }}">
+            <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #8A5F12;">
+              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 8v5M12 16v.01"></path></svg>Tài khoản của bạn sẽ được bỏ qua khi khoá
+            </span>
+          </sc-if>
+          <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #B0D4CF; background: #FFFFFF; border-radius: 6px; font-size: 13px; color: #1C4842; cursor: pointer;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Đổi vai trò</span>
+          <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; background: #C0392B; border-radius: 6px; font-size: 13px; font-weight: 500; color: #FFFFFF; cursor: pointer;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Khoá tài khoản</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 24px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC;">
+      <span style="font-size: 12px; color: #6E665C;">Đang lọc:</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; height: 24px; padding: 0 4px 0 8px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 12px; color: #4A443E;">Vai trò: Quản lý<span role="button" tabindex="0" aria-label="Bỏ lọc vai trò quản lý" style="cursor: pointer; color: #6E665C;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">×</span></span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; height: 24px; padding: 0 4px 0 8px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 12px; color: #4A443E;">Vai trò: Thủ kho<span role="button" tabindex="0" aria-label="Bỏ lọc vai trò thủ kho" style="cursor: pointer; color: #6E665C;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">×</span></span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; height: 24px; padding: 0 4px 0 8px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 12px; color: #4A443E;">Chưa bật 2FA<span role="button" tabindex="0" aria-label="Bỏ lọc chưa bật 2FA" style="cursor: pointer; color: #6E665C;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">×</span></span>
+      <span tabindex="0" style="font-size: 12px; color: #235B54; cursor: pointer; text-decoration: underline; margin-left: 4px;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xoá tất cả</span>
+    </div>
+
+    <div style="overflow-x: auto; background: #FFFFFF;">
+      <table style="width: 1520px; table-layout: fixed;">
+        <thead>
+          <tr>
+            <th style="position: sticky; top: 0; left: 0; z-index: 30; width: 44px; height: 40px; padding: 0 0 0 24px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC;">
+              <span onClick="{{ toggleAll }}" role="checkbox" tabindex="0" aria-checked="{{ selectAllChecked }}" aria-label="{{ selectAllLabel }}" style="{{ headBoxStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ headBoxMark }}</span>
+            </th>
+            <th style="position: sticky; top: 0; left: 44px; z-index: 30; width: 240px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; box-shadow: 1px 0 0 #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Họ tên</th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 260px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Email</th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 180px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Vai trò</th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 200px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Chi nhánh</th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 220px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #1C4842;">
+              <span onClick="{{ toggleSort }}" role="button" tabindex="0" aria-sort="{{ sortAria }}" aria-label="Sắp xếp theo lần đăng nhập cuối, hiện {{ sortLabel }}" style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Lần đăng nhập cuối
+                <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#235B54" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ sortIcon }}"></path></svg>
+              </span>
+            </th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 148px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">2FA</th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 156px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Trạng thái</th>
+            <th style="position: sticky; top: 0; right: 0; z-index: 30; width: 72px; height: 40px; padding: 0 24px 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; box-shadow: -1px 0 0 #E7E2DC;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+            <tr style="{{ r.rowStyle }}">
+              <td style="{{ r.stickyLeft }}">
+                <span onClick="{{ r.onToggle }}" role="checkbox" tabindex="0" aria-checked="{{ r.checked }}" aria-label="{{ r.checkboxLabel }}" style="{{ r.boxStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                  <sc-if value="{{ r.selected }}" hint-placeholder-val="{{ false }}">
+                    <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"><path d="M4 12l5 5L20 6"></path></svg>
+                  </sc-if>
+                </span>
+              </td>
+              <td style="{{ r.stickyName }}">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                  <span style="width: 24px; height: 24px; border-radius: 999px; background: #E7E2DC; color: #4A443E; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; flex-shrink: 0;">{{ r.initials }}</span>
+                  <span tabindex="0" style="font-size: 13px; font-weight: 500; color: #235B54; cursor: pointer; white-space: nowrap;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ r.name }}</span>
+                  <sc-if value="{{ r.isSelf }}" hint-placeholder-val="{{ false }}">
+                    <span style="height: 20px; padding: 0 8px; border-radius: 4px; background: #F4F1ED; border: 1px solid #E7E2DC; color: #4A443E; font-size: 11px; display: inline-flex; align-items: center;">bạn</span>
+                  </sc-if>
+                </span>
+              </td>
+              <td style="{{ r.cell }}" title="{{ r.email }}"><span style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #4A443E;">{{ r.email }}</span></td>
+              <td style="{{ r.cell }}">
+                <span style="{{ r.roleStyle }}">{{ r.role }}</span>
+              </td>
+              <td style="{{ r.cell }}" title="{{ r.branch }}"><span style="color: #635B53;">{{ r.branch }}</span></td>
+              <td style="{{ r.cell }}">
+                <span style="display: flex; flex-direction: column; line-height: 1.3;" title="{{ r.loginFull }}">
+                  <span style="font-size: 13px;">{{ r.loginRel }}</span>
+                  <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ r.loginFull }}</span>
+                </span>
+              </td>
+              <td style="{{ r.cell }}">
+                <span style="{{ r.twoFaStyle }}">
+                  <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="{{ r.twoFaFg }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ r.twoFaIcon }}"></path></svg>{{ r.twoFa }}
+                </span>
+              </td>
+              <td style="{{ r.cell }}">
+                <span style="{{ r.statusStyle }}">
+                  <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="{{ r.statusFg }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ r.statusIcon }}"></path></svg>{{ r.status }}
+                </span>
+              </td>
+              <td style="{{ r.stickyRight }}">
+                <span role="button" tabindex="0" aria-haspopup="menu" aria-label="{{ r.menuLabel }}" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                  <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v.01M12 12v.01M12 19v.01"></path></svg>
+                </span>
+              </td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 24px; background: #FFFFFF; border-top: 1px solid #E7E2DC;">
+      <span style="font-size: 13px; color: #635B53;">{{ pageLabel }}</span>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #635B53;">Số dòng
+          <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #1E1B19; cursor: pointer;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">20
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+          </span>
+        </span>
+        <div style="display: flex; align-items: center; gap: 4px;">
+          <span aria-label="Trang trước" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid #E7E2DC; border-radius: 6px; color: #D5CEC6;">‹</span>
+          <span style="min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; padding: 0 8px; border-radius: 6px; background: #235B54; color: #FFFFFF; font-size: 13px; font-weight: 500;">1</span>
+          <span tabindex="0" aria-label="Trang sau" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid #E7E2DC; border-radius: 6px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">›</span>
+        </div>
+        <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #635B53;">Tới trang
+          <span tabindex="0" style="width: 56px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">1</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 16px; align-items: flex-start;">
+    <div style="width: 240px; flex: 0 0 240px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 4px;">
+        <span style="display: block; padding: 8px 12px 4px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Người dùng khác</span>
+        <div style="height: 32px; display: flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;">Xem</div>
+        <div style="height: 32px; display: flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;">Đổi vai trò</div>
+        <div style="height: 32px; display: flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;">Gửi lại lời mời</div>
+        <div style="height: 32px; display: flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;">Đặt lại mật khẩu</div>
+        <div style="height: 32px; display: flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;">Buộc đăng xuất</div>
+        <span style="display: block; height: 1px; background: #F4F1ED; margin: 4px 0;"></span>
+        <div style="height: 32px; display: flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #C0392B; cursor: pointer;" style-hover="background: #FCF0EE;">Khoá tài khoản</div>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 4px;">
+        <span style="display: block; padding: 8px 12px 4px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Tài khoản của bạn</span>
+        <div style="height: 32px; display: flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;">Xem</div>
+        <div style="height: 32px; display: flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;">Đặt lại mật khẩu</div>
+        <span style="display: block; padding: 4px 12px 12px; font-size: 12px; color: #6E665C;">Không có “Buộc đăng xuất” và “Khoá tài khoản” — chủ không thể tự khoá mình.</span>
+      </div>
+    </div>
+
+    <div style="width: 400px; flex: 0 0 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 16px 40px rgba(30,27,25,0.16); display: flex; flex-direction: column; overflow: hidden;">
+      <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #E7E2DC;">
+        <strong style="font-size: 16px; font-weight: 500;">Bộ lọc nâng cao</strong>
+        <span role="button" tabindex="0" aria-label="Đóng bộ lọc" style="color: #ABA298; cursor: pointer; font-size: 16px;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">×</span>
+      </div>
+      <div style="padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 12px; font-weight: 500;">Xác thực 2 bước</span>
+          <div style="display: flex; gap: 8px; padding: 4px; background: #F4F1ED; border-radius: 8px;">
+            <span style="flex: 1; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 13px; color: #635B53;">Tất cả</span>
+            <span style="flex: 1; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 13px; color: #635B53;">Đã bật</span>
+            <span style="flex: 1; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(30,27,25,0.06); font-size: 13px; font-weight: 500; color: #1C4842;">Chưa bật</span>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 12px; font-weight: 500;">Khoảng ngày đăng nhập cuối</span>
+          <div style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px;">01/07/2026 — 28/07/2026
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18v16H3zM8 2v6M16 2v6M3 11h18"></path></svg>
+          </div>
+          <span style="font-size: 12px; color: #6E665C;">Để trống để gồm cả tài khoản chưa từng đăng nhập.</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 12px; font-weight: 500;">Người tạo</span>
+          <div style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px;">Nguyễn Trúc Linh
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #FAF8F6; border-top: 1px solid #E7E2DC;">
+        <span tabindex="0" style="font-size: 13px; color: #235B54; cursor: pointer; text-decoration: underline;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Đặt lại</span>
+        <button style="height: 36px; padding: 0 16px; font-family: inherit; font-size: 13px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;">Áp dụng · 3 điều kiện</button>
+      </div>
+    </div>
+
+    <div style="width: 480px; flex: 0 0 480px; background: #FFFFFF; border-radius: 8px; box-shadow: 0 16px 40px rgba(30,27,25,0.16); padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Confirm mức nguy hiểm</span>
+      <div style="display: flex; align-items: flex-start; gap: 12px;">
+        <span style="width: 32px; height: 32px; border-radius: 999px; background: #FCF0EE; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5zM12 14v3"></path></svg>
+        </span>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <strong style="font-size: 16px; font-weight: 500;">Khoá tài khoản “Đỗ Minh Trí”?</strong>
+          <span style="font-size: 13px; color: #635B53;">Tài khoản bị đăng xuất khỏi 2 thiết bị ngay lập tức, không đăng nhập lại được và mọi phiên POS đang mở của người này sẽ bị đóng. Ca tối nay Minh Trí đang là thu ngân chính — cần xếp người thay trước khi khoá.</span>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+        <label style="font-size: 13px; color: #4A443E;">Gõ <strong>minhtri@ilikebuffet.vn</strong> để xác nhận</label>
+        <input type="text" value="{{ confirmText }}" onChange="{{ onConfirmText }}" placeholder="minhtri@ilikebuffet.vn" aria-label="Nhập email để xác nhận khoá tài khoản" style="height: 36px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; outline: none;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
+        <span tabindex="0" style="height: 36px; display: inline-flex; align-items: center; padding: 0 14px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; cursor: pointer;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Huỷ</span>
+        <button style="{{ dangerBtnStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Khoá tài khoản</button>
+      </div>
+    </div>
+
+    <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Empty lần đầu</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M16 19v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M9 3a4 4 0 100 8 4 4 0 000-8M19 8v6M22 11h-6"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Chỉ có tài khoản chủ</strong>
+        <span style="font-size: 13px; color: #6E665C;">Mời quản lý và thủ kho để họ tự đăng nhập bằng email.</span>
+        <button style="height: 36px; padding: 0 16px; margin-top: 4px; font-family: inherit; font-size: 13px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;">Mời người dùng</button>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Empty do lọc</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4M9 11h4"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Không có tài khoản khớp bộ lọc</strong>
+        <span style="font-size: 13px; color: #6E665C;">3 điều kiện đang áp dụng · vai trò, 2FA.</span>
+        <button style="height: 36px; padding: 0 16px; margin-top: 4px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; cursor: pointer;">Xoá bộ lọc</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div data-states-wrap style="width: 1440px; min-width: 1440px;"><dc-import name="TableStates" error-title="Không tải được danh sách người dùng" error-code="ERR-5031-QN1" hint-size="100%,360px"></dc-import></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1000},&quot;tab&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;all&quot;,&quot;options&quot;:[&quot;all&quot;,&quot;active&quot;,&quot;pending&quot;,&quot;locked&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Trạng thái&quot;}}">
+// tên, email, vai trò, chi nhánh, đăng nhập cuối (ISO + giờ), 2FA, trạng thái, là mình
+const DATA = [
+  ['Nguyễn Trúc Linh', 'truclinh@ilikebuffet.vn', 'Chủ', 'Tất cả chi nhánh', '2026-07-28', '18:22', true, 'active', true],
+  ['Đỗ Minh Trí', 'minhtri@ilikebuffet.vn', 'Thu ngân', 'Quận 1', '2026-07-28', '17:04', false, 'active', false],
+  ['Trần Ngọc Hân', 'ngochan@ilikebuffet.vn', 'Thủ kho', 'Quận 1', '2026-07-28', '08:12', true, 'active', false],
+  ['Phạm Phương Vy', 'phuongvy@ilikebuffet.vn', 'Quản lý', 'Quận 7', '2026-07-27', '21:40', true, 'active', false],
+  ['Lê Thị Mỹ Duyên', 'myduyen@ilikebuffet.vn', 'Trưởng ca', 'Quận 1', '2026-07-26', '15:18', false, 'active', false],
+  ['Vũ Thanh Tâm', 'thanhtam@ilikebuffet.vn', 'Kế toán', 'Tất cả chi nhánh', '2026-07-24', '09:05', true, 'active', false],
+  ['Bùi Văn Khoa', 'vankhoa@ilikebuffet.vn', 'Quản lý', 'Gò Vấp', '2026-07-18', '19:32', false, 'locked', false],
+  ['Huỳnh Gia Bảo', 'giabao@ilikebuffet.vn', 'Thủ kho', 'Quận 7', '2026-06-30', '10:41', false, 'pending', false],
+  ['Ngô Thị Kim Chi', 'kimchi@ilikebuffet.vn', 'Trưởng ca', 'Bình Thạnh', '', '', false, 'pending', false]
+];
+
+const ROLE_SHADE = {
+  'Chủ': ['#4A231A', '#F3CBBA', '#E9A98F'],
+  'Quản lý': ['#6B3020', '#FAE6DD', '#F3CBBA'],
+  'Kế toán': ['#8A3D27', '#FDF4F0', '#F3CBBA'],
+  'Trưởng ca': ['#8A3D27', '#FDF4F0', '#FAE6DD'],
+  'Thủ kho': ['#8A3D27', '#FDF4F0', '#FAE6DD'],
+  'Thu ngân': ['#8A3D27', '#FDF4F0', '#FAE6DD']
+};
+
+const STATUS = {
+  active: ['Đang hoạt động', '#256A49', '#EDF7F1', '#C3E4D2', 'M4 12l5 5L20 6'],
+  pending: ['Chưa kích hoạt', '#8A5F12', '#FDF6E7', '#F0DDAF', 'M12 3a9 9 0 100 18 9 9 0 000-18M12 7v5l3 2'],
+  locked: ['Đã khoá', '#C0392B', '#FCF0EE', '#F1CCC7', 'M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z']
+};
+
+const TODAY = new Date('2026-07-28T18:30:00');
+const dmy = (iso) => { const [y, m, d] = iso.split('-'); return d + '/' + m + '/' + y; };
+const rel = (iso) => {
+  if (!iso) return 'Chưa đăng nhập';
+  const days = Math.round((TODAY - new Date(iso + 'T12:00:00')) / 86400000);
+  if (days <= 0) return 'Hôm nay';
+  if (days === 1) return 'Hôm qua';
+  if (days < 30) return days + ' ngày trước';
+  const months = Math.round(days / 30);
+  return months + ' tháng trước';
+};
+const initials = (name) => name.split(' ').slice(-2).map(w => w[0]).join('').toUpperCase();
+
+class Component extends DCLogic {
+  state = { tab: 'all', selected: {}, query: '', density: 'comfortable', desc: true, confirmText: '' };
+
+  renderVals() {
+    const sel = this.state.selected;
+    const q = this.state.query.trim().toLowerCase();
+    const h = this.state.density === 'comfortable' ? 44 : 36;
+
+    const all = DATA.map(d => ({
+      name: d[0], email: d[1], role: d[2], branch: d[3], date: d[4], time: d[5],
+      twoFa: d[6], status: d[7], isSelf: d[8]
+    }));
+
+    const counts = {
+      all: all.length,
+      active: all.filter(o => o.status === 'active').length,
+      pending: all.filter(o => o.status === 'pending').length,
+      locked: all.filter(o => o.status === 'locked').length
+    };
+
+    let list = all.filter(o => this.state.tab === 'all' ? true : o.status === this.state.tab);
+    if (q) list = list.filter(o => (o.name + o.email + o.role).toLowerCase().includes(q));
+    list.sort((a, b) => {
+      const ka = a.date ? a.date + a.time : '';
+      const kb = b.date ? b.date + b.time : '';
+      return (ka < kb ? -1 : ka > kb ? 1 : 0) * (this.state.desc ? -1 : 1);
+    });
+
+    const selKeys = Object.keys(sel).filter(k => sel[k]);
+    const cellBase = 'height: ' + h + 'px; padding: 0 12px; border-bottom: 1px solid #E7E2DC; font-size: 13px; color: #1E1B19; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
+
+    const rows = list.map(o => {
+      const isSel = !!sel[o.email];
+      const bg = isSel ? '#EFF6F5' : (o.status === 'locked' ? '#FAF8F6' : '#FFFFFF');
+      const st = STATUS[o.status];
+      const shade = ROLE_SHADE[o.role] || ROLE_SHADE['Thu ngân'];
+      return {
+        name: o.name, email: o.email, role: o.role, branch: o.branch,
+        initials: initials(o.name),
+        isSelf: o.isSelf,
+        loginRel: rel(o.date),
+        loginFull: o.date ? dmy(o.date) + ' · ' + o.time : 'Chưa từng đăng nhập',
+        roleStyle: 'display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; color: ' + shade[0] + '; background: ' + shade[1] + '; border: 1px solid ' + shade[2] + ';',
+        twoFa: o.twoFa ? 'Đã bật' : 'Chưa bật 2FA',
+        twoFaFg: o.twoFa ? '#256A49' : '#8A5F12',
+        twoFaIcon: o.twoFa ? 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4' : 'M12 3l9 16H3zM12 9v4M12 17v.01',
+        twoFaStyle: 'display: inline-flex; align-items: center; gap: 8px; height: 22px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; color: ' + (o.twoFa ? '#256A49' : '#8A5F12') + '; background: ' + (o.twoFa ? '#EDF7F1' : '#FDF6E7') + '; border: 1px solid ' + (o.twoFa ? '#C3E4D2' : '#F0DDAF') + ';',
+        status: st[0], statusFg: st[1], statusIcon: st[4],
+        statusStyle: 'display: inline-flex; align-items: center; gap: 8px; height: 22px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; color: ' + st[1] + '; background: ' + st[2] + '; border: 1px solid ' + st[3] + ';',
+        selected: isSel,
+        checked: isSel ? 'true' : 'false',
+        checkboxLabel: (isSel ? 'Bỏ chọn' : 'Chọn') + ' tài khoản ' + o.name,
+        menuLabel: 'Hành động cho ' + o.name + (o.isSelf ? ' · tài khoản của bạn, không thể tự khoá' : ''),
+        onToggle: () => this.setState(s => ({ selected: Object.assign({}, s.selected, { [o.email]: !s.selected[o.email] }) })),
+        rowStyle: 'background: ' + bg + ';',
+        cell: cellBase,
+        boxStyle: 'width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid ' + (isSel ? '#235B54' : '#D5CEC6') + '; background: ' + (isSel ? '#235B54' : '#FFFFFF') + ';',
+        stickyLeft: 'position: sticky; left: 0; z-index: 10; height: ' + h + 'px; padding: 0 0 0 24px; border-bottom: 1px solid #E7E2DC; background: ' + bg + ';',
+        stickyName: 'position: sticky; left: 44px; z-index: 10; height: ' + h + 'px; padding: 0 12px; border-bottom: 1px solid #E7E2DC; box-shadow: 1px 0 0 #E7E2DC; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: ' + bg + ';',
+        stickyRight: 'position: sticky; right: 0; z-index: 10; height: ' + h + 'px; padding: 0 24px 0 12px; border-bottom: 1px solid #E7E2DC; box-shadow: -1px 0 0 #E7E2DC; text-align: right; background: ' + bg + ';'
+      };
+    });
+
+    const allSel = rows.length > 0 && rows.every(r => r.selected);
+    const someSel = rows.some(r => r.selected);
+    const noTwoFa = all.filter(o => !o.twoFa).length;
+    const okConfirm = this.state.confirmText.trim().toLowerCase() === 'minhtri@ilikebuffet.vn';
+
+    const statCard = (label, value, hint, fg, bg, bd) => ({
+      label, value, hint,
+      cardStyle: 'border: 1px solid ' + (bd || '#E7E2DC') + '; background: ' + (bg || '#FFFFFF') + '; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 4px;',
+      valueStyle: 'font-size: 24px; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (fg || '#1E1B19') + ';'
+    });
+
+    return {
+      stats: [
+        statCard('Tổng tài khoản', String(all.length), 'Trên 4 chi nhánh'),
+        statCard('Đang hoạt động', String(counts.active), 'Đăng nhập trong 30 ngày', '#256A49', '#EDF7F1', '#C3E4D2'),
+        statCard('Chưa kích hoạt', String(counts.pending), 'Lời mời chưa được nhận', '#8A5F12', '#FDF6E7', '#F0DDAF'),
+        statCard('Chưa bật 2FA', String(noTwoFa), 'Cần bật cho vai trò có quyền tiền', '#C0392B', '#FCF0EE', '#F1CCC7')
+      ],
+      tabs: [['all', 'Tất cả'], ['active', 'Đang hoạt động'], ['pending', 'Chưa kích hoạt'], ['locked', 'Đã khoá']].map(([id, label]) => {
+        const on = this.state.tab === id;
+        return {
+          label, count: counts[id],
+          onClick: () => this.setState({ tab: id }),
+          style: 'display: inline-flex; align-items: center; gap: 8px; padding: 16px 0 12px; margin-bottom: -1px; font-size: 13px; cursor: pointer; color: ' + (on ? '#1C4842' : '#635B53') + '; font-weight: ' + (on ? '500' : '400') + '; border-bottom: 2px solid ' + (on ? '#2F7168' : 'transparent') + ';',
+          badgeStyle: 'height: 18px; min-width: 18px; padding: 2px 8px; border-radius: 999px; font-size: 11px; display: inline-flex; align-items: center; justify-content: center; background: ' + (on ? '#EFF6F5' : '#F4F1ED') + '; color: ' + (on ? '#1C4842' : '#635B53') + ';'
+        };
+      }),
+      rows,
+      query: this.state.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      clearQuery: () => this.setState({ query: '' }),
+      densityLabel: this.state.density === 'comfortable' ? 'Thoáng · 44px' : 'Gọn · 36px',
+      toggleDensity: () => this.setState(s => ({ density: s.density === 'comfortable' ? 'compact' : 'comfortable' })),
+      toggleSort: () => this.setState(s => ({ desc: !s.desc })),
+      sortIcon: this.state.desc ? 'M12 5v14M6 13l6 6 6-6' : 'M12 19V5M6 11l6-6 6 6',
+      sortAria: this.state.desc ? 'descending' : 'ascending',
+      sortLabel: this.state.desc ? 'mới nhất lên đầu' : 'lâu nhất lên đầu',
+      hasSelection: selKeys.length > 0,
+      noSelection: selKeys.length === 0,
+      selectionLabel: 'Đã chọn ' + selKeys.length + ' tài khoản',
+      selfInSelection: selKeys.indexOf('truclinh@ilikebuffet.vn') >= 0,
+      clearSelection: () => this.setState({ selected: {} }),
+      selectAllChecked: allSel ? 'true' : (someSel ? 'mixed' : 'false'),
+      selectAllLabel: allSel ? 'Bỏ chọn tất cả' : 'Chọn tất cả ' + rows.length + ' tài khoản',
+      headBoxStyle: 'width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; font-weight: 500; color: #FFFFFF; border: 1px solid ' + (someSel ? '#235B54' : '#D5CEC6') + '; background: ' + (someSel ? '#235B54' : '#FFFFFF') + ';',
+      headBoxMark: someSel ? (allSel ? '✓' : '–') : '',
+      toggleAll: () => this.setState(() => {
+        if (someSel) return { selected: {} };
+        const next = {};
+        list.forEach(o => { next[o.email] = true; });
+        return { selected: next };
+      }),
+      confirmText: this.state.confirmText,
+      onConfirmText: (e) => this.setState({ confirmText: e.target.value }),
+      dangerBtnStyle: 'height: 36px; padding: 0 16px; font-family: inherit; font-size: 13px; font-weight: 500; border: none; border-radius: 6px; color: #FFFFFF; background: ' + (okConfirm ? '#C0392B' : '#F1CCC7') + '; cursor: ' + (okConfirm ? 'pointer' : 'not-allowed') + ';',
+      pageLabel: 'Hiển thị 1–' + rows.length + ' trong ' + rows.length + ' tài khoản · đăng nhập cuối ' + (this.state.desc ? 'giảm dần' : 'tăng dần')
+    };
+  }
+}
+
+</script>
+</body>
+</html>

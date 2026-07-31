@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; text-decoration: none; }
+  a:hover { color: #1C4842; text-decoration: underline; }
+  @keyframes ibb-spin { to { transform: rotate(360deg); } }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; }
+  td, th { text-align: left; font-weight: inherit; }
+</style>
+</helmet>
+
+<a href="#noi-dung-chinh" style="position: absolute; left: -9999px; top: 8px; z-index: 900; padding: 8px 16px; background: #235B54; color: #FFFFFF; border-radius: 6px; font-size: 13px;" style-focus="left: 16px; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Bỏ qua điều hướng · tới nội dung chính</a>
+<div id="noi-dung-chinh" style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px; max-width: 1440px;">
+    <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">ilikebuffet admin · pattern 1</div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Data table · màn Đơn hàng</h1>
+    <p style="margin: 0; max-width: 74ch; font-size: 14px; color: #635B53;">Dựng ở 1440px với dữ liệu thật của ca tối 28/07/2026. Cột “Chọn” và “Mã đơn” ghim trái, cột hành động ghim phải; khi tràn ngang chỉ vùng giữa cuộn, hai mép giữ nguyên và có bóng đổ 1px báo còn nội dung bị che.</p>
+  </header>
+
+  <div style="width: 1440px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); overflow: hidden;">
+    <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC;">
+      <div style="display: flex; align-items: baseline; gap: 12px;">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 500;">Đơn hàng</h2>
+        <span style="font-size: 13px; color: #6E665C;">Ca tối · 17:00–22:00 · đang mở</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button style="height: 32px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;">Xem sơ đồ bàn</button>
+        <button style="height: 32px; padding: 0 14px; font-family: inherit; font-size: 13px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap;" style-hover="background: #1C4842;">Tạo đơn mới</button>
+      </div>
+    </div>
+
+    <sc-if value="{{ noSelection }}" hint-placeholder-val="{{ true }}">
+      <div style="position: sticky; top: 0; z-index: 200; height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <label style="width: 280px; height: 32px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4"></path></svg>
+            <input type="text" value="{{ query }}" onChange="{{ onQuery }}" placeholder="Tìm mã đơn, bàn, khách…" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-family: inherit; font-size: 13px; color: #1E1B19;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168; border-radius: 4px;">
+            <span onClick="{{ clearQuery }}" style="width: 16px; height: 16px; border-radius: 999px; background: #E7E2DC; color: #635B53; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">×</span>
+          </label>
+          <span style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #1E1B19; background: #FFFFFF; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;">Ca tối
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+          </span>
+          <span style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #B0D4CF; background: #EFF6F5; border-radius: 6px; font-size: 13px; color: #1C4842; cursor: pointer; white-space: nowrap;">Trạng thái · 2
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#235B54" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+          </span>
+          <span style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #1E1B19; background: #FFFFFF; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;">Thanh toán
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+          </span>
+          <span style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; background: #FFFFFF; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"></path></svg>
+            Bộ lọc
+            <span style="height: 18px; min-width: 18px; padding: 0 5px; border-radius: 999px; background: #235B54; color: #FFFFFF; font-size: 11px; display: inline-flex; align-items: center; justify-content: center;">3</span>
+          </span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span onClick="{{ toggleCols }}" style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; background: #FFFFFF; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.5"><path d="M3 4h18v16H3zM9 4v16M15 4v16"></path></svg>
+            Cột
+          </span>
+          <span style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; background: #FFFFFF; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"></path></svg>
+            Xuất Excel
+          </span>
+          <span onClick="{{ toggleDensity }}" style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; background: #FFFFFF; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+            {{ densityLabel }}
+          </span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ hasSelection }}" hint-placeholder-val="{{ false }}">
+      <div style="position: sticky; top: 0; z-index: 200; height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 24px; background: #EFF6F5; border-bottom: 1px solid #B0D4CF;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <strong style="font-size: 13px; color: #1C4842;">{{ selectionLabel }}</strong>
+          <span onClick="{{ clearSelection }}" style="font-size: 13px; color: #235B54; cursor: pointer; text-decoration: underline;">Bỏ chọn</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #B0D4CF; background: #FFFFFF; border-radius: 6px; font-size: 13px; color: #1C4842; cursor: progress; opacity: 0.9;"><span style="width: 16px; height: 16px; border-radius: 999px; border: 1.5px solid #D8EAE7; border-top-color: #235B54; animation: ibb-spin 700ms linear infinite;"></span>Đang in…</span>
+          <span style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #B0D4CF; background: #FFFFFF; border-radius: 6px; font-size: 13px; color: #1C4842; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xuất Excel</span>
+          <span style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: none; background: #C0392B; border-radius: 6px; font-size: 13px; font-weight: 500; color: #FFFFFF; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Huỷ đơn</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 24px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC;">
+      <span style="font-size: 12px; color: #6E665C;">Đang lọc:</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; height: 24px; padding: 0 4px 0 8px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 12px; color: #4A443E;">Ca tối<span role="button" tabindex="0" aria-label="Bỏ chọn mục này" style="cursor: pointer; color: #6E665C;">×</span></span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; height: 24px; padding: 0 4px 0 8px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 12px; color: #4A443E;">Trạng thái: đang phục vụ<span role="button" tabindex="0" aria-label="Bỏ chọn mục này" style="cursor: pointer; color: #6E665C;">×</span></span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; height: 24px; padding: 0 4px 0 8px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 12px; color: #4A443E;">Trạng thái: chờ thanh toán<span role="button" tabindex="0" aria-label="Bỏ chọn mục này" style="cursor: pointer; color: #6E665C;">×</span></span>
+      <span style="font-size: 12px; color: #235B54; cursor: pointer; text-decoration: underline; margin-left: 4px;">Xoá tất cả</span>
+    </div>
+
+    <div style="overflow-x: auto; background: #FFFFFF;">
+      <table style="min-width: 1392px;">
+        <thead>
+          <tr>
+            <th style="position: sticky; top: 0; left: 0; z-index: 30; width: 44px; height: 40px; padding: 0 0 0 24px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC;">
+              <span style="width: 18px; height: 18px; border: 1px solid #235B54; border-radius: 4px; background: #235B54; display: flex; align-items: center; justify-content: center;"><span style="width: 9px; height: 2px; background: #FFFFFF; border-radius: 1px;"></span></span>
+            </th>
+            <th style="position: sticky; top: 0; left: 44px; z-index: 30; width: 160px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; box-shadow: 1px 0 0 #E7E2DC;">
+              <span onClick="{{ sortByCode }}" style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Mã đơn
+                <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9l4-4 4 4M8 15l4 4 4-4"></path></svg>
+              </span>
+            </th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 132px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC;">
+              <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Bàn · khu</span>
+            </th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 92px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; text-align: right;">
+              <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Khách</span>
+            </th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 148px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; text-align: right;">
+              <span onClick="{{ sortByTotal }}" role="button" aria-sort="{{ sortAria }}" aria-label="Sắp xếp theo thành tiền, hiện đang {{ sortAriaLabel }}" style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: #1C4842; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Thành tiền
+                <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#235B54" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ totalSortIcon }}"></path></svg>
+              </span>
+            </th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 132px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC;">
+              <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Mở đơn
+                <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9l4-4 4 4M8 15l4 4 4-4"></path></svg>
+              </span>
+            </th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 168px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC;">
+              <span style="font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Trạng thái</span>
+            </th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 180px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC;">
+              <span style="font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Thu ngân</span>
+            </th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 180px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC;">
+              <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Tiến độ phục vụ
+                <span style="display: inline-flex; gap: 2px; cursor: grab;"><span style="width: 2px; height: 2px; border-radius: 999px; background: #ABA298;"></span><span style="width: 2px; height: 2px; border-radius: 999px; background: #ABA298;"></span><span style="width: 2px; height: 2px; border-radius: 999px; background: #ABA298;"></span></span>
+              </span>
+            </th>
+            <th style="position: sticky; top: 0; right: 0; z-index: 30; width: 72px; height: 40px; padding: 0 24px 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; box-shadow: -1px 0 0 #E7E2DC; text-align: right;">
+              <span style="font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">·</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+            <tr style="{{ r.rowStyle }}" style-hover="background: #FAF8F6;">
+              <td style="{{ r.stickyLeftStyle }}">
+                <sc-if value="{{ r.selected }}" hint-placeholder-val="{{ false }}">
+                  <span onClick="{{ r.onToggle }}" tabindex="0" role="checkbox" aria-checked="true" aria-label="{{ r.checkboxLabel }}" style="width: 18px; height: 18px; border: 1px solid #235B54; border-radius: 4px; background: #235B54; display: flex; align-items: center; justify-content: center; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"><path d="M4 12l5 5L20 6"></path></svg></span>
+                </sc-if>
+                <sc-if value="{{ r.unselected }}" hint-placeholder-val="{{ true }}">
+                  <span onClick="{{ r.onToggle }}" tabindex="0" role="checkbox" aria-checked="false" aria-label="{{ r.checkboxLabel }}" style="width: 18px; height: 18px; border: 1px solid #D5CEC6; border-radius: 4px; background: #FFFFFF; cursor: pointer; display: block;"></span>
+                </sc-if>
+              </td>
+              <td style="{{ r.stickyCodeStyle }}">
+                <span style="font-size: 13px; font-weight: 500; color: #235B54; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ r.code }}</span>
+              </td>
+              <td style="{{ r.cellStyle }}">
+                <span style="display: flex; flex-direction: column; line-height: 1.3;">
+                  <span style="font-size: 13px;">{{ r.table }}</span>
+                  <span style="font-size: 12px; color: #6E665C;">{{ r.zone }}</span>
+                </span>
+              </td>
+              <td style="{{ r.numStyle }}">{{ r.guests }}</td>
+              <td style="{{ r.numStyle }}">
+                <sc-if value="{{ r.positive }}" hint-placeholder-val="{{ true }}">
+                  <span style="font-size: 13px; color: #1E1B19;">{{ r.total }}</span>
+                </sc-if>
+                <sc-if value="{{ r.negative }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size: 13px; color: #C0392B;">{{ r.total }}</span>
+                </sc-if>
+              </td>
+              <td style="{{ r.cellStyle }}">
+                <span style="display: flex; flex-direction: column; line-height: 1.3;">
+                  <span style="font-size: 13px;">{{ r.date }}</span>
+                  <span style="font-size: 12px; color: #6E665C;">{{ r.time }}</span>
+                </span>
+              </td>
+              <td style="{{ r.cellStyle }}">
+                <span style="{{ r.badgeStyle }}">
+                  <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="{{ r.badgeFg }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ r.badgeIcon }}"></path></svg>
+                  {{ r.status }}
+                </span>
+              </td>
+              <td style="{{ r.cellStyle }}">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                  <span style="width: 24px; height: 24px; border-radius: 999px; background: #E7E2DC; color: #4A443E; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; flex-shrink: 0;">{{ r.initials }}</span>
+                  <span style="font-size: 13px; white-space: nowrap;">{{ r.cashier }}</span>
+                </span>
+              </td>
+              <td style="{{ r.cellStyle }}">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                  <span style="flex: 1; height: 4px; background: #F4F1ED; border-radius: 999px; overflow: hidden;"><span style="{{ r.progressStyle }}"></span></span>
+                  <span style="font-size: 12px; color: #635B53; font-variant-numeric: tabular-nums; width: 52px; text-align: right;">{{ r.progressLabel }}</span>
+                </span>
+              </td>
+              <td style="{{ r.stickyRightStyle }}">
+                <span style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;" style-hover="background: #F4F1ED;">
+                  <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v.01M12 12v.01M12 19v.01"></path></svg>
+                </span>
+              </td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 24px; background: #FFFFFF; border-top: 1px solid #E7E2DC;">
+      <span style="font-size: 13px; color: #635B53;">Hiển thị 1–20 trong 1.248 đơn</span>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #635B53;">Số dòng
+          <span style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #1E1B19; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">20
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+          </span>
+        </span>
+        <div style="display: flex; align-items: center; gap: 4px;">
+          <span style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid #E7E2DC; border-radius: 6px; color: #D5CEC6;">‹</span>
+          <span style="min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; padding: 0 8px; border-radius: 6px; background: #235B54; color: #FFFFFF; font-size: 13px; font-weight: 500;">1</span>
+          <span style="min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; padding: 0 8px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;" style-hover="background: #F4F1ED;">2</span>
+          <span style="min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; padding: 0 8px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;" style-hover="background: #F4F1ED;">3</span>
+          <span style="min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #6E665C;">…</span>
+          <span style="min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; padding: 0 8px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;" style-hover="background: #F4F1ED;">63</span>
+          <span style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid #E7E2DC; border-radius: 6px; color: #4A443E; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;" style-hover="background: #F4F1ED;">›</span>
+        </div>
+        <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #635B53;">Tới trang
+          <span style="width: 56px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px;">1</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 16px; align-items: flex-start; max-width: 1440px;">
+    <div style="width: 300px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <strong style="font-size: 13px;">Cột hiển thị</strong>
+        <span style="font-size: 12px; color: #235B54; cursor: pointer; text-decoration: underline;">Khôi phục mặc định</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <div style="height: 32px; display: flex; align-items: center; gap: 12px; padding: 0 6px; border-radius: 4px; font-size: 13px; color: #4A443E;"><span style="display: inline-flex; gap: 2px; cursor: grab;"><span style="width: 2px; height: 2px; border-radius: 999px; background: #ABA298;"></span><span style="width: 2px; height: 2px; border-radius: 999px; background: #ABA298;"></span></span><span style="width: 16px; height: 16px; border: 1px solid #235B54; border-radius: 4px; background: #235B54; display: flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"><path d="M4 12l5 5L20 6"></path></svg></span>Mã đơn <span style="margin-left: auto; font-size: 11px; color: #6E665C;">ghim</span></div>
+        <div style="height: 32px; display: flex; align-items: center; gap: 12px; padding: 0 6px; border-radius: 4px; font-size: 13px; color: #4A443E;"><span style="display: inline-flex; gap: 2px; cursor: grab;"><span style="width: 2px; height: 2px; border-radius: 999px; background: #ABA298;"></span><span style="width: 2px; height: 2px; border-radius: 999px; background: #ABA298;"></span></span><span style="width: 16px; height: 16px; border: 1px solid #235B54; border-radius: 4px; background: #235B54; display: flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"><path d="M4 12l5 5L20 6"></path></svg></span>Bàn · khu</div>
+        <div style="height: 32px; display: flex; align-items: center; gap: 12px; padding: 0 6px; border-radius: 4px; font-size: 13px; color: #4A443E;"><span style="display: inline-flex; gap: 2px; cursor: grab;"><span style="width: 2px; height: 2px; border-radius: 999px; background: #ABA298;"></span><span style="width: 2px; height: 2px; border-radius: 999px; background: #ABA298;"></span></span><span style="width: 16px; height: 16px; border: 1px solid #235B54; border-radius: 4px; background: #235B54; display: flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"><path d="M4 12l5 5L20 6"></path></svg></span>Thành tiền</div>
+        <div style="height: 32px; display: flex; align-items: center; gap: 12px; padding: 0 6px; border-radius: 4px; font-size: 13px; color: #4A443E;"><span style="display: inline-flex; gap: 2px; cursor: grab;"><span style="width: 2px; height: 2px; border-radius: 999px; background: #ABA298;"></span><span style="width: 2px; height: 2px; border-radius: 999px; background: #ABA298;"></span></span><span style="width: 16px; height: 16px; border: 1px solid #D5CEC6; border-radius: 4px; background: #FFFFFF;"></span>Ghi chú bếp</div>
+        <div style="height: 32px; display: flex; align-items: center; gap: 12px; padding: 0 6px; border-radius: 4px; font-size: 13px; color: #4A443E;"><span style="display: inline-flex; gap: 2px; cursor: grab;"><span style="width: 2px; height: 2px; border-radius: 999px; background: #ABA298;"></span><span style="width: 2px; height: 2px; border-radius: 999px; background: #ABA298;"></span></span><span style="width: 16px; height: 16px; border: 1px solid #D5CEC6; border-radius: 4px; background: #FFFFFF;"></span>Giảm giá</div>
+      </div>
+    </div>
+
+    <div style="width: 240px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 4px;">
+      <div style="height: 32px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;" style-hover="background: #F4F1ED;">
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.5" stroke-linecap="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7zM12 9a3 3 0 100 6 3 3 0 000-6"></path></svg>
+        Xem chi tiết đơn
+      </div>
+      <div style="height: 32px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;" style-hover="background: #F4F1ED;">
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4v-6h16v6h-2M8 14h8v7H8z"></path></svg>
+        In hoá đơn
+      </div>
+      <span style="display: block; height: 1px; background: #F4F1ED; margin: 4px 0;"></span>
+      <div style="height: 32px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #C0392B; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;" style-hover="background: #FCF0EE;">
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-6.4 2.6L3 8M3 3v5h5"></path></svg>
+        Hoàn tiền
+      </div>
+    </div>
+
+    <div style="flex: 1; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 16px 20px; display: flex; flex-direction: column; gap: 8px;">
+      <strong style="font-size: 13px;">Ghi chú hành vi</strong>
+      <span style="font-size: 13px; color: #635B53;">Menu ba chấm mở tại vị trí nút, ưu tiên hướng dưới; nếu thiếu chỗ thì lật lên. Kéo mép phải header để đổi độ rộng cột (tối thiểu 88px), kéo chấm nắm để đổi thứ tự. Bảng nhớ độ rộng, thứ tự, mật độ và bộ lọc theo từng người dùng.</span>
+      <span style="font-size: 13px; color: #635B53;">Hàng chip bộ lọc chỉ hiện khi có ít nhất 1 điều kiện — không có thì ẩn cả hàng, không chừa khoảng trống. Khi tràn ngang: vùng giữa cuộn ngang, cột ghim trái (chọn, mã đơn) và cột hành động ghim phải đứng yên, mỗi mép có đường 1px neutral-200 làm dấu che khuất.</span>
+    </div>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px; max-width: 1440px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Kiểu cột bổ sung</h2>
+      <span style="font-size: 13px; color: #635B53;">Ba kiểu cột mới, nâng danh mục từ 8 lên 11. Mọi màn phải dùng lại, không tự vẽ.</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: start;">
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <strong style="font-size: 15px; font-weight: 500;">09 · Ảnh thumbnail</strong>
+        <span style="font-size: 12px; color: #6E665C;">40×40, bo 6px, lazy load, viền hairline. Chưa có ảnh thì hiện icon fallback trên nền neutral-100 — không để ô trống.</span>
+        <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+          <sc-for list="{{ thumbRows }}" as="t" hint-placeholder-count="3">
+            <div style="display: grid; grid-template-columns: 56px 1fr 96px; gap: 12px; align-items: center; min-height: 44px; padding: 0 12px; border-bottom: 1px solid #F4F1ED; font-size: 13px;">
+              <sc-if value="{{ t.hasImage }}" hint-placeholder-val="{{ true }}">
+                <span style="width: 40px; height: 40px; border-radius: 6px; border: 1px solid #E7E2DC; background: #D5CEC6; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #4A443E;">ảnh</span>
+              </sc-if>
+              <sc-if value="{{ t.noImage }}" hint-placeholder-val="{{ false }}">
+                <span role="img" aria-label="Chưa có ảnh món" style="width: 40px; height: 40px; border-radius: 6px; border: 1px solid #E7E2DC; background: #F4F1ED; display: flex; align-items: center; justify-content: center;">
+                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18v14H3zM3 16l5-5 4 4 3-3 6 6"></path></svg>
+                </span>
+              </sc-if>
+              <span>{{ t.name }}</span>
+              <span style="text-align: right; color: #6E665C; font-size: 12px;">{{ t.note }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">alt = tên bản ghi · loading="lazy" · fallback icon aria-label "Chưa có ảnh"</code>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <strong style="font-size: 15px; font-weight: 500;">10 · Giá nhiều bậc</strong>
+        <span style="font-size: 12px; color: #6E665C;">Hiện “từ &lt;giá thấp nhất&gt;”, có gạch chân chấm báo hiệu còn nội dung; tooltip liệt kê đủ mức. Một mức duy nhất thì rơi về kiểu cột tiền thường.</span>
+        <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+          <div style="display: grid; grid-template-columns: 1fr 140px; gap: 12px; align-items: center; min-height: 44px; padding: 0 12px; border-bottom: 1px solid #F4F1ED; font-size: 13px;">
+            <span>Gói buffet tối</span>
+            <span onMouseEnter="{{ showTiers }}" onMouseLeave="{{ hideTiers }}" tabindex="0" style="text-align: right; font-variant-numeric: tabular-nums; border-bottom: 1px dotted #ABA298; cursor: help;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">từ 299.000đ</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 140px; gap: 12px; align-items: center; min-height: 44px; padding: 0 12px; font-size: 13px;">
+            <span>Gói trẻ em</span>
+            <span style="text-align: right; font-variant-numeric: tabular-nums;">149.000đ</span>
+          </div>
+        </div>
+        <sc-if value="{{ tiersOpen }}" hint-placeholder-val="{{ true }}">
+          <div role="tooltip" style="align-self: flex-end; width: 260px; background: #332F2B; border-radius: 6px; box-shadow: 0 4px 12px rgba(30,27,25,0.16); padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-size: 12px; color: #D5CEC6;">Gói buffet tối · 4 mức giá</span>
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: #FAF8F6;"><span>T2–T5 · 17:00–19:00</span><span style="font-variant-numeric: tabular-nums;">299.000đ</span></div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: #FAF8F6;"><span>T2–T5 · 19:00–22:00</span><span style="font-variant-numeric: tabular-nums;">349.000đ</span></div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: #FAF8F6;"><span>T6–CN</span><span style="font-variant-numeric: tabular-nums;">389.000đ</span></div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: #FAF8F6;"><span>Ngày lễ</span><span style="font-variant-numeric: tabular-nums;">429.000đ</span></div>
+          </div>
+        </sc-if>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">tooltip mở bằng hover và bằng Tab · nội dung cũng nằm trong drawer chi tiết</code>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <strong style="font-size: 15px; font-weight: 500;">11 · Thời gian tương đối</strong>
+        <span style="font-size: 12px; color: #6E665C;">Hiện khoảng cách tới hiện tại; ngày đầy đủ nằm ở dòng phụ và ở tooltip. Quá 12 tháng thì hiện thẳng ngày tuyệt đối.</span>
+        <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+          <sc-for list="{{ relRows }}" as="r" hint-placeholder-count="4">
+            <div style="display: grid; grid-template-columns: 1fr 160px; gap: 12px; align-items: center; min-height: 44px; padding: 0 12px; border-bottom: 1px solid #F4F1ED; font-size: 13px;">
+              <span>{{ r.name }}</span>
+              <span title="{{ r.absolute }}" tabindex="0" style="text-align: right; display: flex; flex-direction: column; line-height: 1.3;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                <span style="{{ r.relStyle }}">{{ r.relative }}</span>
+                <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ r.absolute }}</span>
+              </span>
+            </div>
+          </sc-for>
+        </div>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">&lt;time datetime&gt; · quá 90 ngày tô neutral-500 · quá 12 tháng bỏ dạng tương đối</code>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px; max-width: 1440px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">5 trạng thái bắt buộc</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+        <div style="padding: 10px 16px; border-bottom: 1px solid #E7E2DC; font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">1 · Loading lần đầu — giữ header và filter bar</div>
+        <div style="height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 16px; border-bottom: 1px solid #E7E2DC;">
+          <span style="width: 200px; height: 28px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;"></span>
+          <span style="width: 84px; height: 28px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;"></span>
+          <span style="width: 84px; height: 28px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;"></span>
+        </div>
+        <div style="height: 36px; display: flex; align-items: center; gap: 16px; padding: 0 16px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">
+          <span style="width: 90px;">Mã đơn</span><span style="width: 80px;">Bàn</span><span style="flex: 1;">Thành tiền</span><span style="width: 90px;">Trạng thái</span>
+        </div>
+        <div style="padding: 0 16px;">
+          <sc-for list="{{ skeletonRows }}" as="s" hint-placeholder-count="8">
+            <div style="height: 44px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #F4F1ED;">
+              <span style="width: 90px; height: 10px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+              <span style="width: 80px; height: 10px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+              <span style="flex: 1; height: 10px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+              <span style="width: 90px; height: 18px; background: #F4F1ED; border-radius: 999px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+        <div style="padding: 10px 16px; border-bottom: 1px solid #E7E2DC; font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">2 · Đổi bộ lọc — chỉ mờ thân bảng</div>
+        <div style="height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 16px; border-bottom: 1px solid #E7E2DC;">
+          <span style="height: 28px; display: inline-flex; align-items: center; padding: 0 12px; background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 6px; font-size: 12px; color: #1C4842;">Trạng thái · 2</span>
+          <span style="height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 12px; color: #4A443E;">Ca tối</span>
+        </div>
+        <div style="height: 36px; display: flex; align-items: center; gap: 16px; padding: 0 16px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">
+          <span style="width: 90px;">Mã đơn</span><span style="width: 80px;">Bàn</span><span style="flex: 1;">Thành tiền</span><span style="width: 90px;">Trạng thái</span>
+        </div>
+        <div style="position: relative; padding: 0 16px;">
+          <div style="opacity: 0.45;">
+            <div style="height: 44px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #F4F1ED; font-size: 13px;"><span style="width: 90px; color: #235B54;">DH…041</span><span style="width: 80px;">A3</span><span style="flex: 1; font-variant-numeric: tabular-nums;">1.556.000</span><span style="width: 90px; font-size: 12px;">Đang phục vụ</span></div>
+            <div style="height: 44px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #F4F1ED; font-size: 13px;"><span style="width: 90px; color: #235B54;">DH…040</span><span style="width: 80px;">B1</span><span style="flex: 1; font-variant-numeric: tabular-nums;">2.334.000</span><span style="width: 90px; font-size: 12px;">Chờ thanh toán</span></div>
+            <div style="height: 44px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #F4F1ED; font-size: 13px;"><span style="width: 90px; color: #235B54;">DH…039</span><span style="width: 80px;">A1</span><span style="flex: 1; font-variant-numeric: tabular-nums;">778.000</span><span style="width: 90px; font-size: 12px;">Đã đóng</span></div>
+            <div style="height: 44px; display: flex; align-items: center; gap: 16px; font-size: 13px;"><span style="width: 90px; color: #235B54;">DH…038</span><span style="width: 80px;">C2</span><span style="flex: 1; font-variant-numeric: tabular-nums;">1.167.000</span><span style="width: 90px; font-size: 12px;">Đã đóng</span></div>
+          </div>
+          <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+            <span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 999px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); font-size: 12px; color: #635B53;">
+              <span style="width: 16px; height: 16px; border-radius: 999px; border: 1.5px solid #E7E2DC; border-top-color: #2F7168; animation: ibb-spin 700ms linear infinite;"></span>
+              Đang áp dụng bộ lọc…
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+        <span style="font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">3 · Empty lần đầu</span>
+        <span style="width: 56px; height: 56px; border-radius: 12px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2v20l3-2 3 2 3-2 3 2 3-2V2l-3 2-3-2-3 2-3-2zM9 9h6M9 13h6"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Ca tối chưa có đơn nào</strong>
+        <span style="font-size: 13px; color: #6E665C;">Đơn sẽ hiện ở đây ngay khi thu ngân mở bàn đầu tiên.</span>
+        <button style="height: 36px; padding: 0 14px; margin-top: 4px; font-family: inherit; font-size: 13px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Tạo đơn mới</button>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+        <span style="font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">4 · Empty do lọc</span>
+        <span style="width: 56px; height: 56px; border-radius: 12px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4M9 11h4"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Không có đơn khớp bộ lọc</strong>
+        <span style="font-size: 13px; color: #6E665C;">3 điều kiện đang áp dụng · ca tối, 2 trạng thái.</span>
+        <button style="height: 36px; padding: 0 14px; margin-top: 4px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xoá bộ lọc</button>
+      </div>
+
+      <div style="grid-column: span 2; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 40px 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+        <span style="font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">5 · Error</span>
+        <span style="width: 56px; height: 56px; border-radius: 999px; background: #FCF0EE; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Không tải được danh sách đơn</strong>
+        <span style="font-size: 13px; color: #6E665C;">Máy chủ POS không phản hồi · mã lỗi ERR-5031-QN1</span>
+        <button style="height: 36px; padding: 0 14px; margin-top: 4px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Thử lại</button>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 8px;">
+      <div style="display: flex; align-items: baseline; gap: 12px;">
+        <strong style="font-size: 15px; font-weight: 500;">Component dùng chung · TableStates</strong>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">TableStates.dc.html · nhận errorTitle, errorCode</code>
+      </div>
+      <span style="font-size: 13px; color: #635B53; max-width: 84ch;">Ba state không có dữ liệu thật (loading lần đầu · loading khi đổi bộ lọc · lỗi tải) sống ở <strong style="font-weight: 500;">một component duy nhất</strong>, không dựng lại ở từng màn. Hai state còn lại (rỗng vì chưa có gì · rỗng vì bộ lọc) <strong style="font-weight: 500;">phải nằm ở màn</strong> vì câu chữ và nút hành động khác nhau theo nghiệp vụ.</span>
+      <dc-import name="TableStates" error-title="Không tải được danh sách đơn" error-code="ERR-5031-QN1" hint-size="100%,360px"></dc-import>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+        <span style="color: #6E665C;">nhúng thế nào</span><span style="color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">&lt;dc-import name="TableStates" error-title="…" error-code="…" hint-size="100%,360px"&gt;</code>. Bọc trong khối <code style="font-family: ui-monospace, Menlo, monospace;">data-states-wrap</code> để giữ chiều rộng khung màn.</span>
+        <span style="color: #6E665C;">21 màn đang nhúng</span><span style="color: #4A443E;">Mọi màn T1 có bảng: SC-VH-01 · 03 · 05 · SC-KHO-01 · 03 · 05 · 07 · 09 · 11 · SC-NS-01 · 08 · 10 · SC-TC-03 · 06 · 08 · 10 · SC-TD-01 · 03 · 05 · SC-HT-02 · 04. <strong style="font-weight: 500;">Sửa ba state này thì sửa ở đây, không sửa 21 chỗ.</strong></span>
+        <span style="color: #6E665C;">tự khai lại là sai</span><span style="color: #4A443E;">Màn nào dựng lại skeleton hay khối lỗi bằng tay là lệch pattern — kiểm bằng cách tìm <code style="font-family: ui-monospace, Menlo, monospace;">ibb-pulse</code> trong file màn mà không có <code style="font-family: ui-monospace, Menlo, monospace;">dc-import</code> TableStates.</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px; max-width: 1440px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">2 biến thể của cùng component</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+        <div style="padding: 10px 16px; border-bottom: 1px solid #E7E2DC; font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">a · dòng mở rộng — phiếu nhập kho</div>
+        <div style="height: 36px; display: flex; align-items: center; gap: 12px; padding: 0 16px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">
+          <span style="width: 20px;"></span><span style="width: 128px;">Mã phiếu</span><span style="flex: 1;">Nhà cung cấp</span><span style="width: 108px; text-align: right;">Giá trị</span><span style="width: 92px;">Trạng thái</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 44px; border-bottom: 1px solid #F4F1ED; font-size: 13px;">
+          <span style="width: 20px; color: #635B53; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">▾</span>
+          <span style="width: 128px; color: #235B54; font-weight: 500;">PN-0728-004</span>
+          <span style="flex: 1;">Hải sản Bình Minh</span>
+          <span style="width: 108px; text-align: right; font-variant-numeric: tabular-nums;">18.420.000</span>
+          <span style="width: 92px;"><span style="display: inline-flex; align-items: center; gap: 8px; height: 22px; padding: 0 8px; border-radius: 4px; background: #FDF6E7; border: 1px solid #F0DDAF; color: #8A5F12; font-size: 12px;">Chờ duyệt</span></span>
+        </div>
+        <div style="background: #FAF8F6; border-bottom: 1px solid #E7E2DC; padding: 12px 16px 12px 48px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; gap: 12px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;"><span style="flex: 1;">Nguyên liệu</span><span style="width: 90px; text-align: right;">Số lượng</span><span style="width: 110px; text-align: right;">Đơn giá</span><span style="width: 110px; text-align: right;">Thành tiền</span></div>
+          <div style="display: flex; gap: 12px; font-size: 13px;"><span style="flex: 1;">Tôm sú size 30</span><span style="width: 90px; text-align: right; font-variant-numeric: tabular-nums;">24,000 kg</span><span style="width: 110px; text-align: right; font-variant-numeric: tabular-nums;">385.000</span><span style="width: 110px; text-align: right; font-variant-numeric: tabular-nums;">9.240.000</span></div>
+          <div style="display: flex; gap: 12px; font-size: 13px;"><span style="flex: 1;">Mực ống làm sạch</span><span style="width: 90px; text-align: right; font-variant-numeric: tabular-nums;">18,500 kg</span><span style="width: 110px; text-align: right; font-variant-numeric: tabular-nums;">296.000</span><span style="width: 110px; text-align: right; font-variant-numeric: tabular-nums;">5.476.000</span></div>
+          <div style="display: flex; gap: 12px; font-size: 13px;"><span style="flex: 1;">Nghêu trắng</span><span style="width: 90px; text-align: right; font-variant-numeric: tabular-nums;">42,000 kg</span><span style="width: 110px; text-align: right; font-variant-numeric: tabular-nums;">88.000</span><span style="width: 110px; text-align: right; font-variant-numeric: tabular-nums;">3.696.000</span></div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 44px; border-bottom: 1px solid #F4F1ED; font-size: 13px;">
+          <span style="width: 20px; color: #635B53; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">▸</span>
+          <span style="width: 128px; color: #235B54; font-weight: 500;">PN-0728-003</span>
+          <span style="flex: 1;">Rau sạch Đà Lạt</span>
+          <span style="width: 108px; text-align: right; font-variant-numeric: tabular-nums;">3.180.000</span>
+          <span style="width: 92px;"><span style="display: inline-flex; align-items: center; gap: 8px; height: 22px; padding: 0 8px; border-radius: 4px; background: #EDF7F1; border: 1px solid #C3E4D2; color: #256A49; font-size: 12px;">Đã duyệt</span></span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 44px; font-size: 13px;">
+          <span style="width: 20px; color: #635B53; cursor: pointer;" tabindex="0" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">▸</span>
+          <span style="width: 128px; color: #235B54; font-weight: 500;">PN-0727-011</span>
+          <span style="flex: 1;">Bò Mỹ Nam Phát</span>
+          <span style="width: 108px; text-align: right; font-variant-numeric: tabular-nums;">12.960.000</span>
+          <span style="width: 92px;"><span style="display: inline-flex; align-items: center; gap: 8px; height: 22px; padding: 0 8px; border-radius: 4px; background: #EDF7F1; border: 1px solid #C3E4D2; color: #256A49; font-size: 12px;">Đã duyệt</span></span>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+        <div style="padding: 10px 16px; border-bottom: 1px solid #E7E2DC; font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">b · dòng tổng cố định — báo cáo tài chính</div>
+        <div style="height: 36px; display: flex; align-items: center; gap: 12px; padding: 0 16px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">
+          <span style="flex: 1;">Khoản mục</span><span style="width: 120px; text-align: right;">Tháng 7</span><span style="width: 120px; text-align: right;">Tháng 6</span><span style="width: 96px; text-align: right;">Chênh lệch</span>
+        </div>
+        <div style="max-height: 220px; overflow-y: auto;">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 44px; border-bottom: 1px solid #F4F1ED; font-size: 13px;"><span style="flex: 1;">Doanh thu buffet</span><span style="width: 120px; text-align: right; font-variant-numeric: tabular-nums;">1.284.600.000</span><span style="width: 120px; text-align: right; font-variant-numeric: tabular-nums;">1.198.200.000</span><span style="width: 96px; text-align: right; color: #256A49; font-variant-numeric: tabular-nums;">+7,2%</span></div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 44px; border-bottom: 1px solid #F4F1ED; font-size: 13px;"><span style="flex: 1;">Doanh thu đồ uống</span><span style="width: 120px; text-align: right; font-variant-numeric: tabular-nums;">246.180.000</span><span style="width: 120px; text-align: right; font-variant-numeric: tabular-nums;">238.940.000</span><span style="width: 96px; text-align: right; color: #256A49; font-variant-numeric: tabular-nums;">+3,0%</span></div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 44px; border-bottom: 1px solid #F4F1ED; font-size: 13px;"><span style="flex: 1;">Giá vốn nguyên liệu</span><span style="width: 120px; text-align: right; color: #C0392B; font-variant-numeric: tabular-nums;">(512.840.000)</span><span style="width: 120px; text-align: right; color: #C0392B; font-variant-numeric: tabular-nums;">(486.120.000)</span><span style="width: 96px; text-align: right; color: #C0392B; font-variant-numeric: tabular-nums;">+5,5%</span></div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 44px; border-bottom: 1px solid #F4F1ED; font-size: 13px;"><span style="flex: 1;">Lương nhân sự</span><span style="width: 120px; text-align: right; color: #C0392B; font-variant-numeric: tabular-nums;">(318.500.000)</span><span style="width: 120px; text-align: right; color: #C0392B; font-variant-numeric: tabular-nums;">(311.000.000)</span><span style="width: 96px; text-align: right; color: #C0392B; font-variant-numeric: tabular-nums;">+2,4%</span></div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 44px; border-bottom: 1px solid #F4F1ED; font-size: 13px;"><span style="flex: 1;">Chi phí vận hành</span><span style="width: 120px; text-align: right; color: #C0392B; font-variant-numeric: tabular-nums;">(164.720.000)</span><span style="width: 120px; text-align: right; color: #C0392B; font-variant-numeric: tabular-nums;">(172.360.000)</span><span style="width: 96px; text-align: right; color: #256A49; font-variant-numeric: tabular-nums;">−4,4%</span></div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 48px; background: #FAF8F6; border-top: 1px solid #E7E2DC; font-size: 13px; font-weight: 600;">
+          <span style="flex: 1;">Lợi nhuận trước thuế</span><span style="width: 120px; text-align: right; font-variant-numeric: tabular-nums;">534.720.000</span><span style="width: 120px; text-align: right; font-variant-numeric: tabular-nums;">467.660.000</span><span style="width: 96px; text-align: right; color: #256A49; font-variant-numeric: tabular-nums;">+14,3%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">biến thể</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Data Table · biến thể embedded</h2>
+      <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">bảng chỉ đọc nhúng trong section hoặc tab của T2 · một chuẩn duy nhất cho 14 bảng nhúng của đợt 5</code>
+      <span style="font-size: 13px; color: #635B53; max-width: 80ch;">Trước đợt này mỗi màn tự dựng một bảng nhúng: bốn chiều cao dòng khác nhau, không màn nào có hover. Đây là chuẩn thay thế — mọi bảng nhúng phải khớp từng con số dưới đây.</span>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+      <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">chuẩn · sao chép đúng các giá trị này</span>
+      <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 148px 1fr 124px 116px 132px; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+          <span>Mã phiếu</span><span>Nội dung</span><span style="text-align: right;">Giá trị</span><span style="text-align: right;">Còn nợ</span><span>Trạng thái</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 148px 1fr 124px 116px 132px; align-items: center; gap: 8px; min-height: 44px; padding: 6px 12px; border-bottom: 1px solid #F0EBE5; font-size: 13px;" style-hover="background: #FAF8F6;">
+          <a href="#" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px;">PN-2026-0412</a>
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+            <span>Bò Mỹ ba chỉ · 60,0 kg</span>
+            <span style="font-size: 12px; color: #6E665C;">nhập 21/07/2026</span>
+          </span>
+          <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">23.520.000</span>
+          <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums;">23.520.000</span>
+          <span><span style="height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #EDF7F1; border: 1px solid #C3E4D2; color: #256A49; font-size: 12px; font-weight: 500;">Trong hạn</span></span>
+        </div>
+        <div style="display: grid; grid-template-columns: 148px 1fr 124px 116px 132px; align-items: center; gap: 8px; min-height: 44px; padding: 6px 12px; border-bottom: 1px solid #F0EBE5; font-size: 13px;" style-hover="background: #FAF8F6;">
+          <a href="#" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px;">PN-2026-0371</a>
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+            <span>Rau củ tuần 26 · nhiều mặt hàng</span>
+            <span style="font-size: 12px; color: #6E665C;">nhập 24/06/2026</span>
+          </span>
+          <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">18.960.000</span>
+          <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; color: #C0392B;">18.960.000</span>
+          <span><span style="height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FCF0EE; border: 1px solid #F1CCC7; color: #96271B; font-size: 12px; font-weight: 500;">Quá hạn 5 ngày</span></span>
+        </div>
+        <div style="display: grid; grid-template-columns: 148px 1fr 124px 116px 132px; align-items: center; gap: 8px; min-height: 48px; padding: 0 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC; font-size: 13px;">
+          <strong style="font-weight: 500; letter-spacing: 0.02em;">TỔNG</strong>
+          <span></span>
+          <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">42.480.000</span>
+          <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">42.480.000 đ</strong>
+          <span></span>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 168px 1fr; gap: 8px 16px; font-size: 13px; padding-top: 16px; border-top: 1px solid #F0EBE5;">
+        <span style="color: #6E665C;">khung</span><span style="color: #4A443E;">viền 1px neutral-200 · bo md 8 · <code style="font-family: ui-monospace, Menlo, monospace;">overflow: hidden</code> · KHÔNG có toolbar, filter bar, hay thanh bulk phía trên</span>
+        <span style="color: #6E665C;">header</span><span style="color: #4A443E;"><strong style="font-weight: 500;">min-height 40px · padding 0 12px</strong> · nền neutral-50 · viền dưới 1px neutral-200 · chữ 11px uppercase letter-spacing 0.04em neutral-500</span>
+        <span style="color: #6E665C;">⚠ hover phải là literal</span><span style="color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">style-hover</code> là thuộc tính tĩnh của node template: runtime cấp MỘT class cho mỗi node chứ không phải mỗi dòng, nên nếu giá trị của nó là <strong style="font-weight: 500;">một hole động</strong> — chẳng hạn trỏ tới <code style="font-family: ui-monospace, Menlo, monospace;">r.hoverStyle</code> tính trong <code style="font-family: ui-monospace, Menlo, monospace;">renderVals</code> — thì runtime sinh ra rule rỗng và hover chết âm thầm. Luôn viết literal. Cần hover khác tông theo dòng thì tách <code style="font-family: ui-monospace, Menlo, monospace;">&lt;sc-if&gt;</code> với literal riêng, đừng truyền chuỗi style qua hole.</span>
+        <span style="color: #6E665C;">dòng dữ liệu</span><span style="color: #4A443E;"><strong style="font-weight: 500;">min-height 44px · padding 6px 12px · font-size 13px</strong> · viền dưới 1px neutral-100, dòng cuối không viền · <strong style="font-weight: 500;">bắt buộc</strong> <code style="font-family: ui-monospace, Menlo, monospace;">style-hover="background: #FAF8F6;"</code></span>
+        <span style="color: #6E665C;">dòng tổng</span><span style="color: #4A443E;"><strong style="font-weight: 500;">min-height 48px · padding 0 12px</strong> · nền neutral-50 · viền trên 1px neutral-200 · sticky bottom khi bảng cuộn · nhãn viết hoa letter-spacing 0.02em · giá trị 600</span>
+        <span style="color: #6E665C;">gap cột</span><span style="color: #4A443E;">8px · cùng một chuỗi <code style="font-family: ui-monospace, Menlo, monospace;">grid-template-columns</code> phải xuất hiện y hệt ở header, dòng dữ liệu và dòng tổng</span>
+        <span style="color: #6E665C;">cột chật</span><span style="color: #4A443E;">Hết chỗ thì <strong style="font-weight: 500;">gộp hai dữ kiện vào một ô thành hai dòng</strong> (mã + ngày), không thu nhỏ chữ, không cắt cột, không cuộn ngang</span>
+        <span style="color: #6E665C;">ngân sách rộng</span><span style="color: #4A443E;">Trang T2 có cột phụ: 930px cho vùng bảng (1440 − 64 page − 48 card − 24 gap − 320 aside − 48 tab panel − 2 viền). Trong drawer 720: 624px. Cột cố định phải cộng vừa số này.</span>
+        <span style="color: #6E665C;">có gì / không có gì</span><span style="color: #4A443E;">CÓ: link ở ô đầu, badge trạng thái, dòng tổng, phân trang riêng đặt <strong style="font-weight: 500;">ngoài</strong> khung bảng. KHÔNG: sort, filter, chọn cột, resize, drag, row actions — cần những thứ đó thì mở màn danh sách đầy đủ.</span>
+        <span style="color: #6E665C;">biến thể bulk</span><span style="color: #4A443E;">Thêm cột checkbox 36px đầu bảng + thanh hành động dưới bảng (không nổi). Dòng đã chọn nền primary-50; dòng không chọn được (đang tranh chấp) checkbox neutral disabled + nền neutral-50 nhạt và vẫn hiện trong bảng.</span>
+        <span style="color: #6E665C;">phân trang</span><span style="color: #4A443E;">Luôn là phân trang riêng của bảng, KHÔNG dùng phân trang trang cha · đổi trang không đổi <code style="font-family: ui-monospace, Menlo, monospace;">?tab=</code>, không tải lại header/summary/cột phụ</span>
+        <span style="color: #6E665C;">khi nào KHÔNG dùng</span><span style="color: #4A443E;">Cần sort/filter/bulk-edit hoặc &gt; 50 dòng thường xuyên → dùng Data Table đầy đủ ở màn riêng và để đây một link. Bảng nhập liệu có dòng động → dynamic row table (CL4 · 09).</span>
+        <span style="color: #6E665C;">màn dùng</span><span style="color: #4A443E;">SC-VH-02 s2 · SC-KHO-12 s4 s5 · SC-NS-07 s3 s4 · SC-VH-07 tab 2 tab 3 tab 4 tab 5 · SC-KHO-13 tab 2 tab 3 tab 4 tab 5 · SC-TC-07 tab 1 tab 2 tab 3 tab 4</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">nội dung tràn</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Nội dung dài và chiều cao dòng</h2>
+      <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">quyết định #10 · một luật cho cả bảng, không trộn hai chế độ</code>
+      <span style="font-size: 13px; color: #635B53; max-width: 84ch;">Ba lỗi cùng một gốc: row height cố định gặp text hai dòng, cột px cứng cắt mất chữ số, cắt bằng ellipsis mà không có tooltip. Luật dưới đây giải quyết cả ba, và <strong style="font-weight: 500;">áp cho ~35 màn cùng lúc</strong> vì nó nằm ở pattern.</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #E7E2DC;">
+          <strong style="font-size: 13px; font-weight: 500;">Mặc định · một dòng</strong>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">row height cố định</code>
+        </div>
+        <sc-for list="{{ clipRows }}" as="r" hint-placeholder-count="3">
+          <div style="{{ r.rowStyle }}" style-hover="background: #FAF8F6;">
+            <span style="{{ r.nameStyle }}" title="{{ r.full }}">{{ r.name }}</span>
+            <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ r.qty }}</span>
+            <span style="text-align: right; font-variant-numeric: tabular-nums;">{{ r.amount }}</span>
+          </div>
+        </sc-for>
+        <span style="display: block; padding: 12px 16px; font-size: 12px; color: #6E665C; border-top: 1px solid #F0EBE5;">Rê chuột vào tên để xem đầy đủ. Mọi dòng cao đúng 44px, mắt quét cột số không bị nhảy.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #B0D4CF; border-radius: 8px; overflow: hidden;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #E7E2DC;">
+          <strong style="font-size: 13px; font-weight: 500;">Có allowWrap · hai dòng</strong>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">row height auto, min 52px</code>
+        </div>
+        <sc-for list="{{ wrapRows }}" as="r" hint-placeholder-count="3">
+          <div style="{{ r.rowStyle }}" style-hover="background: #FAF8F6;">
+            <span style="{{ r.nameStyle }}" title="{{ r.full }}">{{ r.name }}</span>
+            <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ r.qty }}</span>
+            <span style="text-align: right; font-variant-numeric: tabular-nums;">{{ r.amount }}</span>
+          </div>
+        </sc-for>
+        <span style="display: block; padding: 12px 16px; font-size: 12px; color: #6E665C; border-top: 1px solid #F0EBE5;">Cả bảng chuyển auto, không riêng dòng có text dài. Trộn hai chế độ khiến bảng trông như lỗi render.</span>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">mặc định</span><span style="color: #4A443E;">Mọi cột văn bản: <code style="font-family: ui-monospace, Menlo, monospace;">white-space: nowrap</code> + <code style="font-family: ui-monospace, Menlo, monospace;">text-overflow: ellipsis</code> + <code style="font-family: ui-monospace, Menlo, monospace;">min-width: 0</code>, và <strong style="font-weight: 500;">bắt buộc có <code style="font-family: ui-monospace, Menlo, monospace;">title</code> đầy đủ</strong>. Cắt mà không cho xem lại là mất thông tin, không phải tiết kiệm chỗ.</span>
+      <span style="color: #6E665C;">allowWrap</span><span style="color: #4A443E;">Đánh dấu ở cấp cột. Cột đó cho <code style="font-family: ui-monospace, Menlo, monospace;">-webkit-line-clamp: 2</code>, và <strong style="font-weight: 500;">cả bảng</strong> chuyển row height auto với min bằng giá trị comfortable của mật độ đang dùng. Không có chế độ trộn.</span>
+      <span style="color: #6E665C;">tooltip cho allowWrap</span><span style="color: #4A443E;"><strong style="font-weight: 500;">Cũng bắt buộc.</strong> Clamp hai dòng vẫn cắt mất phần đuôi — và đây đúng là chế độ dành cho câu văn cần đọc để quyết định, nên mất đuôi là mất nghĩa. Hai dòng chỉ để quét nhanh; muốn đọc hết thì rê chuột hoặc mở dòng.</span>
+      <span style="color: #6E665C;">khi nào allowWrap</span><span style="color: #4A443E;">Chỉ khi nội dung là <strong style="font-weight: 500;">câu văn tự do</strong> mà người dùng cần đọc để quyết định: lý do lệch quỹ, ghi chú phản hồi, diễn giải phiếu. Tên riêng, mã, địa chỉ thì không — chúng nhận ra được từ phần đầu.</span>
+      <span style="color: #6E665C;">cột số</span><span style="color: #4A443E;">Dùng <code style="font-family: ui-monospace, Menlo, monospace;">minmax(Npx, auto)</code>, không px cứng. Số 12 chữ số cần ~150px ở 13px tabular — cột 116px cắt mất chữ số, và <strong style="font-weight: 500;">cắt số thì sai nghĩa</strong> chứ không chỉ xấu. Cột số không bao giờ nhận ellipsis.</span>
+      <span style="color: #6E665C;">cách thi hành</span><span style="color: #4A443E;">Bảng dựng bằng <code style="font-family: ui-monospace, Menlo, monospace;">&lt;table&gt;</code> phải có <code style="font-family: ui-monospace, Menlo, monospace;">table-layout: fixed</code> trên thẻ <code style="font-family: ui-monospace, Menlo, monospace;">&lt;table&gt;</code> — nếu không, <code style="font-family: ui-monospace, Menlo, monospace;">text-overflow: ellipsis</code> trên <code style="font-family: ui-monospace, Menlo, monospace;">&lt;td&gt;</code> <strong style="font-weight: 500;">không có tác dụng</strong>: cột tự nới theo nội dung dài nhất và độ rộng khai trên <code style="font-family: ui-monospace, Menlo, monospace;">&lt;th&gt;</code> bị bỏ qua. Ba thuộc tính cắt (<code style="font-family: ui-monospace, Menlo, monospace;">nowrap · overflow · ellipsis</code>) khai <strong style="font-weight: 500;">một lần trong hằng <code style="font-family: ui-monospace, Menlo, monospace;">cellBase</code></strong>, không rải trên từng ô. <strong style="font-weight: 500;">Và bảng phải khai <code style="font-family: ui-monospace, Menlo, monospace;">width</code> tuyệt đối, KHÔNG <code style="font-family: ui-monospace, Menlo, monospace;">min-width</code></strong> — <code style="font-family: ui-monospace, Menlo, monospace;">table-layout: fixed</code> cộng <code style="font-family: ui-monospace, Menlo, monospace;">min-width</code> làm chiều rộng bảng phụ thuộc chiều rộng khung quan sát, khung đo lại, bảng dựng lại: vòng lặp đo–vẽ không bao giờ dừng và trang treo (không có lỗi nào trong console, chỉ treo). Bảng cuộn ngang vốn luôn rộng hơn khung nên <code style="font-family: ui-monospace, Menlo, monospace;">min-width</code> không mang thêm nghĩa gì. Cột định danh ghim trái cũng phải cắt — tên dài đẩy cột ghim rộng ra thì che mất cột kế tiếp.</span>
+      <span style="color: #6E665C;">tooltip đặt ở đâu</span><span style="color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">title</code> đặt trên <strong style="font-weight: 500;">chính <code style="font-family: ui-monospace, Menlo, monospace;">&lt;td&gt;</code></strong>, không đặt trên <code style="font-family: ui-monospace, Menlo, monospace;">&lt;span&gt;</code> con — ô cắt ở cấp <code style="font-family: ui-monospace, Menlo, monospace;">&lt;td&gt;</code> nên vùng rê chuột phải là <code style="font-family: ui-monospace, Menlo, monospace;">&lt;td&gt;</code>. Cột số và cột ngày <strong style="font-weight: 500;">không cần</strong> <code style="font-family: ui-monospace, Menlo, monospace;">title</code>: đã <code style="font-family: ui-monospace, Menlo, monospace;">minmax</code> nên không bao giờ cắt.</span>
+      <span style="color: #6E665C;">tiếng Việt</span><span style="color: #4A443E;">Dấu mũ cộng dấu thanh làm chữ cao hơn tiếng Anh cùng cỡ. <code style="font-family: ui-monospace, Menlo, monospace;">line-height: 1.55</code> đủ cho một dòng ở 44px; hai dòng cần min 52px, nên min của chế độ auto là 52px chứ không phải 44px.</span>
+      <span style="color: #6E665C;">áp cho</span><span style="color: #4A443E;">Data Table đầy đủ · bảng readonly nhúng · bảng dòng động CL1 · C · summary block CL2 · 13. Cùng một luật, không biến thể.</span>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">dòng tổng</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Dòng tổng dùng chung định nghĩa cột</h2>
+      <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">quyết định #11 · một nguồn cho lưới, không hai</code>
+      <span style="font-size: 13px; color: #635B53; max-width: 84ch;">Lỗi nghiêm trọng nhất về bảo trì trong cả pattern, dù chỉ hiện ra ở vài màn. Lệch cột trong bảng tiền <strong style="font-weight: 500;">không ai phát hiện bằng mắt</strong> cho tới khi có người đọc sai một con số.</span>
+    </div>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">luật</span><span style="color: #4A443E;">Chuỗi <code style="font-family: ui-monospace, Menlo, monospace;">grid-template-columns</code> khai <strong style="font-weight: 500;">một lần</strong> thành biến, dùng cho header, dòng thân và dòng tổng. Không copy chuỗi sang dòng tổng — dù lúc viết nó giống hệt.</span>
+      <span style="color: #6E665C;">vì sao dễ sai</span><span style="color: #4A443E;">Hai chuỗi trùng nhau lúc viết thì trông đúng. Nhưng sáu tháng sau có người nới một cột ở thân bảng và không biết dòng tổng có chuỗi riêng — <strong style="font-weight: 500;">bảng lệch cột mà không có lỗi nào báo</strong>.</span>
+      <span style="color: #6E665C;">áp dụng</span><span style="color: #4A443E;">SC-TC-11 lãi lỗ · SC-TC-05 đối soát · SC-TC-01 tổng quan · SC-TC-02 doanh thu · SC-BC-05 xu hướng món · SC-VH-08 ca làm việc · SC-NS-07 phiếu lương. Bảy màn có dòng tổng, tất cả cần sửa.</span>
+      <span style="color: #6E665C;">kiểm thế nào</span><span style="color: #4A443E;">Tìm chuỗi <code style="font-family: ui-monospace, Menlo, monospace;">grid-template-columns</code> xuất hiện quá một lần trong cùng file với cùng giá trị. Trùng nghĩa là có hai nguồn.</span>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">chiều nghĩa</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Chiều nghĩa cấp cột và cấp dòng</h2>
+      <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">phát sinh đợt 6 · stat card đã có direction từ T4, cột bảng thì chưa — đây là chỗ thiếu</code>
+      <span style="font-size: 13px; color: #635B53; max-width: 84ch;">Một bảng lãi lỗ có cả doanh thu lẫn chi phí. Cùng cột “% chênh”, <strong style="font-weight: 500;">+7,8% ở giá vốn là tin xấu, +6,4% ở doanh thu là tin tốt</strong>. Tô màu theo dấu của số là sai ở một nửa số dòng.</span>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 1fr 168px 168px 116px; gap: 12px; align-items: center; min-height: 40px; padding: 0 16px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+        <span>Khoản mục</span><span style="text-align: right;">Kỳ này</span><span style="text-align: right;">Chênh lệch</span><span style="text-align: right;">% chênh</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 168px 168px 116px; gap: 12px; align-items: center; min-height: 44px; padding: 0 16px; border-bottom: 1px solid #F0EBE5; font-size: 13px;" style-hover="background: #FAF8F6;">
+        <span style="display: flex; align-items: center; gap: 8px;">Doanh thu<span style="height: 20px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: #F4F1ED; color: #6E665C;">tăng là tốt</span></span>
+        <span style="text-align: right; font-variant-numeric: tabular-nums;">1.530.780.000</span>
+        <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; color: #3F8560;">+92.580.000</span>
+        <span style="text-align: right; font-variant-numeric: tabular-nums; color: #3F8560;">+6,4%</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 168px 168px 116px; gap: 12px; align-items: center; min-height: 44px; padding: 0 16px; border-bottom: 1px solid #F0EBE5; font-size: 13px;" style-hover="background: #FAF8F6;">
+        <span style="display: flex; align-items: center; gap: 8px;">Giá vốn hàng bán<span style="height: 20px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: #F4F1ED; color: #6E665C;">tăng là xấu</span></span>
+        <span style="text-align: right; font-variant-numeric: tabular-nums;">523.520.000</span>
+        <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; color: #C4634F;">+37.800.000</span>
+        <span style="text-align: right; font-variant-numeric: tabular-nums; color: #C4634F;">+7,8%</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 168px 168px 116px; gap: 12px; align-items: center; min-height: 44px; padding: 0 16px; font-size: 13px;" style-hover="background: #FAF8F6;">
+        <span style="display: flex; align-items: center; gap: 8px;">Khấu hao tài sản<span style="height: 20px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: #F4F1ED; color: #6E665C;">trung tính</span></span>
+        <span style="text-align: right; font-variant-numeric: tabular-nums;">36.000.000</span>
+        <span style="text-align: right; font-variant-numeric: tabular-nums; color: #6E665C;">—</span>
+        <span style="text-align: right; font-variant-numeric: tabular-nums; color: #6E665C;">0,0%</span>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">khai báo ở đâu</span><span style="color: #4A443E;">Cột khai báo <code style="font-family: ui-monospace, Menlo, monospace;">direction</code> mặc định; <strong style="font-weight: 500;">dòng ghi đè được</strong>. Bảng lãi lỗ dùng ghi đè cấp dòng; bảng doanh thu theo ngày chỉ cần cấp cột.</span>
+      <span style="color: #6E665C;">ba giá trị</span><span style="color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">higher-is-better</code> · <code style="font-family: ui-monospace, Menlo, monospace;">lower-is-better</code> · <code style="font-family: ui-monospace, Menlo, monospace;">neutral</code>. Giống hệt stat card — cùng một từ vựng, để dev không phải nhớ hai bộ.</span>
+      <span style="color: #6E665C;">bảng màu</span><span style="color: #4A443E;">Diverging ramp <code style="font-family: ui-monospace, Menlo, monospace;">--ibb-chart-div-−3…+3</code>, KHÔNG dùng semantic. Bậc theo độ lớn tương đối: &lt;5% bậc 1 · 5–15% bậc 2 · ≥15% bậc 3.</span>
+      <span style="color: #6E665C;">map thế nào</span><span style="color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">good = direction === 'higher' ? delta &gt; 0 : delta &lt; 0</code> → tốt lấy phía dương của ramp, xấu lấy phía âm. <strong style="font-weight: 500;">Không bao giờ map thẳng từ dấu của số.</strong></span>
+      <span style="color: #6E665C;">neutral</span><span style="color: #4A443E;">Không tô màu, dùng neutral-500. Cột tỷ trọng (“% trên doanh thu”) luôn neutral — đó là cơ cấu, không phải thành tích.</span>
+      <span style="color: #6E665C;">số 0</span><span style="color: #4A443E;">Hiện “—” neutral, không hiện “0” và không tô màu. Không đổi nghĩa là không có tin gì.</span>
+      <span style="color: #6E665C;">nhãn chữ</span><span style="color: #4A443E;">Dòng cấp 1 mang thẻ nhỏ “tăng là tốt / tăng là xấu / trung tính”. Người đọc bảng tài chính lần đầu không đoán được chiều nghĩa từ màu.</span>
+      <span style="color: #6E665C;">màn đang dùng</span><span style="color: #4A443E;">SC-TC-01 · SC-TC-11 · SC-TC-05 (cột chênh lệch) · SC-BC-05 (cột biến động)</span>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">essentialColumns</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">essentialColumns[] và dòng mở rộng</h2>
+      <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">chỉ có hiệu lực khi <span>widthTier</span> = ops · chỉ ở mức 768–1023</code>
+      <span style="font-size: 13px; color: #635B53; max-width: 84ch;">Bảng 9 cột trên viewport 768 chỉ còn khoảng 700px sau padding — mỗi cột 78px, không cột nào đọc được. Bảng phải bỏ cột. Nhưng dữ liệu không được mất: cột bỏ đi <strong style="font-weight: 500;">chuyển xuống dòng mở rộng</strong>, vẫn ở trong cùng một dòng, không phải mở drawer.</span>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">essentialColumns[]</span><span style="color: #4A443E;">Danh sách <strong style="font-weight: 500;">khóa cột luôn hiển thị</strong>. Chỉ có hiệu lực khi <code style="font-family: ui-monospace, Menlo, monospace;">widthTier = ops</code>. <strong style="font-weight: 500;">Bỏ trống = mọi cột luôn hiển thị</strong> — mặc định an toàn, bảng không tự ẩn gì sau lưng người viết màn.</span>
+      <span style="color: #6E665C;">ai khai</span><span style="color: #4A443E;">Màn khai, vì chỉ màn biết người dùng cần gì để nhận ra dòng. Template quyết định <strong style="font-weight: 500;">ẩn ở mức nào</strong>; màn không được tự chọn mức.</span>
+      <span style="color: #6E665C;">luôn thiết yếu</span><span style="color: #4A443E;">Cột <strong style="font-weight: 500;">định danh</strong> (mã, tên) và cột <strong style="font-weight: 500;">hành động</strong> LUÔN thuộc essentialColumns — khai thiếu thì Data Table tự thêm vào, không ẩn. Cột chọn dòng cũng không bao giờ ẩn.</span>
+      <span style="color: #6E665C;">bao nhiêu cột</span><span style="color: #4A443E;">Thường <strong style="font-weight: 500;">4–5</strong>, kể cả cột hành động. Nhiều hơn 5 ở 768 là quay lại đúng chỗ đã tránh.</span>
+      <span style="color: #6E665C;">≥1024 thì sao</span><span style="color: #4A443E;">Không có tác dụng. Mọi cột hiện, nút mở rộng dòng <strong style="font-weight: 500;">không tồn tại</strong> trong DOM — không phải ẩn bằng CSS, để không lọt vào thứ tự Tab.</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; align-items: baseline; gap: 12px;">
+        <strong style="font-size: 15px; font-weight: 500;">Cùng bảng Đơn hàng ở 768</strong>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">essentialColumns: ['select', 'code', 'table', 'total', 'status', 'actions'] · dòng DH-2618 đang mở</code>
+      </div>
+      <div style="width: 768px; max-width: 100%; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 44px 44px 96px 64px minmax(112px, 1fr) 120px 44px; gap: 8px; align-items: center; min-height: 44px; padding: 0 12px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+          <span></span><span></span><span>Mã đơn</span><span>Bàn</span><span style="text-align: right;">Tổng tiền</span><span>Trạng thái</span><span></span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 44px 44px 96px 64px minmax(112px, 1fr) 120px 44px; gap: 8px; align-items: center; min-height: 52px; padding: 0 12px; background: #FFFFFF; border-bottom: 1px solid #F0EBE5; font-size: 14px;">
+          <span role="checkbox" aria-checked="false" aria-label="Chọn đơn DH-2617" tabindex="0" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span style="width: 20px; height: 20px; border: 1.5px solid #C9C1B7; border-radius: 4px; background: #FFFFFF;"></span></span>
+          <span role="button" aria-expanded="false" aria-controls="rowx-2617" aria-label="Mở rộng đơn DH-2617" tabindex="0" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer;" style-hover="background: #F4F1ED;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E665C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></span>
+          <a href="#" style="font-weight: 500; color: #235B54; text-decoration: none;" style-hover="text-decoration: underline;">DH-2617</a>
+          <span style="font-variant-numeric: tabular-nums;">B12</span>
+          <span style="text-align: right; font-variant-numeric: tabular-nums;">2.184.000</span>
+          <span style="justify-self: start; height: 24px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: #EFF6F5; color: #1C4842;">Đang phục vụ</span>
+          <span role="button" aria-label="Hành động cho đơn DH-2617" tabindex="0" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer;" style-hover="background: #F4F1ED;"><svg width="18" height="18" viewBox="0 0 24 24" fill="#6E665C"><circle cx="12" cy="5" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="12" cy="19" r="1.6"></circle></svg></span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 44px 44px 96px 64px minmax(112px, 1fr) 120px 44px; gap: 8px; align-items: center; min-height: 52px; padding: 0 12px; background: #FAFDFC; border-bottom: 1px solid #F0EBE5; font-size: 14px;">
+          <span role="checkbox" aria-checked="false" aria-label="Chọn đơn DH-2618" tabindex="0" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span style="width: 20px; height: 20px; border: 1.5px solid #C9C1B7; border-radius: 4px; background: #FFFFFF;"></span></span>
+          <span role="button" aria-expanded="true" aria-controls="rowx-2618" aria-label="Thu gọn đơn DH-2618" tabindex="0" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: #E6EFEE; cursor: pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#235B54" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></span>
+          <a href="#" style="font-weight: 500; color: #235B54; text-decoration: none;" style-hover="text-decoration: underline;">DH-2618</a>
+          <span style="font-variant-numeric: tabular-nums;">B04</span>
+          <span style="text-align: right; font-variant-numeric: tabular-nums;">3.470.000</span>
+          <span style="justify-self: start; height: 24px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: #FDF6E7; color: #8A5F12;">Chờ thanh toán</span>
+          <span role="button" aria-label="Hành động cho đơn DH-2618" tabindex="0" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer;" style-hover="background: #F4F1ED;"><svg width="18" height="18" viewBox="0 0 24 24" fill="#6E665C"><circle cx="12" cy="5" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="12" cy="19" r="1.6"></circle></svg></span>
+        </div>
+
+        <dl id="rowx-2618" style="margin: 0; padding: 12px 12px 12px 100px; background: #F7FAFA; border-bottom: 1px solid #E7E2DC; display: grid; grid-template-columns: 148px 1fr; gap: 8px 16px; font-size: 13px;">
+          <dt style="margin: 0; color: #6E665C;">Số khách</dt><dd style="margin: 0; color: #1E1B19; font-variant-numeric: tabular-nums;">6 người · 4 người lớn, 2 trẻ em</dd>
+          <dt style="margin: 0; color: #6E665C;">Gói buffet</dt><dd style="margin: 0; color: #1E1B19;">Buffet tối cuối tuần · 519.000/khách</dd>
+          <dt style="margin: 0; color: #6E665C;">Mở đơn</dt><dd style="margin: 0; color: #1E1B19; font-variant-numeric: tabular-nums;">18:42 · cách đây 1 giờ 12 phút</dd>
+          <dt style="margin: 0; color: #6E665C;">Phục vụ</dt><dd style="margin: 0; color: #1E1B19;">Trần Thị Mai · ca tối</dd>
+          <dt style="margin: 0; color: #6E665C;">Khuyến mãi</dt><dd style="margin: 0; color: #1E1B19;">Sinh nhật −10% · áp cho 1 khách</dd>
+          <dt style="margin: 0; color: #6E665C;">Ghi chú</dt><dd style="margin: 0; color: #1E1B19;">Khách dị ứng hải sản, đã báo bếp</dd>
+        </dl>
+
+        <div style="display: grid; grid-template-columns: 44px 44px 96px 64px minmax(112px, 1fr) 120px 44px; gap: 8px; align-items: center; min-height: 52px; padding: 0 12px; background: #FFFFFF; border-bottom: 1px solid #F0EBE5; font-size: 14px;">
+          <span role="checkbox" aria-checked="false" aria-label="Chọn đơn DH-2619" tabindex="0" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span style="width: 20px; height: 20px; border: 1.5px solid #C9C1B7; border-radius: 4px; background: #FFFFFF;"></span></span>
+          <span role="button" aria-expanded="false" aria-controls="rowx-2619" aria-label="Mở rộng đơn DH-2619" tabindex="0" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer;" style-hover="background: #F4F1ED;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E665C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></span>
+          <a href="#" style="font-weight: 500; color: #235B54; text-decoration: none;" style-hover="text-decoration: underline;">DH-2619</a>
+          <span style="font-variant-numeric: tabular-nums;">B07</span>
+          <span style="text-align: right; font-variant-numeric: tabular-nums;">1.038.000</span>
+          <span style="justify-self: start; height: 24px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: #F4F1ED; color: #4A443E;">Đã đóng</span>
+          <span role="button" aria-label="Hành động cho đơn DH-2619" tabindex="0" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer;" style-hover="background: #F4F1ED;"><svg width="18" height="18" viewBox="0 0 24 24" fill="#6E665C"><circle cx="12" cy="5" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="12" cy="19" r="1.6"></circle></svg></span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 44px 44px 96px 64px minmax(112px, 1fr) 120px 44px; gap: 8px; align-items: center; min-height: 48px; padding: 0 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC; font-size: 13px;">
+          <span></span><span></span><span style="font-weight: 500;">Tổng 3 đơn</span><span></span>
+          <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">6.692.000</strong>
+          <span></span><span></span>
+        </div>
+        <div style="padding: 0 12px 10px 100px; background: #FAF8F6; font-size: 12px; color: #6E665C;">Cột ẩn có giá trị tổng (số khách, giảm giá): xem chi tiết trong dòng mở rộng.</div>
+      </div>
+      <span style="font-size: 12px; color: #6E665C; max-width: 84ch;">Cột ẩn ở mức này: số khách · gói buffet · giờ mở đơn · phục vụ · khuyến mãi · ghi chú. Sáu cột, sáu cặp trong dòng mở rộng — <strong style="font-weight: 500;">không có gì mất đi</strong>.</span>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #B0D4CF; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">nút mở rộng</span><span style="color: #4A443E;">Chevron đặt ở <strong style="font-weight: 500;">cột riêng ngay sau cột chọn dòng</strong>, KHÔNG nhét vào ô cùng checkbox. Hai vùng chạm riêng, <strong style="font-weight: 500;">mỗi vùng 44×44</strong>, cách nhau 8px — chạm nhầm giữa “chọn để xoá” và “xem thêm” là hai hậu quả khác nhau.</span>
+      <span style="color: #6E665C;">chevron quay</span><span style="color: #4A443E;">Đóng: chevron phải. Mở: chevron xuống, nền nút chuyển accent nhạt. Không dùng dấu +/−.</span>
+      <span style="color: #6E665C;">nội dung mở ra</span><span style="color: #4A443E;"><strong style="font-weight: 500;">Definition list</strong> <code style="font-family: ui-monospace, Menlo, monospace;">&lt;dl&gt;</code>: nhãn cột bên trái (<code style="font-family: ui-monospace, Menlo, monospace;">&lt;dt&gt;</code> 148px, neutral-600), giá trị bên phải (<code style="font-family: ui-monospace, Menlo, monospace;">&lt;dd&gt;</code>), <strong style="font-weight: 500;">một cặp một hàng</strong>. Thứ tự cặp theo thứ tự cột gốc.</span>
+      <span style="color: #6E665C;">KHÔNG dùng</span><span style="color: #4A443E;"><strong style="font-weight: 500;">Không bảng lồng trong bảng.</strong> Bảng con trong dòng bảng cha vừa hỏng nghĩa ngữ nghĩa vừa tạo hai lưới cột không liên quan nhau cạnh nhau. Cũng không dùng thẻ card, không dùng hai cột cặp.</span>
+      <span style="color: #6E665C;">mỗi lần một dòng</span><span style="color: #4A443E;">Chỉ <strong style="font-weight: 500;">một dòng được mở</strong>. Mở dòng khác thì dòng cũ tự đóng — không có accordion nhiều dòng cùng mở, vì cuộn qua bảng nửa mở nửa đóng thì mất cảm giác về số dòng.</span>
+      <span style="color: #6E665C;">thụt lề</span><span style="color: #4A443E;">Vùng mở rộng thụt trái 100px — thẳng với cột định danh, qua khỏi hai cột 44px. Nền neutral khác dòng dữ liệu, viền dưới cùng độ đậm với viền dòng.</span>
+      <span style="color: #6E665C;">dòng tổng</span><span style="color: #4A443E;"><strong style="font-weight: 500;">Chỉ cộng các cột còn hiển thị.</strong> Cột ẩn có giá trị tổng thì ghi chú <strong style="font-weight: 500;">một dòng riêng ngay dưới dòng tổng</strong> — “xem chi tiết trong dòng mở rộng” — chứ KHÔNG nhét vào ô của dòng tổng: chữ trong ô làm track đó nở ra và lệch cột tiền. Cũng KHÔNG hiện tổng của cột không thấy. Dòng tổng vẫn dùng chung chuỗi <code style="font-family: ui-monospace, Menlo, monospace;">grid-template-columns</code> với header và dòng dữ liệu — chuỗi đã rút cột thì rút cho cả ba.</span>
+      <span style="color: #6E665C;">chọn dòng</span><span style="color: #4A443E;">Mở rộng không đổi trạng thái chọn. Dòng đã chọn mà mở rộng thì <strong style="font-weight: 500;">cả dòng và vùng mở rộng</strong> đều mang nền đã-chọn.</span>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+        <strong style="font-size: 15px; font-weight: 500;">Bàn phím và trợ năng</strong>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">bắt buộc — không phải tuỳ chọn ở mức ops</code>
+      </div>
+      <div style="display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+        <span style="color: #6E665C;">Enter · Space</span><span style="color: #4A443E;">Trên nút chevron: mở/đóng dòng. Cả hai phím, không chỉ Enter.</span>
+        <span style="color: #6E665C;">Esc</span><span style="color: #4A443E;">Đóng dòng đang mở, focus quay về nút chevron của dòng đó — không nhảy lên đầu bảng.</span>
+        <span style="color: #6E665C;">thứ tự Tab</span><span style="color: #4A443E;">Nội dung mở rộng <strong style="font-weight: 500;">nằm trong thứ tự Tab</strong>, ngay sau dòng của nó. Link và nút bên trong vùng mở rộng tab tới được; đóng dòng thì chúng rời khỏi thứ tự Tab (bỏ khỏi DOM, không <code style="font-family: ui-monospace, Menlo, monospace;">visibility: hidden</code>).</span>
+        <span style="color: #6E665C;">aria</span><span style="color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">aria-expanded</code> trên nút chevron · <code style="font-family: ui-monospace, Menlo, monospace;">aria-controls</code> trỏ tới <code style="font-family: ui-monospace, Menlo, monospace;">id</code> của vùng mở rộng · <code style="font-family: ui-monospace, Menlo, monospace;">aria-label</code> mang định danh dòng (“Mở rộng đơn DH-2618”), không chỉ “Mở rộng”.</span>
+        <span style="color: #6E665C;">thông báo</span><span style="color: #4A443E;">Mở dòng phát <code style="font-family: ui-monospace, Menlo, monospace;">aria-live="polite"</code>: “Đã mở 6 mục của đơn DH-2618”. Đóng không cần thông báo.</span>
+      </div>
+    </div>
+  </section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1000}}">
+const TONE = {
+  primary: { fg: '#1C4842', bg: '#EFF6F5', border: '#B0D4CF' },
+  warning: { fg: '#8A5F12', bg: '#FDF6E7', border: '#F0DDAF' },
+  success: { fg: '#256A49', bg: '#EDF7F1', border: '#C3E4D2' },
+  danger: { fg: '#C0392B', bg: '#FCF0EE', border: '#F1CCC7' },
+  info: { fg: '#2C6E9B', bg: '#EEF5FA', border: '#C7DDEC' }
+};
+const ICON = {
+  play: 'M8 5l10 7-10 7z',
+  clock: 'M12 3a9 9 0 100 18 9 9 0 000-18M12 7v5l3 2',
+  check: 'M4 12l5 5L20 6',
+  x: 'M6 6l12 12M18 6L6 18',
+  info: 'M12 3a9 9 0 100 18 9 9 0 000-18M12 8v.01M12 11v5'
+};
+
+const DATA = [
+  ['DH-20260728-041', 'Bàn A3', 'Khu cửa sổ', 4, 1556000, '28/07/2026', '18:12', 'Đang phục vụ', 'primary', 'play', 'Ngọc Hân', 'NH', 60],
+  ['DH-20260728-040', 'Bàn B1', 'Khu giữa', 6, 2334000, '28/07/2026', '18:04', 'Chờ thanh toán', 'warning', 'clock', 'Minh Trí', 'MT', 92],
+  ['DH-20260728-039', 'Bàn A1', 'Khu cửa sổ', 2, 778000, '28/07/2026', '17:52', 'Đã đóng', 'success', 'check', 'Ngọc Hân', 'NH', 100],
+  ['DH-20260728-038', 'Bàn C2', 'Phòng VIP', 3, 1167000, '28/07/2026', '17:46', 'Đã đóng', 'success', 'check', 'Phương Vy', 'PV', 100],
+  ['DH-20260728-037', 'Mang đi', 'Quầy', 1, 389000, '28/07/2026', '17:38', 'Đã đóng', 'success', 'check', 'Phương Vy', 'PV', 100],
+  ['DH-20260728-036', 'Bàn B4', 'Khu giữa', 8, 3112000, '28/07/2026', '17:30', 'Đang phục vụ', 'primary', 'play', 'Minh Trí', 'MT', 45],
+  ['DH-20260728-035', 'Bàn C1', 'Phòng VIP', 5, -389000, '28/07/2026', '17:22', 'Hoàn tiền', 'danger', 'x', 'Trúc Linh', 'TL', 100],
+  ['DH-20260728-034', 'Bàn A5', 'Khu cửa sổ', 2, 778000, '28/07/2026', '17:15', 'Đã đóng', 'success', 'check', 'Ngọc Hân', 'NH', 100],
+  ['DH-20260728-033', 'Bàn B2', 'Khu giữa', 4, 1556000, '28/07/2026', '17:08', 'Đã huỷ', 'danger', 'x', 'Minh Trí', 'MT', 0],
+  ['DH-20260728-032', 'Đặt trước', 'Khu giữa', 10, 3890000, '28/07/2026', '17:00', 'Đơn mới', 'info', 'info', 'Trúc Linh', 'TL', 8]
+];
+
+function vnd(n) {
+  const s = Math.abs(n).toLocaleString('vi-VN');
+  return n < 0 ? '(' + s + ')' : s;
+}
+
+class Component extends DCLogic {
+  state = { tiersOpen: true, density: 'comfortable', selected: { 'DH-20260728-040': true, 'DH-20260728-036': true }, sortDir: 'desc', query: '', showCols: false };
+
+  overflowVals() {
+    const GRID = '1fr 88px 132px';
+    const LONG = 'Bò Mỹ ba chỉ nhập khẩu đông lạnh cắt lát mỏng dùng cho lẩu và nướng · lô tháng 7';
+    const D = [
+      [LONG, '60,000', '23.520.000'],
+      ['Tôm sú size 30 bóc vỏ rút chỉ đen', '18,000', '5.130.000'],
+      ['Rau xà lách', '12,000', '504.000']
+    ];
+    // Cả hai chế độ đều mang title đầy đủ: clamp 2 dòng vẫn cắt mất phần đuôi,
+    // và chế độ allowWrap dành cho câu văn cần đọc để quyết định — mất đuôi là mất nghĩa.
+    const mk = (wrap) => D.map((r, i, arr) => ({
+      name: r[0],
+      full: r[0],
+      qty: r[1],
+      amount: r[2],
+      nameStyle: 'min-width: 0; font-size: 13px;' + (wrap
+        ? ' display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;'
+        : ' white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'),
+      rowStyle: 'display: grid; grid-template-columns: ' + GRID + '; gap: 12px; align-items: center; padding: 0 16px; font-size: 13px;'
+        + (wrap ? ' min-height: 52px; padding-top: 8px; padding-bottom: 8px;' : ' height: 44px;')
+        + (i < arr.length - 1 ? ' border-bottom: 1px solid #F0EBE5;' : '')
+    }));
+    return { clipRows: mk(false), wrapRows: mk(true) };
+  }
+
+  renderVals() {
+    const h = this.state.density === 'comfortable' ? 44 : 36;
+    const sel = this.state.selected;
+    const selCount = Object.keys(sel).filter(k => sel[k]).length;
+    const q = this.state.query.trim().toLowerCase();
+
+    const list = DATA.filter(d => !q || d[0].toLowerCase().includes(q) || d[1].toLowerCase().includes(q));
+    const sorted = list.slice().sort((a, b) => this.state.sortDir === 'desc' ? b[4] - a[4] : a[4] - b[4]);
+
+    const rows = sorted.map(d => {
+      const [code, table, zone, guests, total, date, time, status, tone, icon, cashier, initials, progress] = d;
+      const isSel = !!sel[code];
+      const bg = isSel ? '#EFF6F5' : '#FFFFFF';
+      const cell = 'height: ' + h + 'px; padding: 0 12px; border-bottom: 1px solid #E7E2DC; font-size: 13px; color: #1E1B19;';
+      const t = TONE[tone];
+      return {
+        code, table, zone, guests, date, time, status, cashier, initials,
+        total: vnd(total),
+        positive: total >= 0,
+        negative: total < 0,
+        selected: isSel,
+        unselected: !isSel,
+        onToggle: () => this.setState(s => ({ selected: Object.assign({}, s.selected, { [code]: !s.selected[code] }) })),
+        checkboxLabel: (isSel ? 'Bỏ chọn' : 'Chọn') + ' đơn ' + code + ' · bàn ' + table,
+        rowStyle: 'background: ' + bg + ';',
+        cellStyle: cell,
+        numStyle: cell + ' text-align: right; font-variant-numeric: tabular-nums;',
+        stickyLeftStyle: 'position: sticky; left: 0; z-index: 10; height: ' + h + 'px; padding: 0 0 0 24px; border-bottom: 1px solid #E7E2DC; background: ' + bg + ';',
+        stickyCodeStyle: 'position: sticky; left: 44px; z-index: 10; height: ' + h + 'px; padding: 0 12px; border-bottom: 1px solid #E7E2DC; box-shadow: 1px 0 0 #E7E2DC; background: ' + bg + ';',
+        stickyRightStyle: 'position: sticky; right: 0; z-index: 10; height: ' + h + 'px; padding: 0 24px 0 12px; border-bottom: 1px solid #E7E2DC; box-shadow: -1px 0 0 #E7E2DC; text-align: right; background: ' + bg + ';',
+        badgeStyle: 'display: inline-flex; align-items: center; gap: 8px; height: 22px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; background: ' + t.bg + '; color: ' + t.fg + '; border: 1px solid ' + t.border + ';',
+        badgeFg: t.fg,
+        badgeIcon: ICON[icon],
+        progressStyle: 'display: block; height: 100%; border-radius: 999px; background: ' + (progress === 100 ? '#256A49' : '#2F7168') + '; width: ' + progress + '%;',
+        progressLabel: progress === 100 ? '100% ✓' : progress + '%'
+      };
+    });
+
+    return Object.assign(this.overflowVals(), {
+      // kiểu cột 09 · 10 · 11
+      thumbRows: [
+        ['Lẩu Thái hải sản', true, '3 ảnh'],
+        ['Tôm nướng muối ớt', true, '1 ảnh'],
+        ['Chả giò hải sản', false, 'chưa có ảnh']
+      ].map(([name, has, note]) => ({ name, note, hasImage: has, noImage: !has })),
+      tiersOpen: this.state.tiersOpen,
+      showTiers: () => this.setState({ tiersOpen: true }),
+      hideTiers: () => this.setState({ tiersOpen: false }),
+      relRows: [
+        ['Trần Ngọc Hân', '2 giờ trước', '28/07/2026 16:24', false],
+        ['Lê Minh Trí', 'Hôm qua', '27/07/2026 20:10', false],
+        ['Phạm Phương Vy', '23 ngày trước', '05/07/2026 19:02', false],
+        ['Nguyễn Trúc Linh', '14/03/2025', '14/03/2025 18:40', true]
+      ].map(([name, relative, absolute, old]) => ({
+        name, relative, absolute,
+        relStyle: 'font-size: 13px; color: ' + (old ? '#6E665C' : '#1E1B19') + ';'
+      })),
+      rows,
+      skeletonRows: [1, 2, 3, 4, 5, 6, 7, 8].map(n => ({ n })),
+      query: this.state.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      clearQuery: () => this.setState({ query: '' }),
+      densityLabel: this.state.density === 'comfortable' ? 'Thoáng · 44px' : 'Gọn · 36px',
+      toggleDensity: () => this.setState(s => ({ density: s.density === 'comfortable' ? 'compact' : 'comfortable' })),
+      toggleCols: () => this.setState(s => ({ showCols: !s.showCols })),
+      sortByTotal: () => this.setState(s => ({ sortDir: s.sortDir === 'desc' ? 'asc' : 'desc' })),
+      sortByCode: () => this.setState({ sortDir: 'desc' }),
+      totalSortIcon: this.state.sortDir === 'desc' ? 'M12 5v14M6 13l6 6 6-6' : 'M12 19V5M6 11l6-6 6 6',
+      hasSelection: selCount > 0,
+      noSelection: selCount === 0,
+      selectionLabel: 'Đã chọn ' + selCount + ' đơn',
+      selectAllChecked: rows.every(r => r.selected) ? 'true' : (rows.some(r => r.selected) ? 'mixed' : 'false'),
+      selectAllLabel: rows.every(r => r.selected) ? 'Bỏ chọn tất cả ' + rows.length + ' đơn' : 'Chọn tất cả ' + rows.length + ' đơn',
+      sortAria: this.state.sortDir === 'desc' ? 'descending' : 'ascending',
+      sortAriaLabel: this.state.sortDir === 'desc' ? 'giảm dần' : 'tăng dần',
+      clearSelection: () => this.setState({ selected: {} })
+    });
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-tc-07</span><span style="color: #D5CEC6;">·</span><span>template t2 · tab</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">{{ url }}</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Chi tiết công nợ nhà cung cấp</h1>
+    <p style="margin: 0; max-width: 80ch; font-size: 14px; color: #635B53;">Tab vì bốn phần độc lập: kế toán trả tiền chỉ ở tab 1, gửi đối chiếu chỉ ở tab 3. Toàn bộ số <strong style="font-weight: 500;">không rút gọn, tabular-nums, số âm trong ngoặc</strong>. Khoản tranh chấp bị loại khỏi tổng công nợ và ghi rõ ngay trên summary bar.</p>
+  </header>
+
+  <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); overflow: hidden;">
+
+    <div style="padding: 20px 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC; display: flex; flex-direction: column; gap: 12px;">
+      <nav style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6E665C;">
+        <a href="#" style="color: #6E665C; text-decoration: none;">Tài chính</a><span style="color: #D5CEC6;">/</span>
+        <a href="#" style="color: #6E665C; text-decoration: none;">Công nợ nhà cung cấp</a><span style="color: #D5CEC6;">/</span>
+        <span style="color: #332F2B; font-weight: 500;">Thực phẩm Tân Bình</span>
+      </nav>
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; line-height: 1.1; margin: 0;">Công nợ — Thực phẩm Tân Bình</h2>
+          <span style="{{ agingBadgeStyle }}">{{ agingBadge }}</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; flex: none;">
+          <button style="height: 36px; padding: 0 16px; font-family: inherit; font-size: 13px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 4px; cursor: pointer;" style-hover="background: #1C4842;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Lập phiếu chi</button>
+          <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xuất Excel</button>
+          <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">In đối chiếu</button>
+          <span onClick="{{ toggleMenu }}" tabindex="0" role="button" aria-label="Hành động khác" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="2" stroke-linecap="round"><path d="M12 5v.01M12 12v.01M12 19v.01"></path></svg>
+          </span>
+        </div>
+      </div>
+      <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="align-self: flex-end; width: 232px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 4px; display: flex; flex-direction: column;">
+          <span style="height: 28px; display: flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;">Gửi nhắc thanh toán</span>
+          <span style="height: 28px; display: flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;">Đánh dấu tranh chấp</span>
+          <span style="display: block; padding: 8px 12px 12px; font-size: 12px; color: #6E665C;">Khoản đánh dấu tranh chấp bị loại khỏi tổng công nợ và khỏi mọi phiếu chi gộp cho tới khi giải quyết.</span>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="padding: 20px 24px 0; display: flex; flex-direction: column; gap: 8px;">
+      <div style="display: flex; align-items: stretch; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden; background: #FFFFFF;">
+        <sc-for list="{{ summary }}" as="s" hint-placeholder-count="4">
+          <div style="{{ s.cellStyle }}">
+            <span style="font-size: 12px; color: #6E665C;">{{ s.label }}</span>
+            <strong style="{{ s.valueStyle }}">{{ s.value }}</strong>
+            <span style="{{ s.hintStyle }}">{{ s.hint }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: flex-start; gap: 24px; padding: 20px 24px 24px;">
+      <div style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+
+        <div style="display: flex; align-items: flex-end; gap: 4px; border-bottom: 1px solid #E7E2DC;">
+          <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+            <span onClick="{{ t.onPick }}" tabindex="0" role="tab" aria-selected="{{ t.selected }}" style="{{ t.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+              {{ t.label }}
+              <sc-if value="{{ t.hasCount }}" hint-placeholder-val="{{ true }}">
+                <span style="{{ t.countStyle }}">{{ t.count }}</span>
+              </sc-if>
+            </span>
+          </sc-for>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-top: none; border-radius: 0 0 8px 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px; min-height: 440px;">
+
+          <sc-if value="{{ tabLoading }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <span style="width: 28%; height: 12px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+              <span style="width: 100%; height: 44px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+              <span style="width: 100%; height: 44px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+              <span style="width: 100%; height: 44px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+              <span style="font-size: 12px; color: #6E665C;">Chỉ khung tab tải lại · summary bar và thẻ hạn mức bên phải giữ nguyên số.</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isCurrent }}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px;">
+                <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Phiếu nhập chưa thanh toán hết</span>
+                <span style="font-size: 12px; color: #6E665C;">Chọn nhiều phiếu để lập một phiếu chi đối trừ gộp</span>
+              </div>
+
+              <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden; position: relative;">
+                <div style="display: grid; grid-template-columns: 36px 1fr 120px 112px 124px 96px 76px 112px; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+                  <span onClick="{{ toggleAll }}" tabindex="0" role="checkbox" aria-checked="{{ allChecked }}" style="{{ allBoxStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                    <sc-if value="{{ allChecked }}" hint-placeholder-val="{{ false }}">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg>
+                    </sc-if>
+                    <sc-if value="{{ someChecked }}" hint-placeholder-val="{{ false }}">
+                      <span style="width: 8px; height: 2px; background: #FFFFFF; border-radius: 1px;"></span>
+                    </sc-if>
+                  </span>
+                  <span>Mã phiếu · ngày nhập</span><span style="text-align: right;">Tổng tiền</span><span style="text-align: right;">Đã trả</span><span style="text-align: right;">Còn nợ</span><span>Hạn TT</span><span style="text-align: right;">Quá hạn</span><span>Trạng thái</span>
+                </div>
+                <sc-for list="{{ invoices }}" as="v" hint-placeholder-count="5">
+                  <div style="{{ v.rowStyle }}" style-hover="background: #FAF8F6;">
+                    <span onClick="{{ v.onToggle }}" tabindex="0" role="checkbox" aria-checked="{{ v.checked }}" style="{{ v.boxStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                      <sc-if value="{{ v.checked }}" hint-placeholder-val="{{ false }}">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg>
+                      </sc-if>
+                    </span>
+                    <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                      <a href="#" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px;">{{ v.code }}</a>
+                      <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums;">nhập {{ v.date }}</span>
+                    </span>
+                    <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ v.total }}</span>
+                    <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ v.paid }}</span>
+                    <span style="{{ v.dueStyle }}">{{ v.due }}</span>
+                    <span style="font-variant-numeric: tabular-nums; color: #4A443E;">{{ v.dueDate }}</span>
+                    <span style="{{ v.lateStyle }}">{{ v.late }}</span>
+                    <span><span style="{{ v.badgeStyle }}">{{ v.status }}</span></span>
+                  </div>
+                </sc-for>
+                <div style="position: sticky; bottom: 0; z-index: 2; display: grid; grid-template-columns: 36px 1fr 120px 112px 124px 96px 76px 112px; align-items: center; gap: 8px; min-height: 48px; padding: 0 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC; font-size: 13px;">
+                  <span></span>
+                  <strong style="font-weight: 500; letter-spacing: 0.02em;">TỔNG · 4 phiếu tính công nợ</strong>
+                  <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ sumTotal }}</span>
+                  <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ sumPaid }}</span>
+                  <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{ sumDue }}</strong>
+                  <span></span>
+                  <span style="text-align: right; font-variant-numeric: tabular-nums; color: #96271B;">{{ sumLate }}</span>
+                  <span></span>
+                </div>
+              </div>
+
+              <span style="font-size: 12px; color: #6E665C;">Dòng TỔNG chỉ cộng 4 phiếu tính vào công nợ. Phiếu tranh chấp hiện trong bảng để không ai quên nó, nhưng không cộng vào tổng, không chọn được và ghi rõ lý do ở tab Tranh chấp.</span>
+
+              <div style="{{ bulkBarStyle }}">
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <strong style="font-size: 13px; font-weight: 500;">{{ bulkTitle }}</strong>
+                  <span style="font-size: 12px; color: #6E665C;">{{ bulkHint }}</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span onClick="{{ clearSel }}" tabindex="0" style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; background: #FFFFFF; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Bỏ chọn</span>
+                  <span style="{{ bulkBtnStyle }}">Lập phiếu chi gộp · {{ bulkAmount }}</span>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isHistory }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Phiếu chi đã lập</span>
+              <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+                <div style="display: grid; grid-template-columns: 132px 92px 132px 124px 1fr 116px; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+                  <span>Mã phiếu chi</span><span>Ngày</span><span style="text-align: right;">Số tiền</span><span>Phương thức</span><span>Phiếu nhập đã đối trừ</span><span>Người lập</span>
+                </div>
+                <sc-for list="{{ payments }}" as="p" hint-placeholder-count="6">
+                  <div style="{{ p.rowStyle }}" style-hover="background: #FAF8F6;">
+                    <a href="#" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px;">{{ p.code }}</a>
+                    <span style="font-variant-numeric: tabular-nums; color: #4A443E;">{{ p.date }}</span>
+                    <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums;">{{ p.amount }}</span>
+                    <span style="color: #4A443E;">{{ p.method }}</span>
+                    <span style="display: flex; gap: 8px; flex-wrap: wrap;">
+                      <sc-for list="{{ p.docs }}" as="d" hint-placeholder-count="2">
+                        <a href="#" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px;">{{ d.code }}</a>
+                      </sc-for>
+                    </span>
+                    <span style="color: #4A443E;">{{ p.by }}</span>
+                  </div>
+                </sc-for>
+                <div style="display: grid; grid-template-columns: 132px 92px 132px 124px 1fr 116px; align-items: center; gap: 8px; min-height: 48px; padding: 0 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC; font-size: 13px;">
+                  <strong style="font-weight: 500; letter-spacing: 0.02em;">TỔNG ĐÃ TRẢ</strong>
+                  <span></span>
+                  <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{ sumPayments }}</strong>
+                  <span></span><span style="font-size: 12px; color: #6E665C;">6 phiếu chi · 12 phiếu nhập được đối trừ</span><span></span>
+                </div>
+              </div>
+              <span style="font-size: 12px; color: #6E665C;">Một phiếu chi có thể đối trừ nhiều phiếu nhập; bấm mã phiếu nhập để xem phần đã đối trừ của riêng phiếu đó.</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isRecon }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px;">
+                <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Đối chiếu theo kỳ</span>
+                <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 19h16"></path></svg>
+                  Xuất bản đối chiếu gửi NCC
+                </button>
+              </div>
+              <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+                <div style="display: grid; grid-template-columns: 108px 1fr 1fr 1fr 1fr 132px; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+                  <span>Kỳ</span><span style="text-align: right;">Dư đầu kỳ</span><span style="text-align: right;">Phát sinh nợ</span><span style="text-align: right;">Đã trả</span><span style="text-align: right;">Dư cuối kỳ</span><span style="text-align: right;">Lệch sổ NCC</span>
+                </div>
+                <sc-for list="{{ recon }}" as="r" hint-placeholder-count="4">
+                  <div style="{{ r.rowStyle }}" style-hover="background: #FAF8F6;">
+                    <span style="font-weight: 500; font-variant-numeric: tabular-nums;">{{ r.period }}</span>
+                    <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ r.open }}</span>
+                    <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ r.charged }}</span>
+                    <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ r.paid }}</span>
+                    <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums;">{{ r.close }}</span>
+                    <span style="{{ r.diffStyle }}">{{ r.diff }}</span>
+                  </div>
+                </sc-for>
+                <div style="display: grid; grid-template-columns: 108px 1fr 1fr 1fr 1fr 132px; align-items: center; gap: 8px; min-height: 48px; padding: 0 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC; font-size: 13px;">
+                  <strong style="font-weight: 500; letter-spacing: 0.02em;">TỔNG</strong>
+                  <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ reconOpen }}</span>
+                  <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ reconCharged }}</span>
+                  <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ reconPaid }}</span>
+                  <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{ reconClose }}</strong>
+                  <span style="{{ reconDiffStyle }}">{{ reconDiff }}</span>
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px; padding: 12px 16px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+                <span style="font-size: 13px; color: #8A5F12;">Kỳ 06/2026 lệch (640.000) đ so với sổ NCC: NCC ghi nhận phí vận chuyển 640.000 đ mà bên mình chưa nhận hoá đơn. Số trong ngoặc nghĩa là sổ mình thấp hơn sổ NCC. Giải quyết trước khi gửi bản đối chiếu.</span>
+              </div>
+              <span style="font-size: 12px; color: #6E665C;">Dư cuối kỳ 07/2026 gồm cả 12.400.000 đ đang tranh chấp — bản đối chiếu gửi NCC phải hiện khoản này để hai bên cùng chốt, khác với summary bar là số dùng để trả tiền.</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isDispute }}" hint-placeholder-val="{{ false }}">
+            <sc-if value="{{ hasDisputes }}" hint-placeholder-val="{{ true }}">
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px;">
+                  <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Khoản đang tranh chấp</span>
+                  <span style="font-size: 12px; color: #6E665C;">Đã loại khỏi tổng công nợ trên summary bar</span>
+                </div>
+                <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+                  <div style="display: grid; grid-template-columns: 132px 132px 1fr 116px 148px; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+                    <span>Phiếu</span><span style="text-align: right;">Số tiền</span><span>Lý do</span><span>Ngày ghi nhận</span><span>Trạng thái xử lý</span>
+                  </div>
+                  <sc-for list="{{ disputes }}" as="d" hint-placeholder-count="2">
+                    <div style="{{ d.rowStyle }}" style-hover="background: #FAF8F6;">
+                      <a href="#" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px;">{{ d.code }}</a>
+                      <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums;">{{ d.amount }}</span>
+                      <span style="display: flex; flex-direction: column; gap: 2px;">
+                        <span>{{ d.reason }}</span>
+                        <span style="font-size: 12px; color: #6E665C;">{{ d.note }}</span>
+                      </span>
+                      <span style="font-variant-numeric: tabular-nums; color: #4A443E;">{{ d.date }}</span>
+                      <span><span style="{{ d.badgeStyle }}">{{ d.status }}</span></span>
+                    </div>
+                  </sc-for>
+                  <div style="display: grid; grid-template-columns: 132px 132px 1fr 116px 148px; align-items: center; gap: 8px; min-height: 48px; padding: 0 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC; font-size: 13px;">
+                    <strong style="font-weight: 500; letter-spacing: 0.02em;">TỔNG</strong>
+                    <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{ sumDispute }}</strong>
+                    <span style="font-size: 12px; color: #6E665C;">Không cộng vào công nợ phải trả cho tới khi chốt</span>
+                    <span></span><span></span>
+                  </div>
+                </div>
+                <span style="font-size: 12px; color: #6E665C;">Khi chốt: nếu NCC chấp nhận giảm thì phiếu nhập được điều chỉnh và khoản rời khỏi tranh chấp; nếu bên mình chấp nhận trả thì khoản quay lại tab 1 với số ngày quá hạn tính từ hạn gốc.</span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ noDisputes }}" hint-placeholder-val="{{ false }}">
+              <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; padding: 48px 20px;">
+                <span style="width: 56px; height: 56px; border-radius: 8px; background: #EDF7F1; display: flex; align-items: center; justify-content: center;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#256A49" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M8 12l3 3 5-6"></path></svg>
+                </span>
+                <strong style="font-size: 15px; font-weight: 500;">Không có khoản tranh chấp</strong>
+                <span style="font-size: 13px; color: #6E665C; max-width: 44ch;">Toàn bộ công nợ với Thực phẩm Tân Bình đều được hai bên chấp nhận. Tổng công nợ trên summary bar là số cuối cùng, không có phần trừ ra.</span>
+                <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; margin-top: 4px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;">Đánh dấu một khoản tranh chấp</span>
+              </div>
+            </sc-if>
+          </sc-if>
+
+        </div>
+      </div>
+
+      <aside style="width: 320px; flex: 0 0 320px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="{{ limitCardStyle }}">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+            <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Hạn mức công nợ</span>
+            <span style="{{ limitBadgeStyle }}">{{ limitBadge }}</span>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 8px;">
+            <strong style="{{ limitPctStyle }}">{{ limitPct }}</strong>
+            <span style="font-size: 13px; color: #635B53;">đã dùng</span>
+          </div>
+          <span style="height: 8px; border-radius: 999px; background: #E7E2DC; overflow: hidden;"><span style="{{ limitBarStyle }}"></span></span>
+          <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid #F0EBE5; font-size: 13px;">
+            <div style="display: flex; justify-content: space-between; gap: 12px;"><span style="color: #635B53;">Hạn mức</span><span style="font-variant-numeric: tabular-nums;">{{ limitMax }}</span></div>
+            <div style="display: flex; justify-content: space-between; gap: 12px;"><span style="color: #635B53;">Đang nợ</span><span style="font-variant-numeric: tabular-nums;">{{ limitUsed }}</span></div>
+            <div style="display: flex; justify-content: space-between; gap: 12px;"><span style="color: #635B53;">Còn dùng được</span><span style="{{ limitLeftStyle }}">{{ limitLeft }}</span></div>
+          </div>
+          <span style="{{ limitNoteStyle }}">{{ limitNote }}</span>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Điều khoản thanh toán</span>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+            <div style="display: flex; justify-content: space-between; gap: 12px;"><span style="color: #635B53;">Kỳ hạn</span><span>30 ngày kể từ ngày nhập</span></div>
+            <div style="display: flex; justify-content: space-between; gap: 12px;"><span style="color: #635B53;">Chiết khấu trả sớm</span><span style="font-variant-numeric: tabular-nums;">1,5% nếu trả ≤ 10 ngày</span></div>
+            <div style="display: flex; justify-content: space-between; gap: 12px;"><span style="color: #635B53;">Phí trả chậm</span><span style="font-variant-numeric: tabular-nums;">0,05% / ngày</span></div>
+            <div style="display: flex; justify-content: space-between; gap: 12px;"><span style="color: #635B53;">Phương thức</span><span>Chuyển khoản</span></div>
+          </div>
+          <span style="font-size: 12px; color: #6E665C;">Trả PN-2026-0412 trước 31/07 được chiết khấu 352.800 đ. Hệ thống nhắc kế toán 3 ngày trước mốc chiết khấu.</span>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Liên hệ nhà cung cấp</span>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <strong style="font-size: 14px; font-weight: 500;">Nguyễn Đức Tân</strong>
+            <span style="font-size: 12px; color: #6E665C;">Phụ trách công nợ · phòng kế toán</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+            <div style="display: flex; justify-content: space-between; gap: 12px;"><span style="color: #635B53;">Điện thoại</span><span style="font-variant-numeric: tabular-nums;">0918 442 073</span></div>
+            <div style="display: flex; justify-content: space-between; gap: 12px;"><span style="color: #635B53;">Email</span><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">ketoan@tpTanBinh.vn</span></div>
+            <div style="display: flex; justify-content: space-between; gap: 12px;"><span style="color: #635B53;">Nhắc lần cuối</span><span style="font-variant-numeric: tabular-nums;">24/07/2026</span></div>
+          </div>
+          <a href="#">Mở hồ sơ nhà cung cấp · SC-KHO-12 →</a>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+          <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Thao tác trên công nợ</span>
+          <div style="display: flex; flex-direction: column;">
+            <sc-for list="{{ audit }}" as="a" hint-placeholder-count="5">
+              <div style="display: grid; grid-template-columns: 16px 1fr; gap: 12px;">
+                <span style="display: flex; flex-direction: column; align-items: center;">
+                  <span style="{{ a.dotStyle }}"></span>
+                  <sc-if value="{{ a.hasLine }}" hint-placeholder-val="{{ true }}">
+                    <span style="flex: 1; width: 1px; background: #E7E2DC;"></span>
+                  </sc-if>
+                </span>
+                <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 16px;">
+                  <span style="{{ a.actionStyle }}">{{ a.action }}</span>
+                  <span style="font-size: 12px; color: #6E665C;">{{ a.meta }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <a href="#">Xem nhật ký đầy đủ →</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">4 state chuẩn của T2</h2>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Loading · skeleton giữ đúng bố cục</span>
+        <span style="width: 46%; height: 12px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="width: 32%; height: 28px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <div style="display: flex; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+          <div style="flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #F0EBE5;">
+            <span style="width: 64px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 96px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+          <div style="flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #F0EBE5;">
+            <span style="width: 52px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 88px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+          <div style="flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #F0EBE5;">
+            <span style="width: 68px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 72px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+          <div style="flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px;">
+            <span style="width: 76px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 44px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Không hiện số nào cho tới khi biết chắc phần tranh chấp đã bị loại — hiện tổng rồi tự trừ đi sau là cách nhanh nhất để kế toán trả sai tiền.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Không tìm thấy</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4"></path></svg>
+        </span>
+        <strong style="font-size: 15px; font-weight: 500;">Không có nhà cung cấp NCC-0031</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 42ch;">Nhà cung cấp không tồn tại hoặc đã bị gộp khi chuẩn hoá danh mục. Công nợ nếu có đã chuyển sang hồ sơ đích.</span>
+        <div style="display: flex; gap: 8px; margin-top: 4px;">
+          <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;">Xem nhật ký gộp</span>
+          <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 4px; background: #235B54; color: #FFFFFF; font-size: 13px; font-weight: 500; cursor: pointer;">Về danh sách công nợ</span>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Không có quyền xem</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z"></path></svg>
+        </span>
+        <strong style="font-size: 15px; font-weight: 500;">Chỉ chủ, quản lý và kế toán xem được công nợ</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 42ch;">Bếp trưởng và thủ kho xem được phiếu nhập nhưng không thấy số tiền còn nợ, hạn thanh toán hay hạn mức.</span>
+        <span style="font-size: 12px; color: #6E665C;">Quản lý chi nhánh xem được nhưng không lập được phiếu chi — nút Lập phiếu chi và bulk action bị ẩn hẳn, không để dạng mờ.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Đã tất toán / lưu trữ</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #EDF7F1; border: 1px solid #C3E4D2; border-radius: 4px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#256A49" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 2px; flex-shrink: 0;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M8 12l3 3 5-6"></path></svg>
+          <span style="font-size: 13px; color: #1E5B3D;">Đã tất toán toàn bộ công nợ ngày 12/08/2026 bằng phiếu chi PC-2026-1240. Số dư 0 đ, không còn phiếu quá hạn.</span>
+        </div>
+        <span style="font-size: 13px; color: #635B53;">Trang chuyển chỉ đọc: tab 1 rỗng với thông báo tất toán, tab 2 và 3 giữ đầy đủ để tra cứu, tab 4 rỗng. Nhà cung cấp ngừng hợp tác quá 24 tháng chuyển lưu trữ — bảng đối chiếu thu về tổng từng năm, chi tiết kỳ tải theo yêu cầu.</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1100}}">
+const TAB_DEFS = [
+  ['hien-tai', 'Công nợ hiện tại', 5],
+  ['thanh-toan', 'Lịch sử thanh toán', 6],
+  ['doi-chieu', 'Đối chiếu', 4],
+  ['tranh-chap', 'Tranh chấp', 1]
+];
+
+const B_OK = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #EDF7F1; border: 1px solid #C3E4D2; color: #256A49; font-size: 12px; font-weight: 500;';
+const B_WARN = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FDF6E7; border: 1px solid #F0DDAF; color: #8A5F12; font-size: 12px; font-weight: 500;';
+const B_DANGER = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FCF0EE; border: 1px solid #F1CCC7; color: #96271B; font-size: 12px; font-weight: 500;';
+const B_NEUTRAL = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #F4F1ED; border: 1px solid #E7E2DC; color: #4A443E; font-size: 12px; font-weight: 500;';
+
+const BOX = 'width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #C6BEB4; border-radius: 4px; background: #FFFFFF; cursor: pointer;';
+const BOX_ON = 'width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #235B54; border-radius: 4px; background: #235B54; cursor: pointer;';
+const BOX_OFF = 'width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #E7E2DC; border-radius: 4px; background: #F4F1ED; cursor: not-allowed;';
+
+// số âm trong ngoặc, không rút gọn
+const money = (n) => (n < 0 ? '(' + Math.abs(n).toLocaleString('vi-VN') + ')' : n.toLocaleString('vi-VN'));
+const vnd = (n) => money(n) + ' đ';
+const num = (n, d) => n.toLocaleString('vi-VN', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 });
+
+const INVOICES = [
+  { code: 'PN-2026-0412', date: '21/07/2026', total: 23520000, paid: 0, dueDate: '20/08/2026', late: 0, dispute: false },
+  { code: 'PN-2026-0398', date: '09/07/2026', total: 22740000, paid: 10000000, dueDate: '08/08/2026', late: 0, dispute: false },
+  { code: 'PN-2026-0371', date: '24/06/2026', total: 18960000, paid: 0, dueDate: '24/07/2026', late: 5, dispute: false },
+  { code: 'PN-2026-0344', date: '08/06/2026', total: 15480000, paid: 5000000, dueDate: '08/07/2026', late: 21, dispute: false },
+  { code: 'PN-2026-0318', date: '22/05/2026', total: 12400000, paid: 0, dueDate: '21/06/2026', late: 38, dispute: true }
+];
+INVOICES.forEach(v => { v.due = v.total - v.paid; });
+
+const PAYABLE = INVOICES.filter(v => !v.dispute);
+const DISPUTED_SUM = INVOICES.filter(v => v.dispute).reduce((s, v) => s + v.due, 0);
+const TOTAL_DUE = PAYABLE.reduce((s, v) => s + v.due, 0);
+const OVERDUE = PAYABLE.filter(v => v.late > 0).reduce((s, v) => s + v.due, 0);
+const MAX_LATE = PAYABLE.reduce((a, v) => Math.max(a, v.late), 0);
+
+const LIMIT = 80000000;
+
+const PAYMENTS = [
+  ['PC-2026-1180', '18/07/2026', 10000000, 'Chuyển khoản', ['PN-2026-0398'], 'Thu Hà'],
+  ['PC-2026-1152', '05/07/2026', 1700000, 'Chuyển khoản', ['PN-2026-0288'], 'Thu Hà'],
+  ['PC-2026-1121', '26/06/2026', 5000000, 'Chuyển khoản', ['PN-2026-0344'], 'Thu Hà'],
+  ['PC-2026-1098', '12/06/2026', 21000000, 'Chuyển khoản', ['PN-2026-0295', 'PN-2026-0302'], 'Thu Hà'],
+  ['PC-2026-1044', '22/05/2026', 25000000, 'Chuyển khoản', ['PN-2026-0261', 'PN-2026-0270', 'PN-2026-0279'], 'Thu Hà'],
+  ['PC-2026-0981', '28/04/2026', 18000000, 'Tiền mặt', ['PN-2026-0244'], 'Ngọc Trâm']
+];
+
+const RECON_OPEN = 41200000;
+const RECON_ROWS = [
+  ['04/2026', 38640000, 42000000, 0],
+  ['05/2026', 22260000, 25000000, 0],
+  ['06/2026', 34440000, 26000000, -640000],
+  ['07/2026', 46260000, 11700000, 0]
+];
+
+const DISPUTES = [
+  ['PN-2026-0318', 12400000, 'Giao thiếu 32,0 kg bò Mỹ ba chỉ', 'Biên bản nhận hàng 22/05 ghi 118,0 kg, phiếu NCC ghi 150,0 kg. Chưa có hoá đơn điều chỉnh.', '24/06/2026', 'Chờ NCC phản hồi']
+];
+
+class Component extends DCLogic {
+  state = { tab: 'hien-tai', menuOpen: false, sel: {}, loaded: { 'hien-tai': true }, loadingTab: null };
+
+  pickTab(id) {
+    if (id === this.state.tab) return;
+    if (this.state.loaded[id]) { this.setState({ tab: id, menuOpen: false }); return; }
+    this.setState({ tab: id, menuOpen: false, loadingTab: id });
+    setTimeout(() => {
+      this.setState(s => (s.loadingTab !== id ? {} : {
+        loadingTab: null,
+        loaded: Object.assign({}, s.loaded, { [id]: true })
+      }));
+    }, 600);
+  }
+
+  renderVals() {
+    const st = this.state;
+    const tab = st.tab;
+    const loading = st.loadingTab === tab;
+    const show = (id) => tab === id && !loading;
+
+    const selCodes = PAYABLE.filter(v => st.sel[v.code]);
+    const selSum = selCodes.reduce((s, v) => s + v.due, 0);
+    const allChecked = selCodes.length === PAYABLE.length && PAYABLE.length > 0;
+    const someChecked = selCodes.length > 0 && !allChecked;
+
+    // Bảng nhúng · chuẩn Pattern 1 biến thể embedded: row 44px (dòng tổng 48px), padding 6px 12px
+    const rowBase = (i, last, cols, tone) => 'display: grid; grid-template-columns: ' + cols
+      + '; align-items: center; gap: 8px; min-height: 44px; padding: 6px 12px; font-size: 13px;'
+      + (i < last - 1 ? ' border-bottom: 1px solid #F0EBE5;' : '')
+      + (tone === 'dispute' ? ' background: #FDFAF9;' : (tone === 'sel' ? ' background: #F5FAF9;' : ''));
+
+    let bal = RECON_OPEN;
+    const reconRows = RECON_ROWS.map(r => {
+      const open = bal;
+      const close = open + r[1] - r[2];
+      bal = close;
+      return { period: r[0], open, charged: r[1], paid: r[2], close, diff: r[3] };
+    });
+
+    const limitPct = (TOTAL_DUE / LIMIT) * 100;
+    const over = TOTAL_DUE > LIMIT;
+    const nearLimit = limitPct >= 80 && !over;
+
+    return {
+      url: '/tai-chinh/cong-no-ncc/NCC-0031?tab=' + tab,
+
+      agingBadge: MAX_LATE > 0 ? 'Quá hạn ' + num(MAX_LATE) + ' ngày' : 'Trong hạn',
+      agingBadgeStyle: (MAX_LATE >= 15 ? B_DANGER : (MAX_LATE > 0 ? B_WARN : B_OK))
+        .replace('height: 22px', 'height: 24px').replace('padding: 0 8px', 'padding: 0 12px'),
+
+      menuOpen: st.menuOpen,
+      toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen })),
+
+      summary: [
+        { label: 'Tổng công nợ', value: vnd(TOTAL_DUE), hint: '(chưa gồm ' + vnd(DISPUTED_SUM) + ' tranh chấp)', tone: 'n', hintTone: 'w' },
+        { label: 'Quá hạn', value: vnd(OVERDUE), hint: '2 phiếu · lâu nhất ' + num(MAX_LATE) + ' ngày', tone: 'd', hintTone: 'd' },
+        { label: 'Hạn gần nhất', value: '08/08/2026', hint: 'PN-2026-0398 · còn 10 ngày', tone: 'n', hintTone: 'n' },
+        { label: 'Số phiếu chưa TT', value: num(PAYABLE.length) + ' phiếu', hint: '+ 1 phiếu đang tranh chấp', tone: 'n', hintTone: 'w' }
+      ].map((s, i) => ({
+        label: s.label, value: s.value, hint: s.hint,
+        cellStyle: 'flex: 1; min-width: 0; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; align-items: flex-end; text-align: right;' + (i < 3 ? ' border-right: 1px solid #F0EBE5;' : ''),
+        valueStyle: 'font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (s.tone === 'd' ? '#C0392B' : '#1E1B19') + ';',
+        hintStyle: 'font-size: 12px; font-variant-numeric: tabular-nums; color: ' + (s.hintTone === 'd' ? '#96271B' : (s.hintTone === 'w' ? '#8A5F12' : '#6E665C')) + ';'
+      })),
+
+      tabs: TAB_DEFS.map(t => ({
+        label: t[1],
+        selected: tab === t[0],
+        hasCount: t[2] !== null,
+        count: num(t[2]),
+        countStyle: 'display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; font-size: 12px; font-weight: 500; '
+          + (tab === t[0] ? 'background: #EFF6F5; color: #1C4842;' : 'background: #F4F1ED; color: #6E665C;'),
+        style: 'height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 16px; border-radius: 4px 4px 0 0; font-size: 13px; cursor: pointer; '
+          + (tab === t[0]
+              ? 'background: #FFFFFF; border: 1px solid #E7E2DC; border-bottom: 1px solid #FFFFFF; margin-bottom: -1px; font-weight: 500; color: #1C4842;'
+              : 'border: 1px solid transparent; color: #635B53;'),
+        onPick: () => this.pickTab(t[0])
+      })),
+
+      tabLoading: loading,
+      isCurrent: show('hien-tai'),
+      isHistory: show('thanh-toan'),
+      isRecon: show('doi-chieu'),
+      isDispute: show('tranh-chap'),
+
+      allChecked,
+      someChecked,
+      allBoxStyle: allChecked ? BOX_ON : (someChecked ? BOX_ON : BOX),
+      toggleAll: () => this.setState(s => {
+        if (Object.keys(s.sel).filter(k => s.sel[k]).length === PAYABLE.length) return { sel: {} };
+        const next = {};
+        PAYABLE.forEach(v => { next[v.code] = true; });
+        return { sel: next };
+      }),
+
+      invoices: INVOICES.map((v, i) => {
+        const checked = !!st.sel[v.code];
+        const late = v.late;
+        return {
+          code: v.code, date: v.date,
+          total: money(v.total), paid: money(v.paid), due: money(v.due),
+          dueDate: v.dueDate,
+          late: late > 0 ? num(late) + ' ngày' : '—',
+          status: v.dispute ? 'Tranh chấp' : (late >= 15 ? 'Quá hạn nặng' : (late > 0 ? 'Quá hạn' : 'Trong hạn')),
+          badgeStyle: v.dispute ? B_NEUTRAL : (late >= 15 ? B_DANGER : (late > 0 ? B_WARN : B_OK)),
+          checked,
+          boxStyle: v.dispute ? BOX_OFF : (checked ? BOX_ON : BOX),
+          onToggle: v.dispute ? (() => {}) : (() => this.setState(s => ({
+            sel: Object.assign({}, s.sel, { [v.code]: !s.sel[v.code] })
+          }))),
+          rowStyle: rowBase(i, INVOICES.length, '36px 1fr 120px 112px 124px 96px 76px 112px',
+            v.dispute ? 'dispute' : (checked ? 'sel' : '')),
+          dueStyle: 'text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; color: '
+            + (v.dispute ? '#8A8178' : (late >= 15 ? '#C0392B' : '#1E1B19')) + ';',
+          lateStyle: 'text-align: right; font-variant-numeric: tabular-nums; color: '
+            + (late >= 15 ? '#C0392B' : (late > 0 ? '#8A5F12' : '#ABA298')) + ';'
+        };
+      }),
+      sumTotal: money(PAYABLE.reduce((s, v) => s + v.total, 0)),
+      sumPaid: money(PAYABLE.reduce((s, v) => s + v.paid, 0)),
+      sumDue: vnd(TOTAL_DUE),
+      sumLate: vnd(OVERDUE),
+
+      bulkBarStyle: 'display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; border-radius: 8px; border: 1px solid '
+        + (selCodes.length ? '#B0D4CF' : '#E7E2DC') + '; background: ' + (selCodes.length ? '#EFF6F5' : '#FAF8F6') + ';',
+      bulkTitle: selCodes.length
+        ? 'Đã chọn ' + num(selCodes.length) + ' / ' + num(PAYABLE.length) + ' phiếu · ' + vnd(selSum)
+        : 'Chưa chọn phiếu nào',
+      bulkHint: selCodes.length
+        ? 'Sinh một phiếu chi đối trừ ' + num(selCodes.length) + ' phiếu nhập, ghi rõ phần đối trừ từng phiếu.'
+        : 'Chọn ô đầu dòng để gộp nhiều phiếu vào một phiếu chi. Phiếu tranh chấp không chọn được.',
+      bulkAmount: selCodes.length ? vnd(selSum) : vnd(0),
+      bulkBtnStyle: 'height: 36px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 4px; font-size: 13px; font-weight: 500; '
+        + (selCodes.length
+            ? 'background: #235B54; color: #FFFFFF; cursor: pointer;'
+            : 'background: #F4F1ED; color: #ABA298; cursor: not-allowed;'),
+      clearSel: () => this.setState({ sel: {} }),
+
+      payments: PAYMENTS.map((p, i) => ({
+        code: p[0], date: p[1], amount: money(p[2]), method: p[3],
+        docs: p[4].map(c => ({ code: c })), by: p[5],
+        rowStyle: rowBase(i, PAYMENTS.length, '132px 92px 132px 124px 1fr 116px', '')
+      })),
+      sumPayments: vnd(PAYMENTS.reduce((s, p) => s + p[2], 0)),
+
+      recon: reconRows.map((r, i) => ({
+        period: r.period,
+        open: money(r.open), charged: money(r.charged), paid: money(r.paid), close: money(r.close),
+        diff: r.diff === 0 ? '—' : money(r.diff),
+        diffStyle: 'text-align: right; font-variant-numeric: tabular-nums; color: ' + (r.diff === 0 ? '#ABA298' : '#C0392B') + ';',
+        rowStyle: rowBase(i, reconRows.length, '108px 1fr 1fr 1fr 1fr 132px', '')
+      })),
+      reconOpen: money(RECON_OPEN),
+      reconCharged: money(reconRows.reduce((s, r) => s + r.charged, 0)),
+      reconPaid: money(reconRows.reduce((s, r) => s + r.paid, 0)),
+      reconClose: vnd(reconRows[reconRows.length - 1].close),
+      reconDiff: money(reconRows.reduce((s, r) => s + r.diff, 0)),
+      reconDiffStyle: 'text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; color: #C0392B;',
+
+      hasDisputes: DISPUTES.length > 0,
+      noDisputes: DISPUTES.length === 0,
+      disputes: DISPUTES.map((d, i) => ({
+        code: d[0], amount: money(d[1]), reason: d[2], note: d[3], date: d[4], status: d[5],
+        badgeStyle: B_WARN,
+        rowStyle: rowBase(i, DISPUTES.length, '132px 132px 1fr 116px 148px', '')
+      })),
+      sumDispute: vnd(DISPUTED_SUM),
+
+      limitCardStyle: (over
+        ? 'background: #FDF6F5; border: 1px solid #F1CCC7;'
+        : (nearLimit ? 'background: #FFFDF7; border: 1px solid #F0DDAF;' : 'background: #FFFFFF; border: 1px solid #E7E2DC;'))
+        + ' border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;',
+      limitBadge: over ? 'Vượt hạn mức' : (nearLimit ? 'Gần hạn mức' : 'Trong hạn mức'),
+      limitBadgeStyle: over ? B_DANGER : (nearLimit ? B_WARN : B_OK),
+      limitPct: num(limitPct, 1) + '%',
+      limitPctStyle: 'font-size: 24px; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (over ? '#C0392B' : (nearLimit ? '#8A5F12' : '#1E1B19')) + ';',
+      // CL2 · 21 Progress with target · direction lower-is-better, warnAt 80 · dangerAt 100
+      limitBarStyle: 'display: block; height: 8px; border-radius: 999px; width: ' + Math.min(100, limitPct).toFixed(1) + '%; background: '
+        + (over ? '#C0392B' : (nearLimit ? '#8A5F12' : '#235B54')) + ';',
+      limitMax: vnd(LIMIT),
+      limitUsed: vnd(TOTAL_DUE),
+      limitLeft: vnd(LIMIT - TOTAL_DUE),
+      limitLeftStyle: 'font-variant-numeric: tabular-nums; color: ' + (over ? '#C0392B' : (nearLimit ? '#8A5F12' : '#1E1B19')) + ';',
+      limitNote: over
+        ? 'Vượt hạn mức — NCC đã tạm dừng giao hàng cho tới khi trả bớt. Cần chủ duyệt để nhập tiếp.'
+        : 'Còn ' + vnd(LIMIT - TOTAL_DUE) + ' hạn mức. Khoản tranh chấp không tính vào phần đã dùng; nếu bên mình phải trả thì tỷ lệ này lên '
+            + num(((TOTAL_DUE + DISPUTED_SUM) / LIMIT) * 100, 1) + '%.',
+      limitNoteStyle: 'font-size: 12px; color: ' + (over ? '#96271B' : (nearLimit ? '#8A5F12' : '#6E665C')) + ';',
+
+      audit: [
+        ['Gửi nhắc thanh toán PN-2026-0344', '24/07 10:15 · Thu Hà'],
+        ['Lập phiếu chi PC-2026-1180 · 10.000.000 đ', '18/07 14:02 · Thu Hà'],
+        ['Đánh dấu tranh chấp PN-2026-0318', '24/06 09:40 · Ngọc Trâm'],
+        ['Nâng hạn mức 60.000.000 → 80.000.000 đ', '02/05 11:20 · chủ Lê Minh'],
+        ['Chốt điều khoản 30 ngày', '12/01 08:30 · chủ Lê Minh']
+      ].map((a, i, arr) => ({
+        action: a[0], meta: a[1],
+        hasLine: i < arr.length - 1,
+        actionStyle: 'font-size: 13px;' + (i === 0 ? ' font-weight: 500;' : ''),
+        dotStyle: 'width: 7px; height: 7px; flex: none; margin-top: 6px; border-radius: 999px; background: ' + (i === 0 ? '#235B54' : '#D5CEC6') + ';'
+      }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

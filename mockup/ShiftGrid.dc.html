@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; display: flex; flex-direction: column; gap: 16px; color: #1E1B19;">
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <strong style="font-size: 16px; font-weight: 500;">{{ title }}</strong>
+      <span style="font-size: 12px; color: #6E665C;">{{ subtitle }}</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+      <sc-for list="{{ monthStats }}" as="s" hint-placeholder-count="4">
+        <div style="display: flex; flex-direction: column; gap: 2px; align-items: flex-end; text-align: right;">
+          <span style="font-size: 12px; color: #6E665C;">{{ s.label }}</span>
+          <strong style="font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums;">{{ s.value }}</strong>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+    <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)) 132px; min-height: 40px; align-items: center; background: #FAF8F6; border-bottom: 1px solid #E7E2DC;">
+      <sc-for list="{{ dayNames }}" as="d" hint-placeholder-count="7">
+        <span style="{{ d.style }}">{{ d.label }}</span>
+      </sc-for>
+      <span style="padding: 0 12px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; text-align: right;">Giờ tuần</span>
+    </div>
+    <sc-for list="{{ weeks }}" as="w" hint-placeholder-count="5">
+      <div style="{{ w.rowStyle }}">
+        <sc-for list="{{ w.cells }}" as="c" hint-placeholder-count="7">
+          <div style="{{ c.style }}" style-hover="{{ c.hoverStyle }}">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px;">
+              <span style="{{ c.dateStyle }}">{{ c.date }}</span>
+              <span style="{{ c.markStyle }}">{{ c.mark }}</span>
+            </div>
+            <span style="{{ c.timeStyle }}">{{ c.time }}</span>
+            <span style="{{ c.labelStyle }}">{{ c.label }}</span>
+          </div>
+        </sc-for>
+        <div style="{{ w.totalStyle }}">
+          <strong style="{{ w.totalValueStyle }}">{{ w.total }}</strong>
+          <span style="{{ w.totalHintStyle }}">{{ w.totalHint }}</span>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="display: flex; gap: 12px 20px; flex-wrap: wrap;">
+    <sc-for list="{{ shiftLegend }}" as="l" hint-placeholder-count="9">
+      <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;">
+        <span style="{{ l.swatchStyle }}"></span>{{ l.label }}
+      </span>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ hasOverLimit }}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; gap: 12px; padding: 12px 16px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 8px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+      <span style="font-size: 13px; color: #8A5F12;">{{ overLimitText }}</span>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1000,&quot;height&quot;:600},&quot;title&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Lưới ca tháng 07/2026&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;subtitle&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Chế độ đọc · bấm một ô để mở chi tiết ngày ở màn Chấm công&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;weekLimit&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:48,&quot;min&quot;:30,&quot;max&quot;:72,&quot;unit&quot;:&quot;h&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Luật giờ&quot;},&quot;leadCells&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:2,&quot;min&quot;:0,&quot;max&quot;:6,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Lịch&quot;},&quot;daysInMonth&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:31,&quot;min&quot;:28,&quot;max&quot;:31,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Lịch&quot;},&quot;month&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;[number, string|null, string?, string?, number?, string?]&gt;&quot;}}">
+// Lưới ca · CL3 · 11 — chế độ đọc.
+// Ca không cố định giờ → ô mang khung giờ thật, không mang tên ca.
+// Một người một ca mỗi ngày. Ca vắt qua 00:00 ghi ⁺ và tính trọn cho ngày bắt đầu.
+const SHIFT_KINDS = {
+  du:         { label: 'Làm đủ',           accent: '#235B54', text: '#1E1B19' },
+  muon:       { label: 'Đi muộn',          accent: '#8A5F12', text: '#8A5F12' },
+  som:        { label: 'Về sớm',           accent: '#8A5F12', text: '#8A5F12' },
+  vang:       { label: 'Vắng không phép',  accent: '#C0392B', text: '#96271B' },
+  phep:       { label: 'Nghỉ phép',        accent: '#4F958D', text: '#1C4842' },
+  khongluong: { label: 'Nghỉ không lương', accent: '#ABA298', text: '#635B53' },
+  doi:        { label: 'Đổi ca',           accent: '#4F958D', text: '#1C4842' },
+  otime:      { label: 'Làm thêm giờ',     accent: '#2F7168', text: '#1C4842' },
+  chuatoi:    { label: 'Chưa tới',         accent: '#D5CEC6', text: '#8A8178' }
+};
+
+// [ngày, kiểu, giờ vào, giờ ra, số giờ, ghi chú] · tháng 07/2026, 01/07 là thứ tư
+const DEFAULT_MONTH = [
+  [1,  'du',      '17:00', '22:30', 5.5],
+  [2,  'du',      '17:00', '22:30', 5.5],
+  [3,  'otime',   '16:30', '23:30', 7.0, '+1,5 h'],
+  [4,  'otime',   '16:30', '23:30', 7.0, '+1,5 h'],
+  [5,  'du',      '10:30', '14:30', 4.0],
+  [6,  null],
+  [7,  'du',      '17:00', '22:30', 5.5],
+  [8,  'muon',    '17:12', '22:30', 5.3, '12 phút'],
+  [9,  'du',      '17:00', '22:30', 5.5],
+  [10, 'otime',   '16:30', '23:30', 7.0, '+1,5 h'],
+  [11, 'otime',   '16:00', '00:30', 8.5, '+2,5 h'],
+  [12, 'phep',    null, null, 0, 'phép năm'],
+  [13, 'du',      '17:00', '22:30', 5.5],
+  [14, 'du',      '17:00', '22:30', 5.5],
+  [15, 'du',      '17:00', '22:30', 5.5],
+  [16, 'muon',    '17:20', '22:30', 5.2, '20 phút'],
+  [17, 'otime',   '16:30', '23:30', 7.0, '+1,5 h'],
+  [18, 'otime',   '16:00', '00:30', 8.5, '+2,5 h'],
+  [19, 'otime',   '10:00', '22:00', 12.6, '+4,5 h'],
+  [20, null],
+  [21, 'khongluong', null, null, 0, 'việc riêng'],
+  [22, 'du',      '17:00', '22:30', 5.5],
+  [23, 'doi',     '10:30', '14:30', 4.0, 'với Trần Bình'],
+  [24, 'du',      '17:00', '22:30', 5.5],
+  [25, 'otime',   '16:30', '23:30', 7.0, '+1,5 h'],
+  [26, 'som',     '17:00', '21:45', 4.8, 'sớm 45 phút'],
+  [27, null],
+  [28, 'du',      '17:00', '22:30', 5.5],
+  [29, 'muon',    '17:15', '22:30', 5.3, '15 phút'],
+  [30, 'chuatoi', '17:00', '22:30', 5.5],
+  [31, 'chuatoi', '16:30', '23:30', 7.0]
+];
+
+const vnNum = (n, d) => n.toLocaleString('vi-VN', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 });
+
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props || {};
+    const month = p.month || DEFAULT_MONTH;
+    const limit = p.weekLimit ?? 48;
+    const lead = p.leadCells ?? 2;   // 01/07/2026 rơi vào thứ tư
+    const daysInMonth = p.daysInMonth ?? 31;
+
+    const byDate = {};
+    month.forEach(r => { byDate[r[0]] = r; });
+
+    const cells = [];
+    for (let i = 0; i < 35; i++) {
+      const d = i - lead + 1;
+      if (d < 1) { cells.push({ out: true, date: 29 + i }); continue; }
+      if (d > daysInMonth) { cells.push({ out: true, date: d - daysInMonth }); continue; }
+      const r = byDate[d];
+      cells.push({ out: false, date: d, kind: r && r[1], from: r && r[2], to: r && r[3], hours: (r && r[4]) || 0, note: r && r[5] });
+    }
+
+    const overWeeks = [];
+    const weeks = [];
+    for (let w = 0; w < 5; w++) {
+      const slice = cells.slice(w * 7, w * 7 + 7);
+      const hours = slice.reduce((s, c) => s + (c.out ? 0 : c.hours), 0);
+      const over = hours > limit;
+      const inMonth = slice.filter(c => !c.out);
+      if (over && inMonth.length) {
+        overWeeks.push({
+          from: inMonth[0].date,
+          to: inMonth[inMonth.length - 1].date,
+          hours,
+          excess: hours - limit
+        });
+      }
+      weeks.push({
+        rowStyle: 'display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)) 132px;' + (w < 4 ? ' border-bottom: 1px solid #F0EBE5;' : ''),
+        total: vnNum(hours, 1) + ' h',
+        totalHint: over ? 'vượt ' + vnNum(hours - limit, 1) + ' h' : 'trần ' + vnNum(limit, 1) + ' h',
+        totalStyle: 'min-height: 76px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; align-items: flex-end; justify-content: center; border-left: 1px solid #E7E2DC; background: ' + (over ? '#FDF6E7' : '#FAF8F6') + ';',
+        totalValueStyle: 'font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (over ? '#8A5F12' : '#1E1B19') + ';',
+        totalHintStyle: 'font-size: 12px; font-variant-numeric: tabular-nums; color: ' + (over ? '#8A5F12' : '#6E665C') + ';',
+        cells: slice.map((c, ci) => {
+          const k = c.kind ? SHIFT_KINDS[c.kind] : null;
+          const night = c.to === '00:30';
+          // min-width: 0 — nếu không, nhãn nowrap đẩy track rộng ra và lưới lệch khỏi header
+          const base = 'min-width: 0; min-height: 76px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;'
+            + (ci < 6 ? ' border-right: 1px solid #F0EBE5;' : '');
+          if (c.out) {
+            return {
+              style: base + ' background: #FAF8F6;',
+              date: String(c.date),
+              dateStyle: 'font-size: 12px; color: #C6BEB4; font-variant-numeric: tabular-nums;',
+              mark: '', markStyle: 'display: none;',
+              time: '', timeStyle: 'display: none;',
+              label: '', labelStyle: 'display: none;',
+              hoverStyle: 'background: #FAF8F6;'
+            };
+          }
+          if (!k) {
+            return {
+              style: base + ' background: #FFFFFF;',
+              date: String(c.date),
+              dateStyle: 'font-size: 13px; font-weight: 500; color: #ABA298; font-variant-numeric: tabular-nums;',
+              mark: '', markStyle: 'display: none;',
+              time: 'Nghỉ tuần', timeStyle: 'font-size: 12px; color: #ABA298;',
+              label: '', labelStyle: 'display: none;',
+              hoverStyle: 'background: #FFFFFF;'
+            };
+          }
+          const dashed = c.kind === 'chuatoi';
+          return {
+            style: base + ' background: #FFFFFF; border-left: 3px ' + (dashed ? 'dashed' : 'solid') + ' ' + k.accent + '; cursor: pointer;',
+            date: String(c.date),
+            dateStyle: 'font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; color: #1E1B19;',
+            mark: c.hours > 0 ? vnNum(c.hours, 1) + ' h' : '—',
+            markStyle: 'flex: none; font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; color: #6E665C;',
+            time: c.from ? (c.from + '–' + c.to + (night ? '⁺' : '')) : 'Không có ca',
+            timeStyle: 'font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; color: #4A443E;',
+            label: k.label + (c.note ? ' · ' + c.note : ''),
+            labelStyle: 'font-size: 12px; color: ' + k.text + '; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;',
+            hoverStyle: 'background: #FAF8F6;'
+          };
+        })
+      });
+    }
+
+    const shifts = month.filter(r => r[1] && r[1] !== 'phep' && r[1] !== 'khongluong' && r[1] !== 'vang');
+    const totalHours = month.reduce((s, r) => s + (r[4] || 0), 0);
+    const late = month.filter(r => r[1] === 'muon').length;
+    const absent = month.filter(r => r[1] === 'vang').length;
+
+    return {
+      title: p.title || 'Lưới ca tháng 07/2026',
+      subtitle: p.subtitle || 'Chế độ đọc · bấm một ô để mở chi tiết ngày ở màn Chấm công',
+      dayNames: ['Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy', 'Chủ nhật'].map((d, i) => ({
+        label: d,
+        style: 'padding: 0 12px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: ' + (i > 4 ? '#8A8178' : '#6E665C') + ';'
+      })),
+      weeks,
+      monthStats: [
+        { label: 'Số ca', value: vnNum(shifts.length) },
+        { label: 'Tổng giờ', value: vnNum(totalHours, 1) + ' h' },
+        { label: 'Đi muộn', value: vnNum(late) + ' lần' },
+        { label: 'Vắng', value: vnNum(absent) + ' lần' }
+      ],
+      shiftLegend: Object.keys(SHIFT_KINDS).map(key => ({
+        label: SHIFT_KINDS[key].label,
+        swatchStyle: 'width: 3px; height: 14px; border-radius: 999px; background: ' + SHIFT_KINDS[key].accent + ';'
+      })),
+      hasOverLimit: overWeeks.length > 0,
+      overLimitText: overWeeks.length
+        ? 'Tuần ' + overWeeks.map(o => o.from + '–' + o.to).join(', ') + '/07 tổng '
+            + overWeeks.map(o => vnNum(o.hours, 1) + ' h').join(', ')
+            + ', vượt trần ' + vnNum(limit, 1) + ' giờ/tuần. Chế độ đọc chỉ báo; chặn xếp thêm ca là việc của chế độ sửa.'
+        : ''
+    };
+  }
+}
+
+</script>
+</body>
+</html>

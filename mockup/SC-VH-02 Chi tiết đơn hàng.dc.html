@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  @keyframes ibb-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-vh-02</span><span style="color: #D5CEC6;">·</span><span>template t2 · section</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">/van-hanh/don-hang/1248</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Chi tiết đơn hàng</h1>
+    <p style="margin: 0; max-width: 78ch; font-size: 14px; color: #635B53;">Dùng <strong style="font-weight: 500;">section</strong> chứ không tab: người đọc phải đi từ thông tin đơn xuống tổng tiền theo đúng thứ tự cộng dồn — gói, gọi thêm, phụ thu, giảm giá, thuế. Tách thành tab sẽ phá mạch tính toán. Đổi trạng thái đơn bên dưới để xem hai state riêng.</p>
+    <div style="display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap;">
+      <sc-for list="{{ modes }}" as="m" hint-placeholder-count="3">
+        <span onClick="{{ m.onPick }}" tabindex="0" style="{{ m.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ m.label }}</span>
+      </sc-for>
+    </div>
+  </header>
+
+  <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); overflow: hidden;">
+
+    <div style="padding: 20px 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC; display: flex; flex-direction: column; gap: 12px;">
+      <nav style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6E665C;">
+        <a href="#" style="color: #6E665C; text-decoration: none;">Vận hành</a><span style="color: #D5CEC6;">/</span>
+        <a href="#" style="color: #6E665C; text-decoration: none;">Đơn hàng</a><span style="color: #D5CEC6;">/</span>
+        <span style="color: #332F2B; font-weight: 500;">Đơn #1248</span>
+      </nav>
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; line-height: 1.1; margin: 0;">Đơn #1248</h2>
+          <span style="{{ badgeStyle }}">{{ badgeLabel }}</span>
+          <sc-if value="{{ isServing }}" hint-placeholder-val="{{ true }}">
+            <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #6E665C;">
+              <span style="width: 6px; height: 6px; border-radius: 999px; background: #2F7168; animation: ibb-blink 1.6s ease-in-out infinite;"></span>Cập nhật theo thời gian thực
+            </span>
+          </sc-if>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; flex: none;">
+          <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8V3h10v5M7 18H5v-6h14v6h-2M7 14h10v7H7z"></path></svg>
+            {{ printLabel }}
+          </button>
+          <span onClick="{{ toggleMenu }}" tabindex="0" role="button" aria-label="Hành động khác" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="2" stroke-linecap="round"><path d="M12 5v.01M12 12v.01M12 19v.01"></path></svg>
+          </span>
+        </div>
+      </div>
+
+      <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="align-self: flex-end; width: 248px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 4px; display: flex; flex-direction: column;">
+          <sc-for list="{{ menuItems }}" as="mi" hint-placeholder-count="4">
+            <span style="{{ mi.style }}">{{ mi.label }}</span>
+          </sc-for>
+          <span style="display: block; padding: 8px 12px 12px; font-size: 12px; color: #6E665C;">{{ menuNote }}</span>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="padding: 20px 24px 0; display: flex; flex-direction: column; gap: 16px;">
+      <sc-if value="{{ isServing }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; gap: 12px; padding: 12px 16px; background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#235B54" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 8v.01M12 11v5"></path></svg>
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <strong style="font-size: 13px; color: #1C4842;">Đơn đang phục vụ · số liệu còn tăng</strong>
+            <span style="font-size: 13px; color: #1C4842;">Mục 4 là <strong style="font-weight: 500;">tạm tính</strong>, chưa phát sinh hoá đơn. Thời lượng đếm tăng mỗi phút; khách gọi thêm sẽ cộng vào mục 3.</span>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isRefunded }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; gap: 12px; padding: 12px 16px; background: #FCF0EE; border: 1px solid #C0392B; border-radius: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <strong style="font-size: 13px; color: #96271B;">Đơn đã hoàn tiền 28/07/2026 21:40</strong>
+            <span style="font-size: 13px; color: #96271B;">Lý do: lẩu thái phục vụ chậm 40 phút, khách khiếu nại tại bàn. Hoàn <strong style="font-weight: 500; font-variant-numeric: tabular-nums;">(1.200.000 đ)</strong> về ví điện tử · người duyệt Trúc Linh · Quản lý CN.</span>
+            <a href="#">Xem phiếu hoàn tiền PC-2026-0902 →</a>
+          </div>
+        </div>
+      </sc-if>
+
+      <div style="display: flex; align-items: stretch; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden; background: #FFFFFF;">
+        <sc-for list="{{ summary }}" as="s" hint-placeholder-count="4">
+          <div style="{{ s.cellStyle }}">
+            <span style="font-size: 12px; color: #6E665C;">{{ s.label }}</span>
+            <strong style="{{ s.valueStyle }}">{{ s.value }}</strong>
+            <span style="{{ s.hintStyle }}">{{ s.hint }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: flex-start; gap: 24px; padding: 20px 24px 24px;">
+      <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <strong style="font-size: 16px; font-weight: 500;">1 · Thông tin đơn</strong>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px 24px;">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Bàn</span>
+              <span style="font-size: 13px;">B4 + B5</span>
+              <span style="font-size: 12px; color: #6E665C;">Tầng 2 · phòng lạnh</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Ca</span>
+              <span style="font-size: 13px;">Ca tối · 17:00–22:00</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Giờ vào</span>
+              <span style="font-size: 13px; font-variant-numeric: tabular-nums;">28/07/2026 18:32</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Giờ ra</span>
+              <span style="{{ outTimeStyle }}">{{ outTime }}</span>
+              <span style="font-size: 12px; color: #6E665C;">{{ outTimeHint }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Thời lượng</span>
+              <span style="{{ durationStyle }}">{{ duration }}</span>
+              <span style="{{ durationHintStyle }}">{{ durationHint }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Nhân viên phục vụ</span>
+              <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px;">
+                <span style="width: 22px; height: 22px; flex: none; border-radius: 999px; background: #E7E2DC; color: #4A443E; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;">MD</span>
+                Mỹ Duyên
+              </span>
+              <span style="font-size: 12px; color: #6E665C;">Trưởng ca: Trúc Linh</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Nguồn</span>
+              <span style="display: inline-flex; align-self: flex-start; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; background: #EFF6F5; border: 1px solid #B0D4CF; color: #1C4842; font-size: 12px; font-weight: 500;">Đặt trước</span>
+              <a href="#">Đơn đặt bàn #DB-0914 →</a>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Yêu cầu đặc biệt</span>
+              <span style="font-size: 13px; color: #4A443E;">Sinh nhật · 1 ghế trẻ em</span>
+              <span style="font-size: 12px; color: #8A5F12;">Dị ứng đậu phộng</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px;">
+            <strong style="font-size: 16px; font-weight: 500;">2 · Gói buffet</strong>
+            <a href="#">Buffet tối cao cấp · GB-0042 →</a>
+          </div>
+          <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 1fr 140px 90px 140px 90px 150px; align-items: center; gap: 8px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+              <span>Gói</span><span style="text-align: right;">Đơn giá NL</span><span style="text-align: right;">Số NL</span><span style="text-align: right;">Đơn giá TE</span><span style="text-align: right;">Số TE</span><span style="text-align: right;">Thành tiền</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 140px 90px 140px 90px 150px; align-items: center; gap: 8px; min-height: 44px; padding: 6px 12px; background: #FAF8F6; font-size: 13px;">
+              <span>Buffet tối cao cấp · cuối tuần</span>
+              <span style="text-align: right; font-variant-numeric: tabular-nums;">489.000</span>
+              <span style="text-align: right; font-variant-numeric: tabular-nums;">6</span>
+              <span style="text-align: right; font-variant-numeric: tabular-nums;">229.000</span>
+              <span style="text-align: right; font-variant-numeric: tabular-nums;">2</span>
+              <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums;">3.392.000</span>
+            </div>
+          </div>
+          <span style="font-size: 12px; color: #6E665C;">Bảng chỉ đọc, nền neutral-50 · đổi gói hoặc số khách phải làm ở POS, không sửa tại đây. Trẻ nhỏ dưới 90cm miễn phí, không tính dòng.</span>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px;">
+            <strong style="font-size: 16px; font-weight: 500;">3 · Gọi thêm</strong>
+            <span style="font-size: 12px; color: #6E665C;">{{ extraCountLabel }}</span>
+          </div>
+          <sc-if value="{{ hasExtras }}" hint-placeholder-val="{{ true }}">
+            <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+              <div style="display: grid; grid-template-columns: 1fr 90px 130px 150px 90px 150px; align-items: center; gap: 8px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+                <span>Món</span><span style="text-align: right;">SL</span><span style="text-align: right;">Đơn giá</span><span style="text-align: right;">Thành tiền</span><span style="text-align: right;">Giờ gọi</span><span>Bếp xử lý</span>
+              </div>
+              <sc-for list="{{ extras }}" as="e" hint-placeholder-count="3">
+                <div style-hover="background: #FAF8F6;" style="display: grid; grid-template-columns: 1fr 90px 130px 150px 90px 150px; align-items: center; gap: 8px; min-height: 44px; padding: 6px 12px; border-bottom: 1px solid #F0EBE5; font-size: 13px;">
+                  <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ e.name }}</span>
+                  <span style="text-align: right; font-variant-numeric: tabular-nums;">{{ e.qty }}</span>
+                  <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ e.price }}</span>
+                  <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums;">{{ e.amount }}</span>
+                  <span style="text-align: right; font-variant-numeric: tabular-nums; color: #635B53;">{{ e.time }}</span>
+                  <span style="font-size: 12px; color: #635B53;">{{ e.kitchen }}</span>
+                </div>
+              </sc-for>
+              <div style="position: sticky; bottom: 0; z-index: 2; display: grid; grid-template-columns: 1fr 90px 130px 150px 90px 150px; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC; box-shadow: 0 -2px 8px rgba(30,27,25,0.06); font-size: 13px; font-weight: 500;">
+                <span>Tổng gọi thêm · {{ extraLines }}</span>
+                <span style="text-align: right; font-variant-numeric: tabular-nums;">{{ extraQty }}</span>
+                <span></span>
+                <span style="text-align: right; font-variant-numeric: tabular-nums;">{{ extraTotal }}</span>
+                <span></span><span></span>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noExtras }}" hint-placeholder-val="{{ false }}">
+            <div style="height: 132px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; border: 1px dashed #D5CEC6; border-radius: 8px; background: #FAF8F6; text-align: center; padding: 0 24px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h9"></path></svg>
+              <strong style="font-size: 14px; font-weight: 500;">Không có món gọi thêm</strong>
+              <span style="font-size: 13px; color: #6E665C;">Khách chỉ dùng món trong gói buffet.</span>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px;">
+            <strong style="font-size: 16px; font-weight: 500;">4 · Thanh toán</strong>
+            <span style="{{ payTagStyle }}">{{ payTag }}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+            <sc-for list="{{ payLines }}" as="p" hint-placeholder-count="6">
+              <div style="{{ p.rowStyle }}">
+                <span style="{{ p.labelStyle }}">{{ p.label }}</span>
+                <span style="{{ p.noteStyle }}">{{ p.note }}</span>
+                <span style="{{ p.valueStyle }}">{{ p.value }}</span>
+              </div>
+            </sc-for>
+            <div style="display: grid; grid-template-columns: 1fr 220px 200px; align-items: center; gap: 12px; min-height: 56px; padding: 8px 16px; background: #FAF8F6; border-top: 1px solid #E7E2DC;">
+              <strong style="font-size: 15px; font-weight: 500;">{{ totalLabel }}</strong>
+              <span style="font-size: 12px; color: #6E665C; text-align: right;">{{ totalNote }}</span>
+              <strong style="{{ totalStyle }}">{{ totalValue }}</strong>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 24px;">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Phương thức</span>
+              <span style="font-size: 13px;">{{ payMethod }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Giờ thanh toán</span>
+              <span style="font-size: 13px; font-variant-numeric: tabular-nums;">{{ payTime }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 12px; color: #6E665C;">Thu ngân</span>
+              <span style="font-size: 13px;">{{ cashier }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <strong style="font-size: 16px; font-weight: 500;">5 · Lịch sử đơn</strong>
+          <div style="display: flex; flex-direction: column;">
+            <sc-for list="{{ steps }}" as="s" hint-placeholder-count="5">
+              <div style="display: grid; grid-template-columns: 16px 1fr; gap: 12px;">
+                <span style="display: flex; flex-direction: column; align-items: center;">
+                  <span style="{{ s.dotStyle }}"></span>
+                  <sc-if value="{{ s.hasLine }}" hint-placeholder-val="{{ true }}">
+                    <span style="flex: 1; width: 1px; background: #E7E2DC;"></span>
+                  </sc-if>
+                </span>
+                <div style="{{ s.bodyStyle }}">
+                  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                    <span style="{{ s.titleStyle }}">{{ s.title }}</span>
+                    <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ s.time }}</span>
+                  </div>
+                  <span style="font-size: 12px; color: #6E665C;">{{ s.detail }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <aside style="width: 320px; flex: 0 0 320px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Khách hàng</span>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="width: 36px; height: 36px; flex: none; border-radius: 999px; background: #F4F1ED; border: 1px solid #E7E2DC; color: #4A443E; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">HN</span>
+            <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.35;">
+              <span style="font-size: 14px; font-weight: 500;">Trần Hồng Nhung</span>
+              <span style="font-size: 12px; color: #6E665C;">0903 771 208</span>
+            </span>
+            <span style="height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FDF6E7; border: 1px solid #F0DDAF; color: #8A5F12; font-size: 12px; font-weight: 500;">Thẻ Vàng</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid #F0EBE5; font-size: 13px;">
+            <div style="display: flex; justify-content: space-between;"><span style="color: #635B53;">Điểm cộng từ đơn này</span><span style="{{ pointStyle }}">{{ pointValue }}</span></div>
+            <div style="display: flex; justify-content: space-between;"><span style="color: #635B53;">Tổng điểm sau đơn</span><span style="font-variant-numeric: tabular-nums;">{{ pointTotal }}</span></div>
+            <div style="display: flex; justify-content: space-between;"><span style="color: #635B53;">Lần đến</span><span style="font-variant-numeric: tabular-nums;">15</span></div>
+          </div>
+          <a href="#">Mở hồ sơ khách hàng →</a>
+          <span style="font-size: 12px; color: #6E665C;">{{ pointNote }}</span>
+        </div>
+
+        <div style="{{ vatCardStyle }}">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+            <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Hoá đơn VAT</span>
+            <span style="{{ vatBadgeStyle }}">{{ vatBadge }}</span>
+          </div>
+          <span style="font-size: 13px; color: #635B53;">{{ vatText }}</span>
+          <sc-if value="{{ vatCanIssue }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ issueVat }}" style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 4px; cursor: pointer; align-self: flex-start;" style-hover="background: #1C4842;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Phát hành hoá đơn</button>
+          </sc-if>
+          <sc-if value="{{ vatIssued }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <a href="#">Xem hoá đơn HD-2026-004182 →</a>
+              <span style="font-size: 12px; color: #6E665C;">Phát hành 28/07/2026 21:12 · MST 0316 448 902</span>
+            </div>
+          </sc-if>
+          <sc-if value="{{ vatBlocked }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size: 12px; color: #6E665C;">Chỉ phát hành được sau khi đơn thanh toán xong.</span>
+          </sc-if>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+          <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Thao tác trên đơn</span>
+          <div style="display: flex; flex-direction: column;">
+            <sc-for list="{{ audit }}" as="a" hint-placeholder-count="4">
+              <div style="display: grid; grid-template-columns: 16px 1fr; gap: 12px;">
+                <span style="display: flex; flex-direction: column; align-items: center;">
+                  <span style="{{ a.dotStyle }}"></span>
+                  <sc-if value="{{ a.hasLine }}" hint-placeholder-val="{{ true }}">
+                    <span style="flex: 1; width: 1px; background: #E7E2DC;"></span>
+                  </sc-if>
+                </span>
+                <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 16px;">
+                  <span style="font-size: 13px;">{{ a.action }}</span>
+                  <span style="font-size: 12px; color: #6E665C;">{{ a.meta }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <a href="#">Xem nhật ký đầy đủ →</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">4 state chuẩn của T2</h2>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Loading · skeleton giữ đúng bố cục</span>
+        <span style="width: 40%; height: 12px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="width: 28%; height: 28px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <div style="display: flex; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+          <div style="flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #F0EBE5;">
+            <span style="width: 40px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 64px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+          <div style="flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #F0EBE5;">
+            <span style="width: 40px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 56px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+          <div style="flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #F0EBE5;">
+            <span style="width: 40px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 72px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+          <div style="flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px;">
+            <span style="width: 40px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 84px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Đúng 4 ô summary và 5 khung section, không thu gọn — tránh nhảy layout khi có dữ liệu.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Không tìm thấy</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4"></path></svg>
+        </span>
+        <strong style="font-size: 15px; font-weight: 500;">Không có đơn #1248</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Đơn không tồn tại, hoặc thuộc chi nhánh khác chi nhánh bạn đang xem.</span>
+        <div style="display: flex; gap: 8px; margin-top: 4px;">
+          <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;">Đổi chi nhánh</span>
+          <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 4px; background: #235B54; color: #FFFFFF; font-size: 13px; font-weight: 500; cursor: pointer;">Về danh sách đơn</span>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Không có quyền xem</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z"></path></svg>
+        </span>
+        <strong style="font-size: 15px; font-weight: 500;">Bạn không xem được đơn của chi nhánh khác</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Đơn #1248 thuộc Quận 7 · Phú Mỹ Hưng. Vai trò Trưởng ca chỉ xem đơn chi nhánh mình.</span>
+        <span style="font-size: 12px; color: #6E665C;">Kế toán mở được đơn mọi chi nhánh nhưng chỉ đọc — không thấy nút hoàn tiền và huỷ đơn.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Đã huỷ / lưu trữ</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.6" stroke-linecap="round" style="margin-top: 2px; flex-shrink: 0;"><path d="M3 6h18v4H3zM5 10v10h14V10M10 14h4"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Đơn huỷ lúc 18:44 vì khách đổi ý trước khi mở bàn. Toàn bộ trang chỉ đọc, mục 4 hiện 0 đ.</span>
+        </div>
+        <span style="font-size: 13px; color: #635B53;">Header giữ nguyên badge “Đã huỷ” và nút In hoá đơn (in phiếu huỷ); menu chỉ còn “Xem nhật ký”. Đơn quá 24 tháng chuyển lưu trữ, thêm dòng “Dữ liệu lưu trữ, có thể chậm hơn khi tải”.</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1100}}">
+const PKG_TOTAL = 3392000;
+const EXTRAS = [
+  ['Tôm sú nướng bơ (ngoài gói)', 2, 82000, '19:12', 'Bếp nướng'],
+  ['Cá hồi áp chảo', 1, 96000, '19:40', 'Bếp nóng'],
+  ['Bánh sinh nhật mini', 1, 120000, '20:05', 'Bếp bánh'],
+  ['Nước ép cam', 4, 45000, '20:18', 'Quầy bar']
+];
+
+const SERVICE_RATE = 0.05;
+const VAT_RATE = 0.08;
+const SURCHARGE = 60000;
+const DISCOUNT = 300000;
+
+const BADGE = {
+  serving: ['Đang phục vụ', '#EFF6F5', '#B0D4CF', '#1C4842'],
+  done: ['Hoàn tất', '#EDF7F1', '#C3E4D2', '#256A49'],
+  refunded: ['Đã hoàn tiền', '#FCF0EE', '#F1CCC7', '#96271B']
+};
+
+const MODE = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; background: #FFFFFF; font-size: 12px; color: #4A443E; cursor: pointer;';
+const MODE_ON = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #B0D4CF; border-radius: 4px; background: #EFF6F5; font-size: 12px; font-weight: 500; color: #1C4842; cursor: pointer;';
+
+const MENU = 'height: 28px; display: flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;';
+const MENU_DANGER = 'height: 28px; display: flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #C0392B; cursor: pointer;';
+
+const CARD = 'background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;';
+const CARD_WARN = 'background: #FFFDF7; border: 1px solid #F0DDAF; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;';
+
+const BADGE_OK = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #EDF7F1; border: 1px solid #C3E4D2; color: #256A49; font-size: 12px; font-weight: 500;';
+const BADGE_WARN = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FDF6E7; border: 1px solid #F0DDAF; color: #8A5F12; font-size: 12px; font-weight: 500;';
+const BADGE_NEUTRAL = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #F4F1ED; border: 1px solid #E7E2DC; color: #4A443E; font-size: 12px; font-weight: 500;';
+
+const PAY_ROW = 'display: grid; grid-template-columns: 1fr 220px 200px; align-items: center; gap: 12px; min-height: 44px; padding: 6px 16px; border-bottom: 1px solid #F0EBE5;';
+const vnd = (n) => n.toLocaleString('vi-VN');
+
+class Component extends DCLogic {
+  state = { mode: 'done', menuOpen: false, vat: 'none' };
+
+  renderVals() {
+    const st = this.state;
+    const serving = st.mode === 'serving';
+    const refunded = st.mode === 'refunded';
+
+    const extras = serving ? EXTRAS.slice(0, 2) : EXTRAS;
+    const extraTotal = extras.reduce((a, e) => a + e[1] * e[2], 0);
+    const extraQty = extras.reduce((a, e) => a + e[1], 0);
+
+    const sub = PKG_TOTAL + extraTotal + SURCHARGE;
+    const discount = serving ? 0 : DISCOUNT;
+    const service = Math.round((sub - discount) * SERVICE_RATE);
+    const vat = Math.round((sub - discount + service) * VAT_RATE);
+    const total = sub - discount + service + vat;
+
+    const b = BADGE[st.mode];
+    const durationText = serving ? '2 giờ 14 phút' : '2 giờ 40 phút';
+
+    const payLines = [
+      { label: 'Tiền gói buffet', note: '6 người lớn · 2 trẻ em', value: vnd(PKG_TOTAL), tone: 'n' },
+      { label: 'Tiền gọi thêm', note: extras.length + ' món ngoài gói', value: vnd(extraTotal), tone: 'n' },
+      { label: 'Phụ thu', note: 'Bàn nhóm cuối tuần', value: vnd(SURCHARGE), tone: 'n' }
+    ];
+    if (serving) {
+      payLines.push({ label: 'Giảm giá', note: 'Áp khi thanh toán', value: '—', tone: 'muted' });
+    } else {
+      payLines.push({ label: 'Giảm giá', note: 'KM NHOM6 · nhóm 6+ giảm 10%', value: '(' + vnd(discount) + ')', tone: 'danger', link: true });
+    }
+    payLines.push({ label: 'Phí phục vụ 5%', note: 'Trên tiền hàng sau giảm', value: vnd(service), tone: 'n' });
+    payLines.push({ label: 'Thuế VAT 8%', note: 'Trên tiền hàng + phí phục vụ', value: vnd(vat), tone: 'n' });
+
+    const stepDefs = serving
+      ? [
+          ['Mở bàn B4 + B5', '18:32', 'Mỹ Duyên · từ đơn đặt bàn #DB-0914', 'done'],
+          ['Gọi thêm 2 món', '19:12 · 19:40', 'Tôm sú nướng bơ ×2 · Cá hồi áp chảo ×1', 'done'],
+          ['Đang phục vụ', 'bây giờ', 'Thời lượng 2 giờ 14 phút · vượt 120 phút của gói', 'now'],
+          ['In tạm tính', 'chưa', 'Chưa in phiếu tạm tính', 'todo'],
+          ['Thanh toán · đóng đơn', 'chưa', 'Chờ thu ngân', 'todo']
+        ]
+      : [
+          ['Mở bàn B4 + B5', '18:32', 'Mỹ Duyên · từ đơn đặt bàn #DB-0914', 'done'],
+          ['Gọi thêm 4 món', '19:12 → 20:18', 'Tổng ' + vnd(extraTotal) + ' đ · 4 bếp xử lý', 'done'],
+          ['In tạm tính', '21:02', 'Mỹ Duyên · bản in số 1', 'done'],
+          ['Thanh toán', '21:08', 'Phương Vy · chuyển khoản ' + vnd(total) + ' đ', 'done'],
+          ['Đóng đơn · dọn bàn', '21:12', 'Bàn B4 + B5 về trạng thái trống', 'done']
+        ];
+
+    if (refunded) {
+      stepDefs.push(['Hoàn tiền (1.200.000)', '21:40', 'Trúc Linh duyệt · lẩu thái phục vụ chậm 40 phút', 'danger']);
+    }
+
+    const menuItems = [
+      { label: 'Tách bàn', tone: 'n', show: serving },
+      { label: 'Gộp bàn', tone: 'n', show: serving },
+      { label: 'Xem nhật ký đơn', tone: 'n', show: true },
+      { label: 'Hoàn tiền', tone: 'd', show: !serving && !refunded },
+      { label: 'Huỷ đơn', tone: 'd', show: serving }
+    ].filter(m => m.show);
+
+    return {
+      modes: [['serving', 'Đơn đang phục vụ'], ['done', 'Đơn hoàn tất'], ['refunded', 'Đơn đã hoàn tiền']].map(m => ({
+        label: m[1],
+        style: st.mode === m[0] ? MODE_ON : MODE,
+        onPick: () => this.setState({ mode: m[0], menuOpen: false, vat: 'none' })
+      })),
+      isServing: serving,
+      isRefunded: refunded,
+      badgeLabel: b[0],
+      badgeStyle: 'height: 24px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 12px; font-weight: 500; background: ' + b[1] + '; border: 1px solid ' + b[2] + '; color: ' + b[3] + ';',
+      printLabel: serving ? 'In tạm tính' : 'In hoá đơn',
+      menuOpen: st.menuOpen,
+      toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen })),
+      menuItems: menuItems.map(m => ({ label: m.label, style: m.tone === 'd' ? MENU_DANGER : MENU })),
+      menuNote: serving
+        ? 'Đơn đang phục vụ chưa hoàn tiền được — phải thanh toán trước.'
+        : (refunded ? 'Đơn đã hoàn tiền không hoàn lần hai; điều chỉnh tiếp phải qua phiếu điều chỉnh.' : 'Tách và gộp bàn chỉ dùng khi đơn còn đang phục vụ.'),
+
+      summary: [
+        { label: 'Bàn', value: 'B4 + B5', hint: 'Tầng 2 · phòng lạnh', tone: 'n' },
+        { label: 'Số khách', value: '6 NL · 2 TE', hint: '8 khách', tone: 'n' },
+        { label: 'Thời lượng', value: durationText, hint: serving ? 'Vượt 120 phút của gói' : 'Gói cho 120 phút', tone: serving ? 'w' : 'n' },
+        { label: serving ? 'Tạm tính' : 'Tổng tiền', value: vnd(total) + ' đ', hint: refunded ? 'Đã hoàn (1.200.000)' : 'Đã gồm VAT', tone: refunded ? 'd' : 'n' }
+      ].map((s, i) => ({
+        label: s.label,
+        value: s.value,
+        hint: s.hint,
+        cellStyle: 'flex: 1; min-width: 0; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px;' + (i < 3 ? ' border-right: 1px solid #F0EBE5;' : ''),
+        valueStyle: 'font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (s.tone === 'w' ? '#8A5F12' : (s.tone === 'd' ? '#C0392B' : '#1E1B19')) + ';',
+        hintStyle: 'font-size: 12px; color: ' + (s.tone === 'w' ? '#8A5F12' : (s.tone === 'd' ? '#C0392B' : '#6E665C')) + ';'
+      })),
+
+      outTime: serving ? 'Chưa ra' : '28/07/2026 21:12',
+      outTimeStyle: 'font-size: 13px; font-variant-numeric: tabular-nums; color: ' + (serving ? '#ABA298' : '#1E1B19') + ';',
+      outTimeHint: serving ? 'Bàn còn khách' : 'Đóng đơn cùng lúc',
+      duration: durationText,
+      durationStyle: 'font-size: 13px; font-variant-numeric: tabular-nums; color: ' + (serving ? '#8A5F12' : '#1E1B19') + ';',
+      durationHintStyle: 'font-size: 12px; color: ' + (serving ? '#8A5F12' : '#6E665C') + ';',
+      durationHint: serving ? 'Đang đếm · vượt 120 phút' : 'Gói cho 120 phút',
+
+      hasExtras: extras.length > 0,
+      noExtras: extras.length === 0,
+      extraCountLabel: extras.length ? extras.length + ' món · ' + vnd(extraTotal) + ' đ' : 'Không có món gọi thêm',
+      extras: extras.map(e => ({
+        name: e[0],
+        qty: String(e[1]),
+        price: vnd(e[2]),
+        amount: vnd(e[1] * e[2]),
+        time: e[3],
+        kitchen: e[4]
+      })),
+      extraLines: extras.length + ' dòng',
+      extraQty: String(extraQty),
+      extraTotal: vnd(extraTotal),
+
+      payTag: serving ? 'Tạm tính · chưa thanh toán' : (refunded ? 'Đã thanh toán · đã hoàn tiền' : 'Đã thanh toán'),
+      payTagStyle: serving ? BADGE_WARN : (refunded ? 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FCF0EE; border: 1px solid #F1CCC7; color: #96271B; font-size: 12px; font-weight: 500;' : BADGE_OK),
+      payLines: payLines.map(p => ({
+        label: p.label,
+        note: p.note,
+        value: p.value,
+        rowStyle: PAY_ROW,
+        labelStyle: 'font-size: 13px; color: #1E1B19;',
+        noteStyle: 'font-size: 12px; text-align: right; color: ' + (p.tone === 'danger' ? '#96271B' : '#6E665C') + ';',
+        valueStyle: 'font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; color: ' + (p.tone === 'danger' ? '#C0392B' : (p.tone === 'muted' ? '#ABA298' : '#1E1B19')) + ';'
+      })),
+      totalLabel: serving ? 'TẠM TÍNH' : 'TỔNG CỘNG',
+      totalNote: serving ? 'Còn thay đổi nếu khách gọi thêm' : 'Làm tròn tới đồng',
+      totalValue: vnd(total) + ' đ',
+      totalStyle: 'font-size: 20px; font-weight: 500; text-align: right; font-variant-numeric: tabular-nums; color: ' + (refunded ? '#C0392B' : '#1E1B19') + ';',
+      payMethod: serving ? '—' : 'Chuyển khoản · VCB',
+      payTime: serving ? '—' : '28/07/2026 21:08',
+      cashier: serving ? '—' : 'Phương Vy · thu ngân ca tối',
+
+      steps: stepDefs.map((s, i) => ({
+        title: s[0],
+        time: s[1],
+        detail: s[2],
+        hasLine: i < stepDefs.length - 1,
+        dotStyle: 'width: 7px; height: 7px; flex: none; margin-top: 6px; border-radius: 999px; background: '
+          + (s[3] === 'todo' ? '#D5CEC6' : (s[3] === 'danger' ? '#C0392B' : (s[3] === 'now' ? '#2F7168' : '#235B54')))
+          + ';' + (s[3] === 'now' ? ' animation: ibb-blink 1.6s ease-in-out infinite;' : ''),
+        bodyStyle: 'display: flex; flex-direction: column; gap: 2px; padding-bottom: 16px;',
+        titleStyle: 'font-size: 13px; color: ' + (s[3] === 'todo' ? '#ABA298' : (s[3] === 'danger' ? '#96271B' : '#1E1B19')) + ';' + (s[3] === 'now' ? ' font-weight: 500;' : '')
+      })),
+
+      pointValue: serving ? 'Tính khi thanh toán' : (refunded ? '(438)' : '+438'),
+      pointStyle: 'font-variant-numeric: tabular-nums; color: ' + (refunded ? '#C0392B' : (serving ? '#6E665C' : '#256A49')) + ';',
+      pointTotal: serving ? '2.804' : (refunded ? '2.804' : '3.242'),
+      pointNote: refunded ? 'Điểm đã bị thu hồi khi hoàn tiền.' : (serving ? '1 điểm cho mỗi 10.000 đ, cộng sau khi thanh toán.' : '1 điểm cho mỗi 10.000 đ · đã cộng.'),
+
+      vatCardStyle: st.vat === 'issued' ? CARD : (serving ? CARD : CARD_WARN),
+      vatBadge: st.vat === 'issued' ? 'Đã phát hành' : (serving ? 'Chờ thanh toán' : 'Chưa phát hành'),
+      vatBadgeStyle: st.vat === 'issued' ? BADGE_OK : (serving ? BADGE_NEUTRAL : BADGE_WARN),
+      vatText: st.vat === 'issued'
+        ? 'Hoá đơn điện tử đã gửi tới email khách và lưu ở màn Hoá đơn VAT.'
+        : (serving
+            ? 'Đơn chưa thanh toán nên chưa phát hành được hoá đơn.'
+            : 'Khách yêu cầu hoá đơn công ty. Chưa phát hành — quá 24 giờ sau thanh toán sẽ phải làm hoá đơn điều chỉnh.'),
+      vatCanIssue: !serving && st.vat !== 'issued',
+      vatIssued: st.vat === 'issued',
+      vatBlocked: serving,
+      issueVat: () => this.setState({ vat: 'issued' }),
+
+      audit: [
+        ['Hoàn tiền 1.200.000 đ', '21:40 · Trúc Linh', refunded],
+        ['Thanh toán chuyển khoản', '21:08 · Phương Vy', !serving],
+        ['In tạm tính', '21:02 · Mỹ Duyên', !serving],
+        ['Thêm món Nước ép cam ×4', '20:18 · Mỹ Duyên', !serving],
+        ['Mở bàn từ đơn đặt #DB-0914', '18:32 · Mỹ Duyên', true]
+      ].filter(a => a[2]).map((a, i, arr) => ({
+        action: a[0],
+        meta: a[1],
+        hasLine: i < arr.length - 1,
+        dotStyle: 'width: 7px; height: 7px; flex: none; margin-top: 6px; border-radius: 999px; background: ' + (i === 0 ? '#235B54' : '#D5CEC6') + ';'
+      }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

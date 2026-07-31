@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  input { font-family: inherit; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-ns-06</span><span style="color: #D5CEC6;">·</span><span>template 1</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">/nhan-su/bang-luong</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Bảng lương</h1>
+    <p style="margin: 0; max-width: 82ch; font-size: 14px; color: #635B53;">Không có bulk action — kỳ lương xử lý từng kỳ một. Toàn bộ số <strong style="font-weight: 500;">không rút gọn, tabular-nums</strong>. Bấm một kỳ mở màn con: danh sách phiếu lương của kỳ đó, từ đó vào phiếu chi tiết SC-NS-07.</p>
+  </header>
+
+  <div style="position: relative; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 24px; display: flex; flex-direction: column; gap: 20px; overflow: hidden;">
+
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <nav style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6E665C;">
+          <a href="#" style="color: #6E665C; text-decoration: none;">Nhân sự</a><span style="color: #D5CEC6;">/</span>
+          <sc-if value="{{ inDetail }}" hint-placeholder-val="{{ false }}">
+            <a href="#" onClick="{{ backToList }}" style="color: #6E665C; text-decoration: none;">Bảng lương</a>
+          </sc-if>
+          <sc-if value="{{ inDetail }}" hint-placeholder-val="{{ false }}">
+            <span style="color: #D5CEC6;">/</span>
+          </sc-if>
+          <span style="color: #332F2B; font-weight: 500;">{{ crumbLast }}</span>
+        </nav>
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; line-height: 1.1; margin: 0;">{{ pageTitle }}</h2>
+        <span style="font-size: 13px; color: #6E665C;">{{ pageSub }}</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; flex: none;">
+        <sc-if value="{{ inList }}" hint-placeholder-val="{{ true }}">
+          <button style="height: 36px; padding: 0 16px; font-family: inherit; font-size: 13px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 4px; cursor: pointer;" style-hover="background: #1C4842;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Tạo kỳ lương</button>
+        </sc-if>
+        <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xuất Excel</button>
+      </div>
+    </div>
+
+    <sc-if value="{{ inList }}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+          <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+            <div style="{{ s.cardStyle }}">
+              <span style="font-size: 13px; color: #6E665C;">{{ s.label }}</span>
+              <div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">
+                <strong style="{{ s.valueStyle }}">{{ s.value }}</strong>
+                <span style="{{ s.deltaStyle }}">{{ s.delta }}</span>
+              </div>
+              <span style="{{ s.hintStyle }}">{{ s.hint }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; align-items: flex-end; gap: 4px; border-bottom: 1px solid #E7E2DC;">
+          <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+            <span onClick="{{ t.onPick }}" tabindex="0" role="tab" aria-selected="{{ t.selected }}" style="{{ t.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+              {{ t.label }}
+              <span style="{{ t.countStyle }}">{{ t.count }}</span>
+            </span>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; cursor: pointer;" style-hover="background: #F4F1ED;">
+              Trạng thái: tất cả
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8178" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg>
+            </span>
+            <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; cursor: pointer;" style-hover="background: #F4F1ED;">
+              Chi nhánh: Quận 1
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8178" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg>
+            </span>
+            <div style="display: flex; gap: 4px; padding: 4px; background: #F4F1ED; border-radius: 8px;">
+              <sc-for list="{{ yearFilter }}" as="y" hint-placeholder-count="2">
+                <span onClick="{{ y.onPick }}" tabindex="0" style="{{ y.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ y.label }}</span>
+              </sc-for>
+            </div>
+            <span style="width: 1px; height: 24px; background: #E7E2DC;"></span>
+            <span onClick="{{ toggleFilters }}" role="button" tabindex="0" style="{{ moreFilterStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 5h18M6 12h12M10 19h4"></path></svg>
+              Bộ lọc nâng cao
+            </span>
+          </div>
+          <span style="font-size: 13px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ resultLabel }}</span>
+        </div>
+
+        <sc-if value="{{ filtersOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; color: #6E665C;">Khoảng kỳ</label>
+              <span style="height: 36px; display: flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; font-variant-numeric: tabular-nums;">01/2026 — 07/2026</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; color: #6E665C;">Người lập</label>
+              <span style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #8A8178;">Tất cả
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8178" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg>
+              </span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 12px; color: #6E665C;">Khoảng tổng thực chi</label>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <input type="text" placeholder="từ" style="height: 36px; width: 100%; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; outline: none; font-variant-numeric: tabular-nums;" style-focus="border-color: #2F7168; box-shadow: 0 0 0 3px rgba(47,113,104,0.12);">
+                <span style="color: #ABA298;">—</span>
+                <input type="text" placeholder="đến" style="height: 36px; width: 100%; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; outline: none; font-variant-numeric: tabular-nums;" style-focus="border-color: #2F7168; box-shadow: 0 0 0 3px rgba(47,113,104,0.12);">
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+          <div style="display: grid; grid-template-columns: 104px 176px 96px 152px 148px 156px 128px 1fr 108px 36px; gap: 10px; align-items: center; min-height: 40px; padding: 0 16px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+            <span>Kỳ lương</span><span>Từ ngày — đến ngày</span>
+            <span style="text-align: right;">Nhân viên</span>
+            <span style="text-align: right;">Tổng thu nhập</span>
+            <span style="text-align: right;">Tổng khấu trừ</span>
+            <span style="text-align: right;">Tổng thực chi</span>
+            <span>Trạng thái</span><span>Người lập</span><span>Ngày duyệt</span><span></span>
+          </div>
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="7">
+            <div style="{{ r.rowStyle }}" style-hover="background: #FAF8F6;">
+              <a href="#" onClick="{{ r.onOpen }}" style="font-weight: 500; font-variant-numeric: tabular-nums;">{{ r.period }}</a>
+              <span style="font-variant-numeric: tabular-nums; color: #4A443E;">{{ r.range }}</span>
+              <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ r.people }}</span>
+              <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ r.income }}</span>
+              <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ r.deduct }}</span>
+              <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums;">{{ r.net }}</span>
+              <span><span style="{{ r.badgeStyle }}">{{ r.status }}</span></span>
+              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #4A443E;">{{ r.author }}</span>
+              <span style="{{ r.approvedStyle }}">{{ r.approved }}</span>
+              <span onClick="{{ r.onMenu }}" role="button" tabindex="0" aria-label="Hành động" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;" style-hover="background: #F0EBE5;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="2" stroke-linecap="round"><path d="M12 5v.01M12 12v.01M12 19v.01"></path></svg>
+              </span>
+            </div>
+            <sc-if value="{{ r.menuOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 16px; background: #FAF8F6; border-bottom: 1px solid #F0EBE5;">
+                <sc-for list="{{ r.actions }}" as="a" hint-placeholder-count="4">
+                  <span onClick="{{ a.onPick }}" role="button" tabindex="0" style="{{ a.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ a.label }}</span>
+                </sc-for>
+                <span style="font-size: 12px; color: #6E665C;">{{ r.actionNote }}</span>
+              </div>
+            </sc-if>
+          </sc-for>
+          <div style="display: grid; grid-template-columns: 104px 176px 96px 152px 148px 156px 128px 1fr 108px 36px; gap: 10px; align-items: center; min-height: 48px; padding: 0 16px; background: #FAF8F6; border-top: 1px solid #E7E2DC; font-size: 13px;">
+            <strong style="grid-column: span 2; font-weight: 500; letter-spacing: 0.02em;">TỔNG · {{ rowCount }} kỳ</strong>
+            <span></span>
+            <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ tIncome }}</span>
+            <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ tDeduct }}</span>
+            <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{ tNet }}</strong>
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ inDetail }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px;">
+          <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <span onClick="{{ backToList }}" role="button" tabindex="0" style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>
+              Về danh sách kỳ
+            </span>
+            <span style="{{ detailBadgeStyle }}">{{ detailStatus }}</span>
+            <span style="font-size: 13px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ detailMeta }}</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <sc-for list="{{ detailActions }}" as="a" hint-placeholder-count="3">
+              <span onClick="{{ a.onPick }}" role="button" tabindex="0" style="{{ a.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ a.label }}</span>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+          <div style="display: grid; grid-template-columns: 1fr 148px 108px 152px 148px 156px 128px; gap: 10px; align-items: center; min-height: 40px; padding: 0 16px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+            <span>Nhân viên</span><span>Vị trí</span>
+            <span style="text-align: right;">Ngày công</span>
+            <span style="text-align: right;">Tổng thu nhập</span>
+            <span style="text-align: right;">Khấu trừ</span>
+            <span style="text-align: right;">Thực nhận</span>
+            <span>Trạng thái</span>
+          </div>
+          <sc-for list="{{ slips }}" as="s" hint-placeholder-count="6">
+            <div style="display: grid; grid-template-columns: 1fr 148px 108px 152px 148px 156px 128px; gap: 10px; align-items: center; min-height: 44px; padding: 0 16px; font-size: 13px; border-bottom: 1px solid #F0EBE5;" style-hover="background: #FAF8F6;">
+              <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                <a href="#" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ s.name }}</a>
+                <span style="font-size: 12px; color: #6E665C; font-family: ui-monospace, Menlo, monospace;">{{ s.code }}</span>
+              </span>
+              <span style="color: #4A443E; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ s.role }}</span>
+              <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ s.days }}</span>
+              <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ s.income }}</span>
+              <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ s.deduct }}</span>
+              <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums;">{{ s.net }}</span>
+              <span><span style="{{ s.badgeStyle }}">{{ s.status }}</span></span>
+            </div>
+          </sc-for>
+          <div style="display: grid; grid-template-columns: 1fr 148px 108px 152px 148px 156px 128px; gap: 10px; align-items: center; min-height: 48px; padding: 0 16px; background: #FAF8F6; border-top: 1px solid #E7E2DC; font-size: 13px;">
+            <strong style="font-weight: 500; letter-spacing: 0.02em;">TỔNG · {{ slipCount }} phiếu</strong>
+            <span></span>
+            <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ sDays }}</span>
+            <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ sIncome }}</span>
+            <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ sDeduct }}</span>
+            <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{ sNet }}</strong>
+            <span></span>
+          </div>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Bấm tên nhân viên để mở phiếu lương chi tiết (SC-NS-07). Số ở đây khớp từng đồng với phiếu, không rút gọn.</span>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ confirmOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position: absolute; inset: 0; z-index: 7; background: rgba(30,27,25,0.32); display: flex; align-items: center; justify-content: center; padding: 32px;">
+        <div style="width: 440px; background: #FFFFFF; border-radius: 8px; box-shadow: 0 16px 40px rgba(30,27,25,0.16); padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="{{ confirmIconStyle }}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{ confirmIconColor }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+            </span>
+            <strong style="font-size: 16px; font-weight: 500;">{{ confirmTitle }}</strong>
+          </div>
+          <span style="font-size: 13px; color: #4A443E;">{{ confirmBody }}</span>
+          <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
+            <span onClick="{{ cancelConfirm }}" role="button" tabindex="0" style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; border: 1px solid #E7E2DC; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Quay lại</span>
+            <span style="{{ confirmBtnStyle }}">{{ confirmCta }}</span>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ bankOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position: absolute; inset: 0; z-index: 7; background: rgba(30,27,25,0.32); display: flex; align-items: center; justify-content: center; padding: 32px;">
+        <div style="width: 560px; background: #FFFFFF; border-radius: 8px; box-shadow: 0 16px 40px rgba(30,27,25,0.16); overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 56px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #E7E2DC;">
+            <strong style="font-size: 16px; font-weight: 500;">Xuất file chuyển khoản hàng loạt</strong>
+            <span onClick="{{ cancelBank }}" role="button" tabindex="0" aria-label="Đóng" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+            </span>
+          </div>
+          <div style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+            <span style="font-size: 13px; color: #4A443E;">Mỗi ngân hàng có một định dạng tệp riêng. Chọn đúng ngân hàng của tài khoản công ty dùng để chi lương.</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <sc-for list="{{ banks }}" as="b" hint-placeholder-count="4">
+                <span onClick="{{ b.onPick }}" role="radio" tabindex="0" aria-checked="{{ b.selected }}" style="{{ b.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                  <span style="{{ b.dotStyle }}"></span>
+                  <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                    <span style="font-size: 13px; font-weight: 500;">{{ b.name }}</span>
+                    <span style="font-size: 12px; color: #6E665C;">{{ b.format }}</span>
+                  </span>
+                </span>
+              </sc-for>
+            </div>
+            <div style="display: flex; gap: 12px; padding: 12px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 4px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+              <span style="font-size: 13px; color: #8A5F12;">{{ bankWarning }}</span>
+            </div>
+          </div>
+          <div style="padding: 16px 20px; border-top: 1px solid #E7E2DC; display: flex; justify-content: flex-end; gap: 8px;">
+            <span onClick="{{ cancelBank }}" role="button" tabindex="0" style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; border: 1px solid #E7E2DC; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Huỷ</span>
+            <span style="{{ bankBtnStyle }}">Xuất tệp</span>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Ghi cho dev</h2>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">không bulk</span><span style="color: #4A443E;">Kỳ lương xử lý từng kỳ. Duyệt hai kỳ cùng lúc là cách nhanh nhất để duyệt nhầm một kỳ chưa tính xong.</span>
+      <span style="color: #6E665C;">tính lại</span><span style="color: #4A443E;">Chỉ bật ở trạng thái <strong style="font-weight: 500;">nháp</strong>. Confirm nêu rõ sẽ ghi đè toàn bộ số đã tính, kể cả phần nhân sự đã sửa tay trong phiếu.</span>
+      <span style="color: #6E665C;">kỳ đã chi</span><span style="color: #4A443E;">Khoá hoàn toàn: không tính lại, không sửa phiếu, không xuất lại tệp ngân hàng. Chỉ còn xem và in.</span>
+      <span style="color: #6E665C;">xuất file ngân hàng</span><span style="color: #4A443E;">Modal chọn ngân hàng trước — mỗi ngân hàng một định dạng. Nêu trước số dòng, tổng tiền và số nhân viên bị loại vì thiếu tài khoản.</span>
+      <span style="color: #6E665C;">màn con</span><span style="color: #4A443E;">Bấm kỳ mở danh sách phiếu <strong style="font-weight: 500;">trong cùng màn</strong>, breadcrumb thêm một cấp — không phải trang riêng, để quay lại không mất bộ lọc.</span>
+      <span style="color: #6E665C;">số liệu</span><span style="color: #4A443E;">Không rút gọn ở bất kỳ đâu. Kỳ 07/2026 khớp từng đồng với SC-NS-07 và tab Lương của SC-NS-03.</span>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">4 state của T1</h2>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Đang tải</span>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        </div>
+        <span style="height: 44px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Không hiện số tiền nào cho tới khi cả kỳ về đủ — nửa bảng lương là số vô nghĩa.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Chưa có kỳ nào</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18v16H3zM8 2v6M16 2v6M3 11h18"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Chưa có kỳ lương nào trong 2026</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Tạo kỳ đầu tiên — hệ thống lấy dữ liệu chấm công đã chốt của kỳ đó.</span>
+        <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 16px; margin-top: 4px; border-radius: 4px; background: #235B54; color: #FFFFFF; font-size: 13px; font-weight: 500; cursor: pointer;">Tạo kỳ lương</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Kỳ thiếu dữ liệu chấm công</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Kỳ 08/2026 · 3 ngày chưa chốt chấm công</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Tạo kỳ được nhưng nút Duyệt khoá lại kèm lời giải thích. Tính lương trên chấm công chưa chốt là nguồn của mọi phiếu điều chỉnh về sau.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Không có quyền</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.6" stroke-linecap="round" style="margin-top: 2px; flex-shrink: 0;"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Kế toán xem và chi, không tạo và không duyệt</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Nút Tạo kỳ lương và Duyệt biến mất hẳn với kế toán; Chi lương và Xuất file ngân hàng giữ nguyên. Quản lý chi nhánh không vào được màn này.</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1100}}">
+const SEG = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #635B53; cursor: pointer;';
+const SEG_ON = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(30,27,25,0.06); font-size: 13px; font-weight: 500; color: #1C4842; cursor: pointer;';
+
+const B_OK = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #EDF7F1; border: 1px solid #C3E4D2; color: #256A49; font-size: 12px; font-weight: 500; white-space: nowrap;';
+const B_WARN = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FDF6E7; border: 1px solid #F0DDAF; color: #8A5F12; font-size: 12px; font-weight: 500; white-space: nowrap;';
+const B_TEAL = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #EFF6F5; border: 1px solid #B0D4CF; color: #1C4842; font-size: 12px; font-weight: 500; white-space: nowrap;';
+const B_NEUTRAL = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #F4F1ED; border: 1px solid #E7E2DC; color: #4A443E; font-size: 12px; font-weight: 500; white-space: nowrap;';
+
+const num = (n) => n.toLocaleString('vi-VN');
+const dec1 = (n) => n.toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+// Kỳ 07/2026 khớp SC-NS-07 và SC-NS-03: NV-0148 thu nhập 17.973.000 · khấu trừ 3.795.050
+// [kỳ, từ, đến, số NV, tổng thu nhập, tổng khấu trừ, trạng thái, người lập, ngày duyệt]
+const PERIODS = [
+  // [kỳ, từ, đến, số NV, hệ số gross so với kỳ 07, trạng thái, người lập, ngày duyệt]
+  // Mọi kỳ cùng một cơ sở: gross = gross kỳ 07 × hệ số. Kỳ 06 ra ≈ 385,9 tr,
+  // khớp chi phí nhân công 468.900.000 của SC-TC-11 sau khi cộng phần doanh nghiệp đóng (×1,215).
+  ['07/2026', '01/07/2026', '31/07/2026', null, 1.000, 'draft', 'Ngọc Trâm', null],
+  ['06/2026', '01/06/2026', '30/06/2026', 31, 1.041, 'paid', 'Ngọc Trâm', '03/07/2026'],
+  ['05/2026', '01/05/2026', '31/05/2026', 31, 1.012, 'paid', 'Ngọc Trâm', '03/06/2026'],
+  ['04/2026', '01/04/2026', '30/04/2026', 30, 0.994, 'paid', 'Ngọc Trâm', '04/05/2026'],
+  ['03/2026', '01/03/2026', '31/03/2026', 30, 1.008, 'paid', 'Mỹ Duyên', '03/04/2026'],
+  ['02/2026', '01/02/2026', '28/02/2026', 29, 0.958, 'paid', 'Mỹ Duyên', '04/03/2026'],
+  ['01/2026', '01/01/2026', '31/01/2026', 29, 1.176, 'paid', 'Mỹ Duyên', '03/02/2026']
+];
+
+const STATUS = {
+  draft: { label: 'Nháp', style: B_WARN },
+  approved: { label: 'Đã duyệt', style: B_TEAL },
+  paid: { label: 'Đã chi', style: B_OK }
+};
+
+const NAMED_SLIPS = [
+  ['Nguyễn Văn A', 'NV-0148', 'Bếp chính', 25.5, 17973000, 3795050],
+  ['Trần Bình', 'NV-0092', 'Bếp trưởng', 26.0, 24180000, 5124600],
+  ['Thu Hà', 'NV-0117', 'Thu ngân', 25.0, 14620000, 3086400],
+  ['Phương Vy', 'NV-0134', 'Phục vụ', 24.5, 11840000, 2461200],
+  ['Mỹ Duyên', 'NV-0088', 'Quản lý ca', 26.0, 19460000, 4108800],
+  ['Quốc Bảo', 'NV-0151', 'Phục vụ', 23.0, 10920000, 2264800]
+];
+
+const REST_NAMES = [
+  'Lê Thị Hạnh', 'Phạm Văn Dũng', 'Ngô Thu Trang', 'Đỗ Quang Huy', 'Vũ Thị Loan',
+  'Bùi Minh Đức', 'Hoàng Thị Nga', 'Trịnh Văn Sơn', 'Đinh Thu Hằng', 'Lý Văn Kiên',
+  'Cao Thị Mai', 'Dương Minh Tuấn', 'Tạ Thị Bích', 'Phan Văn Lộc', 'Hồ Thị Yến',
+  'Nguyễn Bá Long', 'Trần Thị Thắm', 'Lâm Văn Phúc', 'Đặng Thu Thuỷ', 'Chu Minh Hải',
+  'Võ Thị Nhung', 'Mai Văn Tú', 'Kiều Thị Lan', 'Tô Quang Vinh', 'Hà Thị Diệp', 'Lưu Văn Bình'
+];
+const REST_ROLES = ['Phục vụ', 'Phụ bếp', 'Thu ngân', 'Bảo vệ', 'Tạp vụ', 'Bếp phụ'];
+
+const REST_SLIPS = REST_NAMES.map((name, i) => {
+  const days = 22 + ((i * 3) % 5) * 0.5 + (i % 2 === 0 ? 0.5 : 0);
+  const income = 9200000 + ((i * 137) % 68) * 100000;
+  const deduct = Math.round(income * 0.208 / 1000) * 1000;
+  return [name, 'NV-0' + (160 + i * 3), REST_ROLES[i % REST_ROLES.length], days, income, deduct];
+});
+
+const SLIPS = NAMED_SLIPS.concat(REST_SLIPS);
+// Hai người chưa khai số tài khoản — bị loại khỏi tệp chuyển khoản
+const NO_ACCOUNT = [SLIPS.length - 2, SLIPS.length - 1];
+
+const P7_INCOME = SLIPS.reduce((s, x) => s + x[4], 0);
+const P7_DEDUCT = SLIPS.reduce((s, x) => s + x[5], 0);
+
+const BANKS = [
+  ['Vietcombank', 'Tệp .xlsx theo mẫu VCB-iB@nking'],
+  ['Techcombank', 'Tệp .txt phân tách bằng dấu | · Business Banking'],
+  ['ACB', 'Tệp .csv theo mẫu ACB Online'],
+  ['BIDV', 'Tệp .xlsx theo mẫu iBank chi lương']
+];
+
+class Component extends DCLogic {
+  state = {
+    view: 'list', openPeriod: null, tab: 'all', year: '2026',
+    filtersOpen: false, menu: {}, confirm: null, bankOpen: false, bank: 'Vietcombank'
+  };
+
+  renderVals() {
+    const st = this.state;
+
+    // Kỳ 07/2026 để null ở PERIODS và lấy số từ SLIPS — tránh đọc SLIPS
+    // trong initializer của PERIODS (SLIPS khai báo phía dưới, sẽ lỗi TDZ).
+    // Bảy kỳ cùng một cơ sở: kỳ 07 cộng từ phiếu thật, các kỳ khác nhân hệ số.
+    // Tỷ lệ khấu trừ giữ nguyên như kỳ 07 để mọi kỳ so sánh được với nhau.
+    const deductRate = P7_DEDUCT / P7_INCOME;
+    const all = PERIODS.map(p => {
+      const derived = p[3] === null;
+      const income = derived ? P7_INCOME : Math.round(P7_INCOME * p[4] / 1000) * 1000;
+      const deduct = derived ? P7_DEDUCT : Math.round(income * deductRate / 1000) * 1000;
+      return {
+        period: p[0], from: p[1], to: p[2],
+        people: derived ? SLIPS.length : p[3],
+        income, deduct, net: income - deduct,
+        status: p[5], author: p[6], approved: p[7]
+      };
+    });
+
+    const counts = {
+      all: all.length,
+      draft: all.filter(p => p.status === 'draft').length,
+      approved: all.filter(p => p.status === 'approved').length,
+      paid: all.filter(p => p.status === 'paid').length
+    };
+
+    let rows = all;
+    if (st.tab !== 'all') rows = all.filter(p => p.status === st.tab);
+
+    const current = all.filter(p => p.status === 'draft')[0] || all[0];
+    const prev = all[1];
+    const tIncome = rows.reduce((s, r) => s + r.income, 0);
+    const tDeduct = rows.reduce((s, r) => s + r.deduct, 0);
+    const tNet = rows.reduce((s, r) => s + r.net, 0);
+
+    const detail = all.filter(p => p.period === st.openPeriod)[0] || null;
+    const inDetail = st.view === 'detail' && !!detail;
+
+    const excludedNet = NO_ACCOUNT.reduce((s, i) => s + (SLIPS[i][4] - SLIPS[i][5]), 0);
+    const fileTotal = (P7_INCOME - P7_DEDUCT) - excludedNet;
+    const sIncome = SLIPS.reduce((s, x) => s + x[4], 0);
+    const sDeduct = SLIPS.reduce((s, x) => s + x[5], 0);
+    const sDays = SLIPS.reduce((s, x) => s + x[3], 0);
+
+    const btn = (kind) => 'height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; cursor: pointer; '
+      + (kind === 'primary' ? 'background: #235B54; color: #FFFFFF; font-weight: 500;'
+        : (kind === 'off' ? 'background: #F4F1ED; color: #ABA298; cursor: not-allowed;'
+          : 'background: #FFFFFF; border: 1px solid #E7E2DC; color: #4A443E;'));
+
+    const actionsFor = (p) => {
+      const list = [{ label: 'Xem danh sách phiếu', kind: 'normal', onPick: () => this.setState({ view: 'detail', openPeriod: p.period, menu: {} }) }];
+      if (p.status === 'draft') {
+        list.push({ label: 'Tính lại', kind: 'normal', onPick: () => this.setState({ confirm: 'recalc', menu: {} }) });
+        list.push({ label: 'Duyệt', kind: 'primary', onPick: () => this.setState({ confirm: 'approve', menu: {} }) });
+      }
+      if (p.status === 'approved') {
+        list.push({ label: 'Chi lương', kind: 'primary', onPick: () => this.setState({ confirm: 'pay', menu: {} }) });
+      }
+      list.push({ label: 'In bảng lương', kind: 'normal' });
+      if (p.status !== 'paid') {
+        list.push({ label: 'Xuất file ngân hàng', kind: 'normal', onPick: () => this.setState({ bankOpen: true, menu: {} }) });
+      }
+      return list;
+    };
+
+    const confirmMap = {
+      recalc: {
+        title: 'Tính lại kỳ 07/2026?',
+        body: 'Toàn bộ số đã tính sẽ bị ghi đè bằng dữ liệu chấm công hiện tại, kể cả những phiếu nhân sự đã sửa tay. Thao tác này không hoàn tác được.',
+        cta: 'Tính lại', danger: true
+      },
+      approve: {
+        title: 'Duyệt kỳ lương 07/2026?',
+        body: 'Sau khi duyệt, kỳ không tính lại được nữa. 32 phiếu với tổng thực chi ' + num(current.net) + ' đ sẽ chuyển sang chờ chi.',
+        cta: 'Duyệt kỳ', danger: false
+      },
+      pay: {
+        title: 'Xác nhận đã chi lương?',
+        body: 'Đánh dấu đã chi sẽ khoá kỳ hoàn toàn: không sửa phiếu, không xuất lại tệp ngân hàng. Chỉ làm sau khi tiền đã rời tài khoản.',
+        cta: 'Xác nhận đã chi', danger: true
+      }
+    };
+    const cf = st.confirm ? confirmMap[st.confirm] : null;
+
+    return {
+      inList: !inDetail,
+      inDetail,
+      crumbLast: inDetail ? ('Kỳ ' + detail.period) : 'Bảng lương',
+      pageTitle: inDetail ? ('Phiếu lương kỳ ' + detail.period) : 'Bảng lương',
+      pageSub: inDetail
+        ? (detail.from + ' — ' + detail.to + ' · chi nhánh Quận 1 · ' + num(detail.people) + ' nhân viên')
+        : 'Chi nhánh Quận 1 · năm ' + st.year,
+      backToList: () => this.setState({ view: 'list', openPeriod: null }),
+
+      stats: [
+        { label: 'Kỳ đang mở', value: current.period, delta: '', hint: 'Trạng thái ' + STATUS[current.status].label.toLowerCase() + ' · lập bởi ' + current.author, tone: 'n' },
+        { label: 'Tổng chi lương kỳ này', value: num(current.net), delta: '', hint: 'Thu nhập ' + num(current.income) + ' − khấu trừ ' + num(current.deduct), tone: 'n' },
+        { label: 'Số nhân viên', value: num(current.people), delta: '', hint: 'Kỳ trước ' + num(prev.people) + ' người', tone: 'n' },
+        { label: 'Chênh so kỳ trước', value: (current.net >= prev.net ? '+' : '−') + num(Math.abs(current.net - prev.net)),
+          delta: (current.net >= prev.net ? '+' : '−') + dec1(Math.abs(((current.net - prev.net) / prev.net) * 100)) + '%',
+          hint: 'So với kỳ ' + prev.period, tone: current.net > prev.net ? 'warn' : 'n' }
+      ].map(s => ({
+        label: s.label, value: s.value, delta: s.delta, hint: s.hint,
+        cardStyle: 'border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 4px; background: #FFFFFF; border: 1px solid #E7E2DC;',
+        valueStyle: 'font-size: 20px; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (s.tone === 'warn' ? '#8A5F12' : '#1E1B19') + ';',
+        deltaStyle: 'font-size: 13px; font-variant-numeric: tabular-nums; color: ' + (s.tone === 'warn' ? '#8A5F12' : '#635B53') + ';',
+        hintStyle: 'font-size: 12px; color: #6E665C;'
+      })),
+
+      tabs: [['all', 'Tất cả', counts.all], ['draft', 'Nháp', counts.draft], ['approved', 'Đã duyệt', counts.approved], ['paid', 'Đã chi', counts.paid]].map(t => ({
+        label: t[1],
+        selected: st.tab === t[0],
+        count: num(t[2]),
+        countStyle: 'display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; font-size: 12px; font-weight: 500; '
+          + (st.tab === t[0] ? 'background: #EFF6F5; color: #1C4842;' : 'background: #F4F1ED; color: #6E665C;'),
+        style: 'height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 16px; border-radius: 4px 4px 0 0; font-size: 13px; cursor: pointer; '
+          + (st.tab === t[0]
+              ? 'background: #FFFFFF; border: 1px solid #E7E2DC; border-bottom: 1px solid #FFFFFF; margin-bottom: -1px; font-weight: 500; color: #1C4842;'
+              : 'border: 1px solid transparent; color: #635B53;'),
+        onPick: () => this.setState({ tab: t[0], menu: {} })
+      })),
+
+      yearFilter: ['2026', '2025'].map(y => ({
+        label: y, style: st.year === y ? SEG_ON : SEG, onPick: () => this.setState({ year: y })
+      })),
+      filtersOpen: st.filtersOpen,
+      toggleFilters: () => this.setState(s => ({ filtersOpen: !s.filtersOpen })),
+      moreFilterStyle: 'height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 4px; font-size: 13px; cursor: pointer; border: 1px solid '
+        + (st.filtersOpen ? '#B0D4CF' : '#E7E2DC') + '; background: ' + (st.filtersOpen ? '#EFF6F5' : '#FFFFFF') + '; color: ' + (st.filtersOpen ? '#1C4842' : '#4A443E') + ';',
+      resultLabel: num(rows.length) + ' kỳ lương',
+
+      rows: rows.map(r => ({
+        period: r.period,
+        range: r.from + ' — ' + r.to,
+        people: num(r.people),
+        income: num(r.income),
+        deduct: num(r.deduct),
+        net: num(r.net),
+        status: STATUS[r.status].label,
+        badgeStyle: STATUS[r.status].style,
+        author: r.author,
+        approved: r.approved || 'Chưa duyệt',
+        approvedStyle: 'font-variant-numeric: tabular-nums; color: ' + (r.approved ? '#4A443E' : '#8A5F12') + ';',
+        onOpen: () => this.setState({ view: 'detail', openPeriod: r.period }),
+        onMenu: () => this.setState(s => ({ menu: { [r.period]: !s.menu[r.period] } })),
+        menuOpen: !!st.menu[r.period],
+        actions: actionsFor(r).map(a => ({ label: a.label, onPick: a.onPick || (() => {}), style: btn(a.kind) })),
+        actionNote: r.status === 'paid'
+          ? 'Kỳ đã chi khoá hoàn toàn — không tính lại, không sửa phiếu, không xuất lại tệp ngân hàng.'
+          : (r.status === 'draft'
+              ? 'Tính lại chỉ dùng được khi còn nháp và sẽ ghi đè số đã tính.'
+              : 'Đã duyệt: không tính lại được nữa, còn chi lương và xuất tệp.'),
+        rowStyle: 'display: grid; grid-template-columns: 104px 176px 96px 152px 148px 156px 128px 1fr 108px 36px; gap: 10px; align-items: center; min-height: 48px; padding: 0 16px; font-size: 13px; border-bottom: 1px solid #F0EBE5; background: '
+          + (r.status === 'draft' ? '#FFFCF4' : '#FFFFFF') + ';'
+      })),
+
+      rowCount: num(rows.length),
+      tIncome: num(tIncome),
+      tDeduct: num(tDeduct),
+      tNet: num(tNet),
+
+      detailStatus: detail ? STATUS[detail.status].label : '',
+      detailBadgeStyle: detail ? STATUS[detail.status].style : B_NEUTRAL,
+      detailMeta: detail ? ('Lập bởi ' + detail.author + ' · ' + (detail.approved ? 'duyệt ' + detail.approved : 'chưa duyệt')) : '',
+      detailActions: detail ? actionsFor(detail).filter(a => a.label !== 'Xem danh sách phiếu').map(a => ({
+        label: a.label, onPick: a.onPick || (() => {}), style: btn(a.kind).replace('height: 32px', 'height: 36px')
+      })) : [],
+
+      slips: SLIPS.map(s => ({
+        name: s[0], code: s[1], role: s[2],
+        days: dec1(s[3]),
+        income: num(s[4]),
+        deduct: num(s[5]),
+        net: num(s[4] - s[5]),
+        status: detail && detail.status === 'paid' ? 'Đã chi' : (detail && detail.status === 'approved' ? 'Đã duyệt' : 'Nháp'),
+        badgeStyle: detail && detail.status === 'paid' ? B_OK : (detail && detail.status === 'approved' ? B_TEAL : B_WARN)
+      })),
+      slipCount: num(SLIPS.length),
+      sDays: dec1(sDays),
+      sIncome: num(sIncome),
+      sDeduct: num(sDeduct),
+      sNet: num(sIncome - sDeduct),
+
+      confirmOpen: !!cf,
+      confirmTitle: cf ? cf.title : '',
+      confirmBody: cf ? cf.body : '',
+      confirmCta: cf ? cf.cta : '',
+      confirmIconStyle: 'width: 36px; height: 36px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: ' + (cf && cf.danger ? '#FCF0EE' : '#EFF6F5') + ';',
+      confirmIconColor: cf && cf.danger ? '#C0392B' : '#235B54',
+      confirmBtnStyle: 'height: 36px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 4px; font-size: 13px; font-weight: 500; color: #FFFFFF; cursor: pointer; background: ' + (cf && cf.danger ? '#C0392B' : '#235B54') + ';',
+      cancelConfirm: () => this.setState({ confirm: null }),
+
+      bankOpen: st.bankOpen,
+      cancelBank: () => this.setState({ bankOpen: false }),
+      banks: BANKS.map(b => ({
+        name: b[0], format: b[1],
+        selected: st.bank === b[0],
+        onPick: () => this.setState({ bank: b[0] }),
+        style: 'display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 4px; cursor: pointer; border: 1px solid '
+          + (st.bank === b[0] ? '#B0D4CF' : '#E7E2DC') + '; background: ' + (st.bank === b[0] ? '#EFF6F5' : '#FFFFFF') + ';',
+        dotStyle: 'width: 16px; height: 16px; flex: none; border-radius: 999px; border: 5px solid ' + (st.bank === b[0] ? '#235B54' : '#D5CEC6') + '; background: #FFFFFF;'
+      })),
+      bankWarning: num(NO_ACCOUNT.length) + ' nhân viên chưa có số tài khoản — bị bỏ khỏi tệp và phải chi tiền mặt riêng ('
+        + num(excludedNet) + ' đ). Tệp gồm ' + num(SLIPS.length - NO_ACCOUNT.length) + ' dòng, tổng ' + num(fileTotal) + ' đ.',
+      bankBtnStyle: 'height: 36px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 4px; background: #235B54; color: #FFFFFF; font-size: 13px; font-weight: 500; cursor: pointer;'
+    };
+  }
+}
+
+</script>
+</body>
+</html>

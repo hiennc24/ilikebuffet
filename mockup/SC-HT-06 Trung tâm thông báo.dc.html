@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-ht-06</span><span style="color: #D5CEC6;">·</span><span>template 8 · nhóm theo thời gian</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">/thong-bao</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Trung tâm thông báo</h1>
+    <p style="margin: 0; max-width: 82ch; font-size: 14px; color: #635B53;">Dòng dùng component CL2 · 17 — <strong style="font-weight: 500;">cùng một dòng với popover chuông</strong> trên topbar, không vẽ lại. Nội dung lọc theo quyền trước khi đếm badge.</p>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+      <sc-for list="{{ roleModes }}" as="m" hint-placeholder-count="3">
+        <span onClick="{{ m.onPick }}" tabindex="0" style="{{ m.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ m.label }}</span>
+      </sc-for>
+    </div>
+  </header>
+
+  <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; line-height: 1.1; margin: 0;">Thông báo</h2>
+        <span style="font-size: 13px; color: #6E665C;">{{ scopeNote }}</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; flex: none;">
+        <span onClick="{{ markAllRead }}" role="button" tabindex="0" style="{{ markAllStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Đánh dấu tất cả đã đọc</span>
+        <a href="#" style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E; text-decoration: none;" style-hover="background: #F4F1ED;">Cấu hình thông báo</a>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: flex-end; gap: 4px; border-bottom: 1px solid #E7E2DC;">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+        <span onClick="{{ t.onPick }}" tabindex="0" role="tab" aria-selected="{{ t.selected }}" style="{{ t.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+          {{ t.label }}
+          <span style="{{ t.countStyle }}">{{ t.count }}</span>
+        </span>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <div style="display: flex; gap: 4px; padding: 4px; background: #F4F1ED; border-radius: 8px;">
+          <sc-for list="{{ kindFilter }}" as="k" hint-placeholder-count="4">
+            <span onClick="{{ k.onPick }}" tabindex="0" style="{{ k.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ k.label }}</span>
+          </sc-for>
+        </div>
+        <div style="display: flex; gap: 4px; padding: 4px; background: #F4F1ED; border-radius: 8px;">
+          <sc-for list="{{ levelFilter }}" as="l" hint-placeholder-count="4">
+            <span onClick="{{ l.onPick }}" tabindex="0" style="{{ l.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ l.label }}</span>
+          </sc-for>
+        </div>
+        <span style="width: 1px; height: 24px; background: #E7E2DC;"></span>
+        <span onClick="{{ toggleFilters }}" role="button" tabindex="0" style="{{ moreFilterStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 5h18M6 12h12M10 19h4"></path></svg>
+          Bộ lọc nâng cao
+        </span>
+      </div>
+      <span style="font-size: 13px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ resultLabel }}</span>
+    </div>
+
+    <sc-if value="{{ filtersOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+        <sc-for list="{{ deferredFields }}" as="f" hint-placeholder-count="3">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 12px; color: #6E665C;">{{ f.label }}</label>
+            <span style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E;">
+              {{ f.value }}
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8178" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg>
+            </span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ hasSelection }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 8px;">
+        <span style="font-size: 13px; color: #1C4842;"><strong style="font-weight: 500;">{{ selectedCount }}</strong> thông báo đã chọn</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span onClick="{{ clearSelection }}" role="button" tabindex="0" style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; border: 1px solid #E7E2DC; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Bỏ chọn</span>
+          <span onClick="{{ markSelectedRead }}" role="button" tabindex="0" style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; border: 1px solid #E7E2DC; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Đánh dấu đã đọc</span>
+          <span onClick="{{ deleteSelected }}" role="button" tabindex="0" style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; border: 1px solid #F1CCC7; font-size: 13px; font-weight: 500; color: #96271B; cursor: pointer;" style-hover="background: #FCF0EE;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xoá</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+      <sc-if value="{{ hasRows }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column;">
+          <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 16px; background: #FAF8F6; border-bottom: 1px solid #F0EBE5;">
+                <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">{{ g.label }}</span>
+                <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ g.count }}</span>
+              </div>
+              <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
+                <div style="{{ r.rowStyle }}" style-hover="background: #FAF8F6;" role="link" tabindex="0" aria-label="{{ r.aria }}" style-focus="box-shadow: inset 0 0 0 2px #2F7168;">
+                  <span onClick="{{ r.onToggleSel }}" role="checkbox" tabindex="0" aria-checked="{{ r.checked }}" style="{{ r.boxStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                    <sc-if value="{{ r.checked }}" hint-placeholder-val="{{ false }}">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg>
+                    </sc-if>
+                  </span>
+                  <span style="{{ r.dotStyle }}"></span>
+                  <span style="{{ r.iconStyle }}">{{ r.icon }}</span>
+                  <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                    <span style="{{ r.titleStyle }}">{{ r.title }}</span>
+                    <span style="font-size: 12px; color: #6E665C; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.body }}</span>
+                  </span>
+                  <a href="#" style="font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ r.target }}</a>
+                  <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums; white-space: nowrap;">{{ r.time }}</span>
+                  <span style="display: flex; align-items: center; gap: 8px; justify-content: flex-end;">
+                    <sc-if value="{{ r.hasAction }}" hint-placeholder-val="{{ false }}">
+                      <span style="{{ r.actionStyle }}">{{ r.actionLabel }}</span>
+                    </sc-if>
+                    <span onClick="{{ r.onMenu }}" role="button" tabindex="0" aria-label="Hành động" style="width: 24px; height: 24px; flex: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;" style-hover="background: #F0EBE5;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="2" stroke-linecap="round"><path d="M12 5v.01M12 12v.01M12 19v.01"></path></svg>
+                    </span>
+                  </span>
+                </div>
+                <sc-if value="{{ r.menuOpen }}" hint-placeholder-val="{{ false }}">
+                  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 16px 10px 64px; background: #FAF8F6; border-bottom: 1px solid #F0EBE5;">
+                    <span onClick="{{ r.onToggleRead }}" role="button" tabindex="0" style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; border: 1px solid #E7E2DC; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ r.readLabel }}</span>
+                    <span onClick="{{ r.onDelete }}" role="button" tabindex="0" style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; border: 1px solid #F1CCC7; font-size: 13px; color: #96271B; cursor: pointer;" style-hover="background: #FCF0EE;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xoá thông báo</span>
+                    <span style="font-size: 12px; color: #6E665C;">Xoá chỉ ẩn khỏi danh sách của bạn, không ảnh hưởng người khác.</span>
+                  </div>
+                </sc-if>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 48px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+          <span style="{{ emptyIconStyle }}">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{ emptyIconColor }}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ emptyIconPath }}"></path></svg>
+          </span>
+          <strong style="font-size: 16px; font-weight: 500;">{{ emptyTitle }}</strong>
+          <span style="font-size: 13px; color: #6E665C; max-width: 44ch;">{{ emptyBody }}</span>
+          <sc-if value="{{ emptyHasAction }}" hint-placeholder-val="{{ false }}">
+            <span onClick="{{ clearFilters }}" role="button" tabindex="0" style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; margin-top: 4px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xoá bộ lọc</span>
+          </sc-if>
+        </div>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{ hasRows }}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+        <span style="font-size: 13px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ pageInfo }}</span>
+        <span role="button" tabindex="0" style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Tải thêm 20 dòng</span>
+      </div>
+    </sc-if>
+
+    <span style="font-size: 12px; color: #6E665C;">Thông báo giữ 90 ngày rồi tự xoá. Nội dung phụ thuộc quyền của bạn — người khác cùng màn này có thể thấy danh sách khác.</span>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Popover chuông · cùng component dòng</h2>
+    <div style="display: grid; grid-template-columns: 400px 1fr; gap: 16px; align-items: start;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 16px 40px rgba(30,27,25,0.16); overflow: hidden;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #E7E2DC;">
+          <strong style="font-size: 13px; font-weight: 500;">Thông báo</strong>
+          <a href="#" style="font-size: 12px;">Đánh dấu tất cả đã đọc</a>
+        </div>
+        <sc-for list="{{ popoverRows }}" as="r" hint-placeholder-count="5">
+          <div style="{{ r.rowStyle }}" style-hover="background: #FAF8F6;">
+            <span style="{{ r.dotStyle }}"></span>
+            <span style="{{ r.iconStyle }}">{{ r.icon }}</span>
+            <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+              <span style="{{ r.titleStyle }}">{{ r.title }}</span>
+              <span style="font-size: 12px; color: #6E665C; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.body }}</span>
+            </span>
+            <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums; white-space: nowrap;">{{ r.time }}</span>
+          </div>
+        </sc-for>
+        <a href="#" style="display: block; padding: 12px 16px; border-top: 1px solid #F0EBE5; font-size: 13px; text-align: center;">Xem tất cả thông báo →</a>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 180px 1fr; gap: 10px 16px; font-size: 13px;">
+        <span style="color: #6E665C;">dùng chung</span><span style="color: #4A443E;">Cùng component dòng CL2 · 17, chỉ đổi biến thể sang rút gọn: bỏ checkbox, bỏ cột đối tượng, bỏ nút hành động, bỏ menu ba chấm.</span>
+        <span style="color: #6E665C;">số dòng</span><span style="color: #4A443E;">5 dòng gần nhất, không lọc, không nhóm theo ngày. Muốn nhiều hơn thì sang màn này.</span>
+        <span style="color: #6E665C;">bấm dòng</span><span style="color: #4A443E;">Đóng popover và mở thẳng đối tượng liên quan, đồng thời đánh dấu đã đọc.</span>
+        <span style="color: #6E665C;">badge chuông</span><span style="color: #4A443E;">Đếm số <strong style="font-weight: 500;">chưa đọc sau khi lọc quyền</strong>, tối đa hiện “9+”. Cùng nguồn với badge tab Chưa đọc ở màn này, không đếm hai đường.</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Ghi cho dev</h2>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">lọc quyền trước</span><span style="color: #4A443E;">Thủ kho không nhận thông báo công nợ; kế toán không nhận cảnh báo tồn kho. Badge đếm phải tính <strong style="font-weight: 500;">sau khi lọc</strong> — thấy 5 rồi bấm vào chỉ có 2 là lỗi phá niềm tin.</span>
+      <span style="color: #6E665C;">cần hành động</span><span style="color: #4A443E;">Tab riêng, và nút hành động ngay trên dòng. Sau khi hành động xong, thông báo tự chuyển sang đã đọc và rời khỏi tab đó.</span>
+      <span style="color: #6E665C;">đánh dấu tất cả</span><span style="color: #4A443E;">Chỉ tác động lên <strong style="font-weight: 500;">tập đang lọc</strong>, không phải toàn bộ 128 thông báo. Nút khoá khi không còn dòng chưa đọc nào.</span>
+      <span style="color: #6E665C;">bấm dòng</span><span style="color: #4A443E;">Mở đối tượng liên quan và đánh dấu đã đọc cùng lúc. Checkbox và menu ba chấm không kích hoạt hành vi này.</span>
+      <span style="color: #6E665C;">xoá</span><span style="color: #4A443E;">Chỉ ẩn khỏi danh sách của người dùng hiện tại. Thông báo là bản ghi gửi tới từng người, xoá không ảnh hưởng ai khác.</span>
+      <span style="color: #6E665C;">thời gian</span><span style="color: #4A443E;">Trong ngày <code style="font-family: ui-monospace, Menlo, monospace;">HH:mm</code>, khác ngày <code style="font-family: ui-monospace, Menlo, monospace;">dd/MM</code>. Nhóm Hôm nay / Hôm qua / Trước đó, tiêu đề nhóm sticky khi cuộn.</span>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1100}}">
+const MODE = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; background: #FFFFFF; font-size: 12px; color: #4A443E; cursor: pointer;';
+const MODE_ON = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #B0D4CF; border-radius: 4px; background: #EFF6F5; font-size: 12px; font-weight: 500; color: #1C4842; cursor: pointer;';
+const SEG = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #635B53; cursor: pointer;';
+const SEG_ON = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(30,27,25,0.06); font-size: 13px; font-weight: 500; color: #1C4842; cursor: pointer;';
+const BOX = 'width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #C6BEB4; border-radius: 4px; background: #FFFFFF; cursor: pointer;';
+const BOX_ON = 'width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #235B54; border-radius: 4px; background: #235B54; cursor: pointer;';
+const TONE = { info: ['#4A443E', '#F4F1ED'], warn: ['#8A5F12', '#FDF6E7'], danger: ['#96271B', '#FCF0EE'] };
+
+const num = (n) => n.toLocaleString('vi-VN');
+
+// [id, chưa đọc, mức, ký hiệu, tiêu đề, mô tả, đối tượng, nhóm, giờ, nhãn hành động, module, quyền[]]
+const NOTIFS = [
+  ['N-01', true, 'danger', '!', 'Bò Mỹ ba chỉ sắp hết', 'Còn 2,9 ngày tồn, dưới ngưỡng 3 ngày', 'NL-0142', 'today', '18:12', 'Đặt hàng', 'Kho', ['owner', 'keeper']],
+  ['N-02', true, 'warn', '~', 'Phiếu nhập chờ bạn duyệt 2 ngày', 'Thực phẩm Tân Bình · 23.520.000 đ', 'PN-2026-0412', 'today', '16:40', 'Duyệt', 'Kho', ['owner', 'keeper']],
+  ['N-03', true, 'danger', '!', 'Phản hồi 1 điểm từ khách', 'Đỗ Minh Khoa · chất lượng món, phục vụ', 'FB-0412', 'today', '14:22', 'Xem', 'Vận hành', ['owner']],
+  ['N-04', true, 'warn', '~', 'Công nợ Tân Bình đến hạn 08/08', 'Còn 42.480.000 đ chưa thanh toán', 'NCC-0031', 'today', '09:30', 'Xem công nợ', 'Tài chính', ['owner', 'accountant']],
+  ['N-05', false, 'info', 'i', 'Ca tối 27/07 đã đóng', 'Lệch quỹ (220.000) · chờ duyệt phiếu kiểm', 'CA-260727-03', 'yesterday', '23:12', null, 'Vận hành', ['owner', 'accountant']],
+  ['N-06', true, 'info', 'i', 'Kỳ lương 07/2026 đã tính xong', '32 phiếu · chờ nhân sự chốt', 'Kỳ 07/2026', 'yesterday', '09:05', 'Xem kỳ', 'Nhân sự', ['owner']],
+  ['N-07', false, 'info', 'i', 'Đơn nghỉ phép chờ duyệt', 'Nguyễn Văn A · 15/08 · 1,0 ngày', 'NP-2026-0240', 'yesterday', '08:14', null, 'Nhân sự', ['owner']],
+  ['N-08', false, 'warn', '~', 'Kiểm kê tháng 07 lệch 4 nguyên liệu', 'Tổng giá trị lệch 1.284.000 đ', 'KK-2026-0087', 'older', '26/07', null, 'Kho', ['owner', 'keeper']],
+  ['N-09', false, 'info', 'i', 'Hoá đơn VAT tháng 06 đã xuất', '18 hoá đơn · 142.680.000 đ', 'Kỳ 06/2026', 'older', '25/07', null, 'Tài chính', ['owner', 'accountant']],
+  ['N-10', false, 'info', 'i', 'Nhân viên mới nhận việc', 'Lưu Văn Bình · phục vụ · chi nhánh Quận 1', 'NV-0235', 'older', '24/07', null, 'Nhân sự', ['owner']]
+];
+
+const GROUP_LABEL = { today: 'Hôm nay', yesterday: 'Hôm qua', older: 'Trước đó' };
+const ROLE_LABEL = { owner: 'Chủ · thấy mọi module', keeper: 'Thủ kho · chỉ module Kho', accountant: 'Kế toán · chỉ Tài chính' };
+
+class Component extends DCLogic {
+  state = { role: 'owner', tab: 'all', kind: 'all', level: 'all', filtersOpen: false, sel: {}, menu: {}, read: {}, deleted: {} };
+
+  renderVals() {
+    const st = this.state;
+
+    // Lọc theo quyền TRƯỚC, rồi mới đếm
+    const scoped = NOTIFS
+      .filter(n => n[11].indexOf(st.role) > -1)
+      .filter(n => !st.deleted[n[0]])
+      .map(n => ({
+        id: n[0],
+        unread: st.read[n[0]] === undefined ? n[1] : !st.read[n[0]],
+        level: n[2], icon: n[3], title: n[4], body: n[5], target: n[6],
+        group: n[7], time: n[8], action: n[9], module: n[10]
+      }));
+
+    const counts = {
+      all: scoped.length,
+      unread: scoped.filter(n => n.unread).length,
+      action: scoped.filter(n => !!n.action).length
+    };
+
+    let rows = scoped;
+    if (st.tab === 'unread') rows = rows.filter(n => n.unread);
+    if (st.tab === 'action') rows = rows.filter(n => !!n.action);
+    if (st.kind !== 'all') rows = rows.filter(n => n.module === st.kind);
+    if (st.level !== 'all') rows = rows.filter(n => n.level === st.level);
+
+    const selIds = rows.filter(r => st.sel[r.id]);
+    const filtered = st.tab !== 'all' || st.kind !== 'all' || st.level !== 'all';
+
+    const mkRow = (r, i, arr) => {
+      const t = TONE[r.level];
+      const checked = !!st.sel[r.id];
+      return {
+        rowStyle: 'display: grid; grid-template-columns: 32px 6px 28px 1fr 140px 56px 148px; gap: 12px; align-items: center; min-height: 60px; padding: 10px 16px; font-size: 13px; cursor: pointer;'
+          + (i < arr.length - 1 ? ' border-bottom: 1px solid #F0EBE5;' : '')
+          + (r.unread ? ' background: #F7FBFA;' : ''),
+        checked,
+        boxStyle: checked ? BOX_ON : BOX,
+        onToggleSel: () => this.setState(s => ({ sel: Object.assign({}, s.sel, { [r.id]: !s.sel[r.id] }) })),
+        dotStyle: 'width: 6px; height: 6px; border-radius: 999px; background: ' + (r.unread ? '#235B54' : 'transparent') + ';',
+        iconStyle: 'width: 28px; height: 28px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 999px; font-size: 13px; font-weight: 600; background: ' + t[1] + '; color: ' + t[0] + ';',
+        icon: r.icon,
+        title: r.title,
+        aria: (r.unread ? 'Chưa đọc · ' : '') + r.title + ' · ' + r.body + ' · ' + r.time + ' · mở ' + r.target,
+        titleStyle: 'font-size: 13px; font-weight: ' + (r.unread ? 500 : 400) + '; color: #1E1B19; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;',
+        body: r.body,
+        target: r.target,
+        time: r.time,
+        hasAction: !!r.action,
+        actionLabel: r.action || '',
+        actionStyle: 'height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; font-weight: 500; white-space: nowrap; cursor: pointer; '
+          + (r.level === 'danger' ? 'background: #235B54; color: #FFFFFF;' : 'background: #FFFFFF; border: 1px solid #E7E2DC; color: #4A443E;'),
+        onMenu: () => this.setState(s => ({ menu: { [r.id]: !s.menu[r.id] } })),
+        menuOpen: !!st.menu[r.id],
+        readLabel: r.unread ? 'Đánh dấu đã đọc' : 'Đánh dấu chưa đọc',
+        onToggleRead: () => this.setState(s => ({ read: Object.assign({}, s.read, { [r.id]: r.unread }), menu: {} })),
+        onDelete: () => this.setState(s => ({ deleted: Object.assign({}, s.deleted, { [r.id]: true }), menu: {} }))
+      };
+    };
+
+    const groups = ['today', 'yesterday', 'older'].map(g => {
+      const list = rows.filter(r => r.group === g);
+      return {
+        key: g,
+        label: GROUP_LABEL[g],
+        count: num(list.length) + ' thông báo' + (list.filter(r => r.unread).length ? ' · ' + num(list.filter(r => r.unread).length) + ' chưa đọc' : ''),
+        rows: list.map(mkRow),
+        empty: list.length === 0
+      };
+    }).filter(g => !g.empty);
+
+    // Popover: 5 dòng gần nhất, biến thể rút gọn của cùng component dòng
+    const popover = scoped.slice(0, 5).map((r, i, arr) => {
+      const t = TONE[r.level];
+      return {
+        rowStyle: 'display: grid; grid-template-columns: 6px 28px 1fr 52px; gap: 12px; align-items: center; min-height: 56px; padding: 10px 16px; font-size: 13px; cursor: pointer;'
+          + (i < arr.length - 1 ? ' border-bottom: 1px solid #F0EBE5;' : '')
+          + (r.unread ? ' background: #F7FBFA;' : ''),
+        dotStyle: 'width: 6px; height: 6px; border-radius: 999px; background: ' + (r.unread ? '#235B54' : 'transparent') + ';',
+        iconStyle: 'width: 28px; height: 28px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 999px; font-size: 13px; font-weight: 600; background: ' + t[1] + '; color: ' + t[0] + ';',
+        icon: r.icon,
+        title: r.title,
+        titleStyle: 'font-size: 13px; font-weight: ' + (r.unread ? 500 : 400) + '; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;',
+        body: r.body,
+        time: r.time
+      };
+    });
+
+    const modules = ['Kho', 'Vận hành', 'Tài chính', 'Nhân sự'];
+
+    return {
+      roleModes: ['owner', 'keeper', 'accountant'].map(r => ({
+        label: ROLE_LABEL[r],
+        style: st.role === r ? MODE_ON : MODE,
+        onPick: () => this.setState({ role: r, sel: {}, menu: {}, tab: 'all', kind: 'all', level: 'all' })
+      })),
+      scopeNote: 'Nội dung theo quyền của bạn · ' + ROLE_LABEL[st.role].split(' · ')[1],
+
+      markAllStyle: 'height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; border: 1px solid #E7E2DC; '
+        + (counts.unread > 0 ? 'background: #FFFFFF; color: #4A443E; cursor: pointer;' : 'background: #F4F1ED; color: #ABA298; cursor: not-allowed;'),
+      markAllRead: () => {
+        if (counts.unread === 0) return;
+        this.setState(s => {
+          const next = Object.assign({}, s.read);
+          rows.forEach(r => { next[r.id] = true; });
+          return { read: next };
+        });
+      },
+
+      tabs: [['all', 'Tất cả', counts.all], ['unread', 'Chưa đọc', counts.unread], ['action', 'Cần hành động', counts.action]].map(t => ({
+        label: t[1],
+        selected: st.tab === t[0],
+        count: num(t[2]),
+        countStyle: 'display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; font-size: 12px; font-weight: 500; '
+          + (t[0] === 'action' && t[2] > 0 ? 'background: #FCF0EE; color: #96271B;'
+            : (st.tab === t[0] ? 'background: #EFF6F5; color: #1C4842;' : 'background: #F4F1ED; color: #6E665C;')),
+        style: 'height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 16px; border-radius: 4px 4px 0 0; font-size: 13px; cursor: pointer; '
+          + (st.tab === t[0]
+              ? 'background: #FFFFFF; border: 1px solid #E7E2DC; border-bottom: 1px solid #FFFFFF; margin-bottom: -1px; font-weight: 500; color: #1C4842;'
+              : 'border: 1px solid transparent; color: #635B53;'),
+        onPick: () => this.setState({ tab: t[0], sel: {}, menu: {} })
+      })),
+
+      kindFilter: [['all', 'Mọi loại']].concat(modules.map(m => [m, m])).map(k => ({
+        label: k[1], style: st.kind === k[0] ? SEG_ON : SEG, onPick: () => this.setState({ kind: k[0], sel: {} })
+      })),
+      levelFilter: [['all', 'Mọi mức'], ['danger', 'Khẩn'], ['warn', 'Cảnh báo'], ['info', 'Thông tin']].map(l => ({
+        label: l[1], style: st.level === l[0] ? SEG_ON : SEG, onPick: () => this.setState({ level: l[0], sel: {} })
+      })),
+      filtersOpen: st.filtersOpen,
+      toggleFilters: () => this.setState(s => ({ filtersOpen: !s.filtersOpen })),
+      moreFilterStyle: 'height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 4px; font-size: 13px; cursor: pointer; border: 1px solid '
+        + (st.filtersOpen ? '#B0D4CF' : '#E7E2DC') + '; background: ' + (st.filtersOpen ? '#EFF6F5' : '#FFFFFF') + '; color: ' + (st.filtersOpen ? '#1C4842' : '#4A443E') + ';',
+      deferredFields: [
+        { label: 'Khoảng thời gian', value: '30 ngày gần nhất' },
+        { label: 'Người gây ra', value: 'Tất cả' },
+        { label: 'Đã hành động', value: 'Tất cả' }
+      ],
+      resultLabel: num(rows.length) + ' thông báo · ' + num(rows.filter(r => r.unread).length) + ' chưa đọc',
+
+      hasSelection: selIds.length > 0,
+      selectedCount: num(selIds.length),
+      clearSelection: () => this.setState({ sel: {} }),
+      markSelectedRead: () => this.setState(s => {
+        const next = Object.assign({}, s.read);
+        selIds.forEach(r => { next[r.id] = true; });
+        return { read: next, sel: {} };
+      }),
+      deleteSelected: () => this.setState(s => {
+        const next = Object.assign({}, s.deleted);
+        selIds.forEach(r => { next[r.id] = true; });
+        return { deleted: next, sel: {} };
+      }),
+
+      hasRows: rows.length > 0,
+      isEmpty: rows.length === 0,
+      groups,
+      emptyTitle: filtered ? 'Không có thông báo nào khớp bộ lọc' : 'Bạn đã đọc hết',
+      emptyBody: filtered
+        ? 'Đang lọc theo tab, loại và mức độ. Gỡ bớt để xem các thông báo khác.'
+        : 'Không còn thông báo nào chưa xử lý. Chỗ này trống là tin tốt.',
+      emptyHasAction: filtered,
+      emptyIconStyle: 'width: 56px; height: 56px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-top: 8px; background: ' + (filtered ? '#F4F1ED' : '#EDF7F1') + ';',
+      emptyIconColor: filtered ? '#ABA298' : '#256A49',
+      emptyIconPath: filtered ? 'M3 5h18M6 12h12M10 19h4' : 'M12 3a9 9 0 100 18 9 9 0 000-18M8 12l3 3 5-6',
+      clearFilters: () => this.setState({ tab: 'all', kind: 'all', level: 'all' }),
+
+      pageInfo: '1–' + num(rows.length) + ' / ' + num(rows.length) + ' thông báo trong 30 ngày',
+      popoverRows: popover
+    };
+  }
+}
+
+</script>
+</body>
+</html>

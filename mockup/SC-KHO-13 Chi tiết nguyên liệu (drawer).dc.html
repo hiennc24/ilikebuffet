@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-kho-13</span><span style="color: #D5CEC6;">·</span><span>template t2 · tab · trong drawer 720</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">{{ url }}</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Chi tiết nguyên liệu</h1>
+    <p style="margin: 0; max-width: 82ch; font-size: 14px; color: #635B53;">T2 co được vào drawer 720 <strong style="font-weight: 500;">không đổi cấu trúc</strong>: page header thành header drawer, bỏ breadcrumb và cột phụ 320 (đúng quy ước drawer đã chốt ở SC-TC-04), summary bar và dải tab giữ nguyên, một cột nội dung, body cuộn riêng. Bếp mở từ danh sách nguyên liệu nên vẫn thấy danh sách phía sau.</p>
+  </header>
+
+  <div style="position: relative; height: 860px; border-radius: 8px; overflow: hidden; border: 1px solid #E7E2DC; background: #FAF8F6;">
+
+    <div style="position: absolute; inset: 0; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+      <span style="width: 220px; height: 24px; border-radius: 4px; background: #EFEAE4;"></span>
+      <span style="width: 100%; height: 36px; border-radius: 4px; background: #EFEAE4;"></span>
+      <sc-for list="{{ ghostRows }}" as="g" hint-placeholder-count="10">
+        <span style="width: 100%; height: 44px; border-radius: 4px; background: #F1EDE8;"></span>
+      </sc-for>
+    </div>
+    <div style="position: absolute; inset: 0; background: rgba(30,27,25,0.32);"></div>
+
+    <div style="position: absolute; top: 0; right: 0; bottom: 0; width: 720px; background: #FAF8F6; border-left: 1px solid #E7E2DC; box-shadow: -12px 0 32px rgba(30,27,25,0.18); display: flex; flex-direction: column;">
+
+      <div style="flex: none; padding: 20px 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
+          <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0;">
+            <span style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">Nguyên liệu · NL-0142</span>
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 28px; line-height: 1.1; margin: 0;">Bò Mỹ ba chỉ</h2>
+              <span style="{{ stockBadgeStyle }}">{{ stockBadge }}</span>
+            </div>
+          </div>
+          <span aria-label="Đóng drawer" tabindex="0" role="button" style="width: 28px; height: 28px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+          </span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Sửa</button>
+          <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xem định lượng</button>
+          <span onClick="{{ toggleMenu }}" tabindex="0" role="button" aria-label="Hành động khác" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="2" stroke-linecap="round"><path d="M12 5v.01M12 12v.01M12 19v.01"></path></svg>
+          </span>
+          <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="width: 216px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 4px; display: flex; flex-direction: column;">
+              <span style="height: 28px; display: flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;">Đặt định mức</span>
+              <span style="height: 28px; display: flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #C0392B; cursor: pointer;">Ngừng dùng</span>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="flex: none; padding: 16px 24px 0;">
+        <div style="display: flex; align-items: stretch; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden; background: #FFFFFF;">
+          <sc-for list="{{ summary }}" as="s" hint-placeholder-count="4">
+            <div style="{{ s.cellStyle }}">
+              <span style="font-size: 12px; color: #6E665C;">{{ s.label }}</span>
+              <strong style="{{ s.valueStyle }}">{{ s.value }}</strong>
+              <span style="{{ s.hintStyle }}">{{ s.hint }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="flex: none; padding: 16px 24px 0;">
+        <div style="display: flex; align-items: flex-end; gap: 2px; border-bottom: 1px solid #E7E2DC;">
+          <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+            <span onClick="{{ t.onPick }}" tabindex="0" role="tab" aria-selected="{{ t.selected }}" style="{{ t.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+              {{ t.label }}
+              <sc-if value="{{ t.hasCount }}" hint-placeholder-val="{{ true }}">
+                <span style="{{ t.countStyle }}">{{ t.count }}</span>
+              </sc-if>
+            </span>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 20px 24px 24px;">
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+
+          <sc-if value="{{ tabLoading }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <span style="width: 32%; height: 12px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+              <span style="width: 100%; height: 40px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+              <span style="width: 100%; height: 180px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+              <span style="font-size: 12px; color: #6E665C;">Chỉ khung tab tải lại — header drawer và summary bar giữ nguyên, drawer không trượt lại.</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isOverview }}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 24px;">
+                <sc-for list="{{ overview }}" as="o" hint-placeholder-count="11">
+                  <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <span style="font-size: 12px; color: #6E665C;">{{ o.label }}</span>
+                    <span style="{{ o.valueStyle }}">{{ o.value }}</span>
+                    <span style="{{ o.hintStyle }}">{{ o.hint }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display: flex; gap: 12px; padding: 12px 16px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+                <span style="font-size: 13px; color: #8A5F12;">Nguyên liệu dễ hỏng, hạn dùng trung bình 4 ngày sau nhập. Xuất theo nguyên tắc nhập trước xuất trước; lô quá 3 ngày phải kiểm tra trước khi lên bàn nướng.</span>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isStock }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <div style="{{ runOutCardStyle }}">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                  <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Ngày dự kiến hết hàng</span>
+                  <span style="{{ runOutBadgeStyle }}">{{ runOutBadge }}</span>
+                </div>
+                <div style="display: flex; align-items: baseline; gap: 12px;">
+                  <strong style="{{ runOutValueStyle }}">{{ runOutDate }}</strong>
+                  <span style="{{ runOutDaysStyle }}">còn {{ runOutDays }}</span>
+                </div>
+                <span style="{{ runOutTextStyle }}">{{ runOutText }}</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Tồn theo kho</span>
+                <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+                  <div style="display: grid; grid-template-columns: 1fr 96px 96px 116px; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+                    <span>Kho</span><span style="text-align: right;">Tồn (kg)</span><span style="text-align: right;">Định mức</span><span>Trạng thái</span>
+                  </div>
+                  <sc-for list="{{ warehouses }}" as="w" hint-placeholder-count="3">
+                    <div style="{{ w.rowStyle }}" style-hover="background: #FAF8F6;">
+                      <span style="display: flex; flex-direction: column; gap: 2px;">
+                        <span>{{ w.name }}</span>
+                        <span style="font-size: 12px; color: #6E665C;">{{ w.note }}</span>
+                      </span>
+                      <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums;">{{ w.qty }}</span>
+                      <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ w.min }}</span>
+                      <span><span style="{{ w.badgeStyle }}">{{ w.status }}</span></span>
+                    </div>
+                  </sc-for>
+                  <div style="display: grid; grid-template-columns: 1fr 96px 96px 116px; align-items: center; gap: 8px; padding: 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC; font-size: 13px;">
+                    <strong style="font-weight: 500;">Tổng tồn</strong>
+                    <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{ stockNow }}</strong>
+                    <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ minLevel }}</span>
+                    <span><span style="{{ stockBadgeSmStyle }}">{{ stockBadge }}</span></span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 20px; border-top: 1px solid #F0EBE5;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <strong style="font-size: 14px; font-weight: 500;">Tồn kho 30 ngày</strong>
+                    <span style="font-size: 12px; color: #6E665C;">Đơn vị kg · đường ngang là định mức tối thiểu 60,0 kg</span>
+                  </div>
+                  <span style="font-size: 12px; color: #6E665C;">chart-height-sm 180px</span>
+                </div>
+                <svg aria-hidden="true" viewBox="0 0 620 180" style="width: 100%; height: 180px;">
+                  <sc-for list="{{ stockGrid }}" as="g" hint-placeholder-count="4">
+                    <line x1="44" y1="{{ g.y }}" x2="612" y2="{{ g.y }}" stroke="#F4F1ED" stroke-width="1"></line>
+                  </sc-for>
+                  {{ stockAxisEls }}
+                  <line x1="44" y1="158" x2="612" y2="158" stroke="#E7E2DC" stroke-width="1"></line>
+                  <line x1="44" y1="{{ minLineY }}" x2="612" y2="{{ minLineY }}" stroke="#ABA298" stroke-width="2" stroke-dasharray="6 6"></line>
+                  <text x="48" y="{{ minLabelY }}" font-size="12" fill="#6E665C">Định mức 60,0 kg</text>
+                  <path d="{{ stockArea }}" fill="#2F7168" fill-opacity="0.10"></path>
+                  <path d="{{ stockPath }}" stroke="#2F7168" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <circle cx="{{ stockLastX }}" cy="{{ stockLastY }}" r="4" fill="#1C4842"></circle>
+                </svg>
+                <div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: #6E665C;">
+                  <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 12px; height: 2px; background: #2F7168;"></span>Tồn cuối ngày · series-actual</span>
+                  <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 12px; height: 0; border-top: 2px dashed #ABA298;"></span>Định mức tối thiểu · series-target</span>
+                  <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 8px; height: 8px; border-radius: 999px; background: #1C4842;"></span>Hôm nay · series-highlight</span>
+                  <span>3 lần nhập trong kỳ · 29/06, 09/07, 21/07</span>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isMoves }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Giao dịch gần nhất</span>
+                <a href="#">Mở nhật ký nhập xuất đầy đủ →</a>
+              </div>
+              <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+                <div style="display: grid; grid-template-columns: 84px 92px 1fr 84px 104px 96px; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+                  <span>Ngày</span><span>Loại</span><span>Phiếu</span><span style="text-align: right;">SL</span><span style="text-align: right;">Đơn giá</span><span style="text-align: right;">Tồn sau</span>
+                </div>
+                <sc-for list="{{ moves }}" as="m" hint-placeholder-count="8">
+                  <div style="{{ m.rowStyle }}" style-hover="background: #FAF8F6;">
+                    <span style="font-variant-numeric: tabular-nums; color: #4A443E;">{{ m.date }}</span>
+                    <span><span style="{{ m.kindStyle }}">{{ m.kind }}</span></span>
+                    <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                      <a href="#" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px;">{{ m.doc }}</a>
+                      <span style="font-size: 12px; color: #6E665C; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ m.note }}</span>
+                    </span>
+                    <span style="{{ m.qtyStyle }}">{{ m.qty }}</span>
+                    <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ m.price }}</span>
+                    <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums;">{{ m.after }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <span style="font-size: 12px; color: #6E665C;">Xuất và hao hụt hiện số dương kèm nhãn loại; cột “Tồn sau” là tồn toàn hệ thống ngay sau giao dịch, dùng để đối chiếu khi kiểm kê lệch.</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isPrice }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 24px;">
+                <sc-for list="{{ priceStats }}" as="p" hint-placeholder-count="4">
+                  <div style="display: flex; flex-direction: column; gap: 2px; align-items: flex-end; text-align: right; padding: 12px 16px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px;">
+                    <span style="font-size: 12px; color: #6E665C;">{{ p.label }}</span>
+                    <strong style="{{ p.valueStyle }}">{{ p.value }}</strong>
+                    <span style="{{ p.hintStyle }}">{{ p.hint }}</span>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <strong style="font-size: 14px; font-weight: 500;">Biến động giá nhập 12 tháng</strong>
+                    <span style="font-size: 12px; color: #6E665C;">Đồng / kg · đường ngang là trung bình 3 tháng gần nhất</span>
+                  </div>
+                  <span style="font-size: 12px; color: #6E665C;">chart-height-sm 180px</span>
+                </div>
+                <svg aria-hidden="true" viewBox="0 0 620 180" style="width: 100%; height: 180px;">
+                  <sc-for list="{{ priceGrid }}" as="g" hint-placeholder-count="4">
+                    <line x1="56" y1="{{ g.y }}" x2="612" y2="{{ g.y }}" stroke="#F4F1ED" stroke-width="1"></line>
+                  </sc-for>
+                  {{ priceAxisEls }}
+                  <line x1="56" y1="152" x2="612" y2="152" stroke="#E7E2DC" stroke-width="1"></line>
+                  <line x1="56" y1="{{ avgLineY }}" x2="612" y2="{{ avgLineY }}" stroke="#ABA298" stroke-width="2" stroke-dasharray="6 6"></line>
+                  <text x="60" y="{{ avgLabelY }}" font-size="12" fill="#6E665C">TB 3 tháng</text>
+                  <path d="{{ pricePath }}" stroke="#2F7168" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <sc-for list="{{ priceDots }}" as="d" hint-placeholder-count="12">
+                    <circle cx="{{ d.x }}" cy="{{ d.y }}" r="{{ d.r }}" fill="{{ d.fill }}"></circle>
+                  </sc-for>
+                  {{ priceMarkEls }}
+                </svg>
+                <div style="display: flex; justify-content: space-between; font-size: 12px; color: #6E665C; font-family: ui-monospace, Menlo, monospace; padding-left: 56px;">
+                  <sc-for list="{{ priceLabels }}" as="l" hint-placeholder-count="12">
+                    <span>{{ l.label }}</span>
+                  </sc-for>
+                </div>
+                <div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: #6E665C;">
+                  <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 12px; height: 2px; background: #2F7168;"></span>Giá nhập · series-actual</span>
+                  <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 12px; height: 0; border-top: 2px dashed #ABA298;"></span>TB 3 tháng · series-target</span>
+                  <span style="display: inline-flex; align-items: center; gap: 8px;"><span style="width: 8px; height: 8px; border-radius: 999px; background: #1C4842;"></span>Cao nhất / thấp nhất · series-highlight, có nhãn chữ</span>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 12px; padding-top: 20px; border-top: 1px solid #F0EBE5;">
+                <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">So sánh giữa nhà cung cấp</span>
+                <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+                  <div style="display: grid; grid-template-columns: 1fr 116px 92px 116px; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+                    <span>Nhà cung cấp</span><span style="text-align: right;">Giá gần nhất</span><span style="text-align: right;">Lần nhập</span><span style="text-align: right;">Lệch so TB</span>
+                  </div>
+                  <sc-for list="{{ suppliers }}" as="s" hint-placeholder-count="3">
+                    <div style="{{ s.rowStyle }}" style-hover="background: #FAF8F6;">
+                      <span style="display: flex; flex-direction: column; gap: 2px;">
+                        <a href="#">{{ s.name }}</a>
+                        <span style="font-size: 12px; color: #6E665C;">{{ s.role }}</span>
+                      </span>
+                      <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums;">{{ s.price }}</span>
+                      <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ s.times }}</span>
+                      <span style="{{ s.diffStyle }}">{{ s.diff }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isDishes }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Món sử dụng nguyên liệu này</span>
+                <a href="#">Mở định lượng món · SC-KHO-02 →</a>
+              </div>
+              <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+                <div style="display: grid; grid-template-columns: 1fr 116px 108px 116px; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+                  <span>Món</span><span style="text-align: right;">Định lượng</span><span style="text-align: right;">Bán / ngày</span><span style="text-align: right;">Tiêu thụ / ngày</span>
+                </div>
+                <sc-for list="{{ dishes }}" as="d" hint-placeholder-count="5">
+                  <div style="{{ d.rowStyle }}" style-hover="background: #FAF8F6;">
+                    <span style="display: flex; flex-direction: column; gap: 2px;">
+                      <a href="#">{{ d.name }}</a>
+                      <span style="font-size: 12px; color: #6E665C;">{{ d.pack }}</span>
+                    </span>
+                    <span style="text-align: right; font-variant-numeric: tabular-nums;">{{ d.per }}</span>
+                    <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ d.sold }}</span>
+                    <span style="text-align: right; font-weight: 500; font-variant-numeric: tabular-nums;">{{ d.daily }}</span>
+                  </div>
+                </sc-for>
+                <div style="display: grid; grid-template-columns: 1fr 116px 108px 116px; align-items: center; gap: 8px; padding: 12px; background: #FAF8F6; border-top: 1px solid #E7E2DC; font-size: 13px;">
+                  <strong style="font-weight: 500;">Tổng tiêu thụ trung bình</strong>
+                  <span></span><span></span>
+                  <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{ dailyTotal }}</strong>
+                </div>
+              </div>
+              <span style="font-size: 12px; color: #6E665C;">Định lượng đã trừ hao hụt sơ chế 12%. Sửa định lượng ở màn định lượng món — sửa xong ngày dự kiến hết hàng ở tab Tồn kho tính lại ngay.</span>
+            </div>
+          </sc-if>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">T2 trong drawer 720 · quy ước và 4 state</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 148px 1fr; gap: 10px 16px; font-size: 13px;">
+        <span style="color: #6E665C;">giữ nguyên</span><span style="color: #4A443E;">Summary bar 4 chỉ số · dải tab deep-link · thứ tự tab · 4 state chuẩn</span>
+        <span style="color: #6E665C;">bỏ</span><span style="color: #4A443E;">Breadcrumb 3 cấp và cột phụ 320 — đúng quy ước drawer đã chốt ở SC-TC-04</span>
+        <span style="color: #6E665C;">chuyển</span><span style="color: #4A443E;">Page header → header drawer (mã NL thành eyebrow, badge cạnh tên, cụm hành động xuống hàng dưới)</span>
+        <span style="color: #6E665C;">cuộn</span><span style="color: #4A443E;">Header + summary + dải tab cố định; chỉ khung nội dung tab cuộn</span>
+        <span style="color: #6E665C;">URL</span><span style="color: #4A443E;">Drawer và tab đều trên URL: <span style="font-family: ui-monospace, Menlo, monospace;">?nl=NL-0142&amp;tab=gia</span> · gửi link mở đúng drawer đúng tab</span>
+        <span style="color: #6E665C;">bảng</span><span style="color: #4A443E;">Tối đa 6 cột trong drawer 720; cột dài gộp hai dòng trong một ô thay vì thêm cột</span>
+        <span style="color: #6E665C;">biểu đồ</span><span style="color: #4A443E;">Chart wrapper CL3 size sm 180px · viewBox rộng 620 cho vừa 672 lòng drawer</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Loading · skeleton giữ đúng bố cục</span>
+        <span style="width: 44%; height: 12px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="width: 34%; height: 24px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <div style="display: flex; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+          <div style="flex: 1; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #F0EBE5;">
+            <span style="width: 52px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 66px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+          <div style="flex: 1; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #F0EBE5;">
+            <span style="width: 52px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 58px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+          <div style="flex: 1; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #F0EBE5;">
+            <span style="width: 52px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 72px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+          <div style="flex: 1; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px;">
+            <span style="width: 52px; height: 10px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+            <span style="width: 80px; height: 16px; border-radius: 4px; background: #F4F1ED; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          </div>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Drawer trượt vào ngay với skeleton, không chờ dữ liệu. Vùng biểu đồ giữ đúng 180px để nội dung không nhảy khi vẽ xong.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Không tìm thấy</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4"></path></svg>
+        </span>
+        <strong style="font-size: 15px; font-weight: 500;">Không có nguyên liệu NL-0142</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Nguyên liệu đã bị gộp vào <a href="#">NL-0140 · Bò Mỹ ba chỉ (thùng 10kg)</a> khi chuẩn hoá danh mục 15/07/2026.</span>
+        <span style="font-size: 12px; color: #6E665C;">Drawer vẫn mở với thông báo này, danh sách phía sau không mất vị trí cuộn.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Không có quyền xem</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z"></path></svg>
+        </span>
+        <strong style="font-size: 15px; font-weight: 500;">Không xem được giá và giá trị tồn</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 42ch;">Bếp trưởng xem được tồn, nhập xuất và món sử dụng; tab Giá và ô “giá vốn TB”, “giá trị tồn” trên summary bar bị ẩn hoàn toàn.</span>
+        <span style="font-size: 12px; color: #6E665C;">Tab Giá vẫn hiện trên dải để biết có tồn tại; summary bar co còn 2 ô thay vì để ô rỗng.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Đã ngừng dùng / lưu trữ</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.6" stroke-linecap="round" style="margin-top: 2px; flex-shrink: 0;"><path d="M3 6h18v4H3zM5 10v10h14V10M10 14h4"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Ngừng dùng từ 01/08/2026 do đổi sang nguồn bò Úc. Còn tồn 42,5 kg phải xuất hết trước khi khoá; 2 món vẫn đang dùng nguyên liệu này.</span>
+        </div>
+        <span style="font-size: 13px; color: #635B53;">Drawer chỉ đọc: bỏ Sửa và Đặt định mức, giữ Xem định lượng để bếp đổi công thức. Không ngừng dùng được khi còn tồn hoặc còn món đang dùng — hệ thống chặn và chỉ ra 2 món đó.</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1100}}">
+const TAB_DEFS = [
+  ['tong-quan', 'Tổng quan', null],
+  ['ton-kho', 'Tồn kho', 3],
+  ['nhap-xuat', 'Nhập xuất', 8],
+  ['gia', 'Giá', null],
+  ['mon', 'Món sử dụng', 5]
+];
+
+const B_OK = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #EDF7F1; border: 1px solid #C3E4D2; color: #256A49; font-size: 12px; font-weight: 500;';
+const B_WARN = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FDF6E7; border: 1px solid #F0DDAF; color: #8A5F12; font-size: 12px; font-weight: 500;';
+const B_DANGER = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FCF0EE; border: 1px solid #F1CCC7; color: #96271B; font-size: 12px; font-weight: 500;';
+const B_NEUTRAL = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #F4F1ED; border: 1px solid #E7E2DC; color: #4A443E; font-size: 12px; font-weight: 500;';
+
+const vnd = (n) => n.toLocaleString('vi-VN') + ' đ';
+const num = (n, d) => n.toLocaleString('vi-VN', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 });
+const kg = (n) => num(n, 1) + ' kg';
+
+const MIN_LEVEL = 60;
+const AVG_COST = 385000;
+
+const WAREHOUSES = [
+  ['Kho lạnh chính · Quận 1', 'Ngăn đông −18°C · kệ B3', 31.5, 45],
+  ['Kho lạnh phụ · Quận 1', 'Ngăn mát 2°C · dùng trong ngày', 8.0, 10],
+  ['Kho bếp · quầy nướng', 'Sơ chế sẵn theo ca', 3.0, 5]
+];
+const STOCK_NOW = WAREHOUSES.reduce((s, w) => s + w[2], 0);
+
+const DISHES = [
+  ['Bò Mỹ ba chỉ nướng tảng', 'Buffet tối cao cấp', 0.18, 42],
+  ['Lẩu bò Mỹ đặc biệt', 'Buffet tối cao cấp · tiêu chuẩn', 0.14, 28],
+  ['Bò cuộn nấm kim châm', 'Buffet tối tiêu chuẩn', 0.09, 31],
+  ['Bò áp chảo sốt tiêu', 'Gọi thêm · à la carte', 0.16, 12],
+  ['Cơm bò xào rau củ', 'Buffet trưa', 0.07, 19]
+];
+const DAILY_USE = DISHES.reduce((s, d) => s + d[2] * d[3], 0);
+
+const MOVES = [
+  ['21/07', 'Nhập', 'PN-2026-0412', 'Thực phẩm Tân Bình · lô L2107', 60.0, 392000, 71.5],
+  ['20/07', 'Xuất', 'PX-2026-1188', 'Ca tối · quầy nướng', 14.5, 385000, 11.5],
+  ['19/07', 'Xuất', 'PX-2026-1181', 'Ca tối · quầy nướng', 15.0, 385000, 26.0],
+  ['19/07', 'Hao hụt', 'HH-2026-0233', 'Sơ chế · rìa mỡ', 1.8, 385000, 41.0],
+  ['18/07', 'Xuất', 'PX-2026-1174', 'Ca tối + trưa', 16.2, 385000, 42.8],
+  ['17/07', 'Kiểm kê', 'KK-2026-0087', 'Lệch −0,6 kg đã ghi nhận', 0.6, 385000, 59.0],
+  ['16/07', 'Xuất', 'PX-2026-1160', 'Ca tối · quầy nướng', 13.8, 385000, 59.6],
+  ['09/07', 'Nhập', 'PN-2026-0398', 'Thực phẩm Tân Bình · lô L0907', 60.0, 379000, 87.4]
+];
+
+const STOCK_30 = [
+  68, 62, 55, 48, 41, 34, 27, 84, 76, 68, 61, 53, 46, 38, 31, 88, 80, 72, 65, 57, 50, 42, 35, 27, 20, 71.5, 63, 55, 48, 42.5
+];
+
+const PRICES = [
+  ['08/25', 352000], ['09/25', 358000], ['10/25', 361000], ['11/25', 374000],
+  ['12/25', 396000], ['01/26', 402000], ['02/26', 388000], ['03/26', 371000],
+  ['04/26', 368000], ['05/26', 375000], ['06/26', 379000], ['07/26', 392000]
+];
+const AVG_3M = Math.round((375000 + 379000 + 392000) / 3);
+const MAX_P = PRICES.reduce((a, p) => Math.max(a, p[1]), 0);
+const MIN_P = PRICES.reduce((a, p) => Math.min(a, p[1]), 1e9);
+
+const SUPPLIERS = [
+  ['Thực phẩm Tân Bình', 'NCC chính · 82% lượng nhập', 392000, 14],
+  ['Đông lạnh Sài Gòn', 'NCC dự phòng', 405000, 3],
+  ['Bò Mỹ Nhập Khẩu HTP', 'Đã ngừng · giá cao', 418000, 1]
+];
+
+class Component extends DCLogic {
+  state = { tab: 'tong-quan', menuOpen: false, loaded: { 'tong-quan': true }, loadingTab: null };
+
+  pickTab(id) {
+    if (id === this.state.tab) return;
+    if (this.state.loaded[id]) { this.setState({ tab: id, menuOpen: false }); return; }
+    this.setState({ tab: id, menuOpen: false, loadingTab: id });
+    setTimeout(() => {
+      this.setState(s => (s.loadingTab !== id ? {} : {
+        loadingTab: null,
+        loaded: Object.assign({}, s.loaded, { [id]: true })
+      }));
+    }, 600);
+  }
+
+  renderVals() {
+    const st = this.state;
+    const tab = st.tab;
+    const loading = st.loadingTab === tab;
+    const show = (id) => tab === id && !loading;
+
+    const daysLeft = STOCK_NOW / DAILY_USE;
+    const runOutDanger = daysLeft < 3;
+    const below = STOCK_NOW < MIN_LEVEL;
+
+    // 30-day stock chart, viewBox 620x180
+    const sTop = 16, sBot = 158, sL = 44, sR = 612;
+    const sMax = 96;
+    const sy = (v) => sBot - (v / sMax) * (sBot - sTop);
+    const sx = (i) => sL + (i / (STOCK_30.length - 1)) * (sR - sL);
+    const stockPath = STOCK_30.map((v, i) => (i === 0 ? 'M' : 'L') + sx(i).toFixed(1) + ' ' + sy(v).toFixed(1)).join(' ');
+    const stockArea = stockPath + ' L' + sR + ' ' + sBot + ' L' + sL + ' ' + sBot + ' Z';
+
+    // 12-month price chart
+    const pTop = 20, pBot = 152, pL = 56, pR = 612;
+    const pLo = 340000, pHi = 410000;
+    const py = (v) => pBot - ((v - pLo) / (pHi - pLo)) * (pBot - pTop);
+    const px = (i) => pL + (i / (PRICES.length - 1)) * (pR - pL);
+    const pricePath = PRICES.map((p, i) => (i === 0 ? 'M' : 'L') + px(i).toFixed(1) + ' ' + py(p[1]).toFixed(1)).join(' ');
+
+    // Bảng nhúng · chuẩn Pattern 1 biến thể embedded
+    const rowBase = (i, last, cols) => 'display: grid; grid-template-columns: ' + cols + '; align-items: center; gap: 8px; min-height: 44px; padding: 6px 12px; font-size: 13px;' + (i < last - 1 ? ' border-bottom: 1px solid #F0EBE5;' : '');
+
+    const stockBadge = below ? (STOCK_NOW < MIN_LEVEL * 0.5 ? 'Sắp hết' : 'Dưới định mức') : 'Đủ tồn';
+    const stockBadgeTone = below ? (STOCK_NOW < MIN_LEVEL * 0.5 ? B_DANGER : B_WARN) : B_OK;
+
+    return {
+      url: '/kho/nguyen-lieu?nl=NL-0142&tab=' + tab,
+      ghostRows: Array.from({ length: 10 }, (_, i) => ({ i })),
+
+      stockBadge,
+      stockBadgeStyle: stockBadgeTone.replace('height: 22px', 'height: 24px').replace('padding: 0 8px', 'padding: 0 12px'),
+      stockBadgeSmStyle: stockBadgeTone,
+
+      menuOpen: st.menuOpen,
+      toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen })),
+
+      summary: [
+        { label: 'Tồn hiện tại', value: kg(STOCK_NOW), hint: '3 kho · ' + num(STOCK_NOW / 10, 2) + ' thùng', tone: below ? 'w' : 'n' },
+        { label: 'Định mức tối thiểu', value: kg(MIN_LEVEL), hint: 'thiếu ' + kg(MIN_LEVEL - STOCK_NOW), tone: 'n' },
+        { label: 'Giá vốn TB', value: vnd(AVG_COST), hint: 'mỗi kg · bình quân gia quyền', tone: 'n' },
+        { label: 'Giá trị tồn', value: vnd(Math.round(STOCK_NOW * AVG_COST)), hint: '2,1% giá trị kho', tone: 'n' }
+      ].map((s, i) => ({
+        label: s.label, value: s.value, hint: s.hint,
+        cellStyle: 'flex: 1; min-width: 0; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; align-items: flex-end; text-align: right;' + (i < 3 ? ' border-right: 1px solid #F0EBE5;' : ''),
+        valueStyle: 'font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (s.tone === 'w' ? '#8A5F12' : '#1E1B19') + ';',
+        hintStyle: 'font-size: 12px; color: ' + (s.tone === 'w' ? '#8A5F12' : '#6E665C') + ';'
+      })),
+
+      tabs: TAB_DEFS.map(t => ({
+        label: t[1],
+        selected: tab === t[0],
+        hasCount: t[2] !== null,
+        count: t[2] === null ? '' : num(t[2]),
+        countStyle: 'display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; font-size: 12px; font-weight: 500; '
+          + (tab === t[0] ? 'background: #EFF6F5; color: #1C4842;' : 'background: #F4F1ED; color: #6E665C;'),
+        style: 'height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 4px 4px 0 0; font-size: 13px; cursor: pointer; white-space: nowrap; '
+          + (tab === t[0]
+              ? 'background: #FFFFFF; border: 1px solid #E7E2DC; border-bottom: 1px solid #FFFFFF; margin-bottom: -1px; font-weight: 500; color: #1C4842;'
+              : 'border: 1px solid transparent; color: #635B53;'),
+        onPick: () => this.pickTab(t[0])
+      })),
+
+      tabLoading: loading,
+      isOverview: show('tong-quan'),
+      isStock: show('ton-kho'),
+      isMoves: show('nhap-xuat'),
+      isPrice: show('gia'),
+      isDishes: show('mon'),
+
+      overview: [
+        { label: 'Mã nguyên liệu', value: 'NL-0142', hint: 'mã vạch 8938506412' },
+        { label: 'Tên nguyên liệu', value: 'Bò Mỹ ba chỉ', hint: 'US beef short plate' },
+        { label: 'Nhóm', value: 'Thịt · bò nhập khẩu', hint: 'nhóm giá vốn cao' },
+        { label: 'Đơn vị tính', value: 'kg', hint: 'nhập, xuất, kiểm kê đều theo kg' },
+        { label: 'ĐVT quy đổi', value: '1 thùng = 10,0 kg', hint: 'nhập theo thùng, xuất theo kg' },
+        { label: 'Tỷ lệ hao hụt sơ chế', value: '12,0%', hint: 'rìa mỡ và nước rã đông', tone: 'w' },
+        { label: 'Dễ hỏng', value: 'Có', hint: 'bắt buộc ghi lô và ngày nhập', tone: 'w' },
+        { label: 'Hạn dùng TB', value: '4 ngày', hint: 'sau rã đông chỉ 24 giờ', tone: 'w' },
+        { label: 'Kho lưu', value: 'Kho lạnh chính · Quận 1', hint: 'ngăn đông −18°C, kệ B3' },
+        { label: 'NCC chính', value: 'Thực phẩm Tân Bình', hint: '82% lượng nhập 12 tháng' },
+        { label: 'NCC dự phòng', value: 'Đông lạnh Sài Gòn', hint: 'giá cao hơn 3,3%' }
+      ].map(o => ({
+        label: o.label, value: o.value, hint: o.hint,
+        valueStyle: 'font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (o.tone === 'w' ? '#8A5F12' : '#1E1B19') + ';',
+        hintStyle: 'font-size: 12px; color: ' + (o.tone === 'w' ? '#8A5F12' : '#6E665C') + ';'
+      })),
+
+      runOutCardStyle: runOutDanger
+        ? 'background: #FCF0EE; border: 1px solid #C0392B; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px;'
+        : 'background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px;',
+      runOutBadge: runOutDanger ? 'Dưới 3 ngày' : 'Trong ngưỡng an toàn',
+      runOutBadgeStyle: runOutDanger ? B_DANGER : B_NEUTRAL,
+      runOutDate: '31/07/2026',
+      runOutValueStyle: 'font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; color: ' + (runOutDanger ? '#C0392B' : '#1E1B19') + ';',
+      runOutDays: num(daysLeft, 1) + ' ngày',
+      runOutDaysStyle: 'font-size: 13px; font-variant-numeric: tabular-nums; color: ' + (runOutDanger ? '#96271B' : '#635B53') + ';',
+      runOutText: 'Tính từ tồn ' + kg(STOCK_NOW) + ' và tốc độ tiêu thụ trung bình ' + num(DAILY_USE, 1)
+        + ' kg/ngày (14 ngày gần nhất). Ngưỡng cảnh báo đỏ là dưới 3 ngày — đặt hàng ngay hôm nay, NCC chính giao sau 1 ngày.',
+      runOutTextStyle: 'font-size: 13px; color: ' + (runOutDanger ? '#96271B' : '#635B53') + ';',
+
+      stockNow: kg(STOCK_NOW),
+      minLevel: num(MIN_LEVEL, 1),
+      warehouses: WAREHOUSES.map((w, i) => {
+        const low = w[2] < w[3];
+        return {
+          name: w[0], note: w[1], qty: num(w[2], 1), min: num(w[3], 1),
+          status: low ? 'Dưới định mức' : 'Đủ',
+          badgeStyle: low ? B_WARN : B_OK,
+          rowStyle: rowBase(i, WAREHOUSES.length, '1fr 96px 96px 116px')
+        };
+      }),
+
+      stockGrid: [0, 32, 64, 96].map(v => ({ y: sy(v).toFixed(1) })),
+      // Nhãn trục dựng bằng createElement: chữ trong <text> của SVG không nhận được từ {{ hole }}
+      stockAxisEls: [0, 32, 64, 96].map(v => React.createElement('text', {
+        key: 'sa' + v, x: 38, y: sy(v) + 4, textAnchor: 'end', fontSize: 12, fill: '#6E665C',
+        fontFamily: 'ui-monospace, Menlo, monospace'
+      }, num(v))),
+      minLineY: sy(MIN_LEVEL).toFixed(1),
+      minLabelY: (sy(MIN_LEVEL) - 6).toFixed(1),
+      stockPath,
+      stockArea,
+      stockLastX: sx(STOCK_30.length - 1).toFixed(1),
+      stockLastY: sy(STOCK_30[STOCK_30.length - 1]).toFixed(1),
+
+      moves: MOVES.map((m, i) => ({
+        date: m[0], kind: m[1], doc: m[2], note: m[3],
+        qty: (m[1] === 'Nhập' ? '+' : '−') + num(m[4], 1),
+        price: num(m[5]),
+        after: num(m[6], 1),
+        rowStyle: rowBase(i, MOVES.length, '84px 92px 1fr 84px 104px 96px'),
+        kindStyle: m[1] === 'Nhập' ? B_OK : (m[1] === 'Hao hụt' ? B_DANGER : (m[1] === 'Kiểm kê' ? B_WARN : B_NEUTRAL)),
+        qtyStyle: 'text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (m[1] === 'Nhập' ? '#256A49' : (m[1] === 'Hao hụt' ? '#96271B' : '#1E1B19')) + ';'
+      })),
+
+      priceStats: [
+        { label: 'Giá nhập gần nhất', value: vnd(392000), hint: '21/07 · Thực phẩm Tân Bình', tone: 'w' },
+        { label: 'Trung bình 3 tháng', value: vnd(AVG_3M), hint: 'cơ sở tính giá vốn', tone: 'n' },
+        { label: 'Cao nhất 12 tháng', value: vnd(MAX_P), hint: '01/2026 · cận Tết', tone: 'd' },
+        { label: 'Thấp nhất 12 tháng', value: vnd(MIN_P), hint: '08/2025', tone: 'g' }
+      ].map(p => ({
+        label: p.label, value: p.value, hint: p.hint,
+        valueStyle: 'font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums; color: '
+          + (p.tone === 'd' ? '#C0392B' : (p.tone === 'w' ? '#8A5F12' : (p.tone === 'g' ? '#256A49' : '#1E1B19'))) + ';',
+        hintStyle: 'font-size: 12px; color: #6E665C;'
+      })),
+      priceGrid: [340000, 363000, 386000, 410000].map(v => ({ y: py(v).toFixed(1) })),
+      priceAxisEls: [340000, 363000, 386000, 410000].map(v => React.createElement('text', {
+        key: 'pa' + v, x: 50, y: py(v) + 4, textAnchor: 'end', fontSize: 12, fill: '#6E665C',
+        fontFamily: 'ui-monospace, Menlo, monospace'
+      }, num(Math.round(v / 1000)) + 'k')),
+      avgLineY: py(AVG_3M).toFixed(1),
+      avgLabelY: (py(AVG_3M) - 6).toFixed(1),
+      pricePath,
+      // Màu chỉ lấy từ nhóm data-viz: actual #2F7168 · highlight #1C4842 (đậm + to hơn một bậc).
+      // Cực trị luôn kèm nhãn chữ — màu không được là dấu hiệu duy nhất.
+      priceDots: PRICES.map((p, i) => {
+        const extreme = p[1] === MAX_P || p[1] === MIN_P;
+        return {
+          x: px(i).toFixed(1),
+          y: py(p[1]).toFixed(1),
+          r: extreme ? 4 : 2.5,
+          fill: extreme ? '#1C4842' : '#2F7168'
+        };
+      }),
+      // Nhãn cực trị: neo start và lệch vào trong để không đè cột nhãn trục bên trái
+      priceMarkEls: PRICES.map((p, i) => ({ p, i })).filter(o => o.p[1] === MAX_P || o.p[1] === MIN_P).map(o => {
+        const isMax = o.p[1] === MAX_P;
+        return React.createElement('text', {
+          key: 'pm' + o.i,
+          x: px(o.i) + 8,
+          y: py(o.p[1]) + (isMax ? -10 : 18),
+          textAnchor: 'start',
+          fontSize: 12,
+          fill: '#4A443E'
+        }, (isMax ? 'cao nhất ' : 'thấp nhất ') + num(Math.round(o.p[1] / 1000)) + 'k');
+      }),
+      priceLabels: PRICES.map(p => ({ label: p[0] })),
+
+      suppliers: SUPPLIERS.map((s, i) => {
+        const diff = ((s[2] - AVG_3M) / AVG_3M) * 100;
+        return {
+          name: s[0], role: s[1], price: vnd(s[2]), times: num(s[3]) + ' lần',
+          diff: (diff >= 0 ? '+' : '−') + num(Math.abs(diff), 1) + '%',
+          diffStyle: 'text-align: right; font-variant-numeric: tabular-nums; color: ' + (diff > 2 ? '#C0392B' : (diff > 0 ? '#8A5F12' : '#256A49')) + ';',
+          rowStyle: rowBase(i, SUPPLIERS.length, '1fr 116px 92px 116px')
+        };
+      }),
+
+      dishes: DISHES.map((d, i) => ({
+        name: d[0], pack: d[1],
+        per: num(d[2], 2) + ' kg',
+        sold: num(d[3]) + ' phần',
+        daily: num(d[2] * d[3], 2) + ' kg',
+        rowStyle: rowBase(i, DISHES.length, '1fr 116px 108px 116px')
+      })),
+      dailyTotal: num(DAILY_USE, 1) + ' kg / ngày'
+    };
+  }
+}
+
+</script>
+</body>
+</html>

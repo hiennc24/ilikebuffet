@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-tc-01</span><span style="color: #D5CEC6;">·</span><span>template 4 · nặng biểu đồ</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">/tai-chinh</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Tổng quan tài chính</h1>
+    <p style="margin: 0; max-width: 82ch; font-size: 14px; color: #635B53;">Chiều nghĩa của cột <strong style="font-weight: 500;">% chênh đảo theo nhóm</strong>: doanh thu tăng là tốt, chi phí tăng là xấu. Bảng khai báo hướng ở từng nhóm, màn không tự đoán từ dấu của số.</p>
+  </header>
+
+  <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; line-height: 1.1; margin: 0;">Tháng 07/2026</h2>
+        <span style="font-size: 13px; color: #6E665C;">Chi nhánh Quận 1 · so với tháng 06/2026</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; flex: none;">
+        <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xuất Excel</button>
+        <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xuất PDF</button>
+        <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">In</button>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; cursor: pointer;" style-hover="background: #F4F1ED;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18v16H3zM8 2v6M16 2v6M3 11h18"></path></svg>
+          01/07 — 31/07/2026
+        </span>
+        <div style="display: flex; gap: 4px; padding: 4px; background: #F4F1ED; border-radius: 8px;">
+          <sc-for list="{{ presets }}" as="p" hint-placeholder-count="4">
+            <span onClick="{{ p.onPick }}" tabindex="0" style="{{ p.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ p.label }}</span>
+          </sc-for>
+        </div>
+        <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; cursor: pointer;" style-hover="background: #F4F1ED;">Chi nhánh Quận 1</span>
+      </div>
+      <span onClick="{{ toggleCompare }}" tabindex="0" style="{{ compareStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">So kỳ trước · 06/2026</span>
+    </div>
+
+    <div style="display: flex; gap: 12px; padding: 12px 16px; background: #EEF5FA; border: 1px solid #C7DDEC; border-radius: 8px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2C6E9B" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 8v.01M12 11v5"></path></svg>
+      <span style="font-size: 13px; color: #4A443E;"><strong style="font-weight: 500;">Kỳ chưa chốt sổ — số liệu tạm tính.</strong> Còn 3 phiếu chi ngày 31/07 chờ duyệt và 1 hoá đơn điện chưa về. Chốt sổ dự kiến 05/08.</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <span style="font-size: 13px; color: #6E665C;">{{ s.label }}</span>
+            <span style="{{ s.dirStyle }}">{{ s.dir }}</span>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 8px;">
+            <strong style="{{ s.valueStyle }}">{{ s.value }}</strong>
+            <span style="{{ s.deltaStyle }}">{{ s.delta }}</span>
+          </div>
+          <sc-if value="{{ s.hasSpark }}" hint-placeholder-val="{{ true }}">
+            <svg width="100%" height="28" viewBox="0 0 200 28" preserveAspectRatio="none" aria-hidden="true">
+              <path d="{{ s.spark }}" stroke="#2F7168" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+            </svg>
+          </sc-if>
+          <sc-if value="{{ s.hasBar }}" hint-placeholder-val="{{ false }}">
+            <span style="position: relative; display: block; height: 8px; border-radius: 999px; background: #E7E2DC;">
+              <span style="{{ s.barStyle }}"></span>
+              <span style="{{ s.markStyle }}"></span>
+            </span>
+          </sc-if>
+          <span style="{{ s.hintStyle }}">{{ s.hint }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <strong style="font-size: 16px; font-weight: 500;">Doanh thu và biên lợi nhuận 12 tháng</strong>
+          <span style="font-size: 13px; color: #6E665C;">Combo hai trục · cột đọc trục trái, đường đọc trục phải</span>
+        </div>
+        <svg aria-hidden="true" viewBox="0 0 1180 300" style="width: 100%; height: 300px;">
+          {{ comboGridEls }}
+          {{ comboLeftAxisEls }}
+          {{ comboRightAxisEls }}
+          <line x1="72" y1="248" x2="1108" y2="248" stroke="#E7E2DC" stroke-width="1"></line>
+          <sc-for list="{{ comboBars }}" as="b" hint-placeholder-count="12">
+            <rect x="{{ b.x }}" y="{{ b.y }}" width="{{ b.w }}" height="{{ b.h }}" rx="4" fill="{{ b.fill }}"></rect>
+          </sc-for>
+          <path d="{{ comboLine }}" stroke="#C96442" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+          <sc-for list="{{ comboDots }}" as="d" hint-placeholder-count="12">
+            <circle cx="{{ d.x }}" cy="{{ d.y }}" r="3.5" fill="#C96442"></circle>
+          </sc-for>
+          {{ comboLabelEls }}
+        </svg>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #D8E6E2;"></span>Doanh thu · <strong style="font-weight: 500;">trục trái</strong>, triệu đồng</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;"><span style="width: 16px; height: 3px; border-radius: 999px; background: #C96442;"></span>Biên lợi nhuận · <strong style="font-weight: 500;">trục phải</strong>, phần trăm</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #2F7168;"></span>Tháng đang xem</span>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <strong style="font-size: 16px; font-weight: 500;">Cơ cấu chi phí theo nhóm</strong>
+            <span style="font-size: 13px; color: #6E665C;">6 nhóm lớn nhất, phần còn lại gộp “Khác” · tổng đặt ở lỗ giữa</span>
+          </div>
+          <span style="font-size: 12px; color: #6E665C; flex: none;">Tải lười · nằm dưới màn hình đầu</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 40px;">
+          <svg width="240" height="240" viewBox="0 0 240 240" aria-hidden="true" style="flex: none;">
+            <sc-for list="{{ donutArcs }}" as="a" hint-placeholder-count="7">
+              <circle cx="120" cy="120" r="{{ a.r }}" fill="none" stroke="{{ a.color }}" stroke-width="30" stroke-dasharray="{{ a.dash }}" stroke-dashoffset="{{ a.offset }}" transform="rotate(-90 120 120)"></circle>
+            </sc-for>
+            {{ donutCenterEls }}
+          </svg>
+          <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+            <sc-for list="{{ donutLegend }}" as="l" hint-placeholder-count="7">
+              <div style="display: grid; grid-template-columns: 12px 1fr 132px 76px; gap: 12px; align-items: center; min-height: 28px;">
+                <span style="{{ l.swatchStyle }}"></span>
+                <span style="font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ l.label }}</span>
+                <span style="font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ l.value }}</span>
+                <span style="font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 500;">{{ l.pct }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 1fr 160px 160px 160px 116px 132px; gap: 12px; align-items: center; min-height: 40px; padding: 0 16px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+        <span>Nhóm khoản mục</span>
+        <span style="text-align: right;">Kỳ này</span>
+        <span style="text-align: right;">Kỳ trước</span>
+        <span style="text-align: right;">Chênh lệch</span>
+        <span style="text-align: right;">% chênh</span>
+        <span style="text-align: right;">% trên doanh thu</span>
+      </div>
+      <sc-for list="{{ tableRows }}" as="r" hint-placeholder-count="14">
+        <div style="{{ r.rowStyle }}" style-hover="background: #F4F1ED;">
+          <span style="{{ r.nameCellStyle }}">
+            <sc-if value="{{ r.isGroup }}" hint-placeholder-val="{{ true }}">
+              <span onClick="{{ r.onToggle }}" role="button" tabindex="0" aria-expanded="{{ r.expanded }}" style="width: 20px; height: 20px; flex: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;" style-hover="background: #F0EBE5;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="{{ r.caretStyle }}"><path d="M9 6l6 6-6 6"></path></svg>
+              </span>
+            </sc-if>
+            <span style="{{ r.nameStyle }}">{{ r.name }}</span>
+            <sc-if value="{{ r.hasDirTag }}" hint-placeholder-val="{{ false }}">
+              <span style="{{ r.dirTagStyle }}">{{ r.dirTag }}</span>
+            </sc-if>
+          </span>
+          <span style="{{ r.thisStyle }}">{{ r.thisPeriod }}</span>
+          <span style="{{ r.prevStyle }}">{{ r.prevPeriod }}</span>
+          <span style="{{ r.diffStyle }}">{{ r.diff }}</span>
+          <span style="{{ r.pctStyle }}">{{ r.pct }}</span>
+          <span style="{{ r.shareStyle }}">{{ r.share }}</span>
+        </div>
+      </sc-for>
+      <div style="position: sticky; bottom: 0; z-index: 2; display: grid; grid-template-columns: 1fr 160px 160px 160px 116px 132px; gap: 12px; align-items: center; min-height: 48px; padding: 0 16px; background: #FAF8F6; border-top: 1px solid #E7E2DC; font-size: 13px;">
+        <strong style="font-weight: 500; letter-spacing: 0.02em;">LỢI NHUẬN TRƯỚC THUẾ</strong>
+        <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{ profitNow }}</strong>
+        <span style="text-align: right; font-variant-numeric: tabular-nums; color: #4A443E;">{{ profitPrev }}</span>
+        <strong style="{{ profitDiffStyle }}">{{ profitDiff }}</strong>
+        <strong style="{{ profitPctStyle }}">{{ profitPct }}</strong>
+        <strong style="text-align: right; font-weight: 600; font-variant-numeric: tabular-nums;">{{ profitShare }}</strong>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #6E665C;">
+      <span>Nguồn: sổ quỹ thu chi, phiếu nhập kho đã duyệt, bảng lương đã chốt. Doanh thu tính theo thời điểm đóng đơn.</span>
+      <span>Biên lợi nhuận = lợi nhuận trước thuế ÷ doanh thu. Ngưỡng sàn 6,0% và mục tiêu 9,0% lấy từ Cấu hình → Chỉ tiêu tài chính.</span>
+      <span>Số trong bảng không rút gọn; số trong stat card rút gọn tới triệu đồng. Cập nhật lúc 18:24 · 28/07/2026.</span>
+    </div>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Chiều nghĩa đảo theo nhóm — ghi cho dev</h2>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">Doanh thu</span><span style="color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">direction: higher-is-better</code> — tăng tô phía dương của diverging ramp, giảm tô phía âm.</span>
+      <span style="color: #6E665C;">Giá vốn</span><span style="color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">direction: lower-is-better</code> — tăng tô phía âm. Đây là chỗ dev hay làm sai nhất: <strong style="font-weight: 500;">+7,8% giá vốn là tin xấu</strong>.</span>
+      <span style="color: #6E665C;">Chi phí vận hành</span><span style="color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">direction: lower-is-better</code> — như trên. Riêng Khấu hao là <code style="font-family: ui-monospace, Menlo, monospace;">neutral</code>: không tăng không giảm được trong kỳ.</span>
+      <span style="color: #6E665C;">Lợi nhuận</span><span style="color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">direction: higher-is-better</code> · dòng dùng nền nhấn và chữ đậm hơn một bậc.</span>
+      <span style="color: #6E665C;">cột Chênh lệch</span><span style="color: #4A443E;">Diverging ramp <code style="font-family: ui-monospace, Menlo, monospace;">--ibb-chart-div-−3…+3</code>, bậc theo độ lớn tương đối. Số âm trong ngoặc. Ramp map theo <code style="font-family: ui-monospace, Menlo, monospace;">direction</code> của nhóm, không map theo dấu.</span>
+      <span style="color: #6E665C;">cột % trên doanh thu</span><span style="color: #4A443E;">Luôn <code style="font-family: ui-monospace, Menlo, monospace;">neutral</code> — đây là tỷ trọng, không phải thành tích. Không tô màu.</span>
+      <span style="color: #6E665C;">gập nhóm</span><span style="color: #4A443E;">Trạng thái gập lưu vào URL <code style="font-family: ui-monospace, Menlo, monospace;">?mo=gia-von,chi-phi</code> để gửi link giữ nguyên tầm nhìn. Xuất Excel xuất <strong style="font-weight: 500;">toàn bộ dòng</strong>, không theo trạng thái gập.</span>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">6 state của T4</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">1 · Đang tải</span>
+        <span style="height: 36px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        </div>
+        <span style="height: 140px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Bốn thẻ, vùng combo cao đúng 300px, bảng dựng đúng 4 nhóm — không nhảy khi có số.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">2 · Không dữ liệu trong kỳ</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18v16H3zM8 2v6M16 2v6M3 11h18"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Chưa có giao dịch nào trong 08/2026</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Kỳ mới bắt đầu. Stat strip và bảng cùng ẩn, chỉ còn empty báo cáo của CL3 §07.</span>
+        <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 16px; background: #235B54; color: #FFFFFF; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 4px;">Về tháng 07/2026</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">3 · Thiếu dữ liệu đầu vào</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Chưa có hoá đơn điện nước tháng 07 — nhóm Chi phí vận hành thiếu khoảng 96 triệu.</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Vẫn tính phần có được, dòng thiếu ghi “—” và biên lợi nhuận gắn nhãn <strong style="font-weight: 500;">tạm tính</strong>. Không vẽ đường biên ở tháng thiếu dữ liệu thay vì vẽ một điểm sai.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">4 · Kỳ chưa chốt sổ</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #EEF5FA; border: 1px solid #C7DDEC; border-radius: 4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2C6E9B" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 8v.01M12 11v5"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Số liệu tạm tính · còn 3 phiếu chờ duyệt</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Đây là state mặc định của tháng đang chạy. Xuất Excel trong lúc này thêm hậu tố <span style="font-family: ui-monospace, Menlo, monospace;">_tam-tinh</span> vào tên tệp.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">5 · Không có quyền xem</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Chỉ chủ, quản lý và kế toán</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Bếp trưởng thấy được food cost ở báo cáo kho, nhưng không thấy lợi nhuận và chi phí lương.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">6 · Kỳ đã chốt sổ</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #EDF7F1; border: 1px solid #C3E4D2; border-radius: 4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#256A49" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M8 12l3 3 5-6"></path></svg>
+          <span style="font-size: 13px; color: #1E5B3D;">Đã chốt sổ 05/07/2026 · kế toán Thu Hà</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Số liệu khoá, không đổi kể cả khi có phiếu bổ sung — phiếu về sau ghi vào kỳ hiện tại. Bỏ nhãn tạm tính, mọi con số là chính thức.</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1100}}">
+const SEG = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #635B53; cursor: pointer;';
+const SEG_ON = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(30,27,25,0.06); font-size: 13px; font-weight: 500; color: #1C4842; cursor: pointer;';
+const DIR_TAG = 'height: 20px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 11px; font-weight: 500; white-space: nowrap; background: #F4F1ED; color: #6E665C;';
+
+// Diverging ramp data-viz · phía dương = tốt, phía âm = xấu. Bậc theo độ lớn tương đối.
+const DIV = { p3: '#1E5C3F', p2: '#3F8560', p1: '#6FA98A', zero: '#6E665C', n1: '#D99A8C', n2: '#C4634F', n3: '#A32E22' };
+// Sequential ramp cho donut
+const SEQ = ['#1C4842', '#2F7168', '#4F958D', '#7FB5AE', '#B0D4CF', '#D8E6E2', '#D5CEC6'];
+
+const vnd = (n) => (n < 0 ? '(' + Math.abs(n).toLocaleString('vi-VN') + ')' : n.toLocaleString('vi-VN'));
+const dec1 = (n) => n.toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const tr = (n) => dec1(n / 1000000) + ' tr';
+
+// ── Dữ liệu gốc · mọi con số trên màn suy ra từ đây ──────────────
+const GROUPS = [
+  {
+    id: 'doanh-thu', name: 'Doanh thu', dir: 'higher',
+    lines: [
+      ['Buffet theo gói', 1284320000, 1212480000],
+      ['Gọi thêm à la carte', 186460000, 168320000],
+      ['Đồ uống', 60000000, 57400000]
+    ]
+  },
+  {
+    id: 'gia-von', name: 'Giá vốn hàng bán', dir: 'lower',
+    lines: [
+      ['Thực phẩm tươi', 402180000, 371640000],
+      ['Đồ khô và gia vị', 78940000, 74280000],
+      ['Nguyên liệu đồ uống', 42400000, 39800000]
+    ]
+  },
+  {
+    id: 'chi-phi', name: 'Chi phí vận hành', dir: 'lower',
+    lines: [
+      ['Lương và bảo hiểm', 486240000, 468900000, 'lower'],
+      ['Thuê mặt bằng', 180000000, 180000000, 'lower'],
+      ['Điện nước gas', 96480000, 88240000, 'lower'],
+      ['Marketing', 42600000, 51200000, 'lower'],
+      ['Sửa chữa và vật tư', 28340000, 19860000, 'lower'],
+      ['Khấu hao tài sản', 36000000, 36000000, 'neutral'],
+      ['Chi phí khác', 21760000, 20140000, 'lower']
+    ]
+  }
+];
+
+const sum = (g, i) => g.lines.reduce((s, l) => s + l[i], 0);
+const REV = sum(GROUPS[0], 1), REV_P = sum(GROUPS[0], 2);
+const COGS = sum(GROUPS[1], 1), COGS_P = sum(GROUPS[1], 2);
+const OPEX = sum(GROUPS[2], 1), OPEX_P = sum(GROUPS[2], 2);
+const GROSS = REV - COGS, GROSS_P = REV_P - COGS_P;
+const PROFIT = GROSS - OPEX, PROFIT_P = GROSS_P - OPEX_P;
+const MARGIN = (PROFIT / REV) * 100, MARGIN_P = (PROFIT_P / REV_P) * 100;
+
+const MARGIN_FLOOR = 6.0;    // Cấu hình → Chỉ tiêu tài chính
+const MARGIN_TARGET = 9.0;
+const GROSS_TARGET = 1000000000;
+
+// 12 tháng · doanh thu (tr) và biên lợi nhuận (%)
+const MONTHS = [
+  ['08/25', 1188, 5.2], ['09/25', 1242, 5.8], ['10/25', 1310, 6.4], ['11/25', 1396, 7.1],
+  ['12/25', 1682, 9.6], ['01/26', 1524, 8.2], ['02/26', 1348, 5.4], ['03/26', 1412, 6.6],
+  ['04/26', 1386, 6.1], ['05/26', 1454, 6.9], ['06/26', 1438.2, 6.1], ['07/26', 1530.78, 7.6]
+];
+
+class Component extends DCLogic {
+  state = { preset: 'Tháng này', compare: true, open: { 'doanh-thu': true, 'gia-von': true, 'chi-phi': false } };
+
+  renderVals() {
+    const st = this.state;
+
+    const statCard = (s) => {
+      const up = s.delta >= 0;
+      const good = s.dir === 'higher' ? up : (s.dir === 'lower' ? !up : null);
+      return {
+        label: s.label,
+        dir: s.dir === 'higher' ? 'cao hơn tốt hơn' : (s.dir === 'lower' ? 'thấp hơn tốt hơn' : 'trung tính'),
+        dirStyle: DIR_TAG,
+        value: s.value,
+        valueStyle: 'font-size: 24px; font-weight: 500; font-variant-numeric: tabular-nums; color: '
+          + (s.tone === 'warn' ? '#8A5F12' : (s.tone === 'bad' ? '#C0392B' : '#1E1B19')) + ';',
+        delta: (up ? '+' : '−') + dec1(Math.abs(s.delta)) + '%',
+        deltaStyle: 'font-size: 13px; font-variant-numeric: tabular-nums; color: '
+          + (good === true ? '#256A49' : (good === false ? '#C0392B' : '#635B53')) + ';',
+        hasSpark: !!s.spark,
+        spark: s.spark ? (function (vals) {
+          const mx = Math.max.apply(null, vals), mn = Math.min.apply(null, vals), sp = mx - mn || 1;
+          return vals.map((v, i) => (i === 0 ? 'M' : 'L') + ((i / (vals.length - 1)) * 200).toFixed(1) + ' ' + (24 - ((v - mn) / sp) * 20).toFixed(1)).join(' ');
+        })(s.spark) : '',
+        hasBar: !!s.bar,
+        barStyle: s.bar
+          ? 'position: absolute; left: 0; top: 0; display: block; height: 8px; border-radius: 999px; width: ' + Math.min(100, s.barPct).toFixed(1) + '%; background: '
+            + (s.tone === 'bad' ? '#C0392B' : (s.tone === 'warn' ? '#8A5F12' : '#235B54')) + ';'
+          : '',
+        markStyle: s.bar
+          ? 'position: absolute; top: -2px; left: ' + Math.min(100, s.markPct).toFixed(1) + '%; width: 2px; height: 12px; border-radius: 999px; background: #4A443E;'
+          : '',
+        hint: s.hint,
+        hintStyle: 'font-size: 12px; color: ' + (s.tone === 'warn' || s.tone === 'bad' ? '#8A5F12' : '#6E665C') + ';'
+      };
+    };
+
+    // ── bảng · dòng nhóm + dòng con + dòng kết quả ────────────────
+    const rows = [];
+    const push = (o) => rows.push(o);
+
+    const cell = (v) => 'text-align: right; font-variant-numeric: tabular-nums;';
+    const divColor = (pctChange, dir) => {
+      if (dir === 'neutral' || pctChange === 0) return DIV.zero;
+      const good = dir === 'higher' ? pctChange > 0 : pctChange < 0;
+      const mag = Math.abs(pctChange);
+      const step = mag >= 15 ? 3 : (mag >= 5 ? 2 : 1);
+      return good ? DIV['p' + step] : DIV['n' + step];
+    };
+
+    const mkLine = (name, now, prev, dir, level, opts) => {
+      opts = opts || {};
+      const diff = now - prev;
+      const pct = prev === 0 ? 0 : (diff / prev) * 100;
+      const color = divColor(pct, dir);
+      const accent = !!opts.accent;
+      const isGroup = level === 0;
+      return {
+        isGroup,
+        name,
+        expanded: !!opts.expanded,
+        onToggle: opts.onToggle || (() => {}),
+        caretStyle: 'transition: transform 120ms ease; transform: rotate(' + (opts.expanded ? 90 : 0) + 'deg);',
+        hasDirTag: isGroup,
+        dirTag: dir === 'higher' ? 'tăng là tốt' : (dir === 'lower' ? 'tăng là xấu' : 'trung tính'),
+        dirTagStyle: DIR_TAG,
+        rowStyle: 'display: grid; grid-template-columns: 1fr 160px 160px 160px 116px 132px; gap: 12px; align-items: center; min-height: 44px; padding: 0 16px; font-size: 13px; border-bottom: 1px solid #F0EBE5;'
+          + (accent ? ' background: #EFF6F5;' : (isGroup ? ' background: #FAF8F6;' : '')),
+        nameCellStyle: 'display: flex; align-items: center; gap: 8px; min-width: 0; padding-left: ' + (level === 0 ? 0 : 28) + 'px;',
+        nameStyle: 'overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: '
+          + (accent ? 600 : (isGroup ? 500 : 400)) + '; color: ' + (accent ? '#1C4842' : '#1E1B19') + ';',
+        thisPeriod: vnd(now),
+        thisStyle: cell() + ' font-weight: ' + (accent ? 600 : (isGroup ? 500 : 400)) + '; color: ' + (accent ? '#1C4842' : '#1E1B19') + ';',
+        prevPeriod: vnd(prev),
+        prevStyle: cell() + ' color: #4A443E;',
+        diff: (diff >= 0 ? '+' : '') + vnd(diff),
+        diffStyle: cell() + ' font-weight: 500; color: ' + color + ';',
+        pct: prev === 0 ? '—' : (pct >= 0 ? '+' : '−') + dec1(Math.abs(pct)) + '%',
+        pctStyle: cell() + ' color: ' + color + ';',
+        share: dec1((now / REV) * 100) + '%',
+        shareStyle: cell() + ' color: #6E665C;'
+      };
+    };
+
+    GROUPS.forEach(g => {
+      const now = sum(g, 1), prev = sum(g, 2);
+      const open = !!st.open[g.id];
+      push(mkLine(g.name, now, prev, g.dir, 0, {
+        expanded: open,
+        onToggle: () => this.setState(s => ({ open: Object.assign({}, s.open, { [g.id]: !s.open[g.id] }) }))
+      }));
+      if (open) {
+        g.lines.forEach(l => push(mkLine(l[0], l[1], l[2], l[3] || g.dir, 1)));
+      }
+      if (g.id === 'gia-von') {
+        push(mkLine('Lợi nhuận gộp', GROSS, GROSS_P, 'higher', 0, { accent: true }));
+      }
+    });
+
+    const profitPctVal = ((PROFIT - PROFIT_P) / PROFIT_P) * 100;
+
+    // ── combo chart · viewBox 1180×300 ────────────────────────────
+    const cTop = 28, cBot = 248, cL = 72, cR = 1108;
+    const revMax = 1800, mgMax = 12;
+    const by = (v) => cBot - (v / revMax) * (cBot - cTop);
+    const my = (v) => cBot - (v / mgMax) * (cBot - cTop);
+    const slot = (cR - cL) / MONTHS.length;
+
+    // ── donut ────────────────────────────────────────────────────
+    const costLines = [];
+    GROUPS[1].lines.forEach(l => costLines.push([l[0], l[1]]));
+    GROUPS[2].lines.forEach(l => costLines.push([l[0], l[1]]));
+    costLines.sort((a, b) => b[1] - a[1]);
+    const top6 = costLines.slice(0, 6);
+    const restVal = costLines.slice(6).reduce((s, l) => s + l[1], 0);
+    const slices = top6.concat(restVal > 0 ? [['Khác · ' + costLines.slice(6).length + ' khoản', restVal]] : []);
+    const costTotal = slices.reduce((s, l) => s + l[1], 0);
+    const R = 90, C = 2 * Math.PI * R;
+    let acc = 0;
+    const donutArcs = slices.map((s, i) => {
+      const frac = s[1] / costTotal;
+      const len = frac * C;
+      const arc = { r: R, color: i === slices.length - 1 && restVal > 0 ? '#D5CEC6' : SEQ[i], dash: len.toFixed(2) + ' ' + (C - len).toFixed(2), offset: (-acc).toFixed(2) };
+      acc += len;
+      return arc;
+    });
+
+    return {
+      presets: ['7 ngày', 'Tháng này', 'Tháng trước', 'Quý này'].map(p => ({
+        label: p,
+        style: st.preset === p ? SEG_ON : SEG,
+        onPick: () => this.setState({ preset: p })
+      })),
+      compareStyle: 'height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; cursor: pointer; flex: none; border: 1px solid '
+        + (st.compare ? '#B0D4CF' : '#E7E2DC') + '; background: ' + (st.compare ? '#EFF6F5' : '#FFFFFF') + '; color: ' + (st.compare ? '#1C4842' : '#4A443E') + '; font-weight: ' + (st.compare ? 500 : 400) + ';',
+      toggleCompare: () => this.setState(s => ({ compare: !s.compare })),
+
+      stats: [
+        { label: 'Doanh thu', value: tr(REV), delta: ((REV - REV_P) / REV_P) * 100, dir: 'higher',
+          spark: MONTHS.slice(-7).map(m => m[1]), hint: 'Cao nhất kể từ 12/2025' },
+        { label: 'Tổng chi phí', value: tr(COGS + OPEX), delta: (((COGS + OPEX) - (COGS_P + OPEX_P)) / (COGS_P + OPEX_P)) * 100, dir: 'lower',
+          spark: [1350, 1362, 1341, 1358, 1372, 1350.06, 1414.94], hint: 'Giá vốn tăng nhanh hơn doanh thu' },
+        { label: 'Lợi nhuận gộp', value: tr(GROSS), delta: ((GROSS - GROSS_P) / GROSS_P) * 100, dir: 'higher',
+          bar: true, barPct: (GROSS / GROSS_TARGET) * 100, markPct: 100,
+          hint: 'Mục tiêu ' + tr(GROSS_TARGET) + ' · đạt ' + dec1((GROSS / GROSS_TARGET) * 100) + '%' },
+        { label: 'Biên lợi nhuận', value: dec1(MARGIN) + '%', delta: MARGIN - MARGIN_P, dir: 'higher',
+          bar: true, barPct: (MARGIN / MARGIN_TARGET) * 100, markPct: (MARGIN_FLOOR / MARGIN_TARGET) * 100,
+          tone: MARGIN < MARGIN_FLOOR ? 'bad' : (MARGIN < MARGIN_TARGET ? 'warn' : 'ok'),
+          hint: 'Sàn ' + dec1(MARGIN_FLOOR) + '% · mục tiêu ' + dec1(MARGIN_TARGET) + '% · từ Cấu hình' }
+      ].map(statCard),
+
+      comboGridEls: [0, 450, 900, 1350, 1800].map(v => React.createElement('line', {
+        key: 'cg' + v, x1: cL, y1: by(v), x2: cR, y2: by(v), stroke: '#F4F1ED', strokeWidth: 1
+      })),
+      comboLeftAxisEls: [0, 450, 900, 1350, 1800].map(v => React.createElement('text', {
+        key: 'cla' + v, x: cL - 10, y: by(v) + 4, textAnchor: 'end', fontSize: 12, fill: '#6E665C', fontFamily: 'Be Vietnam Pro'
+      }, v.toLocaleString('vi-VN'))),
+      comboRightAxisEls: [0, 3, 6, 9, 12].map(v => React.createElement('text', {
+        key: 'cra' + v, x: cR + 12, y: my(v) + 4, textAnchor: 'start', fontSize: 12, fill: '#6E665C', fontFamily: 'Be Vietnam Pro'
+      }, v + '%')),
+      comboBars: MONTHS.map((m, i) => ({
+        x: (cL + i * slot + slot * 0.22).toFixed(1),
+        y: by(m[1]).toFixed(1),
+        w: (slot * 0.56).toFixed(1),
+        h: (cBot - by(m[1])).toFixed(1),
+        fill: i === MONTHS.length - 1 ? '#2F7168' : '#D8E6E2'
+      })),
+      comboLine: MONTHS.map((m, i) => (i === 0 ? 'M' : 'L') + (cL + i * slot + slot / 2).toFixed(1) + ' ' + my(m[2]).toFixed(1)).join(' '),
+      comboDots: MONTHS.map((m, i) => ({ x: (cL + i * slot + slot / 2).toFixed(1), y: my(m[2]).toFixed(1) })),
+      comboLabelEls: MONTHS.map((m, i) => React.createElement('text', {
+        key: 'cl' + m[0], x: cL + i * slot + slot / 2, y: 272, textAnchor: 'middle', fontSize: 12,
+        fill: i === MONTHS.length - 1 ? '#1C4842' : '#6E665C', fontFamily: 'Be Vietnam Pro'
+      }, m[0])),
+
+      donutArcs,
+      donutCenterEls: [
+        React.createElement('text', { key: 'dc1', x: 120, y: 112, textAnchor: 'middle', fontSize: 12, fill: '#6E665C', fontFamily: 'Be Vietnam Pro' }, 'Tổng chi phí'),
+        React.createElement('text', { key: 'dc2', x: 120, y: 136, textAnchor: 'middle', fontSize: 20, fontWeight: 500, fill: '#1E1B19', fontFamily: 'Be Vietnam Pro' }, tr(costTotal))
+      ],
+      donutLegend: slices.map((s, i) => ({
+        label: s[0],
+        value: vnd(s[1]),
+        pct: dec1((s[1] / costTotal) * 100) + '%',
+        swatchStyle: 'width: 12px; height: 12px; border-radius: 2px; background: ' + (i === slices.length - 1 && restVal > 0 ? '#D5CEC6' : SEQ[i]) + ';'
+      })),
+
+      tableRows: rows,
+      profitNow: vnd(PROFIT),
+      profitPrev: vnd(PROFIT_P),
+      profitDiff: (PROFIT - PROFIT_P >= 0 ? '+' : '') + vnd(PROFIT - PROFIT_P),
+      profitDiffStyle: 'text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; color: ' + divColor(profitPctVal, 'higher') + ';',
+      profitPct: (profitPctVal >= 0 ? '+' : '−') + dec1(Math.abs(profitPctVal)) + '%',
+      profitPctStyle: 'text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; color: ' + divColor(profitPctVal, 'higher') + ';',
+      profitShare: dec1(MARGIN) + '%'
+    };
+  }
+}
+
+</script>
+</body>
+</html>

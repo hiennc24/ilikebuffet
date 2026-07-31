@@ -1,0 +1,41 @@
+/* ============================================================
+   TYPOGRAPHY — Pháp Phục Shop
+   Display: Cormorant Garamond (calm, literary, breathing serif)
+   Text/UI: Be Vietnam Pro (clean humanist sans, Vietnamese-native)
+   Spacing is generous; the brand voice is quiet, never shouty.
+   ============================================================ */
+:root {
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-sans:    'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+
+  /* Type scale (1.25 minor-third, anchored at 16px body) */
+  --text-2xs: 0.6875rem;  /* 11px — micro labels */
+  --text-xs:  0.75rem;    /* 12px — captions, hangtag fine print */
+  --text-sm:  0.875rem;   /* 14px — UI, meta */
+  --text-base:1rem;       /* 16px — body */
+  --text-md:  1.125rem;   /* 18px — lead body */
+  --text-lg:  1.5rem;     /* 24px — small headings */
+  --text-xl:  2rem;       /* 32px — section titles */
+  --text-2xl: 2.75rem;    /* 44px — page titles */
+  --text-3xl: 4rem;       /* 64px — display */
+  --text-4xl: 6rem;       /* 96px — hero wordmark */
+
+  /* Weights */
+  --fw-light:   300; /* @kind font */
+  --fw-regular: 400; /* @kind font */
+  --fw-medium:  500; /* @kind font */
+  --fw-semi:    600; /* @kind font */
+
+  /* Line heights */
+  --lh-tight:  1.05; /* @kind font */
+  --lh-snug:   1.25; /* @kind font */
+  --lh-normal: 1.55; /* @kind font */
+  --lh-loose:  1.8; /* @kind font */
+
+  /* Tracking — wide letter-spacing is a core brand signal for labels */
+  --tracking-tight:  -0.01em; /* @kind font */
+  --tracking-normal: 0; /* @kind font */
+  --tracking-wide:   0.08em; /* @kind font */
+  --tracking-wider:  0.18em;   /* @kind font */
+  --tracking-widest: 0.3em;    /* @kind font */
+}

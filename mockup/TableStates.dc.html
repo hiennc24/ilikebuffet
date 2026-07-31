@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  @keyframes ibb-spin { to { transform: rotate(360deg); } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+
+  <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+    <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Loading lần đầu</span>
+    <div style="display: flex; gap: 8px;">
+      <span style="width: 180px; height: 28px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;"></span>
+      <span style="width: 84px; height: 28px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;"></span>
+      <span style="width: 84px; height: 28px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;"></span>
+    </div>
+    <div style="height: 36px; display: flex; align-items: center; gap: 12px; padding: 0 12px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">
+      <span style="width: 88px;">Định danh</span><span style="flex: 1;">Nội dung</span><span style="width: 72px; text-align: right;">Số</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <sc-for list="{{ skeletonRows }}" as="s" hint-placeholder-count="8">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="width: 88px; height: 12px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="flex: 1; height: 12px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="width: 72px; height: 12px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        </div>
+      </sc-for>
+    </div>
+    <span style="font-size: 12px; color: #6E665C;">Giữ nguyên page header, stat strip và filter bar · skeleton 8 dòng đúng số cột nên không nhảy layout khi có dữ liệu.</span>
+  </div>
+
+  <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+    <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Loading khi đổi bộ lọc</span>
+    <div style="display: flex; gap: 8px;">
+      <span style="height: 28px; display: inline-flex; align-items: center; padding: 0 12px; background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 6px; font-size: 12px; color: #1C4842;">Bộ lọc · 3</span>
+      <span style="height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 12px; color: #4A443E;">Đang giữ lựa chọn</span>
+    </div>
+    <div style="position: relative;">
+      <div style="opacity: 0.45; display: flex; flex-direction: column; gap: 12px;">
+        <sc-for list="{{ dimRows }}" as="d" hint-placeholder-count="4">
+          <div style="display: flex; align-items: center; gap: 12px; font-size: 13px;">
+            <span style="width: 88px; font-family: ui-monospace, Menlo, monospace; color: #235B54;">{{ d.code }}</span>
+            <span style="flex: 1;">Dòng dữ liệu cũ vẫn hiển thị</span>
+            <span style="width: 72px; text-align: right; font-variant-numeric: tabular-nums;">{{ d.value }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+        <span role="status" aria-live="polite" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 999px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); font-size: 12px; color: #635B53;">
+          <span style="width: 14px; height: 14px; border-radius: 999px; border: 1.5px solid #E7E2DC; border-top-color: #2F7168; animation: ibb-spin 700ms linear infinite;"></span>Đang áp dụng bộ lọc…
+        </span>
+      </div>
+    </div>
+    <span style="font-size: 12px; color: #6E665C;">Chỉ thân bảng mờ và khoá tương tác; header, stat strip, tabs, filter bar giữ nguyên — không nháy toàn trang, không mất vị trí cuộn.</span>
+  </div>
+
+  <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+    <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Error</span>
+    <span style="width: 56px; height: 56px; border-radius: 999px; background: #FCF0EE; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+      <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+    </span>
+    <strong style="font-size: 16px; font-weight: 500;">{{ errorTitle }}</strong>
+    <span style="font-size: 13px; color: #6E665C;">Máy chủ không phản hồi kịp thời. Bộ lọc và lựa chọn hiện tại vẫn được giữ.</span>
+    <span style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">{{ errorCode }}</span>
+    <button style="height: 36px; padding: 0 16px; margin-top: 4px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Thử lại</button>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:360},&quot;errorTitle&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Không tải được danh sách&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;errorCode&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;ERR-5031-QN1&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      skeletonRows: [1, 2, 3, 4, 5, 6, 7, 8].map(n => ({ n })),
+      dimRows: [
+        { code: '…041', value: '1.556.000' },
+        { code: '…040', value: '2.334.000' },
+        { code: '…039', value: '778.000' },
+        { code: '…038', value: '1.167.000' }
+      ],
+      errorTitle: this.props.errorTitle ?? 'Không tải được danh sách',
+      errorCode: this.props.errorCode ?? 'ERR-5031-QN1'
+    };
+  }
+}
+
+</script>
+</body>
+</html>

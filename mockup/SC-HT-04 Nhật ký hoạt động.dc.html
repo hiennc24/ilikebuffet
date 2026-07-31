@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; }
+  td, th { text-align: left; font-weight: inherit; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  @keyframes ibb-spin { to { transform: rotate(360deg); } }
+  input { font-family: inherit; }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 24px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-ht-04</span><span style="color: #D5CEC6;">·</span><span>template t1 tối giản</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">/he-thong/nhat-ky</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Nhật ký hoạt động</h1>
+    <p style="margin: 0; max-width: 76ch; font-size: 14px; color: #635B53;">Chỉ chủ truy cập. Đây là T1 co lại hết mức: bỏ slot 2 (stat strip) và slot 3 (tabs), bỏ cả checkbox chọn dòng và bulk bar vì nhật ký chỉ đọc — khoảng cách khép lại, không để lại chỗ trống nào.</p>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+      <span style="display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; background: #F4F1ED; border: 1px solid #E7E2DC; font-size: 12px; color: #4A443E;">slot 1 header · không nút primary</span>
+      <span style="display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; background: #FFFFFF; border: 1px dashed #ABA298; font-size: 12px; color: #6E665C;">slot 2 stat · bỏ</span>
+      <span style="display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; background: #FFFFFF; border: 1px dashed #ABA298; font-size: 12px; color: #6E665C;">slot 3 tabs · bỏ</span>
+      <span style="display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; background: #EFF6F5; border: 1px solid #B0D4CF; font-size: 12px; color: #1C4842;">slot 4 bảng · giữ</span>
+      <span style="display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; background: #EFF6F5; border: 1px solid #B0D4CF; font-size: 12px; color: #1C4842;">slot 5 phân trang · 50 dòng</span>
+    </div>
+  </header>
+
+  <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); overflow: hidden;">
+
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding: 24px 24px 20px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 500;">Nhật ký hoạt động</h2>
+        <span style="font-size: 13px; color: #6E665C;">Mọi thao tác ghi vào hệ thống · lưu 180 ngày, không sửa và không xoá được.</span>
+      </div>
+      <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xuất Excel</span>
+    </div>
+
+    <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <label style="width: 280px; height: 32px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 6px;">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4"></path></svg>
+          <input type="text" value="{{ query }}" onChange="{{ onQuery }}" placeholder="Tìm người dùng, đối tượng, IP…" aria-label="Tìm trong nhật ký" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 13px; color: #1E1B19;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168; border-radius: 4px;">
+          <span onClick="{{ clearQuery }}" role="button" tabindex="0" aria-label="Xoá từ khoá" style="width: 16px; height: 16px; border-radius: 999px; background: #E7E2DC; color: #635B53; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">×</span>
+        </label>
+        <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; background: #FFFFFF; border-radius: 6px; font-size: 13px; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Người dùng
+          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+        </span>
+        <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #B0D4CF; background: #EFF6F5; border-radius: 6px; font-size: 13px; color: #1C4842; cursor: pointer; white-space: nowrap;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Loại hành động · 2
+          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#235B54" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+        </span>
+        <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; background: #FFFFFF; border-radius: 6px; font-size: 13px; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Chi nhánh
+          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+        </span>
+        <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; background: #FFFFFF; border-radius: 6px; font-size: 13px; color: #4A443E; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"></path></svg>Bộ lọc
+          <span style="height: 18px; min-width: 18px; padding: 2px 8px; border-radius: 999px; background: #235B54; color: #FFFFFF; font-size: 11px; display: inline-flex; align-items: center; justify-content: center;">3</span>
+        </span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span role="status" aria-live="polite" style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #6E665C;">
+          <span style="width: 8px; height: 8px; border-radius: 999px; background: #2F7168;"></span>Cập nhật lúc 18:30:12
+        </span>
+        <span onClick="{{ toggleDensity }}" tabindex="0" style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; background: #FFFFFF; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ densityLabel }}</span>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 24px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC;">
+      <span style="font-size: 12px; color: #6E665C;">Đang lọc:</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; height: 24px; padding: 0 4px 0 8px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 12px; color: #4A443E;">Hành động: xoá<span role="button" tabindex="0" aria-label="Bỏ lọc hành động xoá" style="cursor: pointer; color: #6E665C;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">×</span></span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; height: 24px; padding: 0 4px 0 8px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 12px; color: #4A443E;">Hành động: khoá<span role="button" tabindex="0" aria-label="Bỏ lọc hành động khoá" style="cursor: pointer; color: #6E665C;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">×</span></span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; height: 24px; padding: 0 4px 0 8px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 12px; color: #4A443E;">28/07/2026<span role="button" tabindex="0" aria-label="Bỏ lọc ngày" style="cursor: pointer; color: #6E665C;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">×</span></span>
+      <span tabindex="0" style="font-size: 12px; color: #235B54; cursor: pointer; text-decoration: underline; margin-left: 4px;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xoá tất cả</span>
+    </div>
+
+    <div style="overflow-x: auto; background: #FFFFFF;">
+      <table style="width: 1512px; table-layout: fixed;">
+        <thead>
+          <tr>
+            <th style="position: sticky; top: 0; left: 0; z-index: 30; width: 176px; height: 40px; padding: 0 12px 0 24px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; box-shadow: 1px 0 0 #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #1C4842;">
+              <span onClick="{{ toggleSort }}" role="button" tabindex="0" aria-sort="{{ sortAria }}" aria-label="Sắp xếp theo thời điểm, hiện {{ sortLabel }}" style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Thời điểm
+                <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#235B54" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ sortIcon }}"></path></svg>
+              </span>
+            </th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 180px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Người dùng</th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 140px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Vai trò</th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 200px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Hành động</th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 380px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Đối tượng</th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 160px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Chi nhánh</th>
+            <th style="position: sticky; top: 0; z-index: 20; width: 148px; height: 40px; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">Địa chỉ IP</th>
+            <th style="position: sticky; top: 0; right: 0; z-index: 30; width: 128px; height: 40px; padding: 0 24px 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; box-shadow: -1px 0 0 #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53; text-align: right;">Chi tiết</th>
+          </tr>
+        </thead>
+        <tbody>
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="10">
+            <tr style="{{ r.rowStyle }}">
+              <td style="{{ r.stickyTime }}">
+                <span style="display: flex; flex-direction: column; line-height: 1.3;">
+                  <span style="font-size: 13px; font-variant-numeric: tabular-nums;">{{ r.time }}</span>
+                  <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ r.date }}</span>
+                </span>
+              </td>
+              <td style="{{ r.cell }}">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                  <span style="width: 24px; height: 24px; border-radius: 999px; background: #E7E2DC; color: #4A443E; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; flex-shrink: 0;">{{ r.initials }}</span>
+                  <span style="font-size: 13px; white-space: nowrap;">{{ r.user }}</span>
+                </span>
+              </td>
+              <td style="{{ r.cell }}" title="{{ r.role }}"><span style="color: #635B53;">{{ r.role }}</span></td>
+              <td style="{{ r.cell }}">
+                <span style="{{ r.actionStyle }}">
+                  <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="{{ r.actionFg }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ r.actionIcon }}"></path></svg>{{ r.action }}
+                </span>
+              </td>
+              <td style="{{ r.cell }}">
+                <span style="display: flex; flex-direction: column; line-height: 1.3;">
+                  <span style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">{{ r.objectCode }}</span>
+                  <span style="font-size: 12px; color: #6E665C;">{{ r.objectDesc }}</span>
+                </span>
+              </td>
+              <td style="{{ r.cell }}" title="{{ r.branch }}"><span style="color: #635B53;">{{ r.branch }}</span></td>
+              <td style="{{ r.cell }}"><span style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #4A443E;">{{ r.ip }}</span></td>
+              <td style="{{ r.stickyRight }}">
+                <span role="button" tabindex="0" aria-label="{{ r.detailLabel }}" style="height: 28px; display: inline-flex; align-items: center; gap: 8px; padding: 0 10px; border: 1px solid #E7E2DC; border-radius: 6px; background: #FFFFFF; font-size: 12px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                  Xem chi tiết
+                  <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+                </span>
+              </td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 24px; background: #FFFFFF; border-top: 1px solid #E7E2DC;">
+      <span style="font-size: 13px; color: #635B53;">{{ pageLabel }}</span>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #635B53;">Số dòng
+          <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #1E1B19; cursor: pointer;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">50
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+          </span>
+        </span>
+        <div style="display: flex; align-items: center; gap: 4px;">
+          <span aria-label="Trang trước" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid #E7E2DC; border-radius: 6px; color: #D5CEC6;">‹</span>
+          <span style="min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; padding: 0 8px; border-radius: 6px; background: #235B54; color: #FFFFFF; font-size: 13px; font-weight: 500;">1</span>
+          <span tabindex="0" aria-label="Trang 2" style="min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; padding: 0 8px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">2</span>
+          <span tabindex="0" aria-label="Trang 3" style="min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; padding: 0 8px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">3</span>
+          <span style="min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #ABA298;">…</span>
+          <span tabindex="0" aria-label="Trang 169" style="min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; padding: 0 8px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">169</span>
+          <span tabindex="0" aria-label="Trang sau" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid #E7E2DC; border-radius: 6px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">›</span>
+        </div>
+        <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #635B53;">Tới trang
+          <span tabindex="0" style="width: 56px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">1</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 16px; align-items: flex-start;">
+    <div style="width: 560px; flex: 0 0 560px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 16px 40px rgba(30,27,25,0.16); display: flex; flex-direction: column; overflow: hidden;">
+      <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #E7E2DC;">
+        <div style="display: flex; align-items: baseline; gap: 12px;">
+          <strong style="font-size: 16px; font-weight: 500;">Chi tiết thay đổi</strong>
+          <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums;">28/07/2026 · 18:12:44</span>
+        </div>
+        <span role="button" tabindex="0" aria-label="Đóng chi tiết" style="color: #ABA298; cursor: pointer; font-size: 16px;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">×</span>
+      </div>
+      <div style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+          <div style="border: 1px solid #E7E2DC; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 12px; color: #6E665C;">Người dùng</span><strong style="font-size: 14px; font-weight: 500;">Nguyễn Trúc Linh · Chủ</strong></div>
+          <div style="border: 1px solid #E7E2DC; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 12px; color: #6E665C;">Đối tượng</span><strong style="font-size: 14px; font-weight: 500;">Món · Lẩu Thái hải sản</strong></div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Trước và sau thay đổi</span>
+          <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 160px 1fr 1fr; gap: 12px; height: 36px; align-items: center; padding: 0 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #635B53;">
+              <span>Trường</span><span>Trước</span><span>Sau</span>
+            </div>
+            <sc-for list="{{ diffs }}" as="d" hint-placeholder-count="4">
+              <div style="display: grid; grid-template-columns: 160px 1fr 1fr; gap: 12px; min-height: 40px; align-items: center; padding: 8px 12px; border-bottom: 1px solid #F4F1ED; font-size: 13px;">
+                <span style="color: #635B53;">{{ d.field }}</span>
+                <span style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #C0392B; background: #FCF0EE; border-radius: 4px; padding: 2px 8px;">{{ d.before }}</span>
+                <span style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #256A49; background: #EDF7F1; border-radius: 4px; padding: 2px 8px;">{{ d.after }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display: flex; gap: 24px; flex-wrap: wrap; font-size: 12px; color: #6E665C;">
+          <span>IP 118.69.204.31 · Chrome 141 · macOS</span>
+          <span>Chi nhánh Quận 1</span>
+          <span style="font-family: ui-monospace, Menlo, monospace;">log-id 8f42c1</span>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #FAF8F6; border-top: 1px solid #E7E2DC;">
+        <span style="font-size: 12px; color: #6E665C;">Nhật ký chỉ đọc — không có hành động hoàn tác.</span>
+        <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; background: #FFFFFF; border-radius: 6px; font-size: 13px; color: #4A443E; cursor: pointer;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Mở bản ghi</span>
+      </div>
+    </div>
+
+    <div style="width: 400px; flex: 0 0 400px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 16px 40px rgba(30,27,25,0.16); display: flex; flex-direction: column; overflow: hidden;">
+      <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #E7E2DC;">
+        <strong style="font-size: 16px; font-weight: 500;">Bộ lọc nâng cao</strong>
+        <span role="button" tabindex="0" aria-label="Đóng bộ lọc" style="color: #ABA298; cursor: pointer; font-size: 16px;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">×</span>
+      </div>
+      <div style="padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 12px; font-weight: 500;">Khoảng thời gian</span>
+          <div style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px;">28/07/2026 00:00 — 23:59
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18v16H3zM8 2v6M16 2v6M3 11h18"></path></svg>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 12px; font-weight: 500;">Đối tượng</span>
+          <div style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px;">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4"></path></svg>
+            <span style="color: #6E665C;">Mã đơn, mã phiếu, tên món…</span>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 12px; font-weight: 500;">Địa chỉ IP</span>
+          <div style="height: 36px; display: flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 6px; font-family: ui-monospace, Menlo, monospace; font-size: 12px;">118.69.204.31</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 12px; font-weight: 500;">Module</span>
+          <div style="min-height: 36px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 4px 8px; border: 1px solid #E7E2DC; border-radius: 6px;">
+            <span style="display: inline-flex; align-items: center; gap: 8px; height: 24px; padding: 0 4px 0 8px; background: #F4F1ED; border-radius: 4px; font-size: 12px; color: #4A443E;">Kho<span role="button" tabindex="0" aria-label="Bỏ module kho" style="cursor: pointer; color: #6E665C;">×</span></span>
+            <span style="display: inline-flex; align-items: center; gap: 8px; height: 24px; padding: 0 4px 0 8px; background: #F4F1ED; border-radius: 4px; font-size: 12px; color: #4A443E;">Hệ thống<span role="button" tabindex="0" aria-label="Bỏ module hệ thống" style="cursor: pointer; color: #6E665C;">×</span></span>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #FAF8F6; border-top: 1px solid #E7E2DC;">
+        <span tabindex="0" style="font-size: 13px; color: #235B54; cursor: pointer; text-decoration: underline;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Đặt lại</span>
+        <button style="height: 36px; padding: 0 16px; font-family: inherit; font-size: 13px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer;">Áp dụng · 3 điều kiện</button>
+      </div>
+    </div>
+
+    <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Empty lần đầu</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Chưa có thao tác nào được ghi</strong>
+        <span style="font-size: 13px; color: #6E665C;">Nhật ký bắt đầu ghi từ lần đăng nhập đầu tiên của mỗi tài khoản.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Empty do lọc</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14M20 20l-4-4M9 11h4"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Không có thao tác khớp bộ lọc</strong>
+        <span style="font-size: 13px; color: #6E665C;">3 điều kiện đang áp dụng · loại hành động, ngày.</span>
+        <button style="height: 36px; padding: 0 16px; margin-top: 4px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; cursor: pointer;">Xoá bộ lọc</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div data-states-wrap style="width: 1440px; min-width: 1440px;"><dc-import name="TableStates" error-title="Không tải được nhật ký" error-code="ERR-5031-QN1" hint-size="100%,360px"></dc-import></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1000},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;comfortable&quot;,&quot;options&quot;:[&quot;comfortable&quot;,&quot;compact&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bảng&quot;}}">
+// ngày, giờ, người dùng, vai trò, loại hành động, mã đối tượng, mô tả, chi nhánh, IP
+const DATA = [
+  ['28/07/2026', '18:24:06', 'Trần Ngọc Hân', 'Thủ kho', 'update', 'PN-0728-004', 'Sửa dòng “Nghêu trắng” 45,000 → 42,000 kg', 'Quận 1', '118.69.204.55'],
+  ['28/07/2026', '18:12:44', 'Nguyễn Trúc Linh', 'Chủ', 'update', 'MON-0142', 'Món · Lẩu Thái hải sản', 'Quận 1', '118.69.204.31'],
+  ['28/07/2026', '17:58:20', 'Phạm Phương Vy', 'Quản lý', 'refund', 'DH-20260728-035', 'Hoàn tiền 1.945.000đ', 'Quận 7', '210.245.88.14'],
+  ['28/07/2026', '17:40:11', 'Nguyễn Trúc Linh', 'Chủ', 'delete', 'MON-0119', 'Xoá món “Chả giò hải sản”', 'Quận 1', '118.69.204.31'],
+  ['28/07/2026', '17:02:35', 'Hệ thống', 'Tự động', 'create', 'CA-20260728-T', 'Mở ca tối 17:00–22:00', 'Quận 1', '—'],
+  ['28/07/2026', '16:48:02', 'Nguyễn Trúc Linh', 'Chủ', 'lock', 'NV-0031', 'Khoá tài khoản Bùi Văn Khoa', 'Gò Vấp', '118.69.204.31'],
+  ['28/07/2026', '15:22:19', 'Đỗ Minh Trí', 'Thu ngân', 'login', 'SESSION-9f21', 'Đăng nhập POS-02', 'Quận 1', '118.69.204.77'],
+  ['28/07/2026', '14:10:58', 'Vũ Thanh Tâm', 'Kế toán', 'export', 'BC-DOANHTHU-07', 'Xuất báo cáo doanh thu tháng 7', 'Tất cả chi nhánh', '203.113.44.9'],
+  ['28/07/2026', '11:36:07', 'Lê Thị Mỹ Duyên', 'Trưởng ca', 'approve', 'PX-0728-002', 'Duyệt phiếu xuất bếp', 'Quận 1', '118.69.204.61'],
+  ['28/07/2026', '09:14:52', 'Nguyễn Trúc Linh', 'Chủ', 'settings', 'CF-FOODCOST', 'Đổi ngưỡng food cost 34% → 32%', 'Tất cả chi nhánh', '118.69.204.31'],
+  ['27/07/2026', '21:52:40', 'Phạm Phương Vy', 'Quản lý', 'delete', 'KM-0009', 'Xoá khuyến mãi “Combo gia đình”', 'Quận 7', '210.245.88.14'],
+  ['27/07/2026', '20:31:16', 'Trần Ngọc Hân', 'Thủ kho', 'create', 'PN-0728-003', 'Tạo phiếu nhập Rau sạch Đà Lạt', 'Quận 1', '118.69.204.55']
+];
+
+const ACTION = {
+  create: ['Tạo mới', '#256A49', '#EDF7F1', '#C3E4D2', 'M12 5v14M5 12h14'],
+  update: ['Cập nhật', '#2C6E9B', '#EEF5FA', '#C7DDEC', 'M4 20h4l10-10-4-4L4 16zM14 6l4 4'],
+  delete: ['Xoá', '#C0392B', '#FCF0EE', '#F1CCC7', 'M4 7h16M9 7V5h6v2M7 7l1 13h8l1-13'],
+  lock: ['Khoá tài khoản', '#C0392B', '#FCF0EE', '#F1CCC7', 'M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z'],
+  approve: ['Duyệt', '#256A49', '#EDF7F1', '#C3E4D2', 'M4 12l5 5L20 6'],
+  refund: ['Hoàn tiền', '#8A5F12', '#FDF6E7', '#F0DDAF', 'M3 12a9 9 0 109-9 9 9 0 00-6.4 2.6L3 8M3 3v5h5'],
+  login: ['Đăng nhập', '#4A443E', '#F4F1ED', '#E7E2DC', 'M15 3h4v18h-4M11 8l4 4-4 4M15 12H3'],
+  export: ['Xuất dữ liệu', '#4A443E', '#F4F1ED', '#E7E2DC', 'M12 3v12M8 11l4 4 4-4M4 21h16'],
+  settings: ['Đổi cấu hình', '#2C6E9B', '#EEF5FA', '#C7DDEC', 'M12 8a4 4 0 100 8 4 4 0 000-8M12 2v3M12 19v3M2 12h3M19 12h3']
+};
+
+const DANGER_ACTIONS = ['delete', 'lock'];
+const initials = (name) => name === 'Hệ thống' ? 'HT' : name.split(' ').slice(-2).map(w => w[0]).join('').toUpperCase();
+
+class Component extends DCLogic {
+  state = { query: '', density: 'comfortable', desc: true };
+
+  renderVals() {
+    const q = this.state.query.trim().toLowerCase();
+    const h = this.state.density === 'comfortable' ? 44 : 36;
+
+    let list = DATA.map(d => ({
+      date: d[0], time: d[1], user: d[2], role: d[3], key: d[4],
+      objectCode: d[5], objectDesc: d[6], branch: d[7], ip: d[8]
+    }));
+    if (q) list = list.filter(o => (o.user + o.objectCode + o.objectDesc + o.ip).toLowerCase().includes(q));
+    list.sort((a, b) => {
+      const ka = a.date.split('/').reverse().join('') + a.time;
+      const kb = b.date.split('/').reverse().join('') + b.time;
+      return (ka < kb ? -1 : ka > kb ? 1 : 0) * (this.state.desc ? -1 : 1);
+    });
+
+    const cellBase = 'height: ' + h + 'px; padding: 0 12px; border-bottom: 1px solid #E7E2DC; font-size: 13px; color: #1E1B19; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
+
+    const rows = list.map(o => {
+      const a = ACTION[o.key];
+      const danger = DANGER_ACTIONS.indexOf(o.key) >= 0;
+      const bg = danger ? '#FCF0EE' : '#FFFFFF';
+      return {
+        date: o.date, time: o.time, user: o.user, role: o.role,
+        initials: initials(o.user),
+        objectCode: o.objectCode, objectDesc: o.objectDesc, branch: o.branch, ip: o.ip,
+        action: a[0], actionFg: a[1], actionIcon: a[4],
+        actionStyle: 'display: inline-flex; align-items: center; gap: 8px; height: 22px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; color: ' + a[1] + '; background: ' + a[2] + '; border: 1px solid ' + a[3] + ';',
+        detailLabel: 'Xem chi tiết thao tác ' + a[0] + ' trên ' + o.objectCode,
+        rowStyle: 'background: ' + bg + ';',
+        cell: cellBase,
+        stickyTime: 'position: sticky; left: 0; z-index: 10; height: ' + h + 'px; padding: 0 12px 0 24px; border-bottom: 1px solid #E7E2DC; box-shadow: 1px 0 0 #E7E2DC; background: ' + bg + ';',
+        stickyRight: 'position: sticky; right: 0; z-index: 10; height: ' + h + 'px; padding: 0 24px 0 12px; border-bottom: 1px solid #E7E2DC; box-shadow: -1px 0 0 #E7E2DC; text-align: right; background: ' + bg + ';'
+      };
+    });
+
+    return {
+      rows,
+      diffs: [
+        { field: 'Giá bán', before: '389.000', after: '419.000' },
+        { field: 'Trạng thái', before: 'Tạm hết', after: 'Đang phục vụ' },
+        { field: 'Nhóm món', before: 'Lẩu', after: 'Lẩu hải sản' },
+        { field: 'Định lượng', before: 'chưa có', after: '8 nguyên liệu' }
+      ],
+      query: this.state.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      clearQuery: () => this.setState({ query: '' }),
+      densityLabel: this.state.density === 'comfortable' ? 'Thoáng · 44px' : 'Gọn · 36px',
+      toggleDensity: () => this.setState(s => ({ density: s.density === 'comfortable' ? 'compact' : 'comfortable' })),
+      toggleSort: () => this.setState(s => ({ desc: !s.desc })),
+      sortIcon: this.state.desc ? 'M12 5v14M6 13l6 6 6-6' : 'M12 19V5M6 11l6-6 6 6',
+      sortAria: this.state.desc ? 'descending' : 'ascending',
+      sortLabel: this.state.desc ? 'mới nhất lên đầu' : 'cũ nhất lên đầu',
+      pageLabel: 'Hiển thị 1–' + rows.length + ' trong 8.402 thao tác · thời điểm ' + (this.state.desc ? 'giảm dần' : 'tăng dần')
+    };
+  }
+}
+
+</script>
+</body>
+</html>

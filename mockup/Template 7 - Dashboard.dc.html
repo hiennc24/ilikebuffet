@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  @keyframes ibb-spin { to { transform: rotate(360deg); } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 40px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">ilikebuffet admin · template 7</div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Dashboard</h1>
+    <p style="margin: 0; max-width: 82ch; font-size: 14px; color: #635B53;">Kế thừa slot 1, 4, 5 của T4. Thay slot 2, 6, 7. Khác báo cáo ở một điểm gốc: <strong style="font-weight: 500;">không có kỳ</strong> — mọi số liệu là hiện tại hoặc trong ngày, không có khoảng ngày, không so kỳ trước, không xuất file. Dashboard là điểm xuất phát, không phải điểm đến.</p>
+    <div style="display: flex; gap: 12px; margin-top: 4px; flex-wrap: wrap;">
+      <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #235B54;"></span>bắt buộc</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;"><span style="width: 10px; height: 10px; border-radius: 2px; border: 1px dashed #ABA298;"></span>tuỳ chọn</span>
+    </div>
+  </header>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Hợp đồng slot</h2>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 40px 200px 120px 280px 1fr; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+        <span style="padding: 12px;">#</span><span style="padding: 12px;">Slot</span><span style="padding: 12px;">Yêu cầu</span><span style="padding: 12px;">Component nguồn</span><span style="padding: 12px;">Khác T4 ở chỗ nào · khi rỗng</span>
+      </div>
+      <sc-for list="{{ slots }}" as="s" hint-placeholder-count="7">
+        <div style="display: grid; grid-template-columns: 40px 200px 120px 280px 1fr; border-bottom: 1px solid #F4F1ED; font-size: 13px; align-items: start;">
+          <span style="padding: 12px; color: #6E665C;">{{ s.n }}</span>
+          <span style="padding: 12px; font-weight: 500;">{{ s.name }}</span>
+          <span style="padding: 12px;"><span style="{{ s.tagStyle }}">{{ s.req }}</span></span>
+          <span style="padding: 12px;"><code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">{{ s.source }}</code></span>
+          <span style="padding: 12px; color: #635B53;">{{ s.note }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+      <strong style="font-size: 15px; font-weight: 500;">Luật riêng của T7</strong>
+      <sc-for list="{{ rules }}" as="r" hint-placeholder-count="6">
+        <div style="display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start;">
+          <span style="width: 6px; height: 6px; margin-top: 8px; border-radius: 999px; background: #235B54;"></span>
+          <span style="font-size: 13px; color: #4A443E;">{{ r.text }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">T7 · a</span>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Vai trò chủ / quản lý</h2>
+      <span style="font-size: 13px; color: #6E665C;">4 stat · 2 chart · 3 khối tóm tắt</span>
+    </div>
+
+    <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+
+      <div style="border: 1px solid #B0D4CF; border-radius: 8px; padding: 8px 12px 12px;">
+        <span style="display: inline-flex; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #1C4842; background: #EFF6F5; border-radius: 4px; padding: 2px 8px;">slot 1 · page header</span>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-top: 10px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <h3 style="margin: 0; font-size: 20px; font-weight: 500;">Tổng quan hôm nay</h3>
+            <span style="font-size: 13px; color: #6E665C;">Thứ ba · 28/07/2026 · ca tối đang mở từ 17:00</span>
+          </div>
+          <div style="display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 4px 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; background: #FFFFFF; flex: none;">
+            <span style="width: 7px; height: 7px; flex: none; border-radius: 999px; background: #256A49; animation: ibb-pulse 2.4s ease-in-out infinite;"></span>
+            <span style="font-size: 13px; color: #4A443E; font-variant-numeric: tabular-nums;">Cập nhật lúc 18:24</span>
+            <span role="button" tabindex="0" aria-label="Làm mới ngay" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 11-2.3-5.7M20 4v5h-5"></path></svg>
+            </span>
+          </div>
+        </div>
+        <span style="display: block; margin-top: 8px; font-size: 12px; color: #6E665C;">Không nút primary, không nút xuất — hai thứ duy nhất ở đây là tiêu đề và polling indicator (CL2 · 12).</span>
+      </div>
+
+      <div style="border: 1px solid #B0D4CF; border-radius: 8px; padding: 8px 12px 12px;">
+        <span style="display: inline-flex; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #1C4842; background: #EFF6F5; border-radius: 4px; padding: 2px 8px;">slot 2 · bộ chọn phạm vi</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 10px; padding: 12px 16px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V9l8-5 8 5v11M9 20v-6h6v6"></path></svg>
+              Chi nhánh Quận 1
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8178" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg>
+            </span>
+            <div style="display: flex; gap: 4px; padding: 4px; background: #F4F1ED; border-radius: 8px;">
+              <span style="height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #635B53;">Cả ngày</span>
+              <span style="height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #635B53;">Ca trưa</span>
+              <span style="height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(30,27,25,0.06); font-size: 13px; font-weight: 500; color: #1C4842;">Ca tối · đang mở</span>
+            </div>
+          </div>
+          <span style="font-size: 12px; color: #6E665C; flex: none;">Lưu vào URL · <span style="font-family: ui-monospace, Menlo, monospace;">?cn=q1&amp;ca=toi</span></span>
+        </div>
+        <span style="display: block; margin-top: 8px; font-size: 12px; color: #6E665C;"><strong style="font-weight: 500;">Khác context selector của T4:</strong> không có khoảng ngày, không có nút so kỳ trước, không có preset “Tháng này”. Chỉ hai chiều: xem chi nhánh nào, ca nào.</span>
+      </div>
+
+      <div style="border: 1px dashed #ABA298; border-radius: 8px; padding: 8px 12px 12px;">
+        <span style="display: inline-flex; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #635B53; background: #F4F1ED; border-radius: 4px; padding: 2px 8px;">slot 3 · banner bối cảnh</span>
+        <div style="display: flex; gap: 12px; margin-top: 10px; padding: 12px 16px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+          <span style="font-size: 13px; color: #8A5F12;"><strong style="font-weight: 500;">1 việc khẩn:</strong> bò Mỹ ba chỉ còn 2,9 ngày tồn, phải đặt hàng hôm nay. <a href="#" style="color: #8A5F12;">Mở nguyên liệu →</a></span>
+        </div>
+      </div>
+
+      <div style="border: 1px solid #B0D4CF; border-radius: 8px; padding: 8px 12px 12px;">
+        <span style="display: inline-flex; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #1C4842; background: #EFF6F5; border-radius: 4px; padding: 2px 8px;">slot 4 · stat strip</span>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 10px;">
+          <sc-for list="{{ statsOwner }}" as="s" hint-placeholder-count="4">
+            <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                <span style="font-size: 13px; color: #6E665C;">{{ s.label }}</span>
+                <span style="{{ s.dirStyle }}">{{ s.dir }}</span>
+              </div>
+              <div style="display: flex; align-items: baseline; gap: 8px;">
+                <strong style="{{ s.valueStyle }}">{{ s.value }}</strong>
+                <span style="{{ s.deltaStyle }}">{{ s.delta }}</span>
+              </div>
+              <sc-if value="{{ s.hasSpark }}" hint-placeholder-val="{{ true }}">
+                <svg width="100%" height="28" viewBox="0 0 200 28" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="{{ s.spark }}" stroke="#2F7168" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+                </svg>
+              </sc-if>
+              <sc-if value="{{ s.hasBar }}" hint-placeholder-val="{{ false }}">
+                <span style="height: 4px; border-radius: 999px; background: #E7E2DC; overflow: hidden;"><span style="{{ s.barStyle }}"></span></span>
+              </sc-if>
+              <span style="{{ s.hintStyle }}">{{ s.hint }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <span style="display: block; margin-top: 8px; font-size: 12px; color: #6E665C;">Sparkline là dữ liệu <strong style="font-weight: 500;">trong ngày</strong> theo giờ, không phải 7 ngày — dashboard không nhìn ra ngoài hôm nay. Mỗi thẻ khai báo chiều nghĩa, màn không tự đoán màu delta.</span>
+      </div>
+
+      <div style="border: 1px dashed #ABA298; border-radius: 8px; padding: 8px 12px 12px;">
+        <span style="display: inline-flex; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #635B53; background: #F4F1ED; border-radius: 4px; padding: 2px 8px;">slot 5 · vùng biểu đồ</span>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+          <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+              <div style="display: flex; flex-direction: column; gap: 2px;">
+                <strong style="font-size: 16px; font-weight: 500;">Doanh thu theo giờ</strong>
+                <span style="font-size: 13px; color: #6E665C;">Hôm nay so với thứ ba tuần trước · đơn vị triệu đồng</span>
+              </div>
+              <div style="display: flex; gap: 4px; padding: 4px; background: #F4F1ED; border-radius: 8px; flex: none;">
+                <span style="height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(30,27,25,0.06); font-size: 13px; font-weight: 500; color: #1C4842;">Theo giờ</span>
+                <span style="height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #635B53;">Theo ca</span>
+              </div>
+            </div>
+            <svg aria-hidden="true" viewBox="0 0 1180 280" style="width: 100%; height: 280px;">
+              {{ hourGridEls }}
+              {{ hourAxisEls }}
+              <line x1="56" y1="240" x2="1160" y2="240" stroke="#E7E2DC" stroke-width="1"></line>
+              <path d="{{ hourPrevPath }}" stroke="#2F7168" stroke-width="2" fill="none" opacity="0.4" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="{{ hourPath }}" stroke="#2F7168" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+              <circle cx="{{ hourLastX }}" cy="{{ hourLastY }}" r="4" fill="#1C4842"></circle>
+              {{ hourLabelEls }}
+            </svg>
+            <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+              <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;"><span style="width: 16px; height: 3px; border-radius: 999px; background: #2F7168;"></span>Hôm nay · tới 18:24</span>
+              <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;"><span style="width: 16px; height: 3px; border-radius: 999px; background: #2F7168; opacity: 0.4;"></span>Thứ ba tuần trước · cả ca</span>
+            </div>
+          </div>
+
+          <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <strong style="font-size: 16px; font-weight: 500;">Top 10 món gọi nhiều nhất hôm nay</strong>
+              <span style="font-size: 13px; color: #6E665C;">Bar ngang CL3 §02 · nhãn dài không xoay chữ</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{ topDishes }}" as="b" hint-placeholder-count="10">
+                <div style="display: grid; grid-template-columns: 220px 1fr 96px; gap: 12px; align-items: center;">
+                  <span style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ b.label }}</span>
+                  <span style="height: 20px; background: #F4F1ED; border-radius: 4px; overflow: hidden;"><span style="{{ b.barStyle }}"></span></span>
+                  <span style="font-size: 13px; text-align: right; font-variant-numeric: tabular-nums;">{{ b.value }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <span style="font-size: 12px; color: #6E665C;">Biểu đồ dưới màn hình đầu tải lười — skeleton giữ đúng 10 dòng để trang không nhảy khi vẽ xong.</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="border: 1px solid #B0D4CF; border-radius: 8px; padding: 8px 12px 12px;">
+        <span style="display: inline-flex; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #1C4842; background: #EFF6F5; border-radius: 4px; padding: 2px 8px;">slot 6 · dải khối tóm tắt</span>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; margin-top: 10px;">
+          <sc-for list="{{ blocksOwner }}" as="k" hint-placeholder-count="3">
+            <div style="{{ k.cardStyle }}">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #F0EBE5;">
+                <strong style="font-size: 14px; font-weight: 500;">{{ k.title }}</strong>
+                <sc-if value="{{ k.hasCount }}" hint-placeholder-val="{{ true }}">
+                  <span style="{{ k.countStyle }}">{{ k.count }}</span>
+                </sc-if>
+              </div>
+              <sc-if value="{{ k.hasRows }}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; flex-direction: column;">
+                  <sc-for list="{{ k.rows }}" as="r" hint-placeholder-count="5">
+                    <div style="{{ r.rowStyle }}" style-hover="background: #FAF8F6;">
+                      <a href="#" style="font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.a }}</a>
+                      <span style="{{ r.bStyle }}">{{ r.b }}</span>
+                      <span style="{{ r.cStyle }}">{{ r.c }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ k.isEmpty }}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 12px 16px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#256A49" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M8 12l3 3 5-6"></path></svg>
+                  <span style="font-size: 13px; color: #4A443E;">{{ k.emptyText }}</span>
+                </div>
+              </sc-if>
+              <a href="#" style="padding: 12px 16px; font-size: 13px; border-top: 1px solid #F0EBE5;">{{ k.link }}</a>
+            </div>
+          </sc-for>
+        </div>
+        <span style="display: block; margin-top: 8px; font-size: 12px; color: #6E665C;">Lưới <code style="font-family: ui-monospace, Menlo, monospace;">auto-fit minmax(320px, 1fr)</code> — khối tự xuống dòng theo bề rộng, không khai báo số cột cứng. Khối bị ẩn theo quyền thì lưới tự dồn.</span>
+      </div>
+
+      <div style="border: 1px dashed #ABA298; border-radius: 8px; padding: 8px 12px 12px;">
+        <span style="display: inline-flex; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #635B53; background: #F4F1ED; border-radius: 4px; padding: 2px 8px;">slot 7 · chú thích</span>
+        <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #6E665C;">
+          <span>Nguồn: đơn hàng đang mở và đã đóng trong ca · tồn kho thời điểm hiện tại · hàng chờ duyệt của mọi phân hệ.</span>
+          <span>Doanh thu trong ngày gồm cả đơn chưa đóng, tính theo tạm tính tại thời điểm làm mới — số cuối ca có thể lệch.</span>
+          <span>Tự làm mới mỗi 60 giây · tạm dừng khi tab ẩn · muốn xuất số liệu thì sang màn báo cáo tương ứng.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <span style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">T7 · b</span>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Vai trò thu ngân</h2>
+      <span style="font-size: 13px; color: #6E665C;">2 stat · 1 chart · 2 khối — cùng một trang, lọc ở cấp khối</span>
+    </div>
+
+    <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <h3 style="margin: 0; font-size: 20px; font-weight: 500;">Tổng quan hôm nay</h3>
+          <span style="font-size: 13px; color: #6E665C;">Ca tối · quầy thu ngân 1</span>
+        </div>
+        <div style="display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 4px 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; background: #FFFFFF; flex: none;">
+          <span style="width: 7px; height: 7px; flex: none; border-radius: 999px; background: #256A49; animation: ibb-pulse 2.4s ease-in-out infinite;"></span>
+          <span style="font-size: 13px; color: #4A443E; font-variant-numeric: tabular-nums;">Cập nhật lúc 18:24</span>
+          <span role="button" tabindex="0" aria-label="Làm mới ngay" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 11-2.3-5.7M20 4v5h-5"></path></svg>
+          </span>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+        <sc-for list="{{ statsCashier }}" as="s" hint-placeholder-count="2">
+          <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+              <span style="font-size: 13px; color: #6E665C;">{{ s.label }}</span>
+              <span style="{{ s.dirStyle }}">{{ s.dir }}</span>
+            </div>
+            <div style="display: flex; align-items: baseline; gap: 8px;">
+              <strong style="{{ s.valueStyle }}">{{ s.value }}</strong>
+              <span style="{{ s.deltaStyle }}">{{ s.delta }}</span>
+            </div>
+            <svg width="100%" height="28" viewBox="0 0 200 28" preserveAspectRatio="none" aria-hidden="true">
+              <path d="{{ s.spark }}" stroke="#2F7168" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+            </svg>
+            <span style="{{ s.hintStyle }}">{{ s.hint }}</span>
+          </div>
+        </sc-for>
+        <div style="grid-column: span 2; border: 1px dashed #C6BEB4; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; justify-content: center; gap: 4px;">
+          <strong style="font-size: 13px; font-weight: 500; color: #635B53;">Hai thẻ kia biến mất, không để chỗ trống</strong>
+          <span style="font-size: 12px; color: #6E665C;">Doanh thu TB/khách và food cost % thuộc quyền quản lý. Stat strip co còn 2 thẻ và giãn đều — không hiện thẻ khoá, không hiện “—”. Khung nét đứt này chỉ để giải thích, không có trong màn thật.</span>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <strong style="font-size: 16px; font-weight: 500;">Lượt khách theo giờ</strong>
+          <span style="font-size: 13px; color: #6E665C;">Thu ngân thấy lượt khách, không thấy doanh thu theo giờ</span>
+        </div>
+        <svg aria-hidden="true" viewBox="0 0 1180 200" style="width: 100%; height: 200px;">
+          {{ guestGridEls }}
+          <line x1="56" y1="168" x2="1160" y2="168" stroke="#E7E2DC" stroke-width="1"></line>
+          <sc-for list="{{ guestBars }}" as="b" hint-placeholder-count="9">
+            <rect x="{{ b.x }}" y="{{ b.y }}" width="{{ b.w }}" height="{{ b.h }}" rx="4" fill="{{ b.fill }}"></rect>
+          </sc-for>
+          {{ guestLabelEls }}
+        </svg>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px;">
+        <sc-for list="{{ blocksCashier }}" as="k" hint-placeholder-count="2">
+          <div style="{{ k.cardStyle }}">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #F0EBE5;">
+              <strong style="font-size: 14px; font-weight: 500;">{{ k.title }}</strong>
+              <sc-if value="{{ k.hasCount }}" hint-placeholder-val="{{ true }}">
+                <span style="{{ k.countStyle }}">{{ k.count }}</span>
+              </sc-if>
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <sc-for list="{{ k.rows }}" as="r" hint-placeholder-count="5">
+                <div style="{{ r.rowStyle }}" style-hover="background: #FAF8F6;">
+                  <a href="#" style="font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.a }}</a>
+                  <span style="{{ r.bStyle }}">{{ r.b }}</span>
+                  <span style="{{ r.cStyle }}">{{ r.c }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <a href="#" style="padding: 12px 16px; font-size: 13px; border-top: 1px solid #F0EBE5;">{{ k.link }}</a>
+          </div>
+        </sc-for>
+      </div>
+
+      <span style="font-size: 12px; color: #6E665C;">Khối “Cần xử lý” biến mất hoàn toàn — thu ngân không duyệt phiếu, không xem công nợ. Dải co từ 3 khối còn 2 và giãn đều, không chừa ô trống.</span>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">5 state bắt buộc</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">1 · Đang tải lần đầu</span>
+        <span style="height: 36px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+          <span style="height: 88px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 88px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 88px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Đúng số thẻ và số khối của <strong style="font-weight: 500;">vai trò đang đăng nhập</strong> — không dựng 4 thẻ rồi bớt còn 2, vì thẻ nhấp nháy rồi biến mất làm người dùng tưởng mất quyền.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">2 · Đang làm mới</span>
+        <div style="display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; height: 36px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="flex: none;">
+            <circle cx="12" cy="12" r="9" stroke="#E7E2DC" stroke-width="3"></circle>
+            <path d="M12 3a9 9 0 019 9" stroke="#235B54" stroke-width="3" stroke-linecap="round" style="transform-origin: 12px 12px; animation: ibb-spin 0.9s linear infinite;"></path>
+          </svg>
+          <span style="font-size: 13px; color: #4A443E;">Đang cập nhật</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+          <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; padding: 12px; display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 12px; color: #6E665C;">Doanh thu</span>
+            <strong style="font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums;">38,4 tr</strong>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; padding: 12px; display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 12px; color: #6E665C;">Lượt khách</span>
+            <strong style="font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums;">112</strong>
+          </div>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;"><strong style="font-weight: 500;">Chỉ polling indicator đổi.</strong> Nội dung không mờ, không skeleton, không nhảy — người dùng đang đọc số cũ vẫn đọc được. Số đổi tại chỗ khi có dữ liệu mới.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">3 · Lỗi tải một phần</span>
+        <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+          <div style="padding: 12px 16px; border-bottom: 1px solid #F0EBE5;"><strong style="font-size: 13px; font-weight: 500;">Cần xử lý</strong></div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px;">
+            <span style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+              <span style="font-size: 13px; color: #96271B;">Không tải được khối này</span>
+            </span>
+            <span style="height: 28px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 13px; font-weight: 500; color: #96271B; cursor: pointer; flex: none;">Thử lại</span>
+          </div>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Một khối hỏng không kéo cả trang xuống: các khối khác vẫn làm mới theo nhịp, polling indicator ở page header vẫn xanh. Chỉ khi <strong style="font-weight: 500;">mọi</strong> khối hỏng mới chuyển sang state 4.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">4 · Lỗi toàn trang</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #FCF0EE; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Không kết nối được máy chủ</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Số liệu trên màn là của lúc 18:24. Đang thử lại sau 2 phút — nhịp giãn dần thay vì gọi đều vào máy chủ đang hỏng.</span>
+        <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 16px; background: #235B54; color: #FFFFFF; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 4px;">Thử lại ngay</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">5 · Ngoài giờ hoạt động</span>
+        <div style="display: flex; gap: 12px; padding: 12px 16px; background: #EEF5FA; border: 1px solid #C7DDEC; border-radius: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2C6E9B" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 8v.01M12 11v5"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;"><strong style="font-weight: 500;">Ngoài giờ phục vụ.</strong> Nhà hàng đóng lúc 22:30. Số liệu dưới đây là của <strong style="font-weight: 500;">ca tối 28/07</strong>, đã chốt.</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Không hiện số 0 và không hiện empty — dashboard lúc 2 giờ sáng vẫn phải trả lời được “tối qua thế nào”. Polling chuyển sang tạm dừng, chấm neutral, vì không còn gì để đếm cho tới khi mở ca mới.</span>
+        <span style="font-size: 12px; color: #6E665C;">Khối “Đơn đang phục vụ” rỗng đúng nghĩa tích cực: “Đã đóng hết đơn, không còn bàn nào mở”.</span>
+      </div>
+
+      <div style="background: #FAF8F6; border: 1px dashed #C6BEB4; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Khi nào KHÔNG dùng T7</span>
+        <span style="font-size: 13px; color: #4A443E;">Cần chọn kỳ, so kỳ trước, hay xuất file → T4. Cần đọc kỹ và thao tác trên nhiều dòng → T1 danh sách. Một dashboard mà người dùng phải ngồi lại làm việc trong đó là dấu hiệu nó nên là màn danh sách.</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">widthTier</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">widthTier · ops</h2>
+      <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">KẾ THỪA <span>widthTier</span> từ T1 — định nghĩa hai lớp và ba mức nằm ở “widthTier · lớp chiều rộng” trong Template 1+2, không mô tả lại ở đây</code>
+      <span style="font-size: 13px; color: #635B53; max-width: 84ch;">Sàn <code style="font-family: ui-monospace, Menlo, monospace;">--ibb-min-ops</code> 768px. Quản lý ca mở dashboard giữa ca trên tablet để biết ca đang chạy thế nào. Ba việc chung của ops (sidebar, vùng chạm, gom hành động header) làm theo T1; dưới đây là phần riêng của T7.</span>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 152px 1fr; gap: 16px; align-items: center; min-height: 40px; padding: 0 20px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+        <span>Mức</span><span>Phần riêng của T7</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 152px 1fr; gap: 16px; align-items: start; padding: 16px 20px; border-bottom: 1px solid #F0EBE5;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <strong style="font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums;">1024 – 1279px</strong>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">--ibb-bp-md → --ibb-bp-lg</code>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #ABA298;">·</span><span>Stat strip 4 thẻ xuống <strong style="font-weight: 500;">2 hàng, mỗi hàng 2 thẻ</strong>. Không bóp thẻ hẹp hơn 200px.</span></span>
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #ABA298;">·</span><span>Chart <strong style="font-weight: 500;">giữ nguyên chiều cao</strong> (<code style="font-family: ui-monospace, Menlo, monospace;">--ibb-chart-md</code> 280px), chỉ co chiều rộng. Trục thời gian giãn thưa nhãn, không xoay chữ.</span></span>
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #ABA298;">·</span><span>Dải khối tóm tắt từ lưới <strong style="font-weight: 500;">3 cột còn 2 cột</strong>, khối thứ ba xuống hàng dưới chiếm cả chiều rộng.</span></span>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 152px 1fr; gap: 16px; align-items: start; padding: 16px 20px; background: #FAFDFC;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <strong style="font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums;">768 – 1023px</strong>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">--ibb-min-ops → --ibb-bp-md</code>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #ABA298;">·</span><span>Stat strip <strong style="font-weight: 500;">2 hàng 2 thẻ</strong> — giống mức trên, không xuống 1 cột. Bốn chỉ số ca phải thấy cùng lúc, đó là lý do có dashboard.</span></span>
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #ABA298;">·</span><span>Chart chuyển <code style="font-family: ui-monospace, Menlo, monospace;">--ibb-chart-sm</code> <strong style="font-weight: 500;">180px</strong> — thấp hơn để dải khối tóm tắt còn lọt trong màn đầu.</span></span>
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #ABA298;">·</span><span>Dải khối tóm tắt về <strong style="font-weight: 500;">1 cột xếp dọc</strong>, thứ tự theo mức cấp thiết: cần xử lý trước, số liệu tham khảo sau.</span></span>
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #ABA298;">·</span><span>Polling indicator thu về <strong style="font-weight: 500;">biến thể gọn</strong>: chấm trạng thái + tooltip mang “cập nhật lúc hh:mm”. Bỏ dòng chữ “tự cập nhật mỗi 30 giây”.</span></span>
+          <span style="display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 13px; color: #4A443E;"><span style="color: #ABA298;">·</span><span>Bảng nhúng trong dashboard theo <code style="font-family: ui-monospace, Menlo, monospace;">essentialColumns</code> của Pattern 1, tối đa <strong style="font-weight: 500;">3 cột</strong> — bảng trong dashboard là bảng tóm lược.</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">chart không làm gì</span><span style="color: #4A443E;">Không đổi loại chart theo chiều rộng. Cột vẫn là cột, đường vẫn là đường — <strong style="font-weight: 500;">người dùng nhận ra biểu đồ theo hình dạng</strong>, đổi hình là bắt đọc lại từ đầu.</span>
+      <span style="color: #6E665C;">chart tràn</span><span style="color: #4A443E;">Chart là SVG <code style="font-family: ui-monospace, Menlo, monospace;">viewBox</code> + <code style="font-family: ui-monospace, Menlo, monospace;">width: 100%</code>, không px cứng. Nhãn trục dùng <code style="font-family: ui-monospace, Menlo, monospace;">textLength</code> giới hạn, không để chữ đẩy rộng viewBox.</span>
+      <span style="color: #6E665C;">theo vai trò trước</span><span style="color: #4A443E;">Khối nào bị vai trò ẩn thì <strong style="font-weight: 500;">không tính vào lưới</strong> — thu ngân ở 768 chỉ còn 2 khối, không có ô trống. Lọc theo vai trò xong mới xếp lưới.</span>
+      <span style="color: #6E665C;">màn thuộc lớp này</span><span style="color: #4A443E;">SC-TQ-01 Dashboard tổng quan</span>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1100}}">
+const SLOTS = [
+  ['Page header', 'bắt buộc', 'KẾ THỪA T4 slot 1', 'Nguyên văn T4 slot 1, chỉ bỏ nút xuất và thêm polling indicator CL2 §12 · sửa T4 thì T7 đổi theo'],
+  ['Bộ chọn phạm vi', 'bắt buộc', 'CL3 §06 rút gọn', 'KHÁC T4: chỉ chi nhánh + ca. Không khoảng ngày, không so kỳ trước, không preset kỳ'],
+  ['Banner bối cảnh', 'tuỳ chọn', 'CL2 §04 Alert (info · warning)', 'Ca chưa mở → info · có việc khẩn → warning. Không có thì bỏ hẳn dải'],
+  ['Stat strip', 'bắt buộc', 'KẾ THỪA T4 slot 4', 'Nguyên văn T4 slot 4 · chỉ khác: sparkline là dữ liệu trong ngày, và thẻ ngoài quyền biến mất thay vì hiện “—”'],
+  ['Vùng biểu đồ', 'tuỳ chọn', 'KẾ THỪA T4 slot 5', 'Nguyên văn T4 slot 5, không sửa gì'],
+  ['Dải khối tóm tắt', 'bắt buộc', 'CL2 §13 SummaryBlock ×2–4', 'THAY bảng chi tiết của T4 · lưới auto-fit, tự xuống dòng · khối rỗng vẫn hiện'],
+  ['Chú thích', 'tuỳ chọn', 'text 12px neutral-500', 'Nguồn dữ liệu và chu kỳ làm mới · bắt buộc ghi khi số liệu là tạm tính']
+];
+
+const RULES = [
+  'Không có kỳ báo cáo. Mọi số liệu là hiện tại hoặc trong ngày — không khoảng ngày, không so kỳ trước ở cấp trang.',
+  'Không xuất file. Muốn xuất thì đi tiếp sang màn báo cáo tương ứng; dashboard không mang nút Excel, PDF hay In.',
+  'Tự làm mới theo chu kỳ, mặc định 60 giây, cấu hình được. Tạm dừng khi tab ẩn, làm mới ngay khi quay lại.',
+  'Mọi khối tóm tắt PHẢI dẫn tới một màn hành động, với bộ lọc đã áp sẵn khớp nội dung khối.',
+  'Khối rỗng vẫn hiển thị, kèm thông điệp tích cực — sự vắng mặt ở đây là thông tin, không phải thiếu dữ liệu.',
+  'Lọc quyền ở CẤP KHỐI, không phải cấp trang: khối ngoài quyền biến mất, các khối còn lại dồn lại lấp chỗ. Không có màn “bạn không có quyền xem dashboard”.',
+  'Làm mới không phá thao tác đang diễn ra: không đóng dropdown, không mất dòng đang chọn, không cuộn về đầu.',
+  'Mỗi stat card khai báo chiều nghĩa higher-is-better · lower-is-better · neutral. Màn không tự đoán màu delta.'
+];
+
+const DIR_TAG = 'height: 20px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 11px; font-weight: 500; white-space: nowrap; background: #F4F1ED; color: #6E665C;';
+
+// Doanh thu theo giờ · triệu đồng · ca trưa 10–14, ca tối 17–22
+const HOURS = ['10', '11', '12', '13', '14', '17', '18', '19', '20', '21', '22'];
+const TODAY = [2.1, 4.8, 6.2, 3.4, 1.2, 5.6, 9.8, null, null, null, null];
+const PREV = [1.8, 4.2, 5.9, 3.1, 1.4, 5.1, 8.4, 11.2, 10.6, 7.3, 3.1];
+const GUESTS = [8, 16, 22, 12, 5, 19, 34, 0, 0];
+
+const money = (n) => n.toLocaleString('vi-VN');
+const dec1 = (n) => n.toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+function sparkPath(vals) {
+  const max = Math.max.apply(null, vals);
+  const min = Math.min.apply(null, vals);
+  const span = max - min || 1;
+  return vals.map((v, i) => {
+    const x = (i / (vals.length - 1)) * 200;
+    const y = 24 - ((v - min) / span) * 20;
+    return (i === 0 ? 'M' : 'L') + x.toFixed(1) + ' ' + y.toFixed(1);
+  }).join(' ');
+}
+
+function statCard(s) {
+  const up = s.delta >= 0;
+  const good = s.dir === 'higher' ? up : (s.dir === 'lower' ? !up : null);
+  const dirLabel = s.dir === 'higher' ? 'cao hơn tốt hơn' : (s.dir === 'lower' ? 'thấp hơn tốt hơn' : 'trung tính');
+  let deltaColor = '#635B53';
+  if (good === true) deltaColor = '#256A49';
+  if (good === false) deltaColor = '#C0392B';
+  let valueColor = '#1E1B19';
+  if (s.threshold) valueColor = s.over ? '#C0392B' : (s.near ? '#8A5F12' : '#1E1B19');
+  return {
+    label: s.label,
+    dir: dirLabel,
+    dirStyle: DIR_TAG,
+    value: s.value,
+    valueStyle: 'font-size: 24px; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + valueColor + ';',
+    delta: (up ? '+' : '−') + dec1(Math.abs(s.delta)) + '%',
+    deltaStyle: 'font-size: 13px; font-variant-numeric: tabular-nums; color: ' + deltaColor + ';',
+    hasSpark: !!s.spark,
+    spark: s.spark ? sparkPath(s.spark) : '',
+    hasBar: !!s.threshold,
+    barStyle: s.threshold
+      ? 'display: block; height: 4px; border-radius: 999px; width: ' + Math.min(100, s.pct).toFixed(0) + '%; background: '
+        + (s.over ? '#C0392B' : (s.near ? '#8A5F12' : '#235B54')) + ';'
+      : '',
+    hint: s.hint,
+    hintStyle: 'font-size: 12px; color: ' + (s.threshold && (s.over || s.near) ? '#8A5F12' : '#6E665C') + ';'
+  };
+}
+
+const ROW = (i, last, cols) => 'display: grid; grid-template-columns: ' + cols
+  + '; align-items: center; gap: 8px; min-height: 36px; padding: 0 16px; font-size: 13px;'
+  + (i < last - 1 ? ' border-bottom: 1px solid #F0EBE5;' : '');
+
+const CARD = (tone) => 'background: #FFFFFF; border: 1px solid #E7E2DC;'
+  + (tone === 'urgent' ? ' border-left: 3px solid #C0392B;' : (tone === 'warn' ? ' border-left: 3px solid #8A5F12;' : ''))
+  + ' border-radius: 8px; overflow: hidden; display: flex; flex-direction: column;';
+
+const COUNT = (tone) => 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; '
+  + (tone === 'urgent' ? 'background: #FCF0EE; border: 1px solid #F1CCC7; color: #96271B;'
+    : (tone === 'warn' ? 'background: #FDF6E7; border: 1px solid #F0DDAF; color: #8A5F12;'
+      : 'background: #F4F1ED; border: 1px solid #E7E2DC; color: #4A443E;'));
+
+const ORDERS_ROWS = [
+  ['Bàn 4', '6 khách', '88 phút', '2.140.000', true],
+  ['Bàn 12', '4 khách', '64 phút', '1.508.000', false],
+  ['Bàn 7', '8 khách', '41 phút', '2.860.000', false],
+  ['Bàn 2', '2 khách', '127 phút', '742.000', true],
+  ['Bàn 9', '5 khách', '23 phút', '1.190.000', false]
+];
+
+const TODO_ROWS = [
+  ['Bò Mỹ ba chỉ sắp hết', 'còn 2,9 ngày', 'Kho', true],
+  ['Phiếu nhập PN-2026-0412', 'chờ 2 ngày', 'Duyệt', false],
+  ['Công nợ Thực phẩm Tân Bình', 'đến hạn 08/08', 'Kế toán', false],
+  ['Đơn nghỉ NP-2026-0240', 'chờ 1 ngày', 'Nhân sự', false]
+];
+
+const BOOKING_ROWS = [
+  ['19:00 · Trần Hồng Nhung', '8 khách', 'B4+B5', false],
+  ['19:30 · Lê Quốc Bảo', '4 khách', 'B12', false],
+  ['20:00 · Phạm Thu Trang', '6 khách', 'B7', false],
+  ['20:30 · Đỗ Minh Khoa', '2 khách', 'chưa xếp', true],
+  ['21:00 · Vũ Hải Yến', '10 khách', 'B9+B10', false]
+];
+
+class Component extends DCLogic {
+  renderVals() {
+    const reqTag = (req) => {
+      const on = req === 'bắt buộc';
+      return 'display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 4px; font-size: 11px; font-weight: 500; white-space: nowrap; color: '
+        + (on ? '#1C4842' : '#635B53') + '; background: ' + (on ? '#EFF6F5' : '#F4F1ED') + '; border: 1px solid ' + (on ? '#B0D4CF' : '#E7E2DC') + ';';
+    };
+
+    // Line doanh thu theo giờ · viewBox 1180×280
+    const lTop = 24, lBot = 240, lL = 56, lR = 1160, lMax = 12;
+    const ly = (v) => lBot - (v / lMax) * (lBot - lTop);
+    const lx = (i) => lL + (i / (HOURS.length - 1)) * (lR - lL);
+    const drawn = TODAY.map((v, i) => ({ v, i })).filter(o => o.v !== null);
+    const hourPath = drawn.map((o, k) => (k === 0 ? 'M' : 'L') + lx(o.i).toFixed(1) + ' ' + ly(o.v).toFixed(1)).join(' ');
+    const hourPrevPath = PREV.map((v, i) => (i === 0 ? 'M' : 'L') + lx(i).toFixed(1) + ' ' + ly(v).toFixed(1)).join(' ');
+    const last = drawn[drawn.length - 1];
+
+    // Bar lượt khách · viewBox 1180×200
+    const gTop = 24, gBot = 168, gL = 56, gR = 1160, gMax = 40;
+    const gy = (v) => gBot - (v / gMax) * (gBot - gTop);
+    const gSlot = (gR - gL) / GUESTS.length;
+
+    const topDishRaw = [
+      ['Bò Mỹ ba chỉ nướng tảng', 142],
+      ['Lẩu thái hải sản', 118],
+      ['Hàu nướng mỡ hành', 96],
+      ['Bò cuộn nấm kim châm', 88],
+      ['Tôm sú nướng muối ớt', 74],
+      ['Mực trứng nướng sa tế', 61],
+      ['Ba chỉ heo nướng riềng', 57],
+      ['Chè khúc bạch', 49],
+      ['Cánh gà chiên mắm', 44],
+      ['Rau củ nướng thập cẩm', 38]
+    ];
+    const maxDish = topDishRaw[0][1];
+
+    const mkBlock = (b) => ({
+      title: b.title,
+      hasCount: b.count !== null && b.count !== undefined,
+      count: b.count === null || b.count === undefined ? '' : String(b.count),
+      countStyle: COUNT(b.tone),
+      cardStyle: CARD(b.tone),
+      hasRows: !!(b.rows && b.rows.length),
+      isEmpty: !(b.rows && b.rows.length),
+      emptyText: b.emptyText || '',
+      link: b.link,
+      rows: (b.rows || []).map((r, i, arr) => ({
+        a: r[0],
+        b: r[1],
+        c: r[2],
+        rowStyle: ROW(i, arr.length, b.cols),
+        bStyle: 'font-size: 13px; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; color: ' + (r[3] ? '#8A5F12' : '#6E665C') + ';',
+        cStyle: 'font-size: 13px; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; color: ' + (r[3] ? '#8A5F12' : '#4A443E') + ';'
+      }))
+    });
+
+    return {
+      slots: SLOTS.map(([name, req, source, note], i) => ({ n: i + 1, name, req, source, note, tagStyle: reqTag(req) })),
+      rules: RULES.map(text => ({ text })),
+
+      statsOwner: [
+        { label: 'Doanh thu hôm nay', value: '38,4 tr', delta: 12.4, dir: 'higher', spark: [2.1, 4.8, 6.2, 3.4, 1.2, 5.6, 9.8], hint: 'Tạm tính · gồm 12 đơn chưa đóng' },
+        { label: 'Lượt khách', value: '116', delta: 8.1, dir: 'higher', spark: [8, 16, 22, 12, 5, 19, 34], hint: 'Người lớn 94 · trẻ em 22' },
+        { label: 'Doanh thu TB/khách', value: '331.000', delta: 4.0, dir: 'higher', hint: 'Cao hơn trung bình thứ ba 4,0%' },
+        { label: 'Food cost %', value: '34,2%', delta: 2.6, dir: 'lower', threshold: true, pct: 95, near: true, over: false, hint: 'Ngưỡng cảnh báo 36% · lấy từ Cấu hình' }
+      ].map(statCard),
+
+      statsCashier: [
+        { label: 'Doanh thu ca này', value: '21,8 tr', delta: 9.2, dir: 'higher', spark: [5.6, 9.8, 6.4], hint: 'Ca tối · từ 17:00' },
+        { label: 'Lượt khách', value: '53', delta: 6.4, dir: 'higher', spark: [19, 34], hint: 'Đang ngồi 26 · đã về 27' }
+      ].map(statCard),
+
+      hourGridEls: [0, 3, 6, 9, 12].map(v => React.createElement('line', {
+        key: 'hg' + v, x1: lL, y1: ly(v), x2: lR, y2: ly(v), stroke: '#F4F1ED', strokeWidth: 1
+      })),
+      hourAxisEls: [0, 3, 6, 9, 12].map(v => React.createElement('text', {
+        key: 'ha' + v, x: lL - 10, y: ly(v) + 4, textAnchor: 'end', fontSize: 12, fill: '#6E665C', fontFamily: 'Be Vietnam Pro'
+      }, v + ' tr')),
+      hourLabelEls: HOURS.map((h, i) => React.createElement('text', {
+        key: 'hl' + h, x: lx(i), y: 264, textAnchor: 'middle', fontSize: 12, fill: '#6E665C', fontFamily: 'Be Vietnam Pro'
+      }, h + 'h')),
+      hourPath,
+      hourPrevPath,
+      hourLastX: lx(last.i).toFixed(1),
+      hourLastY: ly(last.v).toFixed(1),
+
+      guestGridEls: [0, 10, 20, 30, 40].map(v => React.createElement('line', {
+        key: 'gg' + v, x1: gL, y1: gy(v), x2: gR, y2: gy(v), stroke: '#F4F1ED', strokeWidth: 1
+      })),
+      guestBars: GUESTS.map((v, i) => ({
+        x: (gL + i * gSlot + gSlot * 0.2).toFixed(1),
+        y: gy(v).toFixed(1),
+        w: (gSlot * 0.6).toFixed(1),
+        h: Math.max(0, gBot - gy(v)).toFixed(1),
+        fill: v === 0 ? '#EFEAE4' : '#2F7168'
+      })),
+      guestLabelEls: HOURS.slice(0, GUESTS.length).map((h, i) => React.createElement('text', {
+        key: 'gl' + h, x: gL + i * gSlot + gSlot / 2, y: 190, textAnchor: 'middle', fontSize: 12, fill: '#6E665C', fontFamily: 'Be Vietnam Pro'
+      }, h + 'h')),
+
+      topDishes: topDishRaw.map(d => ({
+        label: d[0],
+        value: money(d[1]) + ' phần',
+        barStyle: 'display: block; height: 20px; border-radius: 4px; background: #2F7168; width: ' + ((d[1] / maxDish) * 100).toFixed(1) + '%;'
+      })),
+
+      blocksOwner: [
+        mkBlock({ title: 'Đơn đang phục vụ', count: 12, tone: 'normal', cols: '1fr 84px 92px', rows: ORDERS_ROWS.map(r => [r[0], r[1], r[2], r[4]]), link: 'Xem tất cả 12 đơn →' }),
+        mkBlock({ title: 'Cần xử lý', count: 4, tone: 'urgent', cols: '1fr auto 76px', rows: TODO_ROWS, link: 'Xem tất cả việc cần xử lý →' }),
+        mkBlock({ title: 'Đặt bàn sắp tới', count: 7, tone: 'warn', cols: '1fr 84px 92px', rows: BOOKING_ROWS, link: 'Xem lịch đặt bàn hôm nay →' })
+      ],
+
+      blocksCashier: [
+        mkBlock({ title: 'Đơn đang phục vụ', count: 12, tone: 'normal', cols: '1fr 84px 92px', rows: ORDERS_ROWS.map(r => [r[0], r[1], r[2], r[4]]), link: 'Xem tất cả 12 đơn →' }),
+        mkBlock({ title: 'Đặt bàn sắp tới', count: 7, tone: 'warn', cols: '1fr 84px 92px', rows: BOOKING_ROWS, link: 'Xem lịch đặt bàn hôm nay →' })
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>

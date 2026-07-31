@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  @keyframes ibb-blip { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 24px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-vh-10</span><span style="color: #D5CEC6;">·</span><span>ngoại lệ · canvas</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">/van-hanh/so-do-ban</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Sơ đồ bàn</h1>
+    <p style="margin: 0; max-width: 80ch; font-size: 14px; color: #635B53;">Màn duy nhất không dùng template nào: mặt bằng thật của chi nhánh, vị trí bàn do quản lý đặt. Lát bàn là vùng chạm chính — <strong style="font-weight: 500;">tối thiểu 88×72</strong> ở mọi mức, gấp đôi sàn 44px, vì thu ngân chạm bằng ngón cái trong lúc bưng máy.</p>
+  </header>
+
+  <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); overflow: hidden;">
+
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding: 24px 24px 16px; background: #FFFFFF;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 500;">Sơ đồ bàn · chi nhánh Quận 1</h2>
+        <span style="font-size: 13px; color: #6E665C;">Ca tối 28/07/2026 · mở ca 16:30 · {{ liveHint }}</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border-radius: 999px; background: #EFF6F5; border: 1px solid #B0D4CF; font-size: 12px; color: #1C4842; white-space: nowrap;">
+          <span style="width: 8px; height: 8px; border-radius: 999px; background: #2F7168; animation: ibb-blip 2s ease-in-out infinite;"></span>Trạng thái bàn tự cập nhật
+        </span>
+        <span tabindex="0" style="height: 32px; display: inline-flex; align-items: center; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 6px; font-size: 13px; color: #4A443E; cursor: pointer; white-space: nowrap;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Sửa mặt bằng</span>
+        <button style="height: 32px; padding: 0 14px; font-family: inherit; font-size: 13px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap;" style-hover="background: #1C4842;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Mở đơn mới</button>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 0 24px 16px; background: #FFFFFF;">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div style="{{ s.cardStyle }}">
+          <span style="font-size: 13px; color: #6E665C;">{{ s.label }}</span>
+          <strong style="{{ s.valueStyle }}">{{ s.value }}</strong>
+          <span style="font-size: 12px; color: #6E665C;">{{ s.hint }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 24px; padding: 0 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC;">
+      <sc-for list="{{ zones }}" as="z" hint-placeholder-count="3">
+        <span onClick="{{ z.onClick }}" tabindex="0" style="{{ z.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168; border-radius: 4px;">
+          {{ z.label }}<span style="{{ z.badgeStyle }}">{{ z.count }}</span>
+        </span>
+      </sc-for>
+    </div>
+
+    <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+          <span onClick="{{ f.onClick }}" tabindex="0" style="{{ f.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            <span style="{{ f.dotStyle }}"></span>{{ f.label }}<span style="font-variant-numeric: tabular-nums; color: #6E665C;">{{ f.count }}</span>
+          </span>
+        </sc-for>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; color: #6E665C;">{{ selectionHint }}</span>
+        <span onClick="{{ clearSel }}" tabindex="0" style="{{ clearStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Bỏ chọn</span>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: stretch; gap: 24px; padding: 24px; background: #FAF8F6;">
+
+      <div style="flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px;">
+        <div style="position: relative; width: 960px; height: 520px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+          <sc-for list="{{ furniture }}" as="fu" hint-placeholder-count="3">
+            <div style="{{ fu.style }}">{{ fu.label }}</div>
+          </sc-for>
+          <sc-for list="{{ tables }}" as="t" hint-placeholder-count="18">
+            <div onClick="{{ t.onClick }}" role="button" tabindex="0" aria-pressed="{{ t.pressed }}" aria-label="{{ t.aria }}" style="{{ t.style }}" style-hover="{{ t.hoverStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168; z-index: 5;">
+              <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px;">
+                <strong style="{{ t.nameStyle }}">{{ t.name }}</strong>
+                <span style="{{ t.seatStyle }}">{{ t.seats }}</span>
+              </div>
+              <span style="{{ t.lineStyle }}">{{ t.line1 }}</span>
+              <span style="{{ t.line2Style }}">{{ t.line2 }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; gap: 12px 20px; flex-wrap: wrap; align-items: center;">
+          <sc-for list="{{ legend }}" as="l" hint-placeholder-count="5">
+            <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #4A443E;">
+              <span style="{{ l.swatchStyle }}"></span>{{ l.label }}
+            </span>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+
+        <sc-if value="{{ noneSelected }}" hint-placeholder-val="{{ true }}">
+          <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+            <span style="width: 40px; height: 40px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v5H4zM7 11v7M17 11v7"></path></svg>
+            </span>
+            <strong style="font-size: 15px; font-weight: 500;">Chưa chọn bàn nào</strong>
+            <span style="font-size: 13px; color: #6E665C;">Chạm một lát bàn để xem đơn đang mở, hoặc chạm nhiều bàn để gộp. Chạm lại để bỏ chọn.</span>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ oneSelected }}" hint-placeholder-val="{{ false }}">
+          <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 20px 20px 16px; border-bottom: 1px solid #F0EBE5;">
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <strong style="font-size: 20px; font-weight: 500;">{{ one.name }}</strong>
+                <span style="font-size: 13px; color: #6E665C;">{{ one.zoneLabel }} · {{ one.seats }} chỗ</span>
+              </div>
+              <span style="{{ one.badgeStyle }}">{{ one.statusLabel }}</span>
+            </div>
+            <div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{ one.rows }}" as="d" hint-placeholder-count="5">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; font-size: 13px;">
+                  <span style="color: #6E665C;">{{ d.label }}</span>
+                  <span style="{{ d.valueStyle }}">{{ d.value }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px; padding: 16px 20px 20px; border-top: 1px solid #F0EBE5;">
+              <sc-for list="{{ one.actions }}" as="a" hint-placeholder-count="3">
+                <span tabindex="0" style="{{ a.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ a.label }}</span>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ manySelected }}" hint-placeholder-val="{{ false }}">
+          <div style="background: #FFFFFF; border: 1px solid #B0D4CF; border-radius: 8px; overflow: hidden;">
+            <div style="padding: 20px 20px 16px; border-bottom: 1px solid #F0EBE5; display: flex; flex-direction: column; gap: 4px;">
+              <strong style="font-size: 16px; font-weight: 500;">Đã chọn {{ manyCount }} bàn</strong>
+              <span style="font-size: 13px; color: #6E665C;">{{ manyNames }} · tổng {{ manySeats }} chỗ</span>
+            </div>
+            <div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 12px;">
+              <sc-if value="{{ mergeBlocked }}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; gap: 12px; padding: 12px; background: #FDF6E7; border: 1px solid #F0DDAF; border-radius: 6px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A5F12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+                  <span style="font-size: 13px; color: #8A5F12;">{{ mergeBlockedText }}</span>
+                </div>
+              </sc-if>
+              <span tabindex="0" style="{{ mergeBtnStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Gộp thành một bàn</span>
+              <span style="font-size: 12px; color: #6E665C;">Gộp không tạo đơn mới: đơn của bàn đầu tiên thành đơn chung, các đơn còn lại nhập vào đó và lưu vết trong nhật ký.</span>
+            </div>
+          </div>
+        </sc-if>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+            <strong style="font-size: 14px; font-weight: 500;">Đặt bàn sắp tới</strong>
+            <span style="font-size: 12px; color: #6E665C;">cả chi nhánh · bàn thuộc khu đang xem tô đậm</span>
+          </div>
+          <sc-for list="{{ upcoming }}" as="u" hint-placeholder-count="3">
+            <div style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 8px 0; border-top: 1px solid #F4F1ED;">
+              <strong style="width: 56px; flex: none; font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums;">{{ u.time }}</strong>
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ u.guest }}</span>
+                <span style="font-size: 12px; color: #6E665C;">{{ u.detail }}</span>
+              </span>
+              <span style="{{ u.tableStyle }}">{{ u.table }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Ghi cho dev</h2>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">widthTier</span><span style="color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">ops</code> · sàn <code style="font-family: ui-monospace, Menlo, monospace;">--ibb-min-ops</code> 768px. Đây là màn <strong style="font-weight: 500;">ngoại lệ</strong>: không kế thừa template nào, nên ba mức phải khai riêng ở đây thay vì nhận từ T1.</span>
+      <span style="color: #6E665C;">canvas ở ba mức</span><span style="color: #4A443E;">Toạ độ bàn lưu theo <strong style="font-weight: 500;">hệ 960×520 cố định</strong>. Ở 1024 và 768, canvas <strong style="font-weight: 500;">co theo tỷ lệ</strong> bằng <code style="font-family: ui-monospace, Menlo, monospace;">transform: scale()</code> trên cả khối — KHÔNG xếp lại bàn, KHÔNG đổi toạ độ. Mặt bằng là bản đồ; xếp lại thì người dùng không nhận ra phòng của mình nữa.</span>
+      <span style="color: #6E665C;">chạm sau khi co</span><span style="color: #4A443E;">Lát bàn nhỏ nhất 88×72 ở tỷ lệ 1. Ở 768 tỷ lệ co xuống 0,74 → còn 65×53, <strong style="font-weight: 500;">dưới sàn 44px là an toàn nhưng dưới ngón tay thì không</strong>. Vì vậy ở 768 canvas KHÔNG co xuống dưới <strong style="font-weight: 500;">0,84</strong> (lát còn 74×60) mà cho cuộn hai chiều trong khung, có thanh cuộn hiện rõ.</span>
+      <span style="color: #6E665C;">kéo thả</span><span style="color: #4A443E;">Ở mức ops, gộp bàn <strong style="font-weight: 500;">không dùng kéo thả</strong> — dùng chạm chọn nhiều bàn rồi bấm Gộp, đúng như bố cục này. Kéo thả chỉ có ở chế độ Sửa mặt bằng, và chế độ đó là <code style="font-family: ui-monospace, Menlo, monospace;">office</code>: đặt lại vị trí bàn là việc bàn giấy.</span>
+      <span style="color: #6E665C;">panel phải</span><span style="color: #4A443E;">Ở 1024 xuống dưới canvas thành một dải ngang. Ở 768 thành <strong style="font-weight: 500;">bottom sheet</strong> theo luật mới của Pattern 3 — chạm bàn mở sheet, canvas vẫn thấy phía trên.</span>
+      <span style="color: #6E665C;">trạng thái bàn</span><span style="color: #4A443E;">Năm trạng thái, mỗi trạng thái <strong style="font-weight: 500;">một cặp nền + viền</strong>, không chỉ khác màu chữ. Bàn đã đặt dùng viền gạch — người mù màu vẫn phân biệt được bằng hình.</span>
+      <span style="color: #6E665C;">không làm</span><span style="color: #4A443E;">Không animate bàn khi trạng thái đổi (mặt bằng nhảy nháy giữa ca là nhiễu) · không vẽ tường/cửa bằng hình trang trí · không thu nhỏ chữ trên lát bàn dưới 12px.</span>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1180},&quot;zone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;tang-1&quot;,&quot;options&quot;:[&quot;tang-1&quot;,&quot;tang-2&quot;,&quot;san-vuon&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Trạng thái màn&quot;},&quot;filter&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;all&quot;,&quot;options&quot;:[&quot;all&quot;,&quot;trong&quot;,&quot;phucvu&quot;,&quot;thanhtoan&quot;,&quot;dat&quot;,&quot;don&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Trạng thái màn&quot;}}">
+const ST = {
+  trong:      { label: 'Trống',           bg: '#FFFFFF', bd: '#D5CEC6', fg: '#6E665C', dash: false },
+  phucvu:     { label: 'Đang phục vụ',    bg: '#EFF6F5', bd: '#B0D4CF', fg: '#1C4842', dash: false },
+  thanhtoan:  { label: 'Chờ thanh toán',  bg: '#FDF6E7', bd: '#F0DDAF', fg: '#8A5F12', dash: false },
+  dat:        { label: 'Đã đặt',          bg: '#F4F1ED', bd: '#C6BEB4', fg: '#4A443E', dash: true },
+  don:        { label: 'Cần dọn',         bg: '#FCF0EE', bd: '#F1CCC7', fg: '#96271B', dash: false }
+};
+
+// Một nguồn sự thật cho cả ba khu vực: số bàn, số ghế, số khách và doanh thu
+// đều suy ra từ mảng này — không viết cứng con số nào ở renderVals.
+// x, y, w, h theo hệ toạ độ 960×520 · sh: sq vuông · ci tròn · lg bàn dài
+const ZONES = {
+  'tang-1': {
+    label: 'Tầng 1',
+    tables: [
+      { id: 'B01', x: 24, y: 24, w: 120, h: 96, sh: 'sq', seats: 4, s: 'phucvu', t: '18:42', g: 6, m: 2184000 },
+      { id: 'B02', x: 168, y: 24, w: 120, h: 96, sh: 'sq', seats: 4, s: 'phucvu', t: '19:05', g: 4, m: 1396000 },
+      { id: 'B03', x: 312, y: 24, w: 120, h: 96, sh: 'sq', seats: 4, s: 'trong', note: 'Trống 22 phút' },
+      { id: 'B04', x: 456, y: 24, w: 120, h: 96, sh: 'sq', seats: 4, s: 'thanhtoan', t: '17:50', g: 4, m: 2076000 },
+      { id: 'B05', x: 24, y: 152, w: 264, h: 96, sh: 'sq', seats: 8, s: 'phucvu', t: '18:15', g: 8, m: 3470000, mg: 'Gộp B05 + B06' },
+      { id: 'B07', x: 312, y: 152, w: 120, h: 96, sh: 'sq', seats: 4, s: 'don', note: 'Đóng 19:38', note2: 'Chờ 6 phút', m: 1180000 },
+      { id: 'B08', x: 456, y: 152, w: 120, h: 96, sh: 'sq', seats: 4, s: 'dat', t: '20:30', who: 'Chị Hà' },
+      { id: 'B09', x: 640, y: 40, w: 110, h: 110, sh: 'ci', seats: 6, s: 'phucvu', t: '18:58', g: 6, m: 1240000 },
+      { id: 'B10', x: 790, y: 40, w: 110, h: 110, sh: 'ci', seats: 6, s: 'trong', note: 'Trống' },
+      { id: 'B11', x: 640, y: 190, w: 110, h: 110, sh: 'ci', seats: 6, s: 'phucvu', t: '19:20', g: 5, m: 980000 },
+      { id: 'B12', x: 790, y: 190, w: 110, h: 110, sh: 'ci', seats: 6, s: 'dat', t: '20:00', who: 'A. Dũng' },
+      { id: 'B13', x: 24, y: 290, w: 264, h: 96, sh: 'lg', seats: 10, s: 'phucvu', t: '17:30', g: 10, m: 5190000 },
+      { id: 'B14', x: 312, y: 290, w: 264, h: 96, sh: 'lg', seats: 10, s: 'trong', note: 'Trống 1 giờ 4 phút' },
+      { id: 'B15', x: 24, y: 424, w: 88, h: 72, sh: 'sq', seats: 2, s: 'phucvu', t: '19:40', g: 2, m: 212000 },
+      { id: 'B16', x: 136, y: 424, w: 88, h: 72, sh: 'sq', seats: 2, s: 'trong', note: 'Trống' },
+      { id: 'B17', x: 248, y: 424, w: 88, h: 72, sh: 'sq', seats: 2, s: 'thanhtoan', t: '18:20', g: 2, m: 742000 },
+      { id: 'B18', x: 360, y: 424, w: 88, h: 72, sh: 'sq', seats: 2, s: 'trong', note: 'Trống' },
+      { id: 'VIP1', x: 640, y: 340, w: 260, h: 110, sh: 'lg', seats: 12, s: 'phucvu', t: '18:00', g: 12, m: 7884000, note: 'tiệc sinh nhật' }
+    ],
+    furniture: [
+      [472, 424, 104, 72, 'Lối vào'],
+      [608, 24, 16, 426, ''],
+      [640, 470, 260, 26, 'Quầy thu ngân']
+    ]
+  },
+  'tang-2': {
+    label: 'Tầng 2',
+    tables: [
+      { id: 'T201', x: 40, y: 40, w: 120, h: 96, sh: 'sq', seats: 4, s: 'phucvu', t: '19:10', g: 4, m: 1120000 },
+      { id: 'T202', x: 184, y: 40, w: 120, h: 96, sh: 'sq', seats: 4, s: 'trong', note: 'Trống 40 phút' },
+      { id: 'T203', x: 328, y: 40, w: 120, h: 96, sh: 'sq', seats: 4, s: 'trong', note: 'Trống' },
+      { id: 'T204', x: 472, y: 40, w: 120, h: 96, sh: 'sq', seats: 4, s: 'dat', t: '20:30', who: 'C. Lan' },
+      { id: 'T205', x: 40, y: 176, w: 120, h: 96, sh: 'sq', seats: 4, s: 'phucvu', t: '18:40', g: 3, m: 960000 },
+      { id: 'T206', x: 184, y: 176, w: 120, h: 96, sh: 'sq', seats: 4, s: 'don', note: 'Đóng 19:05', note2: 'Chờ 12 phút', m: 848000 },
+      { id: 'T207', x: 328, y: 176, w: 120, h: 96, sh: 'sq', seats: 4, s: 'trong', note: 'Trống' },
+      { id: 'T208', x: 472, y: 176, w: 120, h: 96, sh: 'sq', seats: 4, s: 'trong', note: 'Trống' },
+      { id: 'T209', x: 660, y: 60, w: 120, h: 120, sh: 'ci', seats: 8, s: 'phucvu', t: '18:20', g: 8, m: 3240000 },
+      { id: 'T210', x: 800, y: 60, w: 120, h: 120, sh: 'ci', seats: 8, s: 'trong', note: 'Trống' },
+      { id: 'T211', x: 660, y: 220, w: 120, h: 120, sh: 'ci', seats: 8, s: 'dat', t: '21:00', who: 'CT Minh An' },
+      { id: 'T212', x: 800, y: 220, w: 120, h: 120, sh: 'ci', seats: 8, s: 'trong', note: 'Trống' }
+    ],
+    furniture: [
+      [624, 40, 16, 300, ''],
+      [40, 320, 552, 26, 'Vách kính · nhìn ra phố'],
+      [660, 372, 260, 26, 'Cầu thang lên tầng 2']
+    ]
+  },
+  'san-vuon': {
+    label: 'Sân vườn',
+    tables: [
+      { id: 'S01', x: 60, y: 56, w: 130, h: 130, sh: 'ci', seats: 6, s: 'phucvu', t: '19:00', g: 5, m: 1450000 },
+      { id: 'S02', x: 230, y: 56, w: 130, h: 130, sh: 'ci', seats: 6, s: 'trong', note: 'Trống' },
+      { id: 'S03', x: 400, y: 56, w: 130, h: 130, sh: 'ci', seats: 6, s: 'phucvu', t: '18:30', g: 6, m: 2180000 },
+      { id: 'S04', x: 570, y: 56, w: 130, h: 130, sh: 'ci', seats: 6, s: 'trong', note: 'Trống 15 phút' },
+      { id: 'S05', x: 60, y: 236, w: 130, h: 130, sh: 'ci', seats: 6, s: 'trong', note: 'Trống' },
+      { id: 'S06', x: 230, y: 236, w: 130, h: 130, sh: 'ci', seats: 6, s: 'dat', t: '20:00', who: 'A. Kiên' },
+      { id: 'S07', x: 400, y: 236, w: 130, h: 130, sh: 'ci', seats: 6, s: 'trong', note: 'Trống' },
+      { id: 'S08', x: 570, y: 236, w: 130, h: 130, sh: 'ci', seats: 6, s: 'don', note: 'Đóng 18:50', note2: 'Chờ 20 phút', m: 1620000 }
+    ],
+    furniture: [
+      [740, 56, 180, 310, 'Vườn cây'],
+      [60, 400, 640, 26, 'Lối ra sân · mái che di động']
+    ]
+  }
+};
+
+const money = (n) => n.toLocaleString('vi-VN');
+
+class Component extends DCLogic {
+  state = { zone: this.props.zone ?? 'tang-1', sel: [], filter: this.props.filter ?? 'all' };
+
+  renderVals() {
+    const st = this.state;
+    const zone = ZONES[st.zone] || ZONES['tang-1'];
+    // Hai dòng chữ trên lát bàn suy ra từ trạng thái và hình dạng, không lưu riêng:
+    // lát tròn hẹp hơn nên tách giờ và số khách thành hai dòng.
+    const all = zone.tables.map(r => {
+      const round = r.sh === 'ci';
+      let l1 = '', l2 = '';
+      if (r.s === 'phucvu' || r.s === 'thanhtoan') {
+        l1 = round ? r.t : r.t + ' · ' + r.g + ' khách' + (r.note ? ' · ' + r.note : '');
+        l2 = round ? r.g + ' khách' : money(r.m);
+      } else if (r.s === 'dat') {
+        l1 = round ? r.t : r.t + ' · ' + r.who;
+        l2 = round ? r.who : 'Đặt trước';
+      } else if (r.s === 'don') {
+        l1 = r.note; l2 = r.note2;
+      } else {
+        l1 = r.note || 'Trống'; l2 = '';
+      }
+      return {
+        id: r.id, x: r.x, y: r.y, w: r.w, h: r.h, shape: r.sh,
+        seats: r.seats, status: r.s, time: r.t || '', guests: r.g || 0, amount: r.m || 0,
+        who: r.who || '', note: r.note || '', note2: r.note2 || '',
+        line1: l1, line2: r.mg || l2, merged: !!r.mg
+      };
+    });
+
+    const counts = {};
+    Object.keys(ST).forEach(k => { counts[k] = all.filter(t => t.status === k).length; });
+    const visible = st.filter === 'all' ? all : all.filter(t => t.status === st.filter);
+    const sel = st.sel;
+    const selTables = all.filter(t => sel.indexOf(t.id) >= 0);
+
+    const chip = (on) => 'display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border-radius: 6px; font-size: 13px; cursor: pointer; white-space: nowrap; border: 1px solid '
+      + (on ? '#B0D4CF' : '#E7E2DC') + '; background: ' + (on ? '#EFF6F5' : '#FFFFFF') + '; color: ' + (on ? '#1C4842' : '#4A443E') + ';';
+
+    const statCard = (label, value, hint, fg, bg, bd) => ({
+      label, value, hint,
+      cardStyle: 'display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: 8px; border: 1px solid ' + (bd || '#E7E2DC') + '; background: ' + (bg || '#FAF8F6') + ';',
+      valueStyle: 'font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; color: ' + (fg || '#1E1B19') + ';'
+    });
+
+    const seated = all.filter(t => t.status === 'phucvu' || t.status === 'thanhtoan');
+    const capacity = all.reduce((s, t) => s + t.seats, 0);
+    const guests = seated.reduce((s, t) => s + t.guests, 0);
+    const freeSeats = all.filter(t => t.status === 'trong').reduce((s, t) => s + t.seats, 0);
+    const heldSeats = all.filter(t => t.status === 'dat' || t.status === 'don').reduce((s, t) => s + t.seats, 0);
+    const revenue = seated.reduce((s, t) => s + t.amount, 0);
+
+    const dirty = all.filter(t => t.status === 'don');
+    const dirtyHint = dirty.length ? dirty.map(t => t.id + ' ' + t.note2.toLowerCase()).join(' · ') : 'Không có bàn chờ dọn';
+
+    return {
+      liveHint: seated.length + '/' + all.length + ' bàn đang có khách',
+      stats: [
+        statCard('Bàn đang có khách', seated.length + '/' + all.length, 'Gồm cả bàn chờ thanh toán'),
+        statCard('Khách trong quán', String(guests) + '/' + capacity, 'Ghế trống ' + freeSeats + ' · giữ chỗ ' + heldSeats, '#1C4842', '#EFF6F5', '#B0D4CF'),
+        statCard('Cần dọn', String(counts.don), dirtyHint, counts.don ? '#96271B' : '#1E1B19', counts.don ? '#FCF0EE' : '#FAF8F6', counts.don ? '#F1CCC7' : '#E7E2DC'),
+        statCard('Doanh thu đang mở', money(revenue), 'Chưa gồm bàn đã đặt')
+      ],
+      zones: Object.keys(ZONES).map(id => {
+        const on = st.zone === id;
+        return {
+          label: ZONES[id].label,
+          count: String(ZONES[id].tables.length),
+          onClick: () => this.setState({ zone: id, sel: [] }),
+          style: 'display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 2px; font-size: 14px; cursor: pointer; border-bottom: 2px solid ' + (on ? '#235B54' : 'transparent') + '; color: ' + (on ? '#1E1B19' : '#635B53') + '; font-weight: ' + (on ? '500' : '400') + ';',
+          badgeStyle: 'display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 12px; font-variant-numeric: tabular-nums; background: ' + (on ? '#EFF6F5' : '#F4F1ED') + '; color: ' + (on ? '#1C4842' : '#6E665C') + ';'
+        };
+      }),
+      filters: [{ id: 'all', label: 'Tất cả', dot: '#ABA298', count: all.length }]
+        .concat(Object.keys(ST).map(k => ({ id: k, label: ST[k].label, dot: k === 'trong' ? '#C6BEB4' : ST[k].bd, count: counts[k] })))
+        .map(f => ({
+          label: f.label,
+          count: String(f.count),
+          onClick: () => this.setState({ filter: f.id }),
+          style: chip(st.filter === f.id),
+          dotStyle: 'width: 10px; height: 10px; border-radius: 3px; background: ' + f.dot + ';'
+        })),
+      selectionHint: sel.length ? 'Đang chọn ' + sel.length + ' bàn' : 'Chạm lát bàn để chọn',
+      clearStyle: 'font-size: 13px; text-decoration: underline; cursor: pointer; color: ' + (sel.length ? '#235B54' : '#C6BEB4') + '; pointer-events: ' + (sel.length ? 'auto' : 'none') + ';',
+      clearSel: () => this.setState({ sel: [] }),
+
+      furniture: zone.furniture.map(f => ({
+        label: f[4],
+        style: 'position: absolute; left: ' + f[0] + 'px; top: ' + f[1] + 'px; width: ' + f[2] + 'px; height: ' + f[3] + 'px; border-radius: 4px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #ABA298;'
+      })),
+
+      tables: visible.map(t => {
+        const s = ST[t.status];
+        const on = sel.indexOf(t.id) >= 0;
+        const radius = t.shape === 'ci' ? '999px' : (t.shape === 'lg' ? '10px' : '8px');
+        // Lát nhỏ (2 chỗ) chỉ chứa được một dòng phụ — dòng thứ hai bị cắt mất chân chữ.
+        const tiny = t.h < 80;
+        return {
+          name: t.id,
+          seats: t.seats + ' chỗ',
+          line1: tiny ? (t.line2 ? t.line1 + ' · ' + t.line2 : t.line1) : t.line1,
+          line2: tiny ? '' : (t.merged ? 'Gộp B05 + B06' : t.line2),
+          pressed: on ? 'true' : 'false',
+          aria: 'Bàn ' + t.id + ' · ' + s.label + ' · ' + t.seats + ' chỗ' + (on ? ' · đang chọn' : ''),
+          onClick: () => this.setState(p => ({ sel: p.sel.indexOf(t.id) >= 0 ? p.sel.filter(x => x !== t.id) : p.sel.concat([t.id]) })),
+          style: 'position: absolute; left: ' + t.x + 'px; top: ' + t.y + 'px; width: ' + t.w + 'px; height: ' + t.h + 'px;'
+            + ' box-sizing: border-box; padding: ' + (t.shape === 'ci' ? '18px 12px' : '10px 12px') + '; display: flex; flex-direction: column; gap: 2px;'
+            + (t.shape === 'ci' ? ' justify-content: center; text-align: center; align-items: stretch;' : '')
+            + ' border-radius: ' + radius + '; cursor: pointer; background: ' + s.bg + ';'
+            + ' border: ' + (on ? '2px' : '1.5px') + ' ' + (s.dash ? 'dashed' : 'solid') + ' ' + (on ? '#235B54' : s.bd) + ';'
+            + (on ? ' box-shadow: 0 0 0 3px rgba(47,113,104,0.24); z-index: 4;' : ''),
+          hoverStyle: 'border-color: #4F958D;',
+          nameStyle: 'font-size: 14px; font-weight: 500; color: #1E1B19;',
+          seatStyle: 'flex: none; font-size: 11px; font-variant-numeric: tabular-nums; color: #8A8178;',
+          lineStyle: 'font-size: 12px; font-variant-numeric: tabular-nums; color: ' + s.fg + '; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;',
+          line2Style: tiny ? 'display: none;' : 'font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; color: #4A443E; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;'
+        };
+      }),
+
+      legend: Object.keys(ST).map(k => ({
+        label: ST[k].label,
+        swatchStyle: 'width: 14px; height: 14px; border-radius: 4px; background: ' + ST[k].bg + '; border: 1.5px ' + (ST[k].dash ? 'dashed' : 'solid') + ' ' + ST[k].bd + ';'
+      })),
+
+      noneSelected: sel.length === 0,
+      oneSelected: sel.length === 1,
+      manySelected: sel.length > 1,
+      manyCount: String(sel.length),
+      manyNames: selTables.map(t => t.id).join(' · '),
+      manySeats: String(selTables.reduce((s, t) => s + t.seats, 0)),
+      mergeBlocked: selTables.filter(t => t.status === 'don' || t.status === 'dat').length > 0,
+      mergeBlockedText: 'Trong nhóm đang chọn có bàn cần dọn hoặc đã có người đặt. Gộp vẫn được, nhưng đặt bàn của khách kia sẽ mất chỗ — xác nhận lại với lễ tân trước.',
+      mergeBtnStyle: 'min-height: 44px; display: flex; align-items: center; justify-content: center; padding: 0 16px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; color: #FFFFFF; background: #235B54;',
+
+      one: (() => {
+        const t = selTables[0] || all[0];
+        const s = ST[t.status];
+        const rows = t.status === 'phucvu' || t.status === 'thanhtoan'
+          ? [
+              ['Mã đơn', 'DH-26' + (18 + all.indexOf(t)), true],
+              ['Mở đơn', t.time + ' · ' + t.guests + ' khách', false],
+              ['Gói buffet', t.seats >= 10 ? 'Buffet tối cuối tuần · 519.000/khách' : 'Buffet tối · 419.000/khách', false],
+              ['Phục vụ', 'Trần Thị Mai · ca tối', false],
+              ['Tạm tính', money(t.amount), true]
+            ]
+          : (t.status === 'dat'
+              ? [['Giờ đặt', t.time, false], ['Khách', t.who, false], ['Nguồn', 'Gọi điện · lễ tân nhận · đã cọc 500.000', false]]
+              : (t.status === 'don'
+                  ? [['Trạng thái', s.label, false], ['Đóng đơn', t.note, false], ['Chờ dọn', t.note2, false], ['Doanh thu bàn', money(t.amount), true]]
+                  : [['Trạng thái', t.note || s.label, false], ['Số chỗ', t.seats + ' chỗ', false], ['Ghi chú', 'Sẵn sàng nhận khách', false]]));
+        return {
+          name: t.id,
+          seats: String(t.seats),
+          zoneLabel: zone.label,
+          statusLabel: s.label,
+          badgeStyle: 'flex: none; display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: ' + s.bg + '; border: 1px ' + (s.dash ? 'dashed' : 'solid') + ' ' + s.bd + '; color: ' + s.fg + ';',
+          rows: rows.map(r => ({
+            label: r[0], value: r[1],
+            valueStyle: 'text-align: right; font-size: 13px; font-variant-numeric: tabular-nums; color: #1E1B19;' + (r[2] ? ' font-weight: 500;' : '')
+          })),
+          actions: (t.status === 'trong'
+            ? [['Mở đơn mới', true], ['Nhận đặt bàn cho bàn này', false]]
+            : (t.status === 'don'
+                ? [['Đánh dấu đã dọn', true], ['Xem đơn vừa đóng', false]]
+                : [['Mở đơn', true], ['In tạm tính', false], ['Chuyển bàn', false]])
+          ).map(a => ({
+            label: a[0],
+            style: 'min-height: 44px; display: flex; align-items: center; justify-content: center; padding: 0 16px; border-radius: 6px; font-size: 14px; cursor: pointer; '
+              + (a[1] ? 'font-weight: 500; color: #FFFFFF; background: #235B54;' : 'color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC;')
+          }))
+        };
+      })(),
+
+      // Suy từ chính các bàn đang ở trạng thái đã đặt của cả ba khu vực —
+      // danh sách này không thể nói khác sơ đồ vì cùng một nguồn.
+      upcoming: Object.keys(ZONES)
+        .reduce((acc, zid) => acc.concat(ZONES[zid].tables.filter(r => r.s === 'dat').map(r => ({ zid, r }))), [])
+        .sort((a, b) => (a.r.t < b.r.t ? -1 : 1))
+        .map(({ zid, r }) => ({
+          time: r.t,
+          guest: r.who,
+          detail: ZONES[zid].label + ' · bàn ' + r.seats + ' chỗ · nhận qua điện thoại',
+          table: r.id,
+          tableStyle: 'flex: none; display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; background: '
+            + (zid === st.zone ? '#EFF6F5' : '#F4F1ED') + '; color: ' + (zid === st.zone ? '#1C4842' : '#4A443E') + ';'
+        }))
+    };
+  }
+}
+</script>
+</body>
+</html>

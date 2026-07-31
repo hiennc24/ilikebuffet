@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/materials.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #FAF8F6; }
+  a { color: #235B54; text-decoration: none; border-bottom: 1px solid #B0D4CF; }
+  a:hover { color: #1C4842; border-bottom-color: #235B54; }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #FAF8F6; padding: 56px 48px 96px; display: flex; flex-direction: column; gap: 56px; max-width: 1280px; margin: 0 auto;">
+
+  <header style="display: flex; flex-direction: column; gap: 20px; border-bottom: 1px solid #E7E2DC; padding-bottom: 36px;">
+    <div style="font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: #6E665C;">ilikebuffet admin · design tokens</div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 56px; line-height: 1.05; margin: 0; letter-spacing: -0.01em;">Bảng token nền tảng</h1>
+    <p style="margin: 0; max-width: 62ch; font-size: 16px; color: #4A443E; text-wrap: pretty;">Nguồn sự thật duy nhất cho màu, chữ, khoảng cách, bo góc, độ nổi và lớp chồng của giao diện quản trị. Mọi token được đặt tên theo ba tầng — primitive, semantic, component — để đổi giao diện mà không phải sửa từng màn hình.</p>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;">
+      <span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 999px; padding: 6px 14px; font-size: 12px; color: #4A443E;">Base 14px</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 999px; padding: 6px 14px; font-size: 12px; color: #4A443E;">Be Vietnam Pro</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 999px; padding: 6px 14px; font-size: 12px; color: #4A443E;">Lưới 4pt</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 999px; padding: 6px 14px; font-size: 12px; color: #4A443E;">Tiền tố <code style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: #235B54;">--ibb-</code></span>
+    </div>
+  </header>
+
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">01 · Quy ước đặt tên</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Ba tầng token</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: #ABA298;"></span><strong style="font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;">Primitive</strong></div>
+        <p style="margin: 0; font-size: 13px; color: #6E665C;">Giá trị thô, không mang ý nghĩa. Chỉ semantic được phép tham chiếu tới tầng này.</p>
+        <code style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; background: #F4F1ED; border-radius: 6px; padding: 12px; color: #4A443E; line-height: 1.7;">--ibb-teal-600: #235B54;<br>--ibb-neutral-200: #E7E2DC;</code>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: #2F7168;"></span><strong style="font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;">Semantic</strong></div>
+        <p style="margin: 0; font-size: 13px; color: #6E665C;">Vai trò trong giao diện. Đây là tầng mà thiết kế và code dùng hằng ngày.</p>
+        <code style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; background: #F4F1ED; border-radius: 6px; padding: 12px; color: #4A443E; line-height: 1.7;">--ibb-color-action: var(--ibb-teal-600);<br>--ibb-color-border: var(--ibb-neutral-200);</code>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: #C96442;"></span><strong style="font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;">Component</strong></div>
+        <p style="margin: 0; font-size: 13px; color: #6E665C;">Ràng buộc cho một thành phần cụ thể, luôn trỏ về semantic — không bao giờ về primitive.</p>
+        <code style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; background: #F4F1ED; border-radius: 6px; padding: 12px; color: #4A443E; line-height: 1.7;">--ibb-btn-primary-bg: var(--ibb-color-action);<br>--ibb-table-head-bg: var(--ibb-color-bg-subtle);</code>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">02 · Quy ước dùng màu</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Teal hành động · Terracotta nhận diện</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; align-items: baseline; gap: 12px;"><strong style="font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: #235B54;">Nên</strong><span style="font-size: 13px; color: #6E665C;">Primary teal cho mọi hành động</span></div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <button style="font-family: inherit; font-size: 14px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 8px; padding: 10px 20px; cursor: pointer; transition: background 280ms cubic-bezier(.25,.1,.25,1);" style-hover="background: #1C4842;">Lưu thực đơn</button>
+          <button style="font-family: inherit; font-size: 14px; font-weight: 500; color: #235B54; background: #FFFFFF; border: 1px solid #B0D4CF; border-radius: 8px; padding: 9px 20px; cursor: pointer; transition: background 280ms cubic-bezier(.25,.1,.25,1);" style-hover="background: #EFF6F5;">Xem trước</button>
+        </div>
+        <p style="margin: 0; font-size: 13px; color: #6E665C;">Nút, liên kết, ô đang chọn, focus ring, trạng thái bật — tất cả lấy từ <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-color-action-*</code>.</p>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; align-items: baseline; gap: 12px;"><strong style="font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: #AC4E31;">Không</strong><span style="font-size: 13px; color: #6E665C;">Terracotta không làm nút</span></div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <div style="position: relative; display: inline-flex;">
+            <span style="font-size: 14px; font-weight: 500; color: #FFFFFF; background: #C96442; border-radius: 8px; padding: 10px 20px; opacity: 0.45;">Lưu thực đơn</span>
+            <span style="position: absolute; inset: 0; border-radius: 8px; border: 1px dashed #AC4E31;"></span>
+          </div>
+          <div style="display: flex; align-items: flex-end; gap: 4px; height: 40px;">
+            <span style="width: 10px; height: 40%; background: #E9A98F; border-radius: 2px 2px 0 0;"></span>
+            <span style="width: 10px; height: 70%; background: #DD8464; border-radius: 2px 2px 0 0;"></span>
+            <span style="width: 10px; height: 100%; background: #C96442; border-radius: 2px 2px 0 0;"></span>
+            <span style="width: 10px; height: 55%; background: #AC4E31; border-radius: 2px 2px 0 0;"></span>
+          </div>
+        </div>
+        <p style="margin: 0; font-size: 13px; color: #6E665C;">Terracotta chỉ dùng cho nhận diện thương hiệu (logo, header, hạng mục) và dữ liệu — biểu đồ, nhãn danh mục. Không dùng cho nút hay trạng thái.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 28px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">03 · Primitive · Màu</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Thang màu</h2>
+    </div>
+
+    <sc-for list="{{ ramps }}" as="ramp" hint-placeholder-count="3">
+      <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 24px; border-bottom: 1px solid #E7E2DC; padding-bottom: 10px;">
+          <div style="display: flex; align-items: baseline; gap: 16px;">
+            <strong style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;">{{ ramp.title }}</strong>
+            <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">{{ ramp.prefix }}</code>
+          </div>
+          <span style="font-size: 12px; color: #6E665C; text-align: right; max-width: 52ch;">{{ ramp.note }}</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px;">
+          <sc-for list="{{ ramp.swatches }}" as="sw" hint-placeholder-count="10">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="height: 84px; border-radius: 8px; border: 1px solid rgba(30,27,25,0.08); box-shadow: inset 0 1px 2px rgba(30,27,25,0.06); display: flex; align-items: flex-end; padding: 8px; background: {{ sw.hex }};">
+                <sc-if value="{{ showContrast }}" hint-placeholder-val="{{ true }}">
+                  <span style="font-size: 10px; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; background: rgba(255,255,255,0.16); color: {{ sw.onColor }};">{{ sw.contrastLabel }}</span>
+                </sc-if>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-size: 12px; font-weight: 500;">{{ sw.step }}</span>
+                <sc-if value="{{ showHex }}" hint-placeholder-val="{{ true }}">
+                  <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">{{ sw.hex }}</code>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 1px solid #E7E2DC; padding-bottom: 10px;">
+        <strong style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;">Semantic status</strong>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">--ibb-color-{status}-{fg|bg|border}</code>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+        <sc-for list="{{ statuses }}" as="st" hint-placeholder-count="4">
+          <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="width: 28px; height: 28px; border-radius: 8px; background: {{ st.fg }};"></span>
+              <strong style="font-size: 14px;">{{ st.name }}</strong>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">
+              <span>fg &nbsp;{{ st.fg }}</span>
+              <span>bg &nbsp;{{ st.bg }}</span>
+              <span>bd &nbsp;{{ st.border }}</span>
+            </div>
+            <div style="border-radius: 8px; padding: 12px; font-size: 12px; background: {{ st.bg }}; border: 1px solid {{ st.border }}; color: {{ st.fg }};">{{ st.sample }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  
+<div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+<span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Bổ sung · danger ramp &amp; token kích thước</span>
+<div style="display: flex; gap: 24px; flex-wrap: wrap;">
+<div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 12px; color: #6E665C;">danger-500 / 600 / 700 — dùng cho nút danger default · hover · active</span><div style="display: flex; gap: 8px;"><span style="width: 72px; height: 40px; border-radius: 8px; background: #C0392B;"></span><span style="width: 72px; height: 40px; border-radius: 8px; background: #A32E22;"></span><span style="width: 72px; height: 40px; border-radius: 8px; background: #8A2419;"></span></div><code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">#C0392B · #A32E22 · #8A2419</code></div>
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 520px;"><span style="font-size: 12px; color: #6E665C;">Token kích thước cố định (hợp thức hoá các giá trị ngoài lưới 4pt)</span><code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; background: #F4F1ED; border-radius: 6px; padding: 12px; color: #4A443E; line-height: 1.8;">--ibb-badge-h: 22px;<br>--ibb-control-box: 18px; /* checkbox · radio */<br>--ibb-switch: 36px × 20px;<br>--ibb-inset-micro: 2px 8px; /* badge đếm, phím tắt */<br>--ibb-display-lg: 48px; --ibb-display-md: 44px; /* Cormorant, chỉ cho H1 trang */<br>--ibb-text-2xs: 11px; /* CHỈ cho nhãn eyebrow uppercase, badge đếm, mã hex — không dùng cho câu văn */<br>--ibb-row-head: 40px; /* header bảng */ --ibb-row-total: 52px; /* dòng tổng cố định */</code></div>
+</div>
+<span style="font-size: 12px; color: #6E665C;">Biểu đồ dùng terracotta bắt buộc kèm legend chữ hoặc nhãn trực tiếp — sắc độ không được là dấu hiệu duy nhất. Màu nền avatar chỉ để phân biệt người, không mang nghĩa trạng thái.</span>
+<span style="font-size: 12px; color: #6E665C;">Quy ước số âm: <strong>tiền</strong> âm dùng ngoặc đơn + danger, không dùng dấu trừ. <strong>Phần trăm chênh lệch</strong> là ngoại lệ duy nhất — dùng dấu + / − kèm màu theo chiều nghĩa của thẻ.</span>
+<span style="font-size: 12px; color: #6E665C;">Rút gọn số: bảng luôn hiện đủ chữ số. Stat card ở <strong>màn báo cáo</strong> rút gọn “tr / tỷ”; stat card ở <strong>màn danh sách</strong> hiện đủ chữ số kèm “đ” để đối chiếu trực tiếp với bảng bên dưới.</span>
+</div>
+</section>
+
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">04 · Semantic → Component</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Bảng ánh xạ</h2>
+    </div>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 1.1fr 1.1fr 1.2fr; gap: 0; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #6E665C; background: #F4F1ED; border-bottom: 1px solid #E7E2DC;">
+        <div style="padding: 12px 20px;">Semantic</div>
+        <div style="padding: 12px 20px;">Primitive</div>
+        <div style="padding: 12px 20px;">Component dùng nó</div>
+      </div>
+      <sc-for list="{{ mapping }}" as="row" hint-placeholder-count="8">
+        <div style="display: grid; grid-template-columns: 1.1fr 1.1fr 1.2fr; border-bottom: 1px solid #F4F1ED; font-family: ui-monospace, Menlo, monospace; font-size: 12px;">
+          <div style="padding: 12px 20px; color: #1E1B19; display: flex; align-items: center; gap: 8px;"><span style="width: 12px; height: 12px; border-radius: 3px; border: 1px solid rgba(30,27,25,0.12); background: {{ row.swatch }};"></span>{{ row.semantic }}</div>
+          <div style="padding: 12px 20px; color: #6E665C;">{{ row.primitive }}</div>
+          <div style="padding: 12px 20px; color: #235B54;">{{ row.component }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">04b · Quy ước hiển thị số</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Dấu âm và rút gọn</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+        <strong style="font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;">Số âm</strong>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+          <div style="display: flex; justify-content: space-between; gap: 16px;"><span style="color: #6E665C;">Tiền · số lượng</span><span style="font-variant-numeric: tabular-nums; color: #C0392B;">(1.945.000)</span></div>
+          <div style="display: flex; justify-content: space-between; gap: 16px;"><span style="color: #6E665C;">Phần trăm giảm</span><span style="font-variant-numeric: tabular-nums; color: #C0392B;">−10,1%</span></div>
+          <div style="display: flex; justify-content: space-between; gap: 16px;"><span style="color: #6E665C;">Phần trăm tăng</span><span style="font-variant-numeric: tabular-nums; color: #2E7D57;">+7,2%</span></div>
+        </div>
+        <p style="margin: 0; font-size: 12px; color: #6E665C;">Giá trị tuyệt đối âm dùng <strong>ngoặc đơn</strong>, không dấu trừ. Phần trăm và mọi con số biến động dùng <strong>dấu +/−</strong> (ký tự − U+2212, không dùng hyphen) vì luôn cần đọc ngay chiều tăng giảm. Cả hai luôn kèm màu danger/success và luôn có dấu hoặc chữ đi kèm — màu không bao giờ là dấu hiệu duy nhất.</p>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+        <strong style="font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;">Rút gọn</strong>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+          <div style="display: flex; justify-content: space-between; gap: 16px;"><span style="color: #6E665C;">Trong bảng · luôn đủ số</span><span style="font-variant-numeric: tabular-nums;">1.284.600.000</span></div>
+          <div style="display: flex; justify-content: space-between; gap: 16px;"><span style="color: #6E665C;">Stat card · từ 1 triệu</span><span style="font-variant-numeric: tabular-nums;">1.284,6 tr</span></div>
+          <div style="display: flex; justify-content: space-between; gap: 16px;"><span style="color: #6E665C;">Stat card · từ 1 tỷ</span><span style="font-variant-numeric: tabular-nums;">1,28 tỷ</span></div>
+          <div style="display: flex; justify-content: space-between; gap: 16px;"><span style="color: #6E665C;">Stat card · dưới 1 triệu</span><span style="font-variant-numeric: tabular-nums;">840.000đ</span></div>
+        </div>
+        <p style="margin: 0; font-size: 12px; color: #6E665C;">Rút gọn chỉ dùng ở stat card và nhãn biểu đồ: “tr” một chữ số thập phân, “tỷ” hai chữ số. Bảng, dòng tổng, hoá đơn và mọi số cần đối chiếu thì luôn đủ chữ số. Số đầy đủ luôn có trong <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px;">title</code> của thẻ.</p>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">05 · Typography</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Thang chữ · base 14px</h2>
+    </div>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 8px 24px;">
+      <div style="display: grid; grid-template-columns: 150px 120px 1fr 170px; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid #F4F1ED;">
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-text-3xl</code>
+        <span style="font-size: 12px; color: #6E665C;">32 / 40 · 600</span>
+        <span style="font-size: 32px; font-weight: 600; line-height: 40px; letter-spacing: -0.01em;">Doanh thu hôm nay</span>
+        <span style="font-size: 12px; color: #6E665C;">Số liệu lớn, tiêu đề trang</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 150px 120px 1fr 170px; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid #F4F1ED;">
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-text-2xl</code>
+        <span style="font-size: 12px; color: #6E665C;">24 / 32 · 600</span>
+        <span style="font-size: 24px; font-weight: 600; line-height: 32px;">Quản lý chi nhánh</span>
+        <span style="font-size: 12px; color: #6E665C;">Tiêu đề mục</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 150px 120px 1fr 170px; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid #F4F1ED;">
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-text-xl</code>
+        <span style="font-size: 12px; color: #6E665C;">20 / 28 · 500</span>
+        <span style="font-size: 20px; font-weight: 500; line-height: 28px;">Thực đơn buffet trưa</span>
+        <span style="font-size: 12px; color: #6E665C;">Tiêu đề card, modal</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 150px 120px 1fr 170px; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid #F4F1ED;">
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-text-lg</code>
+        <span style="font-size: 12px; color: #6E665C;">16 / 24 · 400</span>
+        <span style="font-size: 16px; line-height: 24px;">Đoạn văn dài, mô tả và hướng dẫn trong trang</span>
+        <span style="font-size: 12px; color: #6E665C;">Body dài, lead</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 150px 120px 1fr 170px; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid #F4F1ED; background: #FAF8F6;">
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-text-base</code>
+        <span style="font-size: 12px; color: #6E665C;">14 / 20 · 400 · base</span>
+        <span style="font-size: 14px; line-height: 20px;">Mặc định của toàn bộ giao diện quản trị — bảng, form, nút</span>
+        <span style="font-size: 12px; color: #6E665C;">Body, input, nút</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 150px 120px 1fr 170px; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid #F4F1ED;">
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-text-sm</code>
+        <span style="font-size: 12px; color: #6E665C;">13 / 18 · 400</span>
+        <span style="font-size: 13px; line-height: 18px;">Dòng phụ trong bảng, mô tả trường nhập</span>
+        <span style="font-size: 12px; color: #6E665C;">Meta, phụ đề</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 150px 120px 1fr 170px; align-items: center; gap: 16px; padding: 16px 0;">
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-text-xs</code>
+        <span style="font-size: 12px; color: #6E665C;">12 / 16 · 500</span>
+        <span style="font-size: 12px; font-weight: 500; line-height: 16px; letter-spacing: 0.02em;">NHÃN · BADGE · CHÚ THÍCH</span>
+        <span style="font-size: 12px; color: #6E665C;">Nhãn, badge, caption</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">06 · Spacing · lưới 4pt</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Khoảng cách</h2>
+    </div>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: grid; grid-template-columns: 130px 60px 1fr 260px; align-items: center; gap: 20px;">
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-space-1</code>
+        <span style="font-size: 13px; color: #6E665C;">4px</span>
+        <span style="height: 16px; width: 4px; background: #2F7168; border-radius: 2px;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Khe giữa icon và nhãn</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 130px 60px 1fr 260px; align-items: center; gap: 20px;">
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-space-2</code>
+        <span style="font-size: 13px; color: #6E665C;">8px</span>
+        <span style="height: 16px; width: 8px; background: #2F7168; border-radius: 2px;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Chip, badge, khe trong nút</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 130px 60px 1fr 260px; align-items: center; gap: 20px;">
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-space-3</code>
+        <span style="font-size: 13px; color: #6E665C;">12px</span>
+        <span style="height: 16px; width: 12px; background: #2F7168; border-radius: 2px;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Ô bảng, khe giữa trường</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 130px 60px 1fr 260px; align-items: center; gap: 20px;">
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-space-4</code>
+        <span style="font-size: 13px; color: #6E665C;">16px</span>
+        <span style="height: 16px; width: 16px; background: #2F7168; border-radius: 2px;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Padding card, khe giữa card</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 130px 60px 1fr 260px; align-items: center; gap: 20px;">
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-space-6</code>
+        <span style="font-size: 13px; color: #6E665C;">24px</span>
+        <span style="height: 16px; width: 24px; background: #2F7168; border-radius: 2px;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Padding trong card lớn</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 130px 60px 1fr 260px; align-items: center; gap: 20px;">
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-space-8</code>
+        <span style="font-size: 13px; color: #6E665C;">32px</span>
+        <span style="height: 16px; width: 32px; background: #2F7168; border-radius: 2px;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Khe giữa nhóm nội dung</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 130px 60px 1fr 260px; align-items: center; gap: 20px;">
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-space-12</code>
+        <span style="font-size: 13px; color: #6E665C;">48px</span>
+        <span style="height: 16px; width: 48px; background: #2F7168; border-radius: 2px;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Khe giữa section</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 130px 60px 1fr 260px; align-items: center; gap: 20px;">
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">--ibb-space-16</code>
+        <span style="font-size: 13px; color: #6E665C;">64px</span>
+        <span style="height: 16px; width: 64px; background: #2F7168; border-radius: 2px;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Lề trang, khoảng thở lớn</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">07 · Radius</div>
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Bo góc</h2>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+          <div style="width: 100%; height: 64px; background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 0;"></div>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #235B54;">--ibb-radius-none</code>
+          <span style="font-size: 12px; color: #6E665C;">0 · bảng đặc</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+          <div style="width: 100%; height: 64px; background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 4px;"></div>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #235B54;">--ibb-radius-xs</code>
+          <span style="font-size: 12px; color: #6E665C;">4 · badge, tag</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+          <div style="width: 100%; height: 64px; background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 6px;"></div>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #235B54;">--ibb-radius-sm</code>
+          <span style="font-size: 12px; color: #6E665C;">6 · input</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+          <div style="width: 100%; height: 64px; background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 8px;"></div>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #235B54;">--ibb-radius-md</code>
+          <span style="font-size: 12px; color: #6E665C;">8 · nút</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+          <div style="width: 100%; height: 64px; background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 14px;"></div>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #235B54;">--ibb-radius-lg</code>
+          <span style="font-size: 12px; color: #6E665C;">14 · card, modal</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+          <div style="width: 100%; height: 64px; background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 999px;"></div>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #235B54;">--ibb-radius-full</code>
+          <span style="font-size: 12px; color: #6E665C;">999 · avatar, pill</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">08 · Elevation</div>
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Độ nổi 0–3</h2>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 32px 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+        <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+          <div style="width: 100%; height: 72px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 10px;"></div>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #235B54;">elevation-0</code>
+          <span style="font-size: 12px; color: #6E665C;">Phẳng, chỉ viền</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+          <div style="width: 100%; height: 72px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 10px; box-shadow: 0 1px 2px rgba(30,27,25,0.06);"></div>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #235B54;">elevation-1</code>
+          <span style="font-size: 12px; color: #6E665C;">Card, hàng nổi</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+          <div style="width: 100%; height: 72px; background: #FFFFFF; border-radius: 10px; box-shadow: 0 4px 12px rgba(30,27,25,0.10);"></div>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #235B54;">elevation-2</code>
+          <span style="font-size: 12px; color: #6E665C;">Dropdown, popover</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+          <div style="width: 100%; height: 72px; background: #FFFFFF; border-radius: 10px; box-shadow: 0 16px 40px rgba(30,27,25,0.16);"></div>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #235B54;">elevation-3</code>
+          <span style="font-size: 12px; color: #6E665C;">Modal, drawer</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">09 · Z-index</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Thang lớp chồng</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 20px; font-weight: 600; color: #235B54;">0</span>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #4A443E;">--ibb-z-base</code>
+        <span style="font-size: 12px; color: #6E665C;">Nội dung trang</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 20px; font-weight: 600; color: #235B54;">100</span>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #4A443E;">--ibb-z-sticky</code>
+        <span style="font-size: 12px; color: #6E665C;">Header, cột ghim</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 20px; font-weight: 600; color: #235B54;">200</span>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #4A443E;">--ibb-z-dropdown</code>
+        <span style="font-size: 12px; color: #6E665C;">Select, menu</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 20px; font-weight: 600; color: #235B54;">300</span>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #4A443E;">--ibb-z-overlay</code>
+        <span style="font-size: 12px; color: #6E665C;">Lớp phủ mờ</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 20px; font-weight: 600; color: #235B54;">400</span>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #4A443E;">--ibb-z-modal</code>
+        <span style="font-size: 12px; color: #6E665C;">Modal, drawer</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 20px; font-weight: 600; color: #235B54;">500</span>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #4A443E;">--ibb-z-toast</code>
+        <span style="font-size: 12px; color: #6E665C;">Thông báo nổi</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 20px; font-weight: 600; color: #235B54;">600</span>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #4A443E;">--ibb-z-tooltip</code>
+        <span style="font-size: 12px; color: #6E665C;">Tooltip, cao nhất</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 28px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">10 · Data-viz</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Màu và kích thước biểu đồ</h2>
+      <div style="display: flex; gap: 12px; padding: 12px 16px; background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 8px; max-width: 92ch;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#235B54" stroke-width="1.8" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 8v.01M12 11v5"></path></svg>
+        <span style="font-size: 13px; color: #4A443E;"><strong>Luật bắt buộc.</strong> Mọi biểu đồ chỉ được lấy màu từ nhóm data-viz này. Không dùng màu semantic (success · warning · danger) cho chuỗi dữ liệu thông thường — chúng chỉ được dùng khi giá trị thực sự mang nghĩa tốt · xấu · cảnh báo (ví dụ chênh lệch định mức, vượt ngưỡng food cost).</span>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 1px solid #E7E2DC; padding-bottom: 12px;">
+        <strong style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;">Categorical · 8 chuỗi</strong>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">--ibb-chart-cat-{1…8}-{base|soft}</code>
+        <span style="font-size: 12px; color: #6E665C; margin-left: auto;">Xếp theo thang độ sáng tăng dần — in đen trắng vẫn tách được 8 mức</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="height: 56px; border-radius: 8px; background: #1F3A5F;"></span>
+          <span style="height: 24px; border-radius: 6px; background: #D3DBE6;"></span>
+          <span style="font-size: 12px; font-weight: 500;">1 · Navy</span>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">#1F3A5F<br>#D3DBE6</code>
+          <span style="font-size: 11px; color: #6E665C;">L 4%</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="height: 56px; border-radius: 8px; background: #5E3F7E;"></span>
+          <span style="height: 24px; border-radius: 6px; background: #DED5E8;"></span>
+          <span style="font-size: 12px; font-weight: 500;">2 · Plum</span>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">#5E3F7E<br>#DED5E8</code>
+          <span style="font-size: 11px; color: #6E665C;">L 8%</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="height: 56px; border-radius: 8px; background: #2F7168;"></span>
+          <span style="height: 24px; border-radius: 6px; background: #D8EAE7;"></span>
+          <span style="font-size: 12px; font-weight: 500;">3 · Teal</span>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">#2F7168<br>#D8EAE7</code>
+          <span style="font-size: 11px; color: #6E665C;">L 13% · primary-500</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="height: 56px; border-radius: 8px; background: #C96442;"></span>
+          <span style="height: 24px; border-radius: 6px; background: #FAE6DD;"></span>
+          <span style="font-size: 12px; font-weight: 500;">4 · Terracotta</span>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">#C96442<br>#FAE6DD</code>
+          <span style="font-size: 11px; color: #6E665C;">L 22% · brand-500</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="height: 56px; border-radius: 8px; background: #7E9B3F;"></span>
+          <span style="height: 24px; border-radius: 6px; background: #E4EBD2;"></span>
+          <span style="font-size: 12px; font-weight: 500;">5 · Olive</span>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">#7E9B3F<br>#E4EBD2</code>
+          <span style="font-size: 11px; color: #6E665C;">L 28%</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="height: 56px; border-radius: 8px; background: #6FA3D6;"></span>
+          <span style="height: 24px; border-radius: 6px; background: #DEEAF6;"></span>
+          <span style="font-size: 12px; font-weight: 500;">6 · Sky</span>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">#6FA3D6<br>#DEEAF6</code>
+          <span style="font-size: 11px; color: #6E665C;">L 35%</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="height: 56px; border-radius: 8px; background: #D8A22A;"></span>
+          <span style="height: 24px; border-radius: 6px; background: #F7EBCF;"></span>
+          <span style="font-size: 12px; font-weight: 500;">7 · Gold</span>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">#D8A22A<br>#F7EBCF</code>
+          <span style="font-size: 11px; color: #6E665C;">L 41%</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="height: 56px; border-radius: 8px; background: #F0A9A0;"></span>
+          <span style="height: 24px; border-radius: 6px; background: #FBE4E1;"></span>
+          <span style="font-size: 12px; font-weight: 500;">8 · Salmon</span>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">#F0A9A0<br>#FBE4E1</code>
+          <span style="font-size: 11px; color: #6E665C;">L 50%</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Kiểm thang xám · 8 mức phải tách rời</span>
+        <div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 12px; filter: grayscale(1);">
+          <span style="height: 32px; border-radius: 6px; background: #1F3A5F;"></span>
+          <span style="height: 32px; border-radius: 6px; background: #5E3F7E;"></span>
+          <span style="height: 32px; border-radius: 6px; background: #2F7168;"></span>
+          <span style="height: 32px; border-radius: 6px; background: #C96442;"></span>
+          <span style="height: 32px; border-radius: 6px; background: #7E9B3F;"></span>
+          <span style="height: 32px; border-radius: 6px; background: #6FA3D6;"></span>
+          <span style="height: 32px; border-radius: 6px; background: #D8A22A;"></span>
+          <span style="height: 32px; border-radius: 6px; background: #F0A9A0;"></span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Hue cách đều, độ sáng so le nên vẫn phân biệt được với người mù màu đỏ-lục: cặp dễ nhầm nhất (4 Terracotta · 5 Olive) lệch 6% độ sáng và nằm không liền kề trong thứ tự cấp phát.</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 4px; border-top: 1px solid #F4F1ED;">
+        <span style="font-size: 12px; color: #6E665C;">Thứ tự cấp phát: chuỗi thứ nhất luôn dùng 3 · Teal (primary-500). Terracotta chỉ vào chuỗi khi biểu đồ có từ 2 chuỗi trở lên — đây là ngoại lệ duy nhất cho phép brand xuất hiện ngoài nhận diện. Trên 8 chuỗi: gộp phần đuôi thành “Khác” dùng neutral-300, không sinh màu mới.</span>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1.4fr; gap: 16px; align-items: start;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <strong style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;">Sequential · 5 bậc</strong>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">--ibb-chart-seq-{1…5}</code>
+          <span style="font-size: 12px; color: #6E665C;">Heatmap mật độ: khung giờ đông khách, lưới ca. neutral-100 → primary-700.</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;">
+          <span style="height: 48px; border-radius: 6px; background: #F4F1ED; border: 1px solid #E7E2DC;"></span>
+          <span style="height: 48px; border-radius: 6px; background: #D8E6E2;"></span>
+          <span style="height: 48px; border-radius: 6px; background: #A2C6C0;"></span>
+          <span style="height: 48px; border-radius: 6px; background: #5C918A;"></span>
+          <span style="height: 48px; border-radius: 6px; background: #1C4842;"></span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">
+          <span>#F4F1ED</span><span>#D8E6E2</span><span>#A2C6C0</span><span>#5C918A</span><span>#1C4842</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Chữ trên bậc 4 và 5 dùng text-on-dark; bậc 1–3 dùng neutral-900.</span>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <strong style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;">Diverging · 7 bậc</strong>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">--ibb-chart-div-{-3…0…+3}</code>
+          <span style="font-size: 12px; color: #6E665C;">Chênh lệch âm/dương: chênh định mức, biến động giá. Điểm trung tính là neutral-200, đúng số 0.</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;">
+          <span style="height: 48px; border-radius: 6px; background: #A32E22;"></span>
+          <span style="height: 48px; border-radius: 6px; background: #D07A6C;"></span>
+          <span style="height: 48px; border-radius: 6px; background: #F1CCC7;"></span>
+          <span style="height: 48px; border-radius: 6px; background: #E7E2DC;"></span>
+          <span style="height: 48px; border-radius: 6px; background: #C3E4D2;"></span>
+          <span style="height: 48px; border-radius: 6px; background: #6FB58F;"></span>
+          <span style="height: 48px; border-radius: 6px; background: #1E5C3F;"></span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; font-size: 11px; color: #6E665C; text-align: center;">
+          <span>−3</span><span>−2</span><span>−1</span><span>0</span><span>+1</span><span>+2</span><span>+3</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6E665C;">
+          <span>#A32E22</span><span>#D07A6C</span><span>#F1CCC7</span><span>#E7E2DC</span><span>#C3E4D2</span><span>#6FB58F</span><span>#1E5C3F</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Đây là ramp duy nhất được phép mượn sắc danger/success, vì bản thân trục dữ liệu đã mang nghĩa xấu ← → tốt. Luôn kèm nhãn số, không để màu là dấu hiệu duy nhất.</span>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 1px solid #E7E2DC; padding-bottom: 12px;">
+        <strong style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;">Semantic chart role</strong>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6E665C;">--ibb-chart-series-{actual|previous|target|projected|highlight}</code>
+      </div>
+      <div style="display: grid; grid-template-columns: 220px 1fr; gap: 16px 20px; align-items: center;">
+        <span style="display: flex; align-items: center; gap: 12px;"><span style="width: 40px; height: 3px; border-radius: 999px; background: #2F7168;"></span><code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">series-actual</code></span>
+        <span style="font-size: 13px; color: #4A443E;">Đường hoặc cột dữ liệu thực · màu chuỗi được cấp (mặc định cat-3 Teal), nét liền 2,5px.</span>
+
+        <span style="display: flex; align-items: center; gap: 12px;"><span style="width: 40px; height: 3px; border-radius: 999px; background: #2F7168; opacity: 0.4;"></span><code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">series-previous</code></span>
+        <span style="font-size: 13px; color: #4A443E;">Kỳ trước · <strong>cùng màu với actual, opacity 40%</strong>, nét liền 2px. Không cấp màu khác.</span>
+
+        <span style="display: flex; align-items: center; gap: 12px;"><span style="width: 40px; height: 0; border-top: 2px dashed #ABA298;"></span><code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">series-target</code></span>
+        <span style="font-size: 13px; color: #4A443E;">Ngưỡng mục tiêu · neutral-400, nét đứt 6-6, luôn kèm nhãn chữ ở đầu đường.</span>
+
+        <span style="display: flex; align-items: center; gap: 12px;"><span style="width: 40px; height: 0; border-top: 2px dashed #2F7168;"></span><code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">series-projected</code></span>
+        <span style="font-size: 13px; color: #4A443E;">Số tạm tính, kỳ chưa chốt sổ · cùng màu actual, nét đứt 4-4. Đi kèm banner “Số liệu tạm tính”.</span>
+
+        <span style="display: flex; align-items: center; gap: 12px;"><span style="width: 40px; height: 4px; border-radius: 999px; background: #1C4842;"></span><code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">series-highlight</code></span>
+        <span style="font-size: 13px; color: #4A443E;">Chuỗi đang được trỏ tới · đậm lên 4px và tối một bậc; các chuỗi còn lại hạ opacity xuống 30%.</span>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; align-items: start;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <strong style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;">Trục và lưới</strong>
+        <div style="display: grid; grid-template-columns: 160px 120px 1fr; gap: 12px 16px; align-items: center; font-size: 13px;">
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">axis-line</code>
+          <span style="height: 2px; background: #E7E2DC;"></span>
+          <span style="color: #4A443E;">neutral-200 · chỉ trục X đáy</span>
+
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">axis-label</code>
+          <span style="font-size: 12px; color: #6E665C;">Nhãn 12px</span>
+          <span style="color: #4A443E;">neutral-500 · 12px · tabular-nums cho nhãn số</span>
+
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">grid-line</code>
+          <span style="height: 1px; background: #F4F1ED;"></span>
+          <span style="color: #4A443E;">neutral-100 · <strong>chỉ kẻ ngang, tuyệt đối không kẻ dọc</strong></span>
+
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">zero-line</code>
+          <span style="height: 2px; background: #D5CEC6;"></span>
+          <span style="color: #4A443E;">neutral-300 · đậm hơn grid · chỉ hiện khi dữ liệu có giá trị âm</span>
+
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">annotation</code>
+          <span style="height: 0; border-top: 2px dashed #ABA298;"></span>
+          <span style="color: #4A443E;">neutral-400 · nét đứt · dùng cho mốc sự kiện, khoảng nghỉ lễ</span>
+        </div>
+        <svg viewBox="0 0 560 180" style="width: 100%; height: 180px;">
+          <line x1="40" y1="20" x2="540" y2="20" stroke="#F4F1ED" stroke-width="1"></line>
+          <line x1="40" y1="60" x2="540" y2="60" stroke="#F4F1ED" stroke-width="1"></line>
+          <line x1="40" y1="100" x2="540" y2="100" stroke="#D5CEC6" stroke-width="1.5"></line>
+          <line x1="40" y1="140" x2="540" y2="140" stroke="#E7E2DC" stroke-width="1"></line>
+          <text x="0" y="24" font-size="12" fill="#6E665C" font-family="Be Vietnam Pro">+2</text>
+          <text x="0" y="104" font-size="12" fill="#6E665C" font-family="Be Vietnam Pro">0</text>
+          <text x="0" y="144" font-size="12" fill="#6E665C" font-family="Be Vietnam Pro">−1</text>
+          <path d="M60 84 L140 62 L220 96 L300 44 L380 72 L460 34 L530 52" stroke="#2F7168" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M60 96 L140 88 L220 104 L300 74 L380 92 L460 66 L530 78" stroke="#2F7168" stroke-width="2" fill="none" opacity="0.4" stroke-linecap="round" stroke-linejoin="round"></path>
+          <line x1="40" y1="52" x2="540" y2="52" stroke="#ABA298" stroke-width="2" stroke-dasharray="6 6"></line>
+          <path d="M460 34 L530 52" stroke="#2F7168" stroke-width="2.5" fill="none" stroke-dasharray="4 4"></path>
+          <text x="470" y="46" font-size="12" fill="#6E665C" font-family="Be Vietnam Pro">tạm tính</text>
+        </svg>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <strong style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;">Kích thước</strong>
+        <div style="display: grid; grid-template-columns: 180px 1fr; gap: 12px 16px; align-items: center; font-size: 13px;">
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">chart-height-sm</code><span style="color: #4A443E;">180px · biểu đồ phụ trong card</span>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">chart-height-md</code><span style="color: #4A443E;">280px · mặc định trong màn báo cáo</span>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">chart-height-lg</code><span style="color: #4A443E;">400px · biểu đồ chính toàn chiều rộng</span>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">sparkline-height</code><span style="color: #4A443E;">32px · không trục, không lưới, không nhãn</span>
+          <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">donut-thickness</code><span style="color: #4A443E;">24px · lỗ giữa chứa tổng, không chú thích bên trong</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px; padding-top: 8px; border-top: 1px solid #F4F1ED;">
+          <svg width="120" height="32" viewBox="0 0 120 32" fill="none">
+            <path d="M4 24 L24 18 L44 22 L64 10 L84 16 L104 6 L116 12" stroke="#2F7168" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          <span style="font-size: 12px; color: #6E665C;">sparkline 32px — dùng trong stat card, không bao giờ có trục</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+          <svg width="96" height="96" viewBox="0 0 96 96" fill="none">
+            <circle cx="48" cy="48" r="36" stroke="#F4F1ED" stroke-width="24"></circle>
+            <circle cx="48" cy="48" r="36" stroke="#2F7168" stroke-width="24" stroke-dasharray="132 226" transform="rotate(-90 48 48)"></circle>
+            <circle cx="48" cy="48" r="36" stroke="#C96442" stroke-width="24" stroke-dasharray="56 226" stroke-dashoffset="-132" transform="rotate(-90 48 48)"></circle>
+          </svg>
+          <span style="font-size: 12px; color: #6E665C;">donut dày 24px — tối đa 5 lát, phần còn lại gộp “Khác” neutral-300</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top: 1px solid #E7E2DC; padding-top: 24px; display: flex; justify-content: space-between; align-items: baseline; gap: 24px; font-size: 12px; color: #6E665C;">
+    <span>ilikebuffet Admin · Design Tokens v1.0</span>
+    <span>Primary teal cho hành động · Brand terracotta cho nhận diện và biểu đồ · Badge, pagination, tabs, empty state chỉ có MỘT bản dựng dùng chung cho mọi trang</span>
+  </footer>
+
+</div>
+
+
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">Layout</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 36px; margin: 0;">Kích thước bố cục</h2>
+      <p style="margin: 0; max-width: 76ch; font-size: 14px; color: #635B53;">Mười lăm giá trị lặp lại khắp hệ thống dưới dạng số cứng. Chúng không phải khoảng cách nên không thuộc thang 4pt, nhưng vẫn là hằng số của hệ thống — đổi chiều rộng drawer mà phải sửa mười file là dấu hiệu thiếu token.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+      <sc-for list="{{ layoutGroups }}" as="g" hint-placeholder-count="3">
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <strong style="font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: #235B54;">{{ g.name }}</strong>
+            <span style="font-size: 12px; color: #6E665C;">{{ g.note }}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <sc-for list="{{ g.items }}" as="t" hint-placeholder-count="3">
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">{{ t.token }}</code>
+                  <span style="font-size: 13px; font-variant-numeric: tabular-nums; color: #1E1B19;">{{ t.value }}</span>
+                </div>
+                <span style="{{ t.barStyle }}"></span>
+                <span style="font-size: 12px; color: #6E665C;">{{ t.use }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <strong style="font-size: 15px; font-weight: 500;">Nơi đang dùng số cứng · <span style="color: #8A5F12;">danh sách tạm, chưa quét đầy đủ</span></strong>
+        <span style="font-size: 13px; color: #4A443E;">Lượt 1 chỉ khai báo token. Bảng dưới dựng từ một lần quét bị cắt giữa chừng, nên <strong style="font-weight: 500;">phải quét lại từng giá trị một trước khi thay</strong> — mỗi lần một pattern, không gộp. Con số trong cột cuối là mức tối thiểu đã thấy, không phải tổng thật.</span>
+      </div>
+      <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 148px 1fr 96px; gap: 12px; align-items: center; min-height: 40px; padding: 0 16px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+          <span>Token</span><span>File · vị trí</span><span style="text-align: right;">Số chỗ</span>
+        </div>
+        <sc-for list="{{ layoutUsage }}" as="u" hint-placeholder-count="9">
+          <div style="{{ u.rowStyle }}" style-hover="background: #FAF8F6;">
+            <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #235B54;">{{ u.token }}</code>
+            <span style="font-size: 13px; color: #4A443E;">{{ u.places }}</span>
+            <span style="{{ u.countStyle }}">{{ u.count }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px; padding: 16px; background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 8px;">
+        <strong style="font-size: 13px; font-weight: 500; color: #1C4842;">Cách khai báo · đã chốt phương án A</strong>
+        <span style="font-size: 13px; color: #4A443E;">Mỗi file dùng token tự khai báo trong khối <code style="font-family: ui-monospace, Menlo, monospace;">&lt;style&gt;</code> ở helmet. Không sửa stylesheet của design system. Chép nguyên khối dưới đây vào đầu mỗi file trước khi thay số cứng — thiếu khối này thì <code style="font-family: ui-monospace, Menlo, monospace;">var()</code> không có giá trị và bố cục co về 0.</span>
+        <code style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; background: #FFFFFF; border: 1px solid #B0D4CF; border-radius: 6px; padding: 12px; color: #1C4842; line-height: 1.7; white-space: pre-wrap;">:root {
+  --ibb-drawer-sm: 400px;  --ibb-drawer-md: 560px;  --ibb-drawer-lg: 720px;
+  --ibb-modal-sm: 400px;   --ibb-modal-md: 560px;
+  --ibb-min-office: 1440px;  --ibb-min-ops: 768px;
+  --ibb-bp-md: 1024px;       --ibb-bp-lg: 1280px;
+  --ibb-chart-sm: 180px;   --ibb-chart-md: 280px;   --ibb-chart-lg: 320px;
+  --ibb-sidepanel: 320px;  --ibb-form-narrow: 720px; --ibb-settings-nav: 220px;
+}</code>
+        <span style="font-size: 12px; color: #6E665C;">Đánh đổi đã biết: chín dòng lặp ở ~25 file, và đổi giá trị phải sửa từng file. Chấp nhận để không đụng vào design system.</span>
+      </div>
+      <span style="font-size: 13px; color: #4A443E;"><code style="font-family: ui-monospace, Menlo, monospace;">--ibb-chart-lg</code> chốt ở <strong style="font-weight: 500;">320px</strong> theo giá trị đang dùng thật của SC-TC-11, thay vì 400px lý thuyết. SC-TC-01 và SC-TC-02 hiện 300px sẽ nâng 20px khi thay — chênh lệch nhỏ, không cần quyết riêng.</span>
+      <span style="font-size: 12px; color: #6E665C;">Đã thấy ít nhất {{ layoutTotal }} chỗ viết số cứng. Ba con số bị dùng chồng nghĩa cần chú ý khi thay: <strong style="font-weight: 500;">400px</strong> vừa là drawer-sm vừa là chiều rộng panel bộ lọc nâng cao và modal sm · <strong style="font-weight: 500;">220px</strong> vừa là settings-nav vừa là chiều rộng cột trong vài bảng · <strong style="font-weight: 500;">280px</strong> vừa là chart-md vừa là chiều cao khối rỗng của transfer list. Thay bằng tìm-thay chuỗi sẽ hỏng ba chỗ này.</span>
+    </div>
+  </section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showHex&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Hiển thị&quot;},&quot;showContrast&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Hiển thị&quot;}}">
+const RAMPS = [
+  {
+    title: 'Neutral · warm gray',
+    prefix: '--ibb-neutral-{50…900}',
+    note: 'Nền, viền, chữ. Xám ngả ấm để hoà với terracotta.',
+    hexes: ['#FAF8F6','#F4F1ED','#E7E2DC','#D5CEC6','#ABA298','#6E665C','#635B53','#4A443E','#332F2B','#1E1B19']
+  },
+  {
+    title: 'Brand · terracotta',
+    prefix: '--ibb-terracotta-{50…900}',
+    note: 'Chỉ nhận diện và biểu đồ. Không dùng cho nút hay trạng thái.',
+    hexes: ['#FDF4F0','#FAE6DD','#F3CBBA','#E9A98F','#DD8464','#C96442','#AC4E31','#8A3D27','#6B3020','#4A231A']
+  },
+  {
+    title: 'Primary · deep teal',
+    prefix: '--ibb-teal-{50…900}',
+    note: 'Mọi hành động: nút, liên kết, focus, trạng thái đang chọn.',
+    hexes: ['#EFF6F5','#D8EAE7','#B0D4CF','#7FB8B1','#4F958D','#2F7168','#235B54','#1C4842','#163833','#0F2623']
+  }
+];
+
+const STEPS = [50,100,200,300,400,500,600,700,800,900];
+
+function lum(hex) {
+  const c = [1,3,5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255)
+    .map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+}
+function ratio(a, b) {
+  const l1 = lum(a), l2 = lum(b);
+  return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+}
+
+class Component extends DCLogic {
+  layoutVals() {
+    const bar = (px, max) => 'display: block; height: 6px; border-radius: 999px; background: #B0D4CF; width: '
+      + Math.max(6, (px / max) * 100).toFixed(1) + '%;';
+    const G = [
+      { name: 'Drawer', note: 'Chiều rộng panel trượt từ phải', items: [
+        ['--ibb-drawer-sm', 400, 'Bộ lọc nâng cao · danh sách chọn nhanh'],
+        ['--ibb-drawer-md', 560, 'Form ngắn · đóng ca · chi tiết phản hồi'],
+        ['--ibb-drawer-lg', 720, 'T2 trong drawer · nhật ký thao tác']
+      ] },
+      { name: 'Modal', note: 'Hộp căn giữa · thang riêng, không dùng chung tên với drawer', items: [
+        ['--ibb-modal-sm', 400, 'Confirm hai mức · thông báo một câu'],
+        ['--ibb-modal-md', 560, 'Form nhanh · chọn ngân hàng xuất tệp']
+      ] },
+      { name: 'Chiều cao biểu đồ', note: 'Vùng vẽ, chưa gồm tiêu đề và legend', items: [
+        ['--ibb-chart-sm', 180, 'Trong drawer · trong tab của T2'],
+        ['--ibb-chart-md', 280, 'Mặc định cho T4'],
+        ['--ibb-chart-lg', 320, 'Biểu đồ chính của màn nặng biểu đồ']
+      ] },
+      { name: 'Chiều rộng màn hình', note: 'Sàn chiều rộng theo lớp màn và hai điểm ngắt', items: [
+        ['--ibb-min-office', 1440, 'Sàn của widthTier office — dưới mức này cuộn ngang'],
+        ['--ibb-min-ops', 768, 'Sàn của widthTier ops — tablet ngang ở quầy'],
+        ['--ibb-bp-md', 1024, 'Điểm ngắt: sidebar thành drawer, ẩn cột không thiết yếu'],
+        ['--ibb-bp-lg', 1280, 'Điểm ngắt: sidebar thu gọn 64px, stat strip xuống 2 hàng']
+      ] },
+      { name: 'Khung trang', note: 'Chiều rộng cố định trong bố cục trang', items: [
+        ['--ibb-sidepanel', 320, 'Cột phụ của T2 và T3'],
+        ['--ibb-form-narrow', 720, 'Form một cột · thân card của T5'],
+        ['--ibb-settings-nav', 220, 'Menu trái của T5']
+      ] }
+    ];
+    const U = [
+      ['--ibb-drawer-sm', 'Pattern 3 · SC-VH-01 · SC-TC-06 · SC-HT-02', 4],
+
+      ['--ibb-drawer-md', 'Pattern 3 (2) · SC-VH-04 · SC-KHO-10 · SC-VH-08 · SC-VH-09', 6],
+      ['--ibb-drawer-lg', 'Pattern 3 (2) · SC-KHO-13', 3],
+      ['--ibb-modal-sm', 'Pattern 3 · SC-VH-08 confirm · SC-NS-06 confirm', 3],
+      ['--ibb-modal-md', 'Pattern 3 · SC-KHO-10 · SC-NS-06 chọn ngân hàng', 3],
+      ['--ibb-chart-sm', 'CL3 (3) · SC-KHO-13 (2) · SC-NS-03', 6],
+      ['--ibb-chart-md', 'T4 · CL3 (2) · SC-TD-02 (2, nhưng là chiều cao khối rỗng — không thay)', 5],
+      ['--ibb-chart-lg', 'SC-TC-11 (320) · SC-TC-01 và SC-TC-02 đang 300, nâng lên 320 khi thay', 3],
+      ['--ibb-min-office', 'Cả 52 màn hiện đang viết cứng 1440px ở phần tử gốc', 52],
+      ['--ibb-min-ops', 'Khai báo template: T1+T2 · T6 · T7 · T8 · Pattern 3 · Pattern 1 (essentialColumns) — chưa màn nào', 6],
+      ['--ibb-bp-md', 'Khai báo template: T1+T2 · T7 · T8 · Pattern 3 — chưa màn nào', 4],
+      ['--ibb-bp-lg', 'Khai báo template: T1+T2 · T7 · T8 — chưa màn nào', 3],
+      ['--ibb-sidepanel', 'T1+T2 · Pattern 2 · 8 màn T2 · SC-KHO-02 · SC-TD-02 · SC-TD-06', 13],
+      ['--ibb-form-narrow', 'CL1 (2) · Pattern 2 · T5', 4],
+      ['--ibb-settings-nav', 'T5 · CL1 (2, nhưng là chiều rộng ô demo — không thay) · SC-TD-01 · SC-TD-03 (2) · SC-HT-02', 7]
+    ];
+    return {
+      layoutGroups: G.map(g => ({
+        name: g.name,
+        note: g.note,
+        items: g.items.map(t => ({
+          token: t[0],
+          value: t[1] + 'px',
+          use: t[2],
+          barStyle: bar(t[1], 720)
+        }))
+      })),
+      layoutUsage: U.map((u, i, arr) => ({
+        token: u[0],
+        places: u[1],
+        count: String(u[2]),
+        countStyle: 'text-align: right; font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; color: ' + (u[2] >= 7 ? '#8A5F12' : '#4A443E') + ';',
+        rowStyle: 'display: grid; grid-template-columns: 148px 1fr 96px; gap: 12px; align-items: center; min-height: 44px; padding: 6px 16px; font-size: 13px;'
+          + (i < arr.length - 1 ? ' border-bottom: 1px solid #F0EBE5;' : '')
+      })),
+      layoutTotal: String(U.reduce((s, u) => s + u[2], 0))
+    };
+  }
+
+  renderVals() {
+    const showHex = this.props.showHex ?? true;
+    const showContrast = this.props.showContrast ?? true;
+
+    const ramps = RAMPS.map(r => ({
+      title: r.title,
+      prefix: r.prefix,
+      note: r.note,
+      swatches: r.hexes.map((hex, i) => {
+        const onWhite = ratio(hex, '#FFFFFF');
+        const dark = onWhite >= 3;
+        return {
+          step: STEPS[i],
+          hex: hex.toUpperCase(),
+          onColor: dark ? '#FFFFFF' : '#1E1B19',
+          contrastLabel: onWhite >= 4.5 ? 'AA on white' : (ratio(hex, '#1E1B19') >= 4.5 ? 'AA on ink' : '—')
+        };
+      })
+    }));
+
+    const statuses = [
+      { name: 'Success', fg: '#256A49', bg: '#EDF7F1', border: '#C3E4D2', sample: 'Đơn đã hoàn tất' },
+      { name: 'Warning', fg: '#8A5F12', bg: '#FDF6E7', border: '#F0DDAF', sample: 'Sắp hết nguyên liệu' },
+      { name: 'Danger', fg: '#C0392B', bg: '#FCF0EE', border: '#F1CCC7', sample: 'Không thể huỷ đơn' },
+      { name: 'Info', fg: '#2C6E9B', bg: '#EEF5FA', border: '#C7DDEC', sample: 'Ca tối bắt đầu 17:00' }
+    ];
+
+    const mapping = [
+      { semantic: '--ibb-color-bg-page', primitive: 'neutral-50', component: '--ibb-app-bg', swatch: '#FAF8F6' },
+      { semantic: '--ibb-color-bg-subtle', primitive: 'neutral-100', component: '--ibb-table-head-bg', swatch: '#F4F1ED' },
+      { semantic: '--ibb-color-border', primitive: 'neutral-200', component: '--ibb-input-border', swatch: '#E7E2DC' },
+      { semantic: '--ibb-color-text-muted', primitive: 'neutral-500', component: '--ibb-table-meta-fg', swatch: '#6E665C' },
+      { semantic: '--ibb-color-text', primitive: 'neutral-900', component: '--ibb-table-cell-fg', swatch: '#1E1B19' },
+      { semantic: '--ibb-color-action', primitive: 'teal-600', component: '--ibb-btn-primary-bg', swatch: '#235B54' },
+      { semantic: '--ibb-color-action-hover', primitive: 'teal-700', component: '--ibb-btn-primary-bg-hover', swatch: '#1C4842' },
+      { semantic: '--ibb-color-action-subtle', primitive: 'teal-50', component: '--ibb-nav-item-active-bg', swatch: '#EFF6F5' },
+      { semantic: '--ibb-color-focus-ring', primitive: 'teal-400', component: '--ibb-input-ring', swatch: '#4F958D' },
+      { semantic: '--ibb-color-brand', primitive: 'terracotta-500', component: '--ibb-logo-fg', swatch: '#C96442' },
+      { semantic: '--ibb-color-chart-1', primitive: 'terracotta-500', component: '--ibb-chart-series-1', swatch: '#C96442' },
+      { semantic: '--ibb-color-chart-2', primitive: 'terracotta-300', component: '--ibb-chart-series-2', swatch: '#E9A98F' }
+    ];
+
+    return Object.assign(this.layoutVals(), { ramps, statuses, mapping, showHex, showContrast });
+  }
+}
+
+</script>
+</body>
+</html>

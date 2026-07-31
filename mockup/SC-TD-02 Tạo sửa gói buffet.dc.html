@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  input, textarea { font-family: inherit; }
+  @keyframes ibb-spin { to { transform: rotate(360deg); } }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-td-02</span><span style="color: #D5CEC6;">·</span><span>template t3</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">/thuc-don/goi-buffet/tao</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Tạo/sửa gói buffet</h1>
+    <p style="margin: 0; max-width: 78ch; font-size: 14px; color: #635B53;">Quản lý thực đơn tạo và sửa · chủ duyệt giá · phục vụ chỉ xem. Validate khi rời ô, nút Lưu luôn bật. Thêm dòng bảng giá trùng khung giờ × loại ngày, hoặc chuyển món ở mục 4, để thấy form phản hồi.</p>
+  </header>
+
+  <div style="background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); overflow: hidden;">
+    <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: #FFFFFF; border-bottom: 1px solid #E7E2DC;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <nav style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6E665C;">
+          <a href="#" style="color: #6E665C; text-decoration: none;">Thực đơn</a><span style="color: #D5CEC6;">/</span>
+          <a href="#" style="color: #6E665C; text-decoration: none;">Gói buffet</a><span style="color: #D5CEC6;">/</span>
+          <span style="color: #332F2B; font-weight: 500;">Tạo gói</span>
+        </nav>
+        <sc-if value="{{ dirty }}" hint-placeholder-val="{{ true }}">
+          <span style="display: inline-flex; align-items: center; gap: 8px; height: 22px; padding: 0 8px; border-radius: 4px; background: #FDF6E7; border: 1px solid #F0DDAF; color: #8A5F12; font-size: 12px; font-weight: 500;">
+            <span style="width: 6px; height: 6px; border-radius: 999px; background: #8A5F12;"></span>Có thay đổi chưa lưu
+          </span>
+        </sc-if>
+      </div>
+      <span style="font-size: 12px; color: #6E665C;">Tự lưu nháp lúc 09:12 · rời trang sẽ hỏi xác nhận</span>
+    </div>
+
+    <div style="display: flex; align-items: flex-start; gap: 24px; padding: 24px;">
+      <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+
+        <sc-if value="{{ hasErrors }}" hint-placeholder-val="{{ false }}">
+          <div style="background: #FCF0EE; border: 1px solid #C0392B; border-radius: 8px; padding: 12px 16px; display: flex; gap: 12px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <strong style="font-size: 13px;">{{ errorTitle }}</strong>
+              <sc-for list="{{ errors }}" as="e" hint-placeholder-count="2">
+                <a href="#" style="font-size: 13px; color: #C0392B;">{{ e.text }}</a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <strong style="font-size: 16px; font-weight: 500;">1 · Thông tin gói</strong>
+            <span style="font-size: 13px; color: #635B53;">Tên gói hiện trên thực đơn, hoá đơn và báo cáo doanh thu.</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 20px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Mã gói</label>
+              <div style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 4px; font-family: ui-monospace, Menlo, monospace; font-size: 13px; color: #4A443E;">#GB-0042
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M6 10V7a6 6 0 0112 0v3M5 10h14v10H5z"></path></svg>
+              </div>
+              <span style="font-size: 12px; color: #6E665C;">Tự sinh khi lưu lần đầu.</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Tên gói <span style="color: #C0392B;">*</span></label>
+              <div style="height: 36px; display: flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px;">Buffet tối cao cấp</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Nhóm gói <span style="color: #C0392B;">*</span></label>
+              <div style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px;">Buffet tối
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+              </div>
+            </div>
+            <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; align-items: baseline; justify-content: space-between;">
+                <label style="font-size: 13px; font-weight: 500;">Mô tả</label>
+                <span style="font-size: 12px; color: #6E665C;">104 / 240</span>
+              </div>
+              <textarea style="min-height: 72px; padding: 8px 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; outline: none; resize: vertical;" style-focus="border-color: #4F958D; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Hơn 60 món nướng và hải sản tươi, lẩu tự chọn, tráng miệng theo mùa. Phục vụ tối từ 17:30.</textarea>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Ảnh đại diện</label>
+              <div style="height: 96px; border: 1px solid #E7E2DC; border-radius: 8px; position: relative; overflow: hidden; background: repeating-linear-gradient(135deg, #F4F1ED 0 8px, #EDE8E2 8px 16px);">
+                <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #8A8178;">ảnh gói 4:3</span>
+                <span style="position: absolute; top: 6px; right: 6px; display: flex; gap: 6px;">
+                  <span style="width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+                  </span>
+                </span>
+              </div>
+              <span style="font-size: 12px; color: #6E665C;">Image picker · CL4 · 02.</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px;">
+            <span style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 13px; font-weight: 500;">Trạng thái</span>
+              <span style="font-size: 12px; color: #6E665C;">{{ sellHint }}</span>
+            </span>
+            <div onClick="{{ toggleSell }}" tabindex="0" style="display: flex; align-items: center; gap: 12px; cursor: pointer;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+              <span style="font-size: 13px; color: #4A443E;">{{ sellLabel }}</span>
+              <span style="{{ sellTrack }}"><span style="width: 16px; height: 16px; border-radius: 999px; background: #FFFFFF;"></span></span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <strong style="font-size: 16px; font-weight: 500;">2 · Bảng giá</strong>
+              <span style="font-size: 13px; color: #635B53;">Mỗi tổ hợp khung giờ × loại ngày chỉ được xuất hiện một lần.</span>
+            </div>
+            <span style="font-size: 12px; color: #6E665C;">{{ priceRowCount }}</span>
+          </div>
+
+          <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 160px 180px 1fr 1fr 1fr 40px; gap: 8px; align-items: center; padding: 10px 12px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+              <span>khung giờ</span><span>loại ngày</span><span style="text-align: right;">giá người lớn</span><span style="text-align: right;">giá trẻ em</span><span style="text-align: right;">giá trẻ nhỏ</span><span></span>
+            </div>
+            <sc-for list="{{ priceRows }}" as="r" hint-placeholder-count="3">
+              <div style="{{ r.rowStyle }}">
+                <div style="height: 28px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px;">{{ r.slot }}
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+                </div>
+                <div style="height: 28px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px;">{{ r.day }}
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+                </div>
+                <div style="height: 28px; display: flex; align-items: center; gap: 4px; padding: 0 8px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px;">
+                  <input type="text" value="{{ r.adult }}" onChange="{{ r.onAdult }}" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 13px; text-align: right; font-variant-numeric: tabular-nums;">
+                  <span style="font-size: 11px; color: #6E665C;">đ</span>
+                </div>
+                <div style="height: 28px; display: flex; align-items: center; gap: 4px; padding: 0 8px; background: #FFFFFF; border-radius: 4px; border: 1px solid {{ r.childBorder }};">
+                  <input type="text" value="{{ r.child }}" onChange="{{ r.onChild }}" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 13px; text-align: right; font-variant-numeric: tabular-nums;">
+                  <span style="font-size: 11px; color: #6E665C;">đ</span>
+                </div>
+                <div style="height: 28px; display: flex; align-items: center; gap: 4px; padding: 0 8px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px;">
+                  <input type="text" value="{{ r.infant }}" onChange="{{ r.onInfant }}" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 13px; text-align: right; font-variant-numeric: tabular-nums;">
+                  <span style="font-size: 11px; color: #6E665C;">đ</span>
+                </div>
+                <button onClick="{{ r.onRemove }}" aria-label="Xoá dòng giá" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #FCF0EE; border-color: #F1CCC7;">
+                  <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+                </button>
+              </div>
+              <sc-if value="{{ r.msg }}" hint-placeholder-val="{{ false }}">
+                <div style="padding: 0 12px 10px 12px;"><span style="{{ r.msgStyle }}">{{ r.msg }}</span></div>
+              </sc-if>
+            </sc-for>
+            <div style="display: flex; align-items: center; gap: 16px; padding: 12px;">
+              <span onClick="{{ addRow }}" tabindex="0" style="height: 28px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px dashed #B0D4CF; border-radius: 4px; font-size: 13px; color: #235B54; cursor: pointer;" style-hover="background: #EFF6F5;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#235B54" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+                Thêm dòng giá
+              </span>
+              <span style="font-size: 12px; color: #6E665C;">Dòng mới lấy tổ hợp còn trống đầu tiên.</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <strong style="font-size: 16px; font-weight: 500;">3 · Quy định trẻ em</strong>
+            <span style="font-size: 13px; color: #635B53;">Threshold ladder · CL4 · 03. Mốc dưới của bậc sau khoá theo mốc trên của bậc trước.</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <label style="font-size: 13px; font-weight: 500;">Tính theo</label>
+            <div style="display: flex; gap: 12px;">
+              <sc-for list="{{ criteria }}" as="c" hint-placeholder-count="2">
+                <label onClick="{{ c.onPick }}" style="{{ c.style }}"><span style="{{ c.dotStyle }}"></span>{{ c.label }}</label>
+              </sc-for>
+            </div>
+          </div>
+          <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 1fr 148px 148px 132px; gap: 16px; align-items: center; padding: 10px 16px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+              <span>bậc</span><span>từ</span><span>đến</span><span>tính giá</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 148px 148px 132px; gap: 16px; align-items: center; padding: 12px 16px; border-bottom: 1px solid #F0EBE5;">
+              <span style="font-size: 13px;">Trẻ nhỏ · miễn phí</span>
+              <span style="font-size: 13px; color: #6E665C;">—</span>
+              <span style="height: 28px; display: flex; align-items: center; gap: 6px; padding: 0 10px; border: 1px solid #E7E2DC; border-radius: 4px;">
+                <input type="text" value="{{ t1 }}" onChange="{{ onT1 }}" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 13px; text-align: right; font-variant-numeric: tabular-nums;">
+                <span style="font-size: 12px; color: #6E665C;">{{ unit }}</span>
+              </span>
+              <span style="font-size: 12px; color: #235B54; background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 4px; padding: 3px 8px; justify-self: start;">0 đ</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 148px 148px 132px; gap: 16px; align-items: center; padding: 12px 16px; border-bottom: 1px solid #F0EBE5;">
+              <span style="font-size: 13px;">Trẻ em</span>
+              <span style="height: 28px; display: flex; align-items: center; gap: 6px; padding: 0 10px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px; color: #6E665C;"><span style="flex: 1; font-size: 13px; text-align: right; font-variant-numeric: tabular-nums;">{{ t1 }}</span><span style="font-size: 12px;">{{ unit }}</span></span>
+              <span style="height: 28px; display: flex; align-items: center; gap: 6px; padding: 0 10px; border-radius: 4px; border: 1px solid {{ t2Border }};">
+                <input type="text" value="{{ t2 }}" onChange="{{ onT2 }}" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 13px; text-align: right; font-variant-numeric: tabular-nums;">
+                <span style="font-size: 12px; color: #6E665C;">{{ unit }}</span>
+              </span>
+              <span style="font-size: 12px; color: #4A443E; background: #F4F1ED; border-radius: 4px; padding: 3px 8px; justify-self: start;">giá trẻ em</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 148px 148px 132px; gap: 16px; align-items: center; padding: 12px 16px;">
+              <span style="font-size: 13px;">Người lớn</span>
+              <span style="height: 28px; display: flex; align-items: center; gap: 6px; padding: 0 10px; background: #F4F1ED; border: 1px solid #E7E2DC; border-radius: 4px; color: #6E665C;"><span style="flex: 1; font-size: 13px; text-align: right; font-variant-numeric: tabular-nums;">{{ t2 }}</span><span style="font-size: 12px;">{{ unit }}</span></span>
+              <span style="font-size: 13px; color: #6E665C;">trở lên</span>
+              <span style="font-size: 12px; color: #4A443E; background: #F4F1ED; border-radius: 4px; padding: 3px 8px; justify-self: start;">giá người lớn</span>
+            </div>
+          </div>
+          <sc-if value="{{ tierMsg }}" hint-placeholder-val="{{ false }}">
+            <span style="{{ tierMsgStyle }}">{{ tierMsg }}</span>
+          </sc-if>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <strong style="font-size: 16px; font-weight: 500;">4 · Món trong gói <span style="color: #C0392B;">*</span></strong>
+              <span style="font-size: 13px; color: #635B53;">Transfer list · CL4 · 01. Bấm dòng để tích, bấm dòng nhóm để tích cả nhóm.</span>
+            </div>
+            <span style="{{ dishBadgeStyle }}">{{ dishBadge }}</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 56px 1fr; gap: 0; align-items: stretch;">
+            <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; min-width: 0;">
+              <div style="padding: 12px 14px; border-bottom: 1px solid #E7E2DC; background: #FAF8F6; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                  <span style="font-size: 13px; font-weight: 500;">Món khả dụng</span>
+                  <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ leftCount }}</span>
+                </div>
+                <div style="height: 28px; display: flex; align-items: center; gap: 8px; padding: 0 10px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px;">
+                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A8178" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5"></path></svg>
+                  <input type="text" value="{{ qL }}" onChange="{{ onQL }}" placeholder="Tìm món khả dụng…" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 13px;">
+                </div>
+              </div>
+              <div style="height: 320px; overflow-y: auto; padding: 6px;">
+                <sc-for list="{{ leftGroups }}" as="g" hint-placeholder-count="4">
+                  <div style="margin-bottom: 4px;">
+                    <div onClick="{{ g.onToggleGroup }}" tabindex="0" style="height: 34px; display: flex; align-items: center; gap: 10px; padding: 0 8px; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                      <span style="{{ g.boxStyle }}">
+                        <sc-if value="{{ g.all }}" hint-placeholder-val="{{ false }}">
+                          <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg>
+                        </sc-if>
+                        <sc-if value="{{ g.some }}" hint-placeholder-val="{{ false }}">
+                          <span style="width: 8px; height: 2px; background: #FFFFFF; border-radius: 1px;"></span>
+                        </sc-if>
+                      </span>
+                      <span style="flex: 1; min-width: 0; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: #4A443E; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ g.name }}</span>
+                      <span style="font-size: 11px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ g.count }}</span>
+                    </div>
+                    <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+                      <div onClick="{{ it.onToggle }}" tabindex="0" style="{{ it.rowStyle }}" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                        <span style="{{ it.boxStyle }}">
+                          <sc-if value="{{ it.checked }}" hint-placeholder-val="{{ false }}">
+                            <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg>
+                          </sc-if>
+                        </span>
+                        <span style="flex: 1; min-width: 0; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ it.name }}</span>
+                        <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ it.cost }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ leftEmpty }}" hint-placeholder-val="{{ false }}">
+                  <div style="height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; padding: 0 24px;">
+                    <span style="width: 40px; height: 40px; border: 1px solid #D5CEC6; border-radius: 8px; background: #F4F1ED;"></span>
+                    <span style="font-size: 14px; font-weight: 500;">Không có món khớp</span>
+                    <span style="font-size: 13px; color: #6E665C;">Đã chọn hết hoặc từ khoá không khớp món nào.</span>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+              <button onClick="{{ moveAllRight }}" aria-label="Chuyển tất cả vào gói" style="{{ btnAllRight }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7l5 5-5 5M13 7l5 5-5 5"></path></svg>
+              </button>
+              <button onClick="{{ moveRight }}" aria-label="Chuyển món đã tích vào gói" style="{{ btnRight }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7l5 5-5 5"></path></svg>
+              </button>
+              <button onClick="{{ moveLeft }}" aria-label="Bỏ món đã tích khỏi gói" style="{{ btnLeft }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7l-5 5 5 5"></path></svg>
+              </button>
+              <button onClick="{{ moveAllLeft }}" aria-label="Bỏ tất cả khỏi gói" style="{{ btnAllLeft }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 7l-5 5 5 5M19 7l-5 5 5 5"></path></svg>
+              </button>
+            </div>
+
+            <div style="border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; border: 1px solid {{ rightBorder }};">
+              <div style="padding: 12px 14px; background: #EFF6F5; border-bottom: 1px solid #B0D4CF; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                  <span style="font-size: 13px; font-weight: 500; color: #1C4842;">Món trong gói</span>
+                  <span style="font-size: 12px; color: #235B54; font-variant-numeric: tabular-nums;">{{ rightCount }}</span>
+                </div>
+                <div style="height: 28px; display: flex; align-items: center; gap: 8px; padding: 0 10px; background: #FFFFFF; border: 1px solid #B0D4CF; border-radius: 4px;">
+                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A8178" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5"></path></svg>
+                  <input type="text" value="{{ qR }}" onChange="{{ onQR }}" placeholder="Tìm trong gói…" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 13px;">
+                </div>
+              </div>
+              <div style="height: 320px; overflow-y: auto; padding: 6px;">
+                <sc-for list="{{ rightGroups }}" as="g" hint-placeholder-count="3">
+                  <div style="margin-bottom: 4px;">
+                    <div onClick="{{ g.onToggleGroup }}" tabindex="0" style="height: 34px; display: flex; align-items: center; gap: 10px; padding: 0 8px; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                      <span style="{{ g.boxStyle }}">
+                        <sc-if value="{{ g.all }}" hint-placeholder-val="{{ false }}">
+                          <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg>
+                        </sc-if>
+                        <sc-if value="{{ g.some }}" hint-placeholder-val="{{ false }}">
+                          <span style="width: 8px; height: 2px; background: #FFFFFF; border-radius: 1px;"></span>
+                        </sc-if>
+                      </span>
+                      <span style="flex: 1; min-width: 0; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: #4A443E; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ g.name }}</span>
+                      <span style="font-size: 11px; color: #235B54; font-variant-numeric: tabular-nums;">{{ g.count }}</span>
+                    </div>
+                    <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+                      <div onClick="{{ it.onToggle }}" tabindex="0" style="{{ it.rowStyle }}" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+                        <span style="{{ it.boxStyle }}">
+                          <sc-if value="{{ it.checked }}" hint-placeholder-val="{{ false }}">
+                            <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg>
+                          </sc-if>
+                        </span>
+                        <span style="flex: 1; min-width: 0; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ it.name }}</span>
+                        <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ it.cost }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ rightEmpty }}" hint-placeholder-val="{{ false }}">
+                  <div style="height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; padding: 0 24px;">
+                    <span style="width: 40px; height: 40px; border: 1px dashed #D5CEC6; border-radius: 8px;"></span>
+                    <span style="font-size: 14px; font-weight: 500;">Chưa có món nào</span>
+                    <span style="font-size: 13px; color: #6E665C;">Gói buffet phải có ít nhất 1 món.</span>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <strong style="font-size: 16px; font-weight: 500;">5 · Thời gian áp dụng</strong>
+            <span style="font-size: 13px; color: #635B53;">Để trống “đến ngày” nghĩa là gói bán vô thời hạn.</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px 20px; align-items: start;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Từ ngày <span style="color: #C0392B;">*</span></label>
+              <div style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px;">01/08/2026
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18v16H3zM8 2v6M16 2v6M3 11h18"></path></svg>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Đến ngày</label>
+              <div style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #ABA298;">Vô thời hạn
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round"><path d="M3 5h18v16H3zM8 2v6M16 2v6M3 11h18"></path></svg>
+              </div>
+            </div>
+            <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Chi nhánh áp dụng <span style="color: #C0392B;">*</span></label>
+              <div style="min-height: 36px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 6px 12px; border: 1px solid #E7E2DC; border-radius: 4px;">
+                <sc-for list="{{ branches }}" as="b" hint-placeholder-count="2">
+                  <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; background: #F4F1ED; border-radius: 4px; font-size: 12px; color: #4A443E;">{{ b.name }}
+                    <span onClick="{{ b.onRemove }}" style="color: #ABA298; cursor: pointer;">×</span>
+                  </span>
+                </sc-for>
+                <span style="flex: 1; min-width: 96px; font-size: 13px; color: #ABA298;">Thêm chi nhánh…</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 500;">Thời gian tối đa 1 lượt</label>
+              <div style="height: 36px; display: flex; align-items: center; gap: 6px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px;">
+                <span style="flex: 1; font-size: 13px; text-align: right; font-variant-numeric: tabular-nums;">120</span>
+                <span style="font-size: 12px; color: #6E665C;">phút</span>
+              </div>
+              <span style="font-size: 12px; color: #6E665C;">Dùng để nhắc phục vụ khi bàn quá giờ.</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="position: sticky; bottom: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 -4px 12px rgba(30,27,25,0.06);">
+          <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;">Huỷ</span>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 12px; color: #6E665C;">{{ saveHint }}</span>
+            <button style="height: 36px; padding: 0 14px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Lưu nháp</button>
+            <button style="height: 36px; padding: 0 16px; font-family: inherit; font-size: 13px; font-weight: 500; color: #FFFFFF; background: #235B54; border: none; border-radius: 4px; cursor: pointer;" style-hover="background: #1C4842;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Lưu và bán</button>
+          </div>
+        </div>
+      </div>
+
+      <aside style="width: 320px; flex: 0 0 320px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Giá vốn ước tính</span>
+          <span style="font-size: 24px; font-weight: 500; font-variant-numeric: tabular-nums;">{{ estCost }}</span>
+          <span style="font-size: 12px; color: #6E665C;">Tổng giá vốn {{ dishCount }} món ÷ số món × hệ số tiêu thụ TB 0,42.</span>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px; padding-top: 12px; border-top: 1px solid #F0EBE5;">
+            <div style="display: flex; justify-content: space-between;"><span style="color: #635B53;">Giá bán tối cuối tuần</span><span style="font-variant-numeric: tabular-nums;">{{ refPrice }}</span></div>
+            <div style="display: flex; justify-content: space-between;"><span style="color: #635B53;">Food cost dự kiến</span><span style="{{ fcStyle }}">{{ fcValue }}</span></div>
+          </div>
+          <span style="font-size: 12px; color: #6E665C;">Ngưỡng mục tiêu ≤ 35%.</span>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Số món theo nhóm</span>
+          <sc-for list="{{ groupStats }}" as="s" hint-placeholder-count="6">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <div style="display: flex; justify-content: space-between; font-size: 13px;"><span style="color: #4A443E;">{{ s.name }}</span><span style="font-variant-numeric: tabular-nums; color: #635B53;">{{ s.label }}</span></div>
+              <span style="height: 4px; border-radius: 999px; background: #F4F1ED; overflow: hidden;"><span style="{{ s.barStyle }}"></span></span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px;">
+            <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Lịch sử thay đổi giá</span>
+            <a href="#">Xem tất cả</a>
+          </div>
+          <div style="display: flex; flex-direction: column;">
+            <div style="display: grid; grid-template-columns: 16px 1fr; gap: 10px;">
+              <span style="display: flex; flex-direction: column; align-items: center;"><span style="width: 7px; height: 7px; border-radius: 999px; background: #235B54; margin-top: 5px;"></span><span style="flex: 1; width: 1px; background: #E7E2DC;"></span></span>
+              <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 16px;">
+                <span style="font-size: 13px;">Giá người lớn tối cuối tuần</span>
+                <span style="font-size: 13px; font-variant-numeric: tabular-nums; color: #4A443E;"><span style="color: #8A8178; text-decoration: line-through;">459.000</span> → 489.000 đ</span>
+                <span style="font-size: 12px; color: #6E665C;">28/07/2026 09:14 · Ngọc Hân</span>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 16px 1fr; gap: 10px;">
+              <span style="display: flex; flex-direction: column; align-items: center;"><span style="width: 7px; height: 7px; border-radius: 999px; background: #D5CEC6; margin-top: 5px;"></span><span style="flex: 1; width: 1px; background: #E7E2DC;"></span></span>
+              <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 16px;">
+                <span style="font-size: 13px;">Giá trẻ em trưa ngày thường</span>
+                <span style="font-size: 13px; font-variant-numeric: tabular-nums; color: #4A443E;"><span style="color: #8A8178; text-decoration: line-through;">149.000</span> → 159.000 đ</span>
+                <span style="font-size: 12px; color: #6E665C;">21/07/2026 16:02 · Minh Trí</span>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 16px 1fr; gap: 10px;">
+              <span style="display: flex; flex-direction: column; align-items: center;"><span style="width: 7px; height: 7px; border-radius: 999px; background: #D5CEC6; margin-top: 5px;"></span></span>
+              <div style="display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-size: 13px;">Tạo gói</span>
+                <span style="font-size: 12px; color: #6E665C;">02/07/2026 11:30 · Phương Vy</span>
+              </div>
+            </div>
+          </div>
+          <span style="font-size: 12px; color: #6E665C;">Change log · CL4 · 05.</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">State của màn</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Tạo mới</span>
+        <span style="font-size: 13px; color: #635B53;">Một dòng bảng giá trống (trưa × ngày thường), transfer list rỗng bên phải, trạng thái “Chưa bán”.</span>
+        <span style="display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; height: 24px; padding: 0 12px; border-radius: 4px; background: #F4F1ED; border: 1px solid #E7E2DC; color: #4A443E; font-size: 12px; font-weight: 500;">Nháp · chưa bán</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Đang tải để sửa</span>
+        <span style="height: 12px; width: 40%; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="height: 36px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+          <span style="height: 72px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Skeleton giữ đúng hai panel transfer list.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Đang lưu</span>
+        <span style="font-size: 13px; color: #635B53;">Bảng giá và transfer list khoá tạm, cột phụ vẫn hiện số cũ.</span>
+        <span style="height: 36px; display: inline-flex; align-self: flex-start; align-items: center; gap: 12px; padding: 0 16px; border-radius: 4px; background: #235B54; color: #FFFFFF; font-size: 13px; font-weight: 500; opacity: 0.9;">
+          <span style="width: 16px; height: 16px; border-radius: 999px; border: 1.5px solid rgba(255,255,255,0.35); border-top-color: #FFFFFF; animation: ibb-spin 700ms linear infinite;"></span>Đang lưu và bán…
+        </span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Lưu lỗi</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #FCF0EE; border: 1px solid #F1CCC7; border-radius: 4px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" style="margin-top: 2px; flex-shrink: 0;"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M12 8v5M12 16v.01"></path></svg>
+          <span style="font-size: 13px; color: #4A443E;">Lưu gói thất bại · ERR-3318. Danh sách món và bảng giá vẫn giữ nguyên.</span>
+        </div>
+        <span style="height: 28px; display: inline-flex; align-self: flex-start; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;">Thử lại</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Chỉ đọc · phục vụ</span>
+        <div style="border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden; background: #FAF8F6;">
+          <div style="padding: 10px 12px; border-bottom: 1px solid #E7E2DC; display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 12px; font-weight: 500; color: #4A443E;">Món trong gói</span>
+            <span style="font-size: 12px; color: #6E665C;">{{ dishCount }} món</span>
+          </div>
+          <div style="padding: 8px 12px; display: flex; flex-wrap: wrap; gap: 6px;">
+            <span style="font-size: 12px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 999px; padding: 3px 10px;">Gỏi cuốn tôm</span>
+            <span style="font-size: 12px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 999px; padding: 3px 10px;">Lẩu thái</span>
+            <span style="font-size: 12px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 999px; padding: 3px 10px;">Ba chỉ bò Mỹ</span>
+            <span style="font-size: 12px; color: #6E665C; background: #F4F1ED; border-radius: 999px; padding: 3px 10px;">{{ moreLabel }}</span>
+          </div>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Transfer list thu về danh sách chip một cột.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Thay đổi chưa lưu</span>
+        <div style="border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+          <strong style="font-size: 14px;">Rời trang mà chưa lưu?</strong>
+          <span style="font-size: 13px; color: #635B53;">Gói có 9 thay đổi chưa lưu, gồm 2 dòng giá mới.</span>
+          <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <span style="height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;">Ở lại</span>
+            <span style="height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #C0392B; color: #FFFFFF; font-size: 13px; font-weight: 500; cursor: pointer;">Rời và bỏ thay đổi</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1000}}">
+const GROUPS = [
+  ['khai-vi', 'Khai vị'], ['lau', 'Lẩu & nước dùng'], ['nuong', 'Nướng'],
+  ['hai-san', 'Hải sản'], ['tinh-bot', 'Tinh bột'], ['trang-mieng', 'Tráng miệng']
+];
+
+const ITEMS = [
+  ['M-001', 'Gỏi cuốn tôm thịt', 'khai-vi', 12400],
+  ['M-002', 'Salad rau mầm sốt mè', 'khai-vi', 8600],
+  ['M-003', 'Nem chua rán', 'khai-vi', 9800],
+  ['M-004', 'Súp bí đỏ kem tươi', 'khai-vi', 7400],
+  ['M-010', 'Lẩu thái tom yum', 'lau', 46000],
+  ['M-011', 'Lẩu nấm chay', 'lau', 32000],
+  ['M-012', 'Lẩu gà lá é', 'lau', 41000],
+  ['M-020', 'Ba chỉ bò Mỹ', 'nuong', 68000],
+  ['M-021', 'Sườn heo nướng mật ong', 'nuong', 52000],
+  ['M-022', 'Nạc vai bò Úc', 'nuong', 74000],
+  ['M-023', 'Bạch tuộc nướng sa tế', 'nuong', 58000],
+  ['M-024', 'Cánh gà nướng muối ớt', 'nuong', 24000],
+  ['M-030', 'Tôm sú nướng bơ', 'hai-san', 82000],
+  ['M-031', 'Hàu sống sốt chanh', 'hai-san', 64000],
+  ['M-032', 'Nghêu hấp sả', 'hai-san', 28000],
+  ['M-033', 'Cá hồi áp chảo', 'hai-san', 96000],
+  ['M-040', 'Cơm chiên hải sản', 'tinh-bot', 18000],
+  ['M-041', 'Mì xào giòn', 'tinh-bot', 16000],
+  ['M-042', 'Bánh mì bơ tỏi', 'tinh-bot', 6800],
+  ['M-050', 'Chè khúc bạch', 'trang-mieng', 11200],
+  ['M-051', 'Kem vani Ý', 'trang-mieng', 9400],
+  ['M-052', 'Trái cây theo mùa', 'trang-mieng', 13600],
+  ['M-053', 'Bánh flan caramel', 'trang-mieng', 8200]
+];
+
+const SLOTS = ['Trưa', 'Tối', 'Cả ngày'];
+const DAYS = ['Ngày thường', 'Cuối tuần', 'Ngày lễ'];
+
+const BOX_OFF = 'width: 16px; height: 16px; flex: none; display: flex; align-items: center; justify-content: center; border: 1px solid #D5CEC6; border-radius: 4px; background: #FFFFFF;';
+const BOX_ON = 'width: 16px; height: 16px; flex: none; display: flex; align-items: center; justify-content: center; border: 1px solid #235B54; border-radius: 4px; background: #235B54;';
+const ROW = 'height: 36px; display: flex; align-items: center; gap: 10px; padding: 0 8px; border-radius: 4px; cursor: pointer;';
+const ROW_ON = ROW + ' background: #EFF6F5;';
+const BTN = 'width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;';
+const BTN_ON = BTN + ' background: #235B54; border: 1px solid #235B54; color: #FFFFFF;';
+const BTN_OFF = BTN + ' background: #FAF8F6; border: 1px solid #E7E2DC; color: #B9B1A8; cursor: not-allowed;';
+const PR = 'display: grid; grid-template-columns: 160px 180px 1fr 1fr 1fr 40px; gap: 8px; align-items: center; padding: 10px 12px;';
+const PR_BAD = PR + ' background: #FCF0EE;';
+const CHIP = 'display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; background: #FFFFFF; font-size: 13px; color: #4A443E; cursor: pointer;';
+const CHIP_ON = 'display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #B0D4CF; border-radius: 4px; background: #EFF6F5; font-size: 13px; color: #1C4842; cursor: pointer;';
+const CDOT = 'width: 16px; height: 16px; border: 1px solid #D5CEC6; border-radius: 999px; background: #FFFFFF;';
+const CDOT_ON = 'width: 16px; height: 16px; border: 5px solid #235B54; border-radius: 999px; background: #FFFFFF;';
+const TRACK_ON = 'width: 40px; height: 22px; flex: none; border-radius: 999px; background: #235B54; display: flex; align-items: center; justify-content: flex-end; padding: 0 3px;';
+const TRACK_OFF = 'width: 40px; height: 22px; flex: none; border-radius: 999px; background: #D5CEC6; display: flex; align-items: center; justify-content: flex-start; padding: 0 3px;';
+
+const num = (s) => parseInt(String(s).replace(/[^0-9]/g, ''), 10) || 0;
+const vnd = (n) => n.toLocaleString('vi-VN');
+
+class Component extends DCLogic {
+  state = {
+    selected: ['M-001', 'M-002', 'M-010', 'M-011', 'M-020', 'M-021', 'M-023', 'M-030', 'M-032', 'M-040', 'M-050', 'M-052'],
+    checkedL: [], checkedR: [], qL: '', qR: '',
+    rows: [
+      { id: 1, slot: 'Trưa', day: 'Ngày thường', adult: '329.000', child: '159.000', infant: '0' },
+      { id: 2, slot: 'Tối', day: 'Ngày thường', adult: '429.000', child: '199.000', infant: '0' },
+      { id: 3, slot: 'Tối', day: 'Cuối tuần', adult: '489.000', child: '229.000', infant: '0' }
+    ],
+    nextId: 4,
+    criteria: 'height',
+    t1: '90',
+    t2: '140',
+    selling: false,
+    dirty: true
+  };
+
+  side(isRight) {
+    const st = this.state;
+    const q = (isRight ? st.qR : st.qL).trim().toLowerCase();
+    const checked = isRight ? st.checkedR : st.checkedL;
+    const key = isRight ? 'checkedR' : 'checkedL';
+    const out = [];
+    GROUPS.forEach(g => {
+      const rows = ITEMS.filter(it => it[2] === g[0]
+        && (st.selected.indexOf(it[0]) !== -1) === isRight
+        && (q === '' || it[1].toLowerCase().indexOf(q) !== -1));
+      if (!rows.length) return;
+      const ids = rows.map(r => r[0]);
+      const on = ids.filter(id => checked.indexOf(id) !== -1);
+      out.push({
+        name: g[1],
+        count: ids.length + ' món',
+        all: on.length === ids.length,
+        some: on.length > 0 && on.length < ids.length,
+        boxStyle: on.length ? BOX_ON : BOX_OFF,
+        onToggleGroup: () => this.setState(s => {
+          const cur = s[key];
+          const next = on.length === ids.length ? cur.filter(id => ids.indexOf(id) === -1)
+            : cur.concat(ids.filter(id => cur.indexOf(id) === -1));
+          const p = {}; p[key] = next; return p;
+        }),
+        items: rows.map(r => ({
+          name: r[1],
+          cost: vnd(r[3]) + ' đ',
+          checked: checked.indexOf(r[0]) !== -1,
+          boxStyle: checked.indexOf(r[0]) !== -1 ? BOX_ON : BOX_OFF,
+          rowStyle: checked.indexOf(r[0]) !== -1 ? ROW_ON : ROW,
+          onToggle: () => this.setState(s => {
+            const cur = s[key];
+            const next = cur.indexOf(r[0]) !== -1 ? cur.filter(id => id !== r[0]) : cur.concat([r[0]]);
+            const p = {}; p[key] = next; return p;
+          })
+        }))
+      });
+    });
+    return out;
+  }
+
+  patchRow(id, field, value) {
+    this.setState(s => ({
+      rows: s.rows.map(r => r.id === id ? Object.assign({}, r, { [field]: value }) : r),
+      dirty: true
+    }));
+  }
+
+  renderVals() {
+    const st = this.state;
+    const seen = {};
+    const dupIds = [];
+    st.rows.forEach(r => {
+      const k = r.slot + '|' + r.day;
+      if (seen[k]) dupIds.push(r.id); else seen[k] = true;
+    });
+
+    const rows = st.rows.map(r => {
+      const dup = dupIds.indexOf(r.id) !== -1;
+      const soft = num(r.child) > num(r.adult);
+      return {
+        slot: r.slot, day: r.day, adult: r.adult, child: r.child, infant: r.infant,
+        rowStyle: (dup ? PR_BAD : PR) + ' border-bottom: 1px solid #F0EBE5;',
+        childBorder: soft ? '#E6C98C' : '#E7E2DC',
+        msg: dup ? 'Tổ hợp ' + r.slot + ' × ' + r.day + ' đã có ở dòng trên — chặn lưu.'
+          : (soft ? 'Giá trẻ em cao hơn giá người lớn — kiểm tra lại, vẫn lưu được.' : ''),
+        msgStyle: dup ? 'font-size: 12px; color: #C0392B;' : 'font-size: 12px; color: #8A5D0E;',
+        onAdult: e => this.patchRow(r.id, 'adult', e.target.value),
+        onChild: e => this.patchRow(r.id, 'child', e.target.value),
+        onInfant: e => this.patchRow(r.id, 'infant', e.target.value),
+        onRemove: () => this.setState(s => ({ rows: s.rows.filter(x => x.id !== r.id), dirty: true }))
+      };
+    });
+
+    const dishCount = st.selected.length;
+    const errors = [];
+    if (!st.rows.length) errors.push({ text: 'Bảng giá phải có ít nhất 1 dòng — mục 2' });
+    if (dupIds.length) errors.push({ text: 'Có ' + dupIds.length + ' dòng trùng tổ hợp khung giờ × loại ngày — mục 2' });
+    if (!dishCount) errors.push({ text: 'Gói buffet phải có ít nhất 1 món — mục 4' });
+    const t1 = num(st.t1), t2 = num(st.t2);
+    if (t2 <= t1) errors.push({ text: 'Mốc trẻ em phải lớn hơn mốc trẻ nhỏ — mục 3' });
+
+    const totalCost = ITEMS.filter(it => st.selected.indexOf(it[0]) !== -1).reduce((a, b) => a + b[3], 0);
+    const est = dishCount ? Math.round(totalCost * 0.42 / dishCount * 6) : 0;
+    const ref = st.rows.length ? num(st.rows[st.rows.length - 1].adult) : 0;
+    const fc = ref ? (est / ref) * 100 : null;
+
+    const nL = st.checkedL.length, nR = st.checkedR.length;
+    const leftAvail = ITEMS.length - dishCount;
+    const leftGroups = this.side(false);
+    const rightGroups = this.side(true);
+
+    return {
+      dirty: st.dirty,
+      hasErrors: errors.length > 0,
+      errors,
+      errorTitle: 'Còn ' + errors.length + ' lỗi cần sửa trước khi lưu',
+      saveHint: dishCount + ' món · ' + st.rows.length + ' dòng giá',
+
+      selling: st.selling,
+      sellTrack: st.selling ? TRACK_ON : TRACK_OFF,
+      sellLabel: st.selling ? 'Đang bán' : 'Chưa bán',
+      sellHint: st.selling ? 'Gói hiện trên POS và trang đặt bàn.' : 'Lưu nháp không đưa gói lên POS. Nút “Lưu và bán” bật cờ này.',
+      toggleSell: () => this.setState(s => ({ selling: !s.selling, dirty: true })),
+
+      priceRows: rows,
+      priceRowCount: st.rows.length + ' / ' + (SLOTS.length * DAYS.length) + ' tổ hợp',
+      addRow: () => this.setState(s => {
+        const used = {}; s.rows.forEach(r => { used[r.slot + '|' + r.day] = true; });
+        let pick = null;
+        SLOTS.forEach(sl => DAYS.forEach(d => { if (!pick && !used[sl + '|' + d]) pick = [sl, d]; }));
+        if (!pick) pick = [SLOTS[0], DAYS[0]];
+        return {
+          rows: s.rows.concat([{ id: s.nextId, slot: pick[0], day: pick[1], adult: '0', child: '0', infant: '0' }]),
+          nextId: s.nextId + 1, dirty: true
+        };
+      }),
+
+      criteria: [['height', 'Chiều cao'], ['age', 'Tuổi']].map(c => ({
+        label: c[1],
+        style: st.criteria === c[0] ? CHIP_ON : CHIP,
+        dotStyle: st.criteria === c[0] ? CDOT_ON : CDOT,
+        onPick: () => this.setState({ criteria: c[0], t1: c[0] === 'height' ? '90' : '4', t2: c[0] === 'height' ? '140' : '11', dirty: true })
+      })),
+      unit: st.criteria === 'height' ? 'cm' : 'tuổi',
+      t1: st.t1, t2: st.t2,
+      onT1: e => this.setState({ t1: e.target.value, dirty: true }),
+      onT2: e => this.setState({ t2: e.target.value, dirty: true }),
+      t2Border: t2 <= t1 ? '#C0392B' : '#E7E2DC',
+      tierMsg: t2 <= t1 ? 'Mốc trẻ em (' + t2 + ') phải lớn hơn mốc trẻ nhỏ (' + t1 + ').' : '',
+      tierMsgStyle: 'font-size: 12px; color: #C0392B;',
+
+      leftGroups, rightGroups,
+      leftEmpty: leftGroups.length === 0,
+      rightEmpty: rightGroups.length === 0,
+      leftCount: leftAvail + ' món' + (nL ? ' · ' + nL + ' tích' : ''),
+      rightCount: dishCount + ' món' + (nR ? ' · ' + nR + ' tích' : ''),
+      qL: st.qL, qR: st.qR,
+      onQL: e => this.setState({ qL: e.target.value }),
+      onQR: e => this.setState({ qR: e.target.value }),
+      btnRight: nL ? BTN_ON : BTN_OFF,
+      btnLeft: nR ? BTN_ON : BTN_OFF,
+      btnAllRight: leftAvail ? BTN_ON : BTN_OFF,
+      btnAllLeft: dishCount ? BTN_ON : BTN_OFF,
+      moveRight: () => this.setState(s => ({ selected: s.selected.concat(s.checkedL.filter(id => s.selected.indexOf(id) === -1)), checkedL: [], dirty: true })),
+      moveLeft: () => this.setState(s => ({ selected: s.selected.filter(id => s.checkedR.indexOf(id) === -1), checkedR: [], dirty: true })),
+      moveAllRight: () => this.setState({ selected: ITEMS.map(it => it[0]), checkedL: [], dirty: true }),
+      moveAllLeft: () => this.setState({ selected: [], checkedR: [], dirty: true }),
+      rightBorder: dishCount ? '#B0D4CF' : '#C0392B',
+      dishBadge: dishCount ? dishCount + ' món đã chọn' : 'Chưa có món — bắt buộc',
+      dishBadgeStyle: dishCount
+        ? 'display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; background: #EDF7F1; border: 1px solid #C3E4D2; color: #256A49; font-size: 12px; font-weight: 500;'
+        : 'display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; background: #FCF0EE; border: 1px solid #F1CCC7; color: #96271B; font-size: 12px; font-weight: 500;',
+
+      branches: ['Quận 1 · Lê Thánh Tôn', 'Quận 7 · Phú Mỹ Hưng'].map(name => ({
+        name, onRemove: () => this.setState({ dirty: true })
+      })),
+
+      dishCount,
+      moreLabel: '+' + Math.max(dishCount - 3, 0),
+      estCost: vnd(est) + ' đ',
+      refPrice: ref ? vnd(ref) + ' đ' : '—',
+      fcValue: fc ? fc.toFixed(1) + '%' : '—',
+      fcStyle: fc && fc > 35 ? 'color: #C0392B; font-variant-numeric: tabular-nums;' : 'color: #256A49; font-variant-numeric: tabular-nums;',
+
+      groupStats: GROUPS.map(g => {
+        const total = ITEMS.filter(it => it[2] === g[0]).length;
+        const n = ITEMS.filter(it => it[2] === g[0] && st.selected.indexOf(it[0]) !== -1).length;
+        return {
+          name: g[1],
+          label: n + ' / ' + total,
+          barStyle: 'display: block; height: 4px; border-radius: 999px; background: ' + (n ? '#2F7168' : '#D5CEC6') + '; width: ' + Math.round((n / total) * 100) + '%;'
+        };
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

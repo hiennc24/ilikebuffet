@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/tokens/base.css">
+<link rel="stylesheet" href="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/styles.css">
+<script src="_ds/ph-p-ph-c-shop-design-system-71d5f18f-18a9-4b30-bad2-8880c7fdb0c7/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #F4F1ED; }
+  a { color: #235B54; }
+  a:hover { color: #1C4842; }
+  input, textarea { font-family: inherit; }
+  @keyframes ibb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+</style>
+</helmet>
+
+<div style="font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-size: 14px; line-height: 1.55; color: #1E1B19; background: #F4F1ED; padding: 32px; display: flex; flex-direction: column; gap: 32px; width: 1440px; min-width: 1440px;">
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6E665C;">
+      <span>sc-vh-09</span><span style="color: #D5CEC6;">·</span><span>template 1</span><span style="color: #D5CEC6;">·</span><span style="font-family: ui-monospace, Menlo, monospace; letter-spacing: 0;">/van-hanh/phan-hoi</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 44px; line-height: 1.05; margin: 0;">Phản hồi &amp; đánh giá</h1>
+    <p style="margin: 0; max-width: 82ch; font-size: 14px; color: #635B53;">Không có nút primary — phản hồi đến từ khách, quán không tự tạo. Phản hồi 1–2 điểm tự đặt trạng thái <strong style="font-weight: 500;">chưa xử lý</strong> và mang hạn 24 giờ. Điểm dùng 5 chấm (CL2 · 16), chủ đề dùng badge CL2 · 15.</p>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+      <sc-for list="{{ roleModes }}" as="m" hint-placeholder-count="2">
+        <span onClick="{{ m.onPick }}" tabindex="0" style="{{ m.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ m.label }}</span>
+      </sc-for>
+    </div>
+  </header>
+
+  <div style="position: relative; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; box-shadow: 0 4px 12px rgba(30,27,25,0.10); padding: 24px; display: flex; flex-direction: column; gap: 20px; overflow: hidden;">
+
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <nav style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6E665C;">
+          <a href="#" style="color: #6E665C; text-decoration: none;">Vận hành</a><span style="color: #D5CEC6;">/</span>
+          <span style="color: #332F2B; font-weight: 500;">Phản hồi</span>
+        </nav>
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; line-height: 1.1; margin: 0;">Phản hồi khách hàng</h2>
+        <span style="font-size: 13px; color: #6E665C;">{{ scopeNote }}</span>
+      </div>
+      <button style="height: 36px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #4A443E; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; cursor: pointer; flex: none;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Xuất Excel</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div style="{{ s.cardStyle }}">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <span style="font-size: 13px; color: #6E665C;">{{ s.label }}</span>
+            <span style="{{ s.dirStyle }}">{{ s.dir }}</span>
+          </div>
+          <strong style="{{ s.valueStyle }}">{{ s.value }}</strong>
+          <span style="{{ s.hintStyle }}">{{ s.hint }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; align-items: flex-end; gap: 4px; border-bottom: 1px solid #E7E2DC;">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+        <span onClick="{{ t.onPick }}" tabindex="0" role="tab" aria-selected="{{ t.selected }}" style="{{ t.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+          {{ t.label }}
+          <span style="{{ t.countStyle }}">{{ t.count }}</span>
+        </span>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <div style="display: flex; gap: 4px; padding: 4px; background: #F4F1ED; border-radius: 8px;">
+          <sc-for list="{{ scoreFilter }}" as="f" hint-placeholder-count="4">
+            <span onClick="{{ f.onPick }}" tabindex="0" style="{{ f.style }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">{{ f.label }}</span>
+          </sc-for>
+        </div>
+        <span style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; cursor: pointer;" style-hover="background: #F4F1ED;">
+          Chủ đề: tất cả
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8178" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg>
+        </span>
+        <span style="width: 1px; height: 24px; background: #E7E2DC;"></span>
+        <span onClick="{{ toggleFilters }}" role="button" tabindex="0" style="{{ moreFilterStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 5h18M6 12h12M10 19h4"></path></svg>
+          Bộ lọc nâng cao
+        </span>
+      </div>
+      <span style="font-size: 13px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ resultLabel }}</span>
+    </div>
+
+    <sc-if value="{{ filtersOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 16px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;">
+        <sc-for list="{{ deferredFields }}" as="f" hint-placeholder-count="5">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 12px; color: #6E665C;">{{ f.label }}</label>
+            <span style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E;">
+              {{ f.value }}
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8A8178" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg>
+            </span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ hasSelection }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; background: #EFF6F5; border: 1px solid #B0D4CF; border-radius: 8px;">
+        <span style="font-size: 13px; color: #1C4842;"><strong style="font-weight: 500;">{{ selectedCount }}</strong> phản hồi đã chọn</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span onClick="{{ clearSelection }}" role="button" tabindex="0" style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; border: 1px solid #E7E2DC; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Bỏ chọn</span>
+          <span role="button" tabindex="0" style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; border: 1px solid #E7E2DC; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Gán người xử lý</span>
+          <span role="button" tabindex="0" style="height: 36px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 4px; background: #235B54; color: #FFFFFF; font-size: 13px; font-weight: 500; cursor: pointer;" style-hover="background: #1C4842;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Đánh dấu đã xử lý</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 32px 76px 136px 120px 76px 76px 128px 1fr 88px 104px 132px 36px; gap: 8px; align-items: center; min-height: 40px; padding: 0 16px; background: #FAF8F6; border-bottom: 1px solid #E7E2DC; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">
+        <span onClick="{{ toggleAll }}" role="checkbox" tabindex="0" aria-checked="{{ allChecked }}" aria-label="Chọn tất cả" style="{{ allBoxStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+          <sc-if value="{{ allChecked }}" hint-placeholder-val="{{ false }}">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg>
+          </sc-if>
+        </span>
+        <span>Ngày</span><span>Khách hàng</span><span>Đơn liên quan</span><span>Ca</span><span>Điểm</span><span>Chủ đề</span><span>Nội dung</span><span>Nguồn</span><span>Nhân viên</span><span>Trạng thái</span><span></span>
+      </div>
+
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="10">
+        <div style="{{ r.rowStyle }}" style-hover="background: #FAF8F6;">
+          <span onClick="{{ r.onToggle }}" role="checkbox" tabindex="0" aria-checked="{{ r.checked }}" style="{{ r.boxStyle }}" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            <sc-if value="{{ r.checked }}" hint-placeholder-val="{{ false }}">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg>
+            </sc-if>
+          </span>
+          <span style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-variant-numeric: tabular-nums; color: #4A443E;">{{ r.date }}</span>
+            <span style="font-size: 12px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ r.time }}</span>
+          </span>
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+            <a href="#" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.customer }}</a>
+            <span style="font-size: 12px; color: #6E665C; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.phone }}</span>
+          </span>
+          <a href="#" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px;">{{ r.order }}</a>
+          <span style="display: flex; align-items: center; gap: 6px; min-width: 0;">
+            <span style="{{ r.shiftDotStyle }}"></span>
+            <span style="font-size: 12px; color: #4A443E; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.shift }}</span>
+          </span>
+          <span style="display: flex; gap: 3px;" aria-label="{{ r.scoreLabel }}">
+            <sc-for list="{{ r.dots }}" as="d" hint-placeholder-count="5">
+              <span style="{{ d.style }}"></span>
+            </sc-for>
+          </span>
+          <span style="display: flex; gap: 4px; min-width: 0; overflow: hidden;" title="{{ r.topicsFull }}">
+            <sc-for list="{{ r.topics }}" as="t" hint-placeholder-count="1">
+              <span style="{{ t.style }}">{{ t.label }}</span>
+            </sc-for>
+          </span>
+          <span style="{{ r.excerptStyle }}" title="{{ r.full }}">{{ r.excerpt }}</span>
+          <span style="font-size: 12px; color: #4A443E; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.source }}</span>
+          <span style="font-size: 12px; color: #4A443E; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.staff }}</span>
+          <span style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
+            <span style="{{ r.badgeStyle }}">{{ r.status }}</span>
+            <sc-if value="{{ r.urgent }}" hint-placeholder-val="{{ false }}">
+              <span style="height: 20px; display: inline-flex; align-items: center; padding: 0 6px; border-radius: 4px; background: #FCF0EE; border: 1px solid #F1CCC7; color: #96271B; font-size: 11px; font-weight: 500; white-space: nowrap;">{{ r.slaLabel }}</span>
+            </sc-if>
+          </span>
+          <span onClick="{{ r.onOpen }}" role="button" tabindex="0" aria-label="Xem chi tiết" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;" style-hover="background: #F0EBE5;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="2" stroke-linecap="round"><path d="M12 5v.01M12 12v.01M12 19v.01"></path></svg>
+          </span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+      <span style="font-size: 13px; color: #6E665C; font-variant-numeric: tabular-nums;">{{ pageInfo }}</span>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <sc-for list="{{ pager }}" as="p" hint-placeholder-count="3">
+          <span style="{{ p.style }}">{{ p.label }}</span>
+        </sc-for>
+      </div>
+    </div>
+
+    <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position: absolute; inset: 0; background: rgba(30,27,25,0.32); z-index: 5;"></div>
+    </sc-if>
+    <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position: absolute; top: 0; right: 0; bottom: 0; width: 560px; z-index: 6; background: #FFFFFF; border-left: 1px solid #E7E2DC; box-shadow: -16px 0 40px rgba(30,27,25,0.16); display: flex; flex-direction: column;">
+        <div style="flex: none; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #E7E2DC;">
+          <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+            <strong style="font-size: 16px; font-weight: 500;">Chi tiết phản hồi</strong>
+            <span style="{{ detail.badgeStyle }}">{{ detail.status }}</span>
+          </div>
+          <span onClick="{{ closeDrawer }}" role="button" tabindex="0" aria-label="Đóng" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+          </span>
+        </div>
+
+        <div style="flex: 1; min-height: 0; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+          <sc-if value="{{ detail.urgent }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; gap: 12px; padding: 12px 16px; background: #FCF0EE; border: 1px solid #F1CCC7; border-radius: 8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+              <span style="font-size: 13px; color: #96271B;">{{ detail.slaText }}</span>
+            </div>
+          </sc-if>
+
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="display: flex; gap: 4px;" aria-label="{{ detail.scoreLabel }}">
+                <sc-for list="{{ detail.dots }}" as="d" hint-placeholder-count="5">
+                  <span style="{{ d.style }}"></span>
+                </sc-for>
+              </span>
+              <span style="display: flex; gap: 4px;">
+                <sc-for list="{{ detail.topics }}" as="t" hint-placeholder-count="2">
+                  <span style="{{ t.style }}">{{ t.label }}</span>
+                </sc-for>
+              </span>
+            </div>
+            <p style="margin: 0; padding: 16px; background: #FAF8F6; border: 1px solid #E7E2DC; border-radius: 8px; font-size: 14px; color: #1E1B19; text-wrap: pretty;">{{ detail.full }}</p>
+            <span style="font-size: 12px; color: #6E665C;">{{ detail.meta }}</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Thông tin đơn</span>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 16px; padding: 16px; border: 1px solid #E7E2DC; border-radius: 8px;">
+              <sc-for list="{{ detail.orderInfo }}" as="o" hint-placeholder-count="6">
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <span style="font-size: 12px; color: #6E665C;">{{ o.label }}</span>
+                  <span style="font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums;">{{ o.value }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Lịch sử xử lý</span>
+            <div style="display: flex; flex-direction: column;">
+              <sc-for list="{{ detail.history }}" as="h" hint-placeholder-count="3">
+                <div style="display: grid; grid-template-columns: 16px 1fr; gap: 12px;">
+                  <span style="display: flex; flex-direction: column; align-items: center;">
+                    <span style="{{ h.dotStyle }}"></span>
+                    <sc-if value="{{ h.hasLine }}" hint-placeholder-val="{{ true }}">
+                      <span style="flex: 1; width: 1px; background: #E7E2DC;"></span>
+                    </sc-if>
+                  </span>
+                  <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 16px;">
+                    <span style="{{ h.actionStyle }}">{{ h.action }}</span>
+                    <span style="font-size: 12px; color: #6E665C;">{{ h.meta }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 13px; color: #4A443E;">Hành động khắc phục</label>
+            <textarea value="{{ fixText }}" onChange="{{ onFixText }}" placeholder="Đã gọi xin lỗi khách, tặng voucher 200.000 đ cho lần sau. Nhắc bếp kiểm tra lại nhiệt độ tủ mát." style="min-height: 88px; padding: 8px 12px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; outline: none; resize: vertical;" style-focus="border-color: #2F7168; box-shadow: 0 0 0 3px rgba(47,113,104,0.12);"></textarea>
+            <span style="font-size: 12px; color: #6E665C;">Ghi lại việc đã làm, không phải lời hứa. Nội dung này hiện trong báo cáo chất lượng hằng tháng.</span>
+          </div>
+        </div>
+
+        <div style="flex: none; padding: 16px 20px; border-top: 1px solid #E7E2DC; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+          <span role="button" tabindex="0" style="height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 4px; background: #FFFFFF; border: 1px solid #E7E2DC; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#635B53" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h4l2 5-3 2a12 12 0 006 6l2-3 5 2v4a1 1 0 01-1 1A17 17 0 013 5a1 1 0 011-1z"></path></svg>
+            Liên hệ khách
+          </span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span role="button" tabindex="0" style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; border: 1px solid #E7E2DC; font-size: 13px; color: #4A443E; cursor: pointer;" style-hover="background: #F4F1ED;" style-focus="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2F7168;">Gán người xử lý</span>
+            <span style="{{ resolveBtnStyle }}">Đánh dấu đã xử lý</span>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">Ghi cho dev</h2>
+    <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 24px; display: grid; grid-template-columns: 200px 1fr; gap: 10px 16px; font-size: 13px;">
+      <span style="color: #6E665C;">không có primary</span><span style="color: #4A443E;">Phản hồi do khách gửi. Quán không tạo phản hồi hộ khách — nếu cần ghi nhận lời phàn nàn nói miệng thì đó là chức năng khác, có nguồn riêng “ghi nhận tại quầy”.</span>
+      <span style="color: #6E665C;">1–2 điểm</span><span style="color: #4A443E;">Hệ thống tự đặt <code style="font-family: ui-monospace, Menlo, monospace;">chưa xử lý</code> và gắn hạn 24 giờ tính từ thời điểm khách gửi. Người dùng không hạ mức được, chỉ xử lý xong mới đổi trạng thái.</span>
+      <span style="color: #6E665C;">nền dòng</span><span style="color: #4A443E;">Nền danger nhạt chỉ dành cho 1–2 điểm. Quá hạn 24 giờ thì thêm badge đếm ngược, <strong style="font-weight: 500;">không đổi nền đậm hơn</strong> — một dòng chỉ có một mức độ.</span>
+      <span style="color: #6E665C;">cột nội dung</span><span style="color: #4A443E;">Rút gọn đúng 1 dòng, ellipsis; đầy đủ ở tooltip và drawer. Không bao giờ cho wrap 2 dòng — bảng này quét theo điểm và trạng thái, không đọc từng chữ.</span>
+      <span style="color: #6E665C;">trưởng ca</span><span style="color: #4A443E;">Chỉ thấy phản hồi thuộc ca mình trực; bộ lọc Ca khoá ở giá trị đó. Stat cũng tính trên phạm vi ấy, không phải toàn quán.</span>
+      <span style="color: #6E665C;">sắp xếp</span><span style="color: #4A443E;">Chưa xử lý lên đầu, trong nhóm sắp theo ngày giảm dần — <strong style="font-weight: 500;">không cho đổi</strong> ở cột trạng thái, vì đây là hàng chờ việc chứ không phải kho dữ liệu.</span>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 32px; margin: 0;">4 state của T1</h2>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Đang tải</span>
+        <span style="height: 36px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="height: 44px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="height: 44px; background: #F4F1ED; border-radius: 4px; animation: ibb-pulse 1.4s ease-in-out infinite;"></span>
+        <span style="font-size: 12px; color: #6E665C;">Tab “chưa xử lý” có badge đếm trước khi bảng về — người vào màn này để xem còn bao nhiêu việc.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Rỗng · không còn việc</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #EDF7F1; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#256A49" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 100 18 9 9 0 000-18M8 12l3 3 5-6"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Không còn phản hồi chưa xử lý</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 40ch;">Tất cả phản hồi trong kỳ đã được xử lý. Sự vắng mặt ở đây là tin tốt, không phải thiếu dữ liệu.</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 32px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C; align-self: flex-start;">Chưa có dữ liệu</span>
+        <span style="width: 56px; height: 56px; border-radius: 8px; background: #F4F1ED; display: flex; align-items: center; justify-content: center; margin-top: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ABA298" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 01-11.5 7.2L4 21l1.8-5.5A8 8 0 1121 12z"></path></svg>
+        </span>
+        <strong style="font-size: 16px; font-weight: 500;">Chưa nhận được phản hồi nào</strong>
+        <span style="font-size: 13px; color: #6E665C; max-width: 42ch;">Kênh thu phản hồi chưa bật. Bật mã QR trên hoá đơn để khách đánh giá sau khi thanh toán.</span>
+        <span style="height: 36px; display: inline-flex; align-items: center; padding: 0 12px; margin-top: 4px; border: 1px solid #E7E2DC; border-radius: 4px; font-size: 13px; color: #4A443E; cursor: pointer;">Cấu hình kênh thu phản hồi</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #E7E2DC; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: #6E665C;">Lỗi tải</span>
+        <div style="display: flex; gap: 12px; padding: 12px; background: #FCF0EE; border: 1px solid #F1CCC7; border-radius: 4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 3l9 16H3zM12 9v4M12 17v.01"></path></svg>
+          <span style="font-size: 13px; color: #96271B;">Không tải được danh sách phản hồi</span>
+        </div>
+        <span style="font-size: 12px; color: #6E665C;">Badge đếm trên tab cũng ẩn — hiện số cũ khi không tải được dễ khiến quản lý tưởng đã hết việc.</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1536,&quot;height&quot;:1100}}">
+const MODE = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #E7E2DC; border-radius: 4px; background: #FFFFFF; font-size: 12px; color: #4A443E; cursor: pointer;';
+const MODE_ON = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid #B0D4CF; border-radius: 4px; background: #EFF6F5; font-size: 12px; font-weight: 500; color: #1C4842; cursor: pointer;';
+const SEG = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; font-size: 13px; color: #635B53; cursor: pointer;';
+const SEG_ON = 'height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 4px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(30,27,25,0.06); font-size: 13px; font-weight: 500; color: #1C4842; cursor: pointer;';
+const DIR_TAG = 'height: 20px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; font-size: 11px; font-weight: 500; white-space: nowrap; background: #F4F1ED; color: #6E665C;';
+
+const B_OK = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #EDF7F1; border: 1px solid #C3E4D2; color: #256A49; font-size: 12px; font-weight: 500; white-space: nowrap;';
+const B_WARN = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FDF6E7; border: 1px solid #F0DDAF; color: #8A5F12; font-size: 12px; font-weight: 500; white-space: nowrap;';
+const B_DANGER = 'height: 22px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FCF0EE; border: 1px solid #F1CCC7; color: #96271B; font-size: 12px; font-weight: 500; white-space: nowrap;';
+// Badge chủ đề · CL2 · 15 — toàn bộ neutral, phân biệt bằng chữ
+const TOPIC = 'height: 22px; min-width: 0; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #F4F1ED; border: 1px solid #E7E2DC; color: #4A443E; font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
+const TOPIC_GUESS = 'height: 22px; min-width: 0; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 4px; background: #FAF8F6; border: 1px dashed #C6BEB4; color: #6E665C; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
+
+const BOX = 'width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #C6BEB4; border-radius: 4px; background: #FFFFFF; cursor: pointer;';
+const BOX_ON = 'width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #235B54; border-radius: 4px; background: #235B54; cursor: pointer;';
+
+const CAT = ['#2F7168', '#C96442', '#1F3A5F'];
+const SHIFT_NAMES = ['Ca sáng', 'Ca chiều', 'Ca tối'];
+
+const num = (n) => n.toLocaleString('vi-VN');
+const dec1 = (n) => n.toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+// Ngưỡng lấy từ Cấu hình → Chất lượng dịch vụ, không cố định trong màn
+const CFG = {
+  negativeMaxScore: 2,   // từ điểm này trở xuống là phản hồi tiêu cực
+  slaHours: 24,          // hạn liên hệ khách với phản hồi tiêu cực
+  negativeRateWarn: 15   // % phản hồi tiêu cực vượt mức này thì tô cảnh báo
+};
+
+// [id, ngày, giờ, khách, điện thoại, đơn, ca, điểm, chủ đề[], nội dung, nguồn, nhân viên, trạng thái, giờ đã trôi]
+const FEEDBACK = [
+  ['FB-0412', '28/07', '20:14', 'Đỗ Minh Khoa', '0987 224 118', 'DH-2026-1246', 2, 1, [['Chất lượng món', false], ['Phục vụ', true]],
+   'Hàu nướng để lâu nguội ngắt, gọi thêm hai lần mới có người ra. Bàn cạnh gọi sau lại có trước. Mình đi ăn buffet nhiều nơi nhưng lần này thất vọng.', 'QR trên hoá đơn', 'Phương Vy', 'new', 4],
+  ['FB-0411', '28/07', '19:38', 'Trần Hồng Nhung', '0903 771 208', 'DH-2026-1248', 2, 5, [['Phục vụ', false]],
+   'Bạn phục vụ nhớ cả việc nhà mình dị ứng đậu phộng, chủ động nhắc bếp. Rất ấm áp, sẽ quay lại.', 'QR trên hoá đơn', 'Thu Hà', 'done', 5],
+  ['FB-0410', '28/07', '13:02', 'Lê Quốc Bảo', '0912 448 302', 'DH-2026-1231', 0, 3, [['Giá cả', false]],
+   'Buffet trưa ổn nhưng giá nhích lên so với lần trước mà món thì ít hơn một chút.', 'Google Maps', 'Mỹ Duyên', 'doing', 12],
+  ['FB-0409', '27/07', '21:44', 'Phạm Thu Trang', '0938 117 640', 'DH-2026-1219', 2, 1, [['Vệ sinh', false]],
+   'Nhà vệ sinh nữ hết giấy và sàn ướt, mình báo nhân viên nhưng tới lúc về vẫn vậy.', 'QR trên hoá đơn', 'Thu Hà', 'new', 27],
+  ['FB-0408', '27/07', '20:10', 'Vũ Hải Yến', '0975 330 219', 'DH-2026-1214', 2, 4, [['Chất lượng món', false]],
+   'Đồ nướng tươi, bò mềm. Chỉ tiếc phần tráng miệng hơi ngọt so với khẩu vị mình.', 'QR trên hoá đơn', 'Phương Vy', 'done', 29],
+  ['FB-0407', '26/07', '20:52', 'Nguyễn Thanh Tùng', '0908 552 741', 'DH-2026-1198', 2, 2, [['Không gian', false], ['Phục vụ', false]],
+   'Quán quá ồn, bàn kê sát nhau nên nói chuyện phải hét. Nhân viên thu dọn bàn bên cạnh làm rơi ly nước vào chân mình mà chỉ nói mỗi câu xin lỗi.', 'Facebook', 'Quốc Bảo', 'doing', 46],
+  ['FB-0406', '26/07', '19:20', 'Hoàng Mai Anh', '0946 118 552', 'DH-2026-1191', 2, 5, [['Chất lượng món', false]],
+   'Lẩu thái đậm vị, hải sản tươi. Món này đáng giá tiền.', 'QR trên hoá đơn', 'Thu Hà', 'done', 48],
+  ['FB-0405', '25/07', '21:12', 'Bùi Xuân Trường', '0967 442 108', 'DH-2026-1177', 2, 4, [['Phục vụ', false]],
+   'Đặt bàn 10 người, quán xếp bàn nhanh và có sẵn ghế trẻ em như đã dặn.', 'Điện thoại', 'Thu Hà', 'done', 70],
+  ['FB-0404', '25/07', '12:40', 'Đặng Kiều Oanh', '0921 887 336', 'DH-2026-1168', 0, 3, [['Không gian', false]],
+   'Trưa nắng mà điều hoà khu gần cửa yếu, ngồi hơi nóng.', 'QR trên hoá đơn', 'Mỹ Duyên', 'done', 78],
+  ['FB-0403', '24/07', '20:36', 'Lý Gia Bảo', '0933 226 470', 'DH-2026-1152', 2, 5, [['Chất lượng món', false], ['Giá cả', false]],
+   'Ăn no nê với giá này là hợp lý. Món nướng ngon hơn hẳn chỗ cũ mình hay đi.', 'Google Maps', 'Phương Vy', 'done', 94]
+];
+
+const STATUS = {
+  new: { label: 'Chưa xử lý', style: B_DANGER },
+  doing: { label: 'Đang xử lý', style: B_WARN },
+  done: { label: 'Đã xử lý', style: B_OK }
+};
+
+const dotColor = (s) => s <= 2 ? '#C0392B' : (s === 3 ? '#8A5F12' : '#235B54');
+function mkDots(score) {
+  const out = [];
+  for (let i = 1; i <= 5; i++) {
+    out.push({ style: 'width: 8px; height: 8px; border-radius: 999px; background: ' + (i <= score ? dotColor(score) : '#E7E2DC') + ';' });
+  }
+  return out;
+}
+
+class Component extends DCLogic {
+  state = { role: 'manager', tab: 'all', score: 'all', filtersOpen: false, sel: {}, openId: null, fixText: '' };
+
+  renderVals() {
+    const st = this.state;
+    const isLead = st.role === 'lead';
+
+    // Trưởng ca chỉ thấy ca mình trực · ca tối
+    const scoped = FEEDBACK.filter(f => !isLead || f[6] === 2);
+
+    const enriched = scoped.map(f => {
+      const score = f[7];
+      // 1–2 điểm: hệ thống tự đặt chưa xử lý và gắn hạn 24 giờ
+      const forced = score <= CFG.negativeMaxScore;
+      const status = forced && f[12] !== 'done' ? 'new' : f[12];
+      const hours = f[13];
+      const urgent = forced && status !== 'done';
+      return {
+        id: f[0], date: f[1], time: f[2], customer: f[3], phone: f[4], order: f[5],
+        shiftIdx: f[6], score, topics: f[8], full: f[9], source: f[10], staff: f[11],
+        status, urgent, hours, overdue: urgent && hours > CFG.slaHours
+      };
+    });
+
+    const counts = {
+      all: enriched.length,
+      new: enriched.filter(f => f.status === 'new').length,
+      doing: enriched.filter(f => f.status === 'doing').length,
+      done: enriched.filter(f => f.status === 'done').length
+    };
+
+    let rows = enriched;
+    if (st.tab === 'new') rows = enriched.filter(f => f.status === 'new');
+    if (st.tab === 'doing') rows = enriched.filter(f => f.status === 'doing');
+    if (st.tab === 'done') rows = enriched.filter(f => f.status === 'done');
+    if (st.score === 'low') rows = rows.filter(f => f.score <= 2);
+    if (st.score === 'mid') rows = rows.filter(f => f.score === 3);
+    if (st.score === 'high') rows = rows.filter(f => f.score >= 4);
+
+    // Chưa xử lý lên đầu, rồi ngày giảm dần (mảng gốc đã theo ngày giảm dần)
+    const order = { new: 0, doing: 1, done: 2 };
+    rows = rows.slice().sort((a, b) => order[a.status] - order[b.status]);
+
+    const avg = enriched.reduce((s, f) => s + f.score, 0) / enriched.length;
+    const negative = enriched.filter(f => f.score <= CFG.negativeMaxScore).length;
+    const selIds = rows.filter(r => st.sel[r.id]);
+
+    const detailSrc = enriched.filter(f => f.id === st.openId)[0] || enriched[0];
+
+    return {
+      roleModes: [['manager', 'Chủ / quản lý'], ['lead', 'Trưởng ca · chỉ ca mình']].map(m => ({
+        label: m[1], style: st.role === m[0] ? MODE_ON : MODE,
+        onPick: () => this.setState({ role: m[0], sel: {}, openId: null })
+      })),
+      scopeNote: isLead
+        ? 'Chi nhánh Quận 1 · ca tối · 22/07 — 28/07/2026 · chỉ phản hồi thuộc ca bạn trực'
+        : 'Chi nhánh Quận 1 · tất cả ca · 22/07 — 28/07/2026',
+
+      stats: [
+        { label: 'Tổng phản hồi', value: num(enriched.length), dir: 'neutral', hint: '7 ngày gần nhất', tone: 'n' },
+        { label: 'Điểm trung bình', value: dec1(avg) + ' / 5', dir: 'higher', hint: 'Kỳ trước 3,6 · số một chữ số thập phân', tone: avg >= 4 ? 'good' : 'n' },
+        { label: 'Chưa xử lý', value: num(counts.new), dir: 'lower', hint: counts.new > 0 ? 'Có phản hồi quá hạn 24 giờ' : 'Không còn việc tồn', tone: counts.new > 0 ? 'bad' : 'good' },
+        { label: 'Tỷ lệ phản hồi tiêu cực', value: dec1((negative / enriched.length) * 100) + '%', dir: 'lower',
+          hint: num(negative) + ' phản hồi ≤ ' + num(CFG.negativeMaxScore) + ' điểm · ngưỡng ' + num(CFG.negativeRateWarn) + '% từ Cấu hình',
+          tone: (negative / enriched.length) * 100 > CFG.negativeRateWarn ? 'bad' : 'n' }
+      ].map(s => ({
+        label: s.label, value: s.value, hint: s.hint,
+        dir: s.dir === 'higher' ? 'cao hơn tốt hơn' : (s.dir === 'lower' ? 'thấp hơn tốt hơn' : 'trung tính'),
+        dirStyle: DIR_TAG,
+        cardStyle: 'border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 6px; background: '
+          + (s.tone === 'bad' ? '#FDF3F1' : '#FFFFFF') + '; border: 1px solid ' + (s.tone === 'bad' ? '#F1CCC7' : '#E7E2DC') + ';',
+        valueStyle: 'font-size: 22px; font-weight: 500; font-variant-numeric: tabular-nums; color: '
+          + (s.tone === 'bad' ? '#96271B' : (s.tone === 'good' ? '#256A49' : '#1E1B19')) + ';',
+        hintStyle: 'font-size: 12px; color: ' + (s.tone === 'bad' ? '#96271B' : '#6E665C') + ';'
+      })),
+
+      tabs: [['all', 'Tất cả', counts.all], ['new', 'Chưa xử lý', counts.new], ['doing', 'Đang xử lý', counts.doing], ['done', 'Đã xử lý', counts.done]].map(t => ({
+        label: t[1],
+        selected: st.tab === t[0],
+        count: num(t[2]),
+        countStyle: 'display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; font-size: 12px; font-weight: 500; '
+          + (t[0] === 'new' && t[2] > 0
+              ? 'background: #FCF0EE; color: #96271B;'
+              : (st.tab === t[0] ? 'background: #EFF6F5; color: #1C4842;' : 'background: #F4F1ED; color: #6E665C;')),
+        style: 'height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 16px; border-radius: 4px 4px 0 0; font-size: 13px; cursor: pointer; '
+          + (st.tab === t[0]
+              ? 'background: #FFFFFF; border: 1px solid #E7E2DC; border-bottom: 1px solid #FFFFFF; margin-bottom: -1px; font-weight: 500; color: #1C4842;'
+              : 'border: 1px solid transparent; color: #635B53;'),
+        onPick: () => this.setState({ tab: t[0], sel: {} })
+      })),
+
+      scoreFilter: [['all', 'Mọi điểm'], ['low', '1–2 điểm'], ['mid', '3 điểm'], ['high', '4–5 điểm']].map(f => ({
+        label: f[1], style: st.score === f[0] ? SEG_ON : SEG, onPick: () => this.setState({ score: f[0], sel: {} })
+      })),
+      filtersOpen: st.filtersOpen,
+      toggleFilters: () => this.setState(s => ({ filtersOpen: !s.filtersOpen })),
+      moreFilterStyle: 'height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 4px; font-size: 13px; cursor: pointer; border: 1px solid '
+        + (st.filtersOpen ? '#B0D4CF' : '#E7E2DC') + '; background: ' + (st.filtersOpen ? '#EFF6F5' : '#FFFFFF') + '; color: ' + (st.filtersOpen ? '#1C4842' : '#4A443E') + ';',
+      deferredFields: [
+        { label: 'Khoảng ngày', value: '22/07 — 28/07' },
+        { label: 'Ca', value: isLead ? 'Ca tối · khoá theo vai trò' : 'Tất cả' },
+        { label: 'Nguồn', value: 'Tất cả' },
+        { label: 'Nhân viên liên quan', value: 'Tất cả' },
+        { label: 'Khu vực', value: 'Tất cả' }
+      ],
+      resultLabel: num(rows.length) + ' / ' + num(enriched.length) + ' phản hồi',
+
+      allChecked: rows.length > 0 && selIds.length === rows.length,
+      allBoxStyle: (rows.length > 0 && selIds.length === rows.length) ? BOX_ON : BOX,
+      toggleAll: () => this.setState(s => {
+        const cur = rows.filter(r => s.sel[r.id]).length;
+        if (cur === rows.length) return { sel: {} };
+        const next = {};
+        rows.forEach(r => { next[r.id] = true; });
+        return { sel: next };
+      }),
+      hasSelection: selIds.length > 0,
+      selectedCount: num(selIds.length),
+      clearSelection: () => this.setState({ sel: {} }),
+
+      rows: rows.map(r => {
+        const checked = !!st.sel[r.id];
+        const low = r.score <= 2;
+        return {
+          date: r.date, time: r.time, customer: r.customer, phone: r.phone, order: r.order,
+          shift: SHIFT_NAMES[r.shiftIdx],
+          shiftDotStyle: 'width: 8px; height: 8px; flex: none; border-radius: 2px; background: ' + CAT[r.shiftIdx] + ';',
+          dots: mkDots(r.score),
+          scoreLabel: r.score + ' trên 5 điểm',
+          // Trong bảng chỉ một badge + chip “+N” — track 128px không đủ cho hai badge
+          topics: [{ label: r.topics[0][0], style: r.topics[0][1] ? TOPIC_GUESS : TOPIC }]
+            .concat(r.topics.length > 1
+              ? [{ label: '+' + (r.topics.length - 1), style: 'height: 22px; flex: none; display: inline-flex; align-items: center; padding: 0 6px; border-radius: 4px; background: #F4F1ED; border: 1px solid #E7E2DC; color: #6E665C; font-size: 12px; font-weight: 500;' }]
+              : []),
+          topicsFull: r.topics.map(t => t[0] + (t[1] ? ' (máy gợi ý)' : '')).join(' · '),
+          excerpt: r.full,
+          full: r.full,
+          excerptStyle: 'font-size: 13px; color: #4A443E; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;',
+          source: r.source,
+          staff: r.staff,
+          status: STATUS[r.status].label,
+          badgeStyle: STATUS[r.status].style,
+          urgent: r.urgent,
+          slaLabel: r.overdue ? 'quá hạn ' + num(r.hours - CFG.slaHours) + ' h' : 'còn ' + num(CFG.slaHours - r.hours) + ' h',
+          checked,
+          boxStyle: checked ? BOX_ON : BOX,
+          onToggle: () => this.setState(s => ({ sel: Object.assign({}, s.sel, { [r.id]: !s.sel[r.id] }) })),
+          onOpen: () => this.setState({ openId: r.id, fixText: '' }),
+          rowStyle: 'display: grid; grid-template-columns: 32px 76px 136px 120px 76px 76px 128px 1fr 88px 104px 132px 36px; gap: 8px; align-items: center; min-height: 56px; padding: 0 16px; font-size: 13px; border-bottom: 1px solid #F0EBE5; background: '
+            + (low && r.status !== 'done' ? '#FDF3F1' : '#FFFFFF') + ';'
+        };
+      }),
+
+      pageInfo: '1–' + num(rows.length) + ' / ' + num(rows.length) + ' phản hồi',
+      pager: [['‹', false], ['1', true], ['›', false]].map(p => ({
+        label: p[0],
+        style: 'height: 28px; min-width: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0 8px; border-radius: 4px; font-size: 13px; cursor: pointer; font-variant-numeric: tabular-nums; border: 1px solid '
+          + (p[1] ? '#B0D4CF' : '#E7E2DC') + '; background: ' + (p[1] ? '#EFF6F5' : '#FFFFFF') + '; color: ' + (p[1] ? '#1C4842' : '#4A443E') + ';'
+      })),
+
+      drawerOpen: !!st.openId,
+      closeDrawer: () => this.setState({ openId: null }),
+      detail: {
+        status: STATUS[detailSrc.status].label,
+        badgeStyle: STATUS[detailSrc.status].style,
+        urgent: detailSrc.urgent,
+        slaText: detailSrc.overdue
+          ? 'Quá hạn phản hồi ' + num(detailSrc.hours - CFG.slaHours) + ' giờ. Phản hồi ≤ ' + num(CFG.negativeMaxScore) + ' điểm phải liên hệ khách trong ' + num(CFG.slaHours) + ' giờ kể từ lúc gửi.'
+          : 'Còn ' + num(CFG.slaHours - detailSrc.hours) + ' giờ để liên hệ khách theo cam kết ' + num(CFG.slaHours) + ' giờ.',
+        dots: mkDots(detailSrc.score),
+        scoreLabel: detailSrc.score + ' trên 5 điểm',
+        topics: detailSrc.topics.map(t => ({ label: t[0] + (t[1] ? ' · máy gợi ý' : ''), style: t[1] ? TOPIC_GUESS : TOPIC })),
+        full: detailSrc.full,
+        meta: detailSrc.customer + ' · ' + detailSrc.phone + ' · gửi lúc ' + detailSrc.time + ' ngày ' + detailSrc.date + ' qua ' + detailSrc.source,
+        orderInfo: [
+          { label: 'Mã đơn', value: detailSrc.order },
+          { label: 'Ca', value: SHIFT_NAMES[detailSrc.shiftIdx] },
+          { label: 'Bàn', value: 'B7 · tầng 2' },
+          { label: 'Số khách', value: '6 khách' },
+          { label: 'Tổng tiền', value: '3.164.000' },
+          { label: 'Nhân viên phục vụ', value: detailSrc.staff }
+        ],
+        history: [
+          ['Khách gửi phản hồi qua ' + detailSrc.source, detailSrc.date + ' ' + detailSrc.time, true],
+          ['Hệ thống đặt trạng thái chưa xử lý · phản hồi ' + detailSrc.score + ' điểm', detailSrc.date + ' ' + detailSrc.time, true],
+          ['Gán cho quản lý ca · Thu Hà', detailSrc.date + ' 21:02', false]
+        ].map((h, i, arr) => ({
+          action: h[0], meta: h[1],
+          hasLine: i < arr.length - 1,
+          actionStyle: 'font-size: 13px;' + (i === arr.length - 1 ? ' font-weight: 500;' : ''),
+          dotStyle: 'width: 7px; height: 7px; flex: none; margin-top: 6px; border-radius: 999px; background: ' + (i === arr.length - 1 ? '#235B54' : '#D5CEC6') + ';'
+        }))
+      },
+      fixText: st.fixText,
+      onFixText: (e) => this.setState({ fixText: e.target.value }),
+      resolveBtnStyle: 'height: 36px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 4px; font-size: 13px; font-weight: 500; '
+        + (st.fixText.trim().length >= 10
+            ? 'background: #235B54; color: #FFFFFF; cursor: pointer;'
+            : 'background: #F4F1ED; color: #ABA298; cursor: not-allowed;')
+    };
+  }
+}
+
+</script>
+</body>
+</html>
