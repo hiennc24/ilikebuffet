@@ -41,8 +41,8 @@ Trước khi bắt đầu **P6**, phải chốt với khách #2 (giờ ngoài kh
 | 2 | [Audit Foundation (GA-01)](./phase-02-audit-foundation-ga-01.md) | Done | GA-01 |
 | 3 | [Auth RBAC & Branch-Scoping](./phase-03-auth-rbac-branch-scoping.md) | Done | NT-02, NT-04 |
 | 4 | [Branch & Master Data](./phase-04-branch-master-data.md) | Done | NT-01, NT-03 |
-| 5 | [Frontend Foundation & App Shells](./phase-05-frontend-foundation-app-shells.md) | Pending | — (FE nền) |
-| 6 | [Ticket Types & Price Matrix](./phase-06-ticket-types-price-matrix.md) | Pending | VG-01, VG-02, VG-03 |
+| 5 | [Frontend Foundation & App Shells](./phase-05-frontend-foundation-app-shells.md) | Done | — (FE nền) |
+| 6 | [Ticket Types & Price Matrix](./phase-06-ticket-types-price-matrix.md) | On hold (client review — needs-client-confirm #2/#3/#4/#8) | VG-01, VG-02, VG-03 |
 | 7 | [Shift Bill Payment & Print](./phase-07-shift-bill-payment-print.md) | Pending | BH-01→04, BH-06, BH-07 |
 | 8 | [Offline POS PWA (BH-05)](./phase-08-offline-pos-pwa-bh-05.md) | Pending | BH-05★ |
 | 9 | [Realtime Monitor & M1 Hardening](./phase-09-realtime-monitor-m1-hardening.md) | Pending | BH-08, load/DR |

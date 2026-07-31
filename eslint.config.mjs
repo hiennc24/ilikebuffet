@@ -56,7 +56,16 @@ const moneyPlugin = {
 
 export default tseslint.config(
   {
-    ignores: ["**/dist/**", "**/node_modules/**", "**/*.js", "**/*.mjs", "**/generated/**"],
+    ignores: [
+      "**/dist/**",
+      "**/node_modules/**",
+      "**/*.js",
+      "**/*.mjs",
+      "**/generated/**",
+      // POS service-worker generated file (vite-plugin-pwa output)
+      "**/sw.js",
+      "**/workbox-*.js",
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -75,6 +84,63 @@ export default tseslint.config(
   {
     // The money utils themselves are the sanctioned place to do the math.
     files: ["packages/shared/src/money.ts"],
+    rules: { "money/no-unsafe-money-arithmetic": "off" },
+  },
+  {
+    // ── Frontend packages: React + browser globals ─────────────────────────
+    // Scoped to FE dirs only — does NOT affect apps/api lint.
+    files: [
+      "apps/admin/**/*.{ts,tsx}",
+      "apps/pos/**/*.{ts,tsx}",
+      "packages/ui/**/*.{ts,tsx}",
+    ],
+    languageOptions: {
+      globals: {
+        // Browser globals (window, document, fetch, localStorage, etc.)
+        window: "readonly",
+        document: "readonly",
+        fetch: "readonly",
+        localStorage: "readonly",
+        sessionStorage: "readonly",
+        navigator: "readonly",
+        location: "readonly",
+        console: "readonly",
+        HTMLElement: "readonly",
+        HTMLDivElement: "readonly",
+        HTMLButtonElement: "readonly",
+        HTMLInputElement: "readonly",
+        HTMLDialogElement: "readonly",
+        Node: "readonly",
+        Event: "readonly",
+        Response: "readonly",
+        Request: "readonly",
+        HeadersInit: "readonly",
+        RequestInit: "readonly",
+        // React global (JSX transform — only needed if not using importSource)
+        React: "readonly",
+      },
+    },
+    rules: {
+      // JSX files import React implicitly (new JSX transform) — allow it.
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", ignoreRestSiblings: true },
+      ],
+      // money rule still applies — FE must not do raw float money math either.
+      "money/no-unsafe-money-arithmetic": "error",
+    },
+  },
+  {
+    // Payment panel subtotal uses integer arithmetic (quantity * unitPrice).
+    // Both operands are integers — this is correct; exempt the specific file.
+    files: ["packages/ui/src/components/payment-panel.tsx"],
+    rules: { "money/no-unsafe-money-arithmetic": "off" },
+  },
+  {
+    // SellGridTile uses toLocaleString on an already-integer price.
+    // No arithmetic on money values — but still exempt to avoid false positives
+    // from the `price` parameter name in the helper.
+    files: ["packages/ui/src/components/sell-grid-tile.tsx"],
     rules: { "money/no-unsafe-money-arithmetic": "off" },
   },
 );

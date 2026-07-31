@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "pnpm --filter @ilikebuffet/api start:dev",
     "build": "pnpm -r build",
-    "test": "pnpm -r test",
+    "test": "pnpm -r --workspace-concurrency=1 test",
     "lint": "eslint .",
     "db:up": "docker compose up -d postgres redis",
     "db:down": "docker compose down",
@@ -21,6 +21,7 @@
     "onlyBuiltDependencies": [
       "@prisma/client",
       "@prisma/engines",
+      "esbuild",
       "prisma",
       "protobufjs",
       "argon2"
