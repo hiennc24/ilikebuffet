@@ -194,6 +194,29 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     expect(prisma.withTx).not.toHaveBeenCalled();
   });
 
+  // ── 7c. H5 clock-skew → accepted but quarantined ─────────────────────────
+  it("commits but quarantines a bill whose device clock skew exceeds ±2 min (H5)", async () => {
+    const prisma = makePrisma();
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+
+    const result = await svc.processBill({ ...BASE_BILL, clockOffsetMs: 5 * 60 * 1000 }, ACTOR, ALLOWED);
+
+    expect(result.status).toBe("committed"); // never reject a printed sale
+    const data = prisma._tx.bill.create.mock.calls[0][0].data as { quarantined: boolean; quarantineReason: string | null };
+    expect(data.quarantined).toBe(true);
+    expect(data.quarantineReason).toMatch(/clock_skew/);
+  });
+
+  it("does NOT quarantine a bill within clock tolerance", async () => {
+    const prisma = makePrisma();
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+
+    await svc.processBill({ ...BASE_BILL, clockOffsetMs: 30 * 1000 }, ACTOR, ALLOWED);
+
+    const data = prisma._tx.bill.create.mock.calls[0][0].data as { quarantined: boolean };
+    expect(data.quarantined).toBe(false);
+  });
+
   // ── 8. tempNumber stored on bill (C8) ─────────────────────────────────────
   it("passes tempNumber to bill.create for audit/high-water-mark (C8)", async () => {
     const prisma = makePrisma();

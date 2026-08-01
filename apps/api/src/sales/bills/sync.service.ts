@@ -22,6 +22,9 @@ import { checkFreeTicketPolicy } from "./bill-policy";
 import { toVnDateStr } from "@ilikebuffet/shared";
 import type { SyncBillDto, SyncBillResult } from "./sync.dto";
 
+/** H5: device-clock skew beyond this is accepted-but-quarantined (±2 min). */
+const CLOCK_SKEW_TOLERANCE_MS = 2 * 60 * 1000;
+
 @Injectable()
 export class SyncService {
   private readonly logger = new Logger(SyncService.name);
@@ -161,6 +164,15 @@ export class SyncService {
         const guestCount = resolvedLines.reduce((sum, l) => sum + l.qty, 0);
         const totalVnd = resolvedLines.reduce((sum, l) => sum + l.lineTotalVnd, 0);
 
+        // H5: a bill whose device clock drifted beyond tolerance is still
+        // accepted (never reject a printed sale) but quarantined for accounting
+        // review — the createdAt used for pricing/date may be unreliable.
+        const skewMs = Math.abs(dto.clockOffsetMs ?? 0);
+        const quarantined = skewMs > CLOCK_SKEW_TOLERANCE_MS;
+        const quarantineReason = quarantined
+          ? `clock_skew_${Math.round(skewMs / 1000)}s_exceeds_${CLOCK_SKEW_TOLERANCE_MS / 1000}s`
+          : null;
+
         // Allocate official gapless number (counter→audit lock order — C4)
         const { seq, number } = await this.billNumber.allocate(
           tx,
@@ -186,6 +198,10 @@ export class SyncService {
             clientUuid: dto.clientUuid,
             tempNumber: dto.tempNumber,
             contentHash,
+            deviceClockAt: dto.deviceClockAt ? new Date(dto.deviceClockAt) : null,
+            clockOffsetMs: dto.clockOffsetMs ?? null,
+            quarantined,
+            quarantineReason,
             lines: {
               create: resolvedLines.map((l) => ({
                 ticketTypeId: l.ticketTypeId,
@@ -215,6 +231,8 @@ export class SyncService {
             clientUuid: dto.clientUuid,
             totalVnd,
             source: "offline_sync",
+            quarantined,
+            quarantineReason,
           },
         });
 

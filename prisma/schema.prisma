@@ -605,6 +605,14 @@ model Bill {
   /// lines). On a dedup hit, a different hash for the same (device,uuid) means
   /// tampering/corruption → reject + audit, never silently return the number (C1).
   contentHash      String?
+  /// Device wall-clock at bill creation + skew vs server last-known-good (H5).
+  deviceClockAt    DateTime? @db.Timestamptz(3)
+  clockOffsetMs    Int?
+  /// Set when the bill is accepted but flagged for accounting review — e.g. a
+  /// clock skew beyond tolerance, or a force-closed stuck offline bill (H5/H3).
+  /// The sale is NEVER rejected; quarantine just routes it to reconciliation.
+  quarantined      Boolean   @default(false)
+  quarantineReason String?
   /// Cancellation (BH-06) — number is retained.
   cancelledBy      String?
   cancelledAt      DateTime?  @db.Timestamptz(3)

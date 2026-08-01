@@ -21,6 +21,10 @@ export interface SyncBillDto {
   deviceId: string;
   /** ISO-8601: price deciding timestamp (server re-resolves at this instant, V1). */
   createdAt: string;
+  /** Device wall-clock at creation (ISO-8601) — for skew audit (H5). */
+  deviceClockAt?: string;
+  /** Device→server clock offset (ms) recorded at last online sync (H5). */
+  clockOffsetMs?: number;
   lines: SyncBillLineDto[];
 }
 
