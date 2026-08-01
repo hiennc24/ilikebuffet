@@ -599,6 +599,8 @@ model Bill {
   guestCount       Int // number of tickets incl. free (denominator for cost/guest, M7)
   /// Offline dedup key (P8): unique per device so a re-synced create is idempotent.
   clientUuid       String?
+  /// Device-issued temp number "[CN]-[YYMMDD]-T[DEVICE_SHORT][NNN]" stored for audit (P8 C8).
+  tempNumber       String?
   /// Cancellation (BH-06) — number is retained.
   cancelledBy      String?
   cancelledAt      DateTime?  @db.Timestamptz(3)

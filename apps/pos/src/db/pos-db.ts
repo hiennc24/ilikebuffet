@@ -1,16 +1,12 @@
 /**
- * POS IndexedDB store — Dexie scaffold (H8 / BH-02.7).
+ * POS IndexedDB store — Dexie schema.
  *
  * Tables:
- *   draft_bills  — unpaid in-progress orders (distinct from completed-bill
- *                  outbox). Owner: P7. P5 only provisions the store.
- *   [future]     — completed_bill_outbox (P8 offline sync). NOT created here
- *                  to avoid schema entanglement before P8 is spec'd.
+ *   draft_bills       — unpaid in-progress orders (H8 / BH-02.7). Owner: P7.
+ *   offline_outbox    — completed bills waiting for sync (P8 / BH-05).
  *
  * Schema versioning rule: every breaking change increments the version and
  * provides an upgrade() callback. Never mutate an existing schema entry.
- *
- * Sync logic is intentionally absent — P8 owns that boundary.
  */
 
 import Dexie, { type Table } from "dexie";
@@ -46,10 +42,50 @@ export interface DraftBill {
   note?: string;
 }
 
+// ── Offline outbox types (BH-05 / P8) ──────────────────────────────────────
+
+export type OutboxStatus = "pending" | "syncing" | "committed" | "retry";
+
+export interface OutboxLine {
+  ticketTypeId: string;
+  qty: number;
+}
+
+/**
+ * OutboxBill — a completed offline bill awaiting sync.
+ *
+ * Append-only: bills are never mutated after creation.
+ * Deleted only after receiving an officialNumber from the server (C5).
+ */
+export interface OutboxBill {
+  /** Auto-incremented local key. */
+  id?: number;
+  /** Stable UUID generated at creation (CSPRNG). Dedup key on server. */
+  clientUuid: string;
+  /** Device-issued temp number "[CN]-[YYMMDD]-T[SHORT][NNN]" (C8). */
+  tempNumber: string;
+  branchId: string;
+  shiftId: string;
+  deviceId: string;
+  /** ISO-8601 bill creation time (price deciding timestamp, V1). */
+  createdAt: string;
+  lines: OutboxLine[];
+  status: OutboxStatus;
+  /** Official gapless number assigned after successful sync. */
+  officialNumber?: string;
+  /** ISO-8601 last sync attempt time. */
+  lastAttemptAt?: string;
+  /** Number of sync attempts (for backoff). */
+  attempts: number;
+  /** Server error from last retry. */
+  lastError?: string;
+}
+
 // ── DB class ───────────────────────────────────────────────────────────────
 
 export class PosDb extends Dexie {
   draft_bills!: Table<DraftBill, number>;
+  offline_outbox!: Table<OutboxBill, number>;
 
   constructor() {
     super("ilikebuffet_pos");
@@ -62,6 +98,17 @@ export class PosDb extends Dexie {
      */
     this.version(1).stores({
       draft_bills: "++id, branchId, tableId, updatedAt",
+    });
+
+    /**
+     * Version 2 — P8: offline outbox for completed bills pending sync.
+     * Index on status for pending-batch queries.
+     * Index on branchId for branch-scoped queries.
+     * Index on clientUuid for idempotency lookups.
+     */
+    this.version(2).stores({
+      draft_bills: "++id, branchId, tableId, updatedAt",
+      offline_outbox: "++id, &clientUuid, branchId, status, createdAt",
     });
   }
 }

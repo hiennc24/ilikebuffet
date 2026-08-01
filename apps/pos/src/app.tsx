@@ -25,6 +25,8 @@ import { PosShell } from "./layout/pos-shell";
 import { SellPage } from "./pages/sell-page";
 import { OpenShiftPage } from "./pages/open-shift-page";
 import { PosSessionProvider, usePosSession } from "./session/pos-session-context";
+import { NetworkStatusProvider } from "./offline/network-status-context";
+import { OfflineBanner } from "./offline/offline-banner";
 import "@ilikebuffet/ui/tokens.css";
 
 const queryClient = new QueryClient({
@@ -66,17 +68,20 @@ function SessionGate() {
 
   // status === "ready"
   return (
-    <Routes>
-      <Route
-        path="/sell"
-        element={
-          <PosShell pageTitle="Bán hàng">
-            <SellPage />
-          </PosShell>
-        }
-      />
-      <Route path="*" element={<Navigate to="/sell" replace />} />
-    </Routes>
+    <NetworkStatusProvider>
+      <OfflineBanner />
+      <Routes>
+        <Route
+          path="/sell"
+          element={
+            <PosShell pageTitle="Bán hàng">
+              <SellPage />
+            </PosShell>
+          }
+        />
+        <Route path="*" element={<Navigate to="/sell" replace />} />
+      </Routes>
+    </NetworkStatusProvider>
   );
 }
 

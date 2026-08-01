@@ -31,6 +31,8 @@ import {
 import { BillNumberService } from "./bills/bill-number.service";
 import { BillsService } from "./bills/bills.service";
 import { BillsController } from "./bills/bills.controller";
+import { SyncService } from "./bills/sync.service";
+import { SyncController } from "./bills/sync.controller";
 import { PaymentsService } from "./payments/payments.service";
 import { PaymentsController } from "./payments/payments.controller";
 
@@ -51,6 +53,7 @@ import { ShiftsController } from "./shifts/shifts.controller";
     DiscountReasonController,
     ShiftsController,
     BillsController,
+    SyncController,
     PaymentsController,
   ],
   providers: [
@@ -60,8 +63,9 @@ import { ShiftsController } from "./shifts/shifts.controller";
     BillNumberService,
     ShiftsService,
     BillsService,
+    SyncService,
     PaymentsService,
   ],
-  exports: [TicketTypesService, PricingService, DiscountsService, BillNumberService, BillsService, PaymentsService],
+  exports: [TicketTypesService, PricingService, DiscountsService, BillNumberService, BillsService, SyncService, PaymentsService],
 })
 export class SalesModule {}
