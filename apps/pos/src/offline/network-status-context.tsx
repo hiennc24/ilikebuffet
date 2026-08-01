@@ -16,11 +16,14 @@ import { usePosAuth } from "../auth/pos-auth-context";
 import { usePosSession } from "../session/pos-session-context";
 import { SyncEngine } from "./sync-engine";
 import { countPending } from "./outbox-store";
+import { measureSkew, type ClockSkew } from "./clock-skew";
 
 export interface NetworkStatusContextValue {
   isOnline: boolean;
   pendingCount: number;
   persistenceGranted: boolean | null; // null = not yet checked
+  /** Last measured device↔server clock skew (H5). null = not yet measured. */
+  clockSkew: ClockSkew | null;
   triggerSync: () => void;
 }
 
@@ -39,8 +42,20 @@ export const NetworkStatusProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isOnline, setIsOnline] = React.useState(() => navigator.onLine);
   const [pendingCount, setPendingCount] = React.useState(0);
   const [persistenceGranted, setPersistenceGranted] = React.useState<boolean | null>(null);
+  const [clockSkew, setClockSkew] = React.useState<ClockSkew | null>(null);
 
   const engineRef = React.useRef<SyncEngine | null>(null);
+
+  // H5: measure device↔server clock skew whenever we are (or become) online.
+  const measure = React.useCallback(async () => {
+    const skew = await measureSkew();
+    if (skew) {
+      setClockSkew(skew);
+      if (skew.exceeded) {
+        console.warn(`[POS] Clock skew ${Math.round(skew.offsetMs / 1000)}s exceeds tolerance (H5)`);
+      }
+    }
+  }, []);
 
   // Refresh pending count from Dexie.
   const refreshCount = React.useCallback(async () => {
@@ -78,6 +93,7 @@ export const NetworkStatusProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsOnline(true);
       engineRef.current?.triggerSync();
       void refreshCount();
+      void measure();
     };
     const handleOffline = () => setIsOnline(false);
 
@@ -94,6 +110,11 @@ export const NetworkStatusProvider: React.FC<{ children: React.ReactNode }> = ({
     void refreshCount();
   }, [refreshCount]);
 
+  // Measure clock skew on mount (if online).
+  React.useEffect(() => {
+    if (navigator.onLine) void measure();
+  }, [measure]);
+
   const triggerSync = React.useCallback(() => {
     if (isOnline) {
       engineRef.current?.triggerSync();
@@ -105,6 +126,7 @@ export const NetworkStatusProvider: React.FC<{ children: React.ReactNode }> = ({
     isOnline,
     pendingCount,
     persistenceGranted,
+    clockSkew,
     triggerSync,
   };
 

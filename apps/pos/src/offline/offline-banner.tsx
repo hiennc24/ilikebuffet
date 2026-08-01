@@ -14,13 +14,14 @@ import * as React from "react";
 import { useNetworkStatus } from "./network-status-context";
 
 export const OfflineBanner: React.FC = () => {
-  const { isOnline, pendingCount, persistenceGranted } = useNetworkStatus();
+  const { isOnline, pendingCount, persistenceGranted, clockSkew } = useNetworkStatus();
 
   const showPersistWarning = persistenceGranted === false;
   const showOffline = !isOnline;
   const showSyncing = isOnline && pendingCount > 0;
+  const showSkewWarning = clockSkew?.exceeded === true;
 
-  if (!showOffline && !showSyncing && !showPersistWarning) return null;
+  if (!showOffline && !showSyncing && !showPersistWarning && !showSkewWarning) return null;
 
   return (
     <div
@@ -68,6 +69,21 @@ export const OfflineBanner: React.FC = () => {
           }}
         >
           Cảnh báo: Trình duyệt có thể xóa dữ liệu offline. Liên hệ quản trị viên để cấp quyền lưu trữ.
+        </div>
+      )}
+
+      {showSkewWarning && (
+        <div
+          role="alert"
+          style={{
+            background: "#E67E22",
+            color: "#FFFFFF",
+            padding: "var(--space-2) var(--space-4)",
+            fontSize: "var(--text-xs)",
+          }}
+        >
+          Cảnh báo: Đồng hồ thiết bị lệch giờ máy chủ (
+          {Math.round((clockSkew?.offsetMs ?? 0) / 1000)}s). Chỉnh lại giờ trước khi bán offline — bill lệch giờ sẽ bị giữ để đối soát.
         </div>
       )}
     </div>
