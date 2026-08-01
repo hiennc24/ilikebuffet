@@ -17,7 +17,7 @@ export interface AuditEntry {
   approvedBy?: string | null;
 }
 
-/** Filters for the audit lookup (GA-01.1 dimensions). */
+/** Filters for the audit lookup. */
 export interface AuditQuery {
   actorId?: string;
   action?: string;
@@ -70,7 +70,7 @@ export class AuditService {
    * login failures) pass the base PrismaService.
    *
    * Lock ordering when used inside the bill hot path is fixed counter → audit
-   * (never reversed) to avoid AB/BA deadlocks (Red Team C4).
+   * (never reversed) to avoid AB/BA deadlocks.
    */
   async record(client: AuditWriter, entry: AuditEntry): Promise<void> {
     await client.auditLog.create({
@@ -90,7 +90,7 @@ export class AuditService {
     });
   }
 
-  /** Filtered lookup across GA-01.1 dimensions, newest first. */
+  /** Filtered lookup across configured dimensions, newest first. */
   async query(filter: AuditQuery): Promise<AuditRecordView[]> {
     const where: Prisma.AuditLogWhereInput = {
       actorId: filter.actorId,

@@ -2,7 +2,7 @@
  * Device registration endpoints.
  * Registration is scoped to a branch — the requesting user must be a member
  * of the branch (or chain-wide) and hold HQ or QUAN_LY_CN role.
- * The branchId in the body triggers BranchScopeGuard automatically (H2).
+ * The branchId in the body triggers BranchScopeGuard automatically.
  */
 import {
   Body,

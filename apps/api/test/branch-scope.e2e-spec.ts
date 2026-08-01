@@ -1,5 +1,5 @@
 /**
- * E2E: Branch-scope guard + BranchScopeHelper (C1 fix).
+ * E2E: Branch-scope guard + BranchScopeHelper.
  *
  * Proves:
  *  1. THU_NGAN of CN01 hitting a CN02 keyed resource → 403 + audit row.
@@ -9,7 +9,7 @@
  *  5. No token on any scoped route → 401.
  *  6. /health (@Public) → 200 without auth.
  *
- *  C1 (keyless scoped route with BranchScopeHelper):
+ *  Keyless scoped route with BranchScopeHelper:
  *  7. A scoped keyless route using BranchScopeHelper.requireScope() returns
  *     ONLY the calling user's branch rows (seed 2 branches; THU_NGAN of CN01
  *     sees only CN01 rows). Proves req.branchScope is populated even with
@@ -50,7 +50,7 @@ class TestScopeController {
   }
 
   /**
-   * Keyless scoped route using BranchScopeHelper.requireScope() (C1).
+   * Keyless scoped route using BranchScopeHelper.requireScope().
    * Returns { branchIds: string[] } filtered to the caller's allowed branches.
    * The test seeds two branch rows on a fictional "items" table; here we
    * simulate the filter by returning the scope's branchIds directly — the
@@ -82,7 +82,7 @@ class TestScopeController {
 @Module({ imports: [AppModule], controllers: [TestScopeController] })
 class TestAppModule {}
 
-describe("BranchScopeGuard + BranchScopeHelper (H2, C1)", () => {
+describe("BranchScopeGuard + BranchScopeHelper", () => {
   let db: StartedTestDb;
   let app: INestApplication;
   let prisma: PrismaService;
@@ -174,9 +174,9 @@ describe("BranchScopeGuard + BranchScopeHelper (H2, C1)", () => {
       .expect(200);
   });
 
-  // ─── C1: keyless scoped route uses BranchScopeHelper ─────────────────────
+  // ─── Keyless scoped route uses BranchScopeHelper ─────────────────────────
 
-  it("keyless scoped route with BranchScopeHelper returns only user's branch (C1)", async () => {
+  it("keyless scoped route with BranchScopeHelper returns only user's branch", async () => {
     const res = await request(app.getHttpServer())
       .get("/test-scope/keyless")
       .set("Authorization", `Bearer ${cashierToken}`)

@@ -1,5 +1,5 @@
 /**
- * Unit test: RBAC permission matrix (NT-02.2).
+ * Unit test: RBAC permission matrix.
  * Table-driven — every role × capability is explicit so any matrix change
  * causes a test failure, not silent behaviour drift.
  */
@@ -97,7 +97,7 @@ const matrix: MatrixRow[] = [
   },
 ];
 
-describe("RBAC permission matrix (NT-02.2)", () => {
+describe("RBAC permission matrix", () => {
   for (const row of matrix) {
     for (const [role, expectedValue] of Object.entries(row.expected)) {
       it(`can(${role}, '${row.capability}') === ${String(expectedValue)}`, () => {

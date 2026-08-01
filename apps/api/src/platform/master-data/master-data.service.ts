@@ -13,7 +13,7 @@
  *   - Supplier scope: CHAIN_WIDE created by HQ; BRANCH_SPECIFIC by QL_CN for own branch
  *     → status PENDING_HQ, usable by that branch's PO immediately (NT-03.5).
  *   - HolidayCalendar: isHoliday(date, branchId?) checks branch calendar first,
- *     falls back to chain-wide (Red Team M2).
+ *     falls back to chain-wide.
  *   - All sensitive changes audited in-tx.
  */
 import {
@@ -79,8 +79,8 @@ export function registerIngredientTransactionChecker(
 /**
  * Generate a unique ingredient code: "NL" + zero-padded 4-digit random number.
  *
- * M2 fix: exported so ExcelImportService reuses this helper instead of
- * duplicating the logic with Math.random(). Both callers now use crypto.randomInt.
+ * Exported so ExcelImportService reuses this helper instead of
+ * duplicating the logic with Math.random(). Both callers use crypto.randomInt.
  */
 export async function generateIngredientCode(tx: Prisma.TransactionClient): Promise<string> {
   // Try up to 10 times to find an unused code.
@@ -144,7 +144,7 @@ export class MasterDataService implements OnModuleInit {
   ) {}
 
   /**
-   * Idempotently seed the default FnB chart of accounts on module init (M1 fix).
+   * Idempotently seed the default FnB chart of accounts on module init.
    * Running on every boot is safe — seedDefaultAccounts() skips existing groups/accounts.
    */
   async onModuleInit(): Promise<void> {
@@ -752,7 +752,7 @@ export class MasterDataService implements OnModuleInit {
     return { data, total };
   }
 
-  // ─── Holiday Calendar (Red Team M2) ──────────────────────────────────────────
+  // ─── Holiday Calendar ─────────────────────────────────────────────────────────
 
   async createHolidayCalendar(
     dto: CreateHolidayCalendarDto,
@@ -835,18 +835,16 @@ export class MasterDataService implements OnModuleInit {
   /**
    * Check if `date` is a holiday for `branchId` (or chain-wide if null).
    *
-   * Lookup order: branch calendar → chain-wide calendar (Red Team M2 dependency
-   * for P6 day-type pricing and P8 offline price cache).
+   * Lookup order: branch calendar → chain-wide calendar (used by day-type
+   * pricing and offline price cache).
    *
-   * H1 fix: both `year` and the YYYY-MM-DD key are derived from a SINGLE
+   * Both `year` and the YYYY-MM-DD key are derived from a SINGLE
    * `Asia/Ho_Chi_Minh` normalisation so they cannot drift (e.g. 31 Dec UTC+0
    * is 1 Jan +7, which is 2026-01-01 in VN local time — the year AND the date
    * string must agree on the same calendar day).
-   *
-   * Exported as a public helper so P6 can call MasterDataService.isHoliday() directly.
    */
   async isHoliday(date: Date, branchId?: string): Promise<boolean> {
-    // Derive YYYY-MM-DD and year from a single Asia/Ho_Chi_Minh normalisation (H1).
+    // Derive YYYY-MM-DD and year from a single Asia/Ho_Chi_Minh normalisation.
     // Intl.DateTimeFormat is available in all Node 16+ versions without extra packages.
     const vnDateStr = new Intl.DateTimeFormat("en-CA", {
       timeZone: "Asia/Ho_Chi_Minh",

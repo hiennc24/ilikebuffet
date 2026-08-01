@@ -1,7 +1,7 @@
 /**
- * Permission matrix — NT-02.2.
+ * Permission matrix — role → capability set.
  *
- * Table-driven map: role → capability set. Tests must cover every cell.
+ * Table-driven map. Tests must cover every cell.
  * Capabilities are string literals so the compiler catches typos via the
  * Capability union type.
  */

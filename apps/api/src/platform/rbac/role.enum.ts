@@ -1,5 +1,5 @@
 /**
- * 6 fixed roles matching the Prisma enum (NT-02). No custom roles in MVP.
+ * 6 fixed roles matching the Prisma enum. No custom roles in MVP.
  * Mirrors prisma/schema.prisma Role enum — keep in sync.
  */
 export enum Role {
@@ -23,7 +23,7 @@ export const ROLE_LABELS: Record<Role, string> = {
 
 /**
  * Chain-wide roles: these users have implicit access to all branches
- * without needing UserBranch rows. Matches NT-02.1 spec.
+ * without needing UserBranch rows.
  */
 export const CHAIN_WIDE_ROLES = new Set<Role>([
   Role.QUAN_TRI_HQ,

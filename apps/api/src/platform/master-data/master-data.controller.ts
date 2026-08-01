@@ -7,7 +7,7 @@
  *   - Reads: all authenticated; scoped by BranchScopeHelper for supplier lists.
  *
  * Suppliers use BranchScopeHelper.requireScope() so scoped users see only
- * their branch's + chain-wide suppliers (P3 C1 carry-forward).
+ * their branch's + chain-wide suppliers.
  */
 import {
   Body,
@@ -126,7 +126,7 @@ export class IngredientController {
     return this.service.updateIngredient(ingredientId, dto, req.user.sub, req.user.role);
   }
 
-  /** Deactivate (Ngừng sử dụng) — no hard delete (NT-03.2). */
+  /** Deactivate (Ngừng sử dụng) — no hard delete. */
   @Delete(":ingredientId")
   deactivate(@Param("ingredientId") ingredientId: string, @Request() req: ScopedRequest) {
     requireHq(req);
@@ -182,9 +182,9 @@ export class SupplierController {
 
   /**
    * List suppliers. Scoped users see: chain-wide + own-branch.
-   * Chain-wide users see all. Implements P3 C1 carry-forward via BranchScopeHelper.
+   * Chain-wide users see all. Implemented via BranchScopeHelper.
    *
-   * M3 fix: uses BranchScopeHelper.requireScope(req) so any guard bypass is loud
+   * Uses BranchScopeHelper.requireScope(req) so any guard bypass is loud
    * (InternalServerError), not a silent full-table scan.
    */
   @Get()
@@ -200,12 +200,12 @@ export class SupplierController {
    * - CHAIN_WIDE: HQ only.
    * - BRANCH_SPECIFIC: HQ or QUAN_LY_CN for their own branch.
    *
-   * M4 note: QUAN_LY_CN may also *edit* (PUT) their own branch-specific supplier
-   * once P5 (Purchase Orders) is delivered. For now PUT is HQ-only to keep the
-   * blast radius minimal — P5 will relax this gate when the supplier-edit flow
-   * for branch managers is fully scoped and tested.
+   * QUAN_LY_CN may also *edit* (PUT) their own branch-specific supplier once
+   * Purchase Orders is delivered. For now PUT is HQ-only to keep the
+   * blast radius minimal — a future phase will relax this gate when the
+   * supplier-edit flow for branch managers is fully scoped and tested.
    *
-   * NT-03.5: BRANCH_SPECIFIC suppliers created by QL_CN start in PENDING_HQ status
+   * BRANCH_SPECIFIC suppliers created by QL_CN start in PENDING_HQ status
    * but are immediately usable by the branch's Purchase Order workflow.
    */
   @Post()

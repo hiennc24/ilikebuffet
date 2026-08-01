@@ -1,5 +1,5 @@
 /**
- * BranchScopeHelper — DB-level branch filter enforcer (C1 fix).
+ * BranchScopeHelper — DB-level branch filter enforcer.
  *
  * BranchScopeGuard handles the HTTP boundary (keyed-route membership check +
  * cross_branch_denied audit). This helper enforces scope at the DB query
@@ -16,7 +16,7 @@
  * The old "__denied__" sentinel is replaced by a thrown InternalServerError
  * so bugs are loud, not silent.
  *
- * TODO (P4): CI lint rule to flag repository methods that skip requireScope().
+ * TODO: CI lint rule to flag repository methods that skip requireScope().
  */
 import { InternalServerErrorException } from "@nestjs/common";
 import { Request } from "express";

@@ -1,7 +1,7 @@
 /**
- * E2E: Master-data branch-scope enforcement (P3 C1 carry-forward, P4).
+ * E2E: Master-data branch-scope enforcement.
  *
- * Proves the fail-closed contract for real scoped data (NT-02.4 + plan invariant #3):
+ * Proves the fail-closed contract for real scoped data:
  *
  *  1. THU_NGAN / QUAN_LY_CN of CN01 calls GET /master-data/suppliers:
  *     → sees chain-wide suppliers + CN01-specific suppliers only.
@@ -33,7 +33,7 @@ import { AuthService } from "../src/auth/auth.service";
 const REPO_ROOT = join(__dirname, "..", "..", "..");
 const SCHEMA = join(REPO_ROOT, "prisma", "schema.prisma");
 
-describe("Master-data branch-scope enforcement (P3 C1 carry-forward)", () => {
+describe("Master-data branch-scope enforcement", () => {
   let db: StartedTestDb;
   let app: INestApplication;
   let prisma: PrismaService;

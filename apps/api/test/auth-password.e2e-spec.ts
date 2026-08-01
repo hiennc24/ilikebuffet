@@ -1,16 +1,16 @@
 /**
- * E2E: Password policy + account lockout + mustChangePassword gate (NT-02.5/02.6, C2).
+ * E2E: Password policy + account lockout + mustChangePassword gate.
  *
  * Proves:
  *  1. Successful login → tokens + mustChangePassword flag.
  *  2. Min 8 chars enforced at change-password.
- *  3. Lock 15min after 5 consecutive failures (atomic increment — H3).
+ *  3. Lock 15min after 5 consecutive failures (atomic increment).
  *  4. mustChangePassword cleared after change-password.
  *  5. audit row written for auth.login_failed.
  *  6. Unknown username → 401 (no user enumeration — same status as wrong-password).
  *  7. Passwords argon2-hashed in DB.
  *  8. Missing required fields → 400.
- *  9. C2: mcp=true user → 403 on a normal route, 201 on change-password, normal access after.
+ *  9. mcp=true user → 403 on a normal route, 201 on change-password, normal access after.
  * 10. L10: refresh token rejected when presented as access token (typ check).
  */
 import { execFileSync } from "node:child_process";
@@ -27,7 +27,7 @@ import { PrismaService } from "../src/prisma/prisma.service";
 const REPO_ROOT = join(__dirname, "..", "..", "..");
 const SCHEMA = join(REPO_ROOT, "prisma", "schema.prisma");
 
-describe("Auth password policy + lockout + mcp gate (NT-02.5/02.6, C2)", () => {
+describe("Auth password policy + lockout + mcp gate", () => {
   let db: StartedTestDb;
   let app: INestApplication;
   let prisma: PrismaService;
@@ -144,7 +144,7 @@ describe("Auth password policy + lockout + mcp gate (NT-02.5/02.6, C2)", () => {
       .expect(401);
   });
 
-  // ─── 5. 5 failures → account locked (H3: atomic increment) ──────────────
+  // ─── 5. 5 failures → account locked ─────────────────────────────────────
 
   it("5 consecutive wrong passwords → account locked (lockedUntil set)", async () => {
     await createUser("pw-lockout-test");
@@ -214,9 +214,9 @@ describe("Auth password policy + lockout + mcp gate (NT-02.5/02.6, C2)", () => {
       .expect(400);
   });
 
-  // ─── 9. C2: mustChangePassword gate ──────────────────────────────────────
+  // ─── 9. mustChangePassword gate ──────────────────────────────────────────
 
-  it("C2: mcp=true user → 403 on a normal (non-change-password) route", async () => {
+  it("mcp=true user → 403 on a normal (non-change-password) route", async () => {
     // chainWide=true so the user passes BranchScopeGuard (scope doesn't matter here).
     await createUser("pw-mcp-gate", { mustChangePassword: true, chainWide: true });
     const { body } = await request(app.getHttpServer())
@@ -233,7 +233,7 @@ describe("Auth password policy + lockout + mcp gate (NT-02.5/02.6, C2)", () => {
       .expect(403);
   });
 
-  it("C2: mcp=true user can reach POST /auth/change-password (@PasswordChangeAllowed)", async () => {
+  it("mcp=true user can reach POST /auth/change-password (@PasswordChangeAllowed)", async () => {
     const { body } = await request(app.getHttpServer())
       .post("/auth/login")
       .send({ username: "pw-mcp-gate", password: "Password123" })
@@ -251,7 +251,7 @@ describe("Auth password policy + lockout + mcp gate (NT-02.5/02.6, C2)", () => {
     expect(user!.mustChangePassword).toBe(false);
   });
 
-  it("C2: after password change, fresh login token (mcp=false) reaches normal routes", async () => {
+  it("after password change, fresh login token (mcp=false) reaches normal routes", async () => {
     const { body } = await request(app.getHttpServer())
       .post("/auth/login")
       .send({ username: "pw-mcp-gate", password: "NewSecure99!" })

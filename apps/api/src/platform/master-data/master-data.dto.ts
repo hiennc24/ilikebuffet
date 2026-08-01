@@ -1,8 +1,8 @@
 /**
- * DTOs for master-data endpoints (NT-03).
+ * DTOs for master-data endpoints.
  *
  * Classes with class-validator decorators so the global ValidationPipe
- * enforces the NT trust boundary at HTTP ingress (C1 fix).
+ * enforces the trust boundary at HTTP ingress.
  */
 import {
   IsString,
@@ -71,7 +71,7 @@ export class PurchaseUnitDto {
   /**
    * factorToBase must be a finite number strictly > 0.
    * IsNumber({ allowNaN: false, allowInfinity: false }) rejects NaN/Infinity at the
-   * HTTP boundary before service logic is reached (C1 fix — NaN passes `<= 0`).
+   * HTTP boundary before service logic is reached (NaN passes `<= 0`).
    * @IsPositive() additionally rejects 0 and negatives.
    */
   @IsNumber({ allowNaN: false, allowInfinity: false })
@@ -108,7 +108,7 @@ export class CreateIngredientDto {
   @Min(0)
   defaultMinStock?: number;
 
-  /** Up to 3 purchase units (NT-03.1). */
+  /** Up to 3 purchase units. */
   @IsOptional()
   @IsArray()
   @ArrayMaxSize(3, { message: "At most 3 purchase units allowed (NT-03.1)" })
@@ -344,7 +344,7 @@ export class SupplierListQuery {
   offset?: number;
 }
 
-// ─── Holiday calendar (Red Team M2) ──────────────────────────────────────────
+// ─── Holiday calendar ─────────────────────────────────────────────────────────
 
 export class CreateHolidayCalendarDto {
   @IsInt()
@@ -364,7 +364,7 @@ export class CreateHolidayCalendarDto {
 export class HolidayEntryDto {
   /**
    * ISO "YYYY-MM-DD" date string.
-   * Validated as a pattern before passing to new Date() (H1 — prevent garbage dates).
+   * Validated as a pattern before passing to new Date() (prevents garbage dates).
    */
   @IsString()
   @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: "date must be YYYY-MM-DD" })

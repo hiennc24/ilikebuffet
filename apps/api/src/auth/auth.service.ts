@@ -3,19 +3,19 @@
  *
  * Security invariants (all reviewed post-audit):
  *
- * H2  Timing-safe dummy hash: precomputed once at construction via argon2.hash()
+ * Timing-safe dummy hash: precomputed once at construction via argon2.hash()
  *     so unknown-user path runs the full KDF (same timing as wrong-password).
  *
- * H3  Atomic failure counter: uses Prisma { increment: 1 } and decides the lock
+ * Atomic failure counter: uses Prisma { increment: 1 } and decides the lock
  *     from the RETURNED value — closes the read-then-write race.
  *
- * M1  Role-gated PIN setters: setCashierPin → THU_NGAN only;
+ * Role-gated PIN setters: setCashierPin → THU_NGAN only;
  *     setApprovalPin → QUAN_LY_CN only. 403 otherwise.
  *
- * M2  PIN-login enumeration collapse: all pre-PIN failure paths return the same
+ * PIN-login enumeration collapse: all pre-PIN failure paths return the same
  *     generic message ("Invalid device or PIN") and write an audit row.
  *
- * M4  PIN login checks lockedUntil (password lock blocks PIN quick-login too).
+ * PIN login checks lockedUntil (password lock blocks PIN quick-login too).
  *
  * L10 Tokens carry typ ("access"/"refresh") and mcp (mustChangePassword).
  *     Refresh token type validated at refresh(); JWT strategy rejects
@@ -55,7 +55,7 @@ const MAX_LOGIN_FAILURES = 5;
 const MAX_PIN_FAILURES = 5;
 const PIN_DIGITS_REGEX = /^\d{6}$/;
 
-/** Generic PIN-login failure message — prevents enumeration (M2). */
+/** Generic PIN-login failure message — prevents enumeration. */
 const PIN_LOGIN_GENERIC_ERROR = "Invalid device or PIN";
 
 // ─── TTL validation (L10) ─────────────────────────────────────────────────────
@@ -79,7 +79,7 @@ export class AuthService implements OnModuleInit {
   private readonly logger = new Logger(AuthService.name);
 
   /**
-   * Timing-safe dummy hash for unknown-user login attempts (H2).
+   * Timing-safe dummy hash for unknown-user login attempts.
    * Precomputed at module init so unknown users run the full argon2 KDF,
    * matching the timing of an existing-user wrong-password path.
    * The value is intentionally NOT a valid argon2 hash so verify() always
@@ -102,7 +102,7 @@ export class AuthService implements OnModuleInit {
     validateTtl(accessTtl, "JWT_ACCESS_TTL");
     validateTtl(refreshTtl, "JWT_REFRESH_TTL");
 
-    // Precompute a real argon2 hash of a random string for timing parity (H2).
+    // Precompute a real argon2 hash of a random string for timing parity.
     this.dummyHash = await argon2.hash(randomBytes(16).toString("hex"));
   }
 
@@ -118,7 +118,7 @@ export class AuthService implements OnModuleInit {
 
     if (!user) {
       // Run full KDF against the real dummy hash — timing matches existing-user
-      // wrong-password path so callers cannot distinguish the two cases (H2).
+      // wrong-password path so callers cannot distinguish the two cases.
       await argon2.verify(this.dummyHash, password);
       await this.auditLoginFailed(null, username, "user_not_found");
       throw new UnauthorizedException("Invalid credentials");
@@ -227,7 +227,7 @@ export class AuthService implements OnModuleInit {
       throw new BadRequestException("PIN must be exactly 6 digits");
     }
 
-    // H4: device must be in server registry. Collapse error messages (M2).
+    // Device must be in server registry. Collapse error messages to prevent enumeration.
     const device = await this.prisma.device.findUnique({ where: { deviceId } });
     if (!device || device.status !== "ACTIVE") {
       await this.auditPinLoginFailed(null, deviceId, "device_not_found");
@@ -251,13 +251,13 @@ export class AuthService implements OnModuleInit {
       throw new ForbiddenException(PIN_LOGIN_GENERIC_ERROR);
     }
 
-    // M4: password lock also blocks PIN quick-login.
+    // Password lock also blocks PIN quick-login.
     if (user.lockedUntil && user.lockedUntil > new Date()) {
       await this.auditPinLoginFailed(user.id, deviceId, "account_locked");
       throw new UnauthorizedException(PIN_LOGIN_GENERIC_ERROR);
     }
 
-    // User must be a cashier of this device's branch (M2: same generic message).
+    // User must be a cashier of this device's branch (same generic message to prevent enumeration).
     const isMember = user.branches.some((b) => b.branchId === device.branchId);
     if (!isMember) {
       await this.auditPinLoginFailed(user.id, deviceId, "not_branch_member");
@@ -293,7 +293,7 @@ export class AuthService implements OnModuleInit {
     const branchIds = user.branches.map((b) => b.branchId);
     const chainWide = CHAIN_WIDE_ROLES.has(user.role as Role);
     // PIN login is device-bound — carry the deviceId so offline sync can enforce
-    // that a device only syncs its own bills (Red Team C1).
+    // that a device only syncs its own bills.
     const tokens = this.issueTokens(
       user.id, user.username, user.role, chainWide, branchIds,
       user.tokenVersion, user.mustChangePassword, deviceId,
@@ -301,10 +301,10 @@ export class AuthService implements OnModuleInit {
     return { ...tokens, mustChangePassword: user.mustChangePassword };
   }
 
-  // ─── PIN management (M1: role-gated) ─────────────────────────────────────
+  // ─── PIN management (role-gated) ─────────────────────────────────────────
 
   /**
-   * Set the cashier quick-login PIN. Only THU_NGAN may call this (M1).
+   * Set the cashier quick-login PIN. Only THU_NGAN may call this.
    * cashierPinHash is separate from approvalPinHash (dual-PIN invariant).
    */
   async setCashierPin(userId: string, pin: string, callerRole: string): Promise<void> {
@@ -322,7 +322,7 @@ export class AuthService implements OnModuleInit {
   }
 
   /**
-   * Set the approval PIN. Only QUAN_LY_CN may call this (M1).
+   * Set the approval PIN. Only QUAN_LY_CN may call this.
    * approvalPinHash is separate from cashierPinHash (dual-PIN invariant).
    */
   async setApprovalPin(userId: string, pin: string, callerRole: string): Promise<void> {
@@ -342,7 +342,7 @@ export class AuthService implements OnModuleInit {
   // ─── Logout all / revoke ──────────────────────────────────────────────────
 
   /**
-   * Bump tokenVersion for the user and invalidate Redis immediately (H1).
+   * Bump tokenVersion for the user and invalidate Redis immediately.
    * All existing access + refresh tokens are rejected on next check (≤20s).
    */
   async revokeAllSessions(userId: string): Promise<void> {
@@ -351,14 +351,14 @@ export class AuthService implements OnModuleInit {
       data: { tokenVersion: { increment: 1 } },
       select: { tokenVersion: true },
     });
-    // Invalidate (DEL) then warm cache — safe even if warm fails (H1).
+    // Invalidate (DEL) then warm cache — safe even if warm fails.
     await this.revocation.invalidateAndSet(userId, user.tokenVersion);
   }
 
   // ─── Internal helpers ─────────────────────────────────────────────────────
 
   /**
-   * Atomic login failure increment (H3 — closes concurrent-wrong-password race).
+   * Atomic login failure increment (closes concurrent-wrong-password race).
    * Uses { increment: 1 } and decides lock from the RETURNED count.
    */
   private async handleLoginFailureAtomic(userId: string): Promise<void> {
@@ -370,20 +370,20 @@ export class AuthService implements OnModuleInit {
 
     if (updated.failedLoginCount >= MAX_LOGIN_FAILURES) {
       const lockedUntil = new Date(Date.now() + LOCK_DURATION_MS);
-      // Bump tv to revoke live tokens (M4/V2). Separate update so we get the
+      // Bump tv to revoke live tokens. Separate update so we get the
       // new tv value; failure counter already committed above.
       const withTv = await this.prisma.appUser.update({
         where: { id: userId },
         data: { lockedUntil, tokenVersion: { increment: 1 } },
         select: { tokenVersion: true },
       });
-      // Invalidate Redis — stale pre-lock tv is gone immediately (H1).
+      // Invalidate Redis — stale pre-lock tv is gone immediately.
       await this.revocation.invalidateAndSet(userId, withTv.tokenVersion);
     }
   }
 
   /**
-   * Atomic PIN failure increment (H3).
+   * Atomic PIN failure increment.
    * Uses { increment: 1 } and decides lock from the RETURNED count.
    */
   private async handlePinFailureAtomic(userId: string): Promise<void> {

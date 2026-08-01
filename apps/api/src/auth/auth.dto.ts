@@ -19,7 +19,7 @@ export interface ChangePasswordDto {
 }
 
 export interface PinLoginDto {
-  /** Server-issued device identifier (Red Team H4). */
+  /** Server-issued device identifier. */
   deviceId: string;
   /** Per-device secret returned once at registration (argon2-hashed at rest). */
   deviceSecret: string;

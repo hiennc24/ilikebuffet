@@ -1,5 +1,5 @@
 /**
- * ImportController unit tests (C2 fix — multipart upload endpoint).
+ * ImportController unit tests (multipart upload endpoint).
  *
  * Tests:
  *   - Missing file → 400.

@@ -52,7 +52,7 @@ export async function setupAuditHarness(): Promise<AuditHarness> {
   const dbName = new URL(db.url).pathname.replace(/^\//, "");
 
   // 2. Provision roles (superuser). audit_owner (NOLOGIN) will own the audit
-  //    objects so no app/DBA role can drop or disable the trigger (C1).
+  //    objects so no app/DBA role can drop or disable the trigger.
   await superuser.$executeRawUnsafe(`CREATE ROLE audit_owner NOLOGIN`);
   await superuser.$executeRawUnsafe(`CREATE ROLE ilikebuffet_app LOGIN PASSWORD 'app' NOSUPERUSER`);
   await superuser.$executeRawUnsafe(`CREATE ROLE audit_privileged LOGIN PASSWORD 'priv' NOSUPERUSER`);

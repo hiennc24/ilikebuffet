@@ -1,15 +1,15 @@
 /**
- * Route-level metadata decorators for the global guard system (Red Team H2).
+ * Route-level metadata decorators for the global guard system (fail-closed).
  *
  * Default (no decorator): JwtAuthGuard + BranchScopeGuard both apply.
  * @Public()             — skip auth entirely (login, health endpoints).
  * @Unscoped()           — auth required, branch scope skipped (HQ config routes).
  * @PasswordChangeAllowed() — auth required; exempts the route from the
  *                            mustChangePassword gate so users can change their
- *                            password even with mcp=true in the token (C2).
+ *                            password even with mcp=true in the token.
  *
  * CI allowlist of @Unscoped/@PasswordChangeAllowed routes stays short and
- * reviewable; adding one requires an explicit annotation (H2 invariant).
+ * reviewable; adding one requires an explicit annotation.
  */
 import { SetMetadata } from "@nestjs/common";
 

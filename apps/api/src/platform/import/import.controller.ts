@@ -1,5 +1,5 @@
 /**
- * ImportController — multipart Excel upload endpoint (C2 fix, Red Team H7).
+ * ImportController — multipart Excel upload endpoint.
  *
  * POST /import/ingredients  — HQ only, @Unscoped() (chain-wide config).
  *

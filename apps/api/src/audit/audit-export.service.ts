@@ -12,9 +12,9 @@ export interface AuditExportResult {
 }
 
 /**
- * GA-01 / Red Team H1: periodically export the audit trail append-only to
- * off-box WORM storage (e.g. S3 with Object Lock). Even a superuser DELETE at
- * the primary DB then stays detectable, because the off-box copy is immutable.
+ * Periodically export the audit trail append-only to off-box WORM storage
+ * (e.g. S3 with Object Lock). Even a superuser DELETE at the primary DB then
+ * stays detectable, because the off-box copy is immutable.
  *
  * This service produces the export PAYLOAD since a cursor (the hard part, and
  * the part worth testing). Delivery to object-lock storage is deploy config;

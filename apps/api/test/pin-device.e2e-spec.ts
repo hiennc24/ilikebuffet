@@ -1,19 +1,19 @@
 /**
- * E2E: PIN + Device registry (H4, C3, dual-PIN, M1, M2, M3, M4).
+ * E2E: PIN + Device registry.
  *
  * Proves:
- *  H4.1 PIN login from unregistered device → 403 (generic error — M2).
- *  H4.2 Valid device + valid cashier PIN → 201 + tokens.
- *  H4.3 Wrong device secret → 403 (generic error — M2).
- *  H4.4 Wrong PIN 5× → pinLockedUntil set (15min lock — H3 atomic).
- *  H4.5 Cashier of different branch cannot PIN-login on this device.
- *  C3   cashierPinHash ≠ approvalPinHash (separate columns).
- *       Approval PIN cannot be used for cashier quick-login.
- *       API responses never include PIN hashes.
- *  M1   setCashierPin → only THU_NGAN; setApprovalPin → only QUAN_LY_CN. 403 otherwise.
- *  M2   All pre-PIN failure paths return identical generic error message.
- *  M3   Device.status is DeviceStatus enum (ACTIVE/SUSPENDED); suspended device → 403.
- *  M4   Password-locked account cannot PIN-login even with correct PIN.
+ *  1. PIN login from unregistered device → 403 (generic error — no enumeration).
+ *  2. Valid device + valid cashier PIN → 201 + tokens.
+ *  3. Wrong device secret → 403 (generic error).
+ *  4. Wrong PIN 5× → pinLockedUntil set (15min lock).
+ *  5. Cashier of different branch cannot PIN-login on this device.
+ *  6. cashierPinHash ≠ approvalPinHash (separate columns).
+ *     Approval PIN cannot be used for cashier quick-login.
+ *     API responses never include PIN hashes.
+ *  7. setCashierPin → only THU_NGAN; setApprovalPin → only QUAN_LY_CN. 403 otherwise.
+ *  8. All pre-PIN failure paths return identical generic error message.
+ *  9. Device.status is DeviceStatus enum (ACTIVE/SUSPENDED); suspended device → 403.
+ * 10. Password-locked account cannot PIN-login even with correct PIN.
  */
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
@@ -31,10 +31,10 @@ import { DeviceService } from "../src/platform/devices/device.service";
 const REPO_ROOT = join(__dirname, "..", "..", "..");
 const SCHEMA = join(REPO_ROOT, "prisma", "schema.prisma");
 
-/** The generic message all pin-login failures must return (M2). */
+/** The generic message all pin-login failures must return (no enumeration). */
 const GENERIC_PIN_ERROR = "Invalid device or PIN";
 
-describe("PIN + Device registry (H4, C3, dual-PIN, M1, M2, M3, M4)", () => {
+describe("PIN + Device registry", () => {
   let db: StartedTestDb;
   let app: INestApplication;
   let prisma: PrismaService;
@@ -114,7 +114,7 @@ describe("PIN + Device registry (H4, C3, dual-PIN, M1, M2, M3, M4)", () => {
     });
     managerId = manager.id;
 
-    // HQ user — for M1 negative test (neither cashier nor manager).
+    // HQ user — for negative role-gate test (neither cashier nor manager).
     await prisma.appUser.create({
       data: {
         username: "hq-pin-test",
@@ -131,7 +131,7 @@ describe("PIN + Device registry (H4, C3, dual-PIN, M1, M2, M3, M4)", () => {
     registeredDeviceId = reg.deviceId;
     registeredDeviceSecret = reg.secret;
 
-    // Get tokens for M1 tests.
+    // Get tokens for role-gate tests.
     cashierToken = (await auth.login({ username: "cashier-pin-test", password: "Password123" })).accessToken;
     managerToken = (await auth.login({ username: "manager-pin-test", password: "Password123" })).accessToken;
     hqToken = (await auth.login({ username: "hq-pin-test", password: "Password123" })).accessToken;
@@ -144,9 +144,9 @@ describe("PIN + Device registry (H4, C3, dual-PIN, M1, M2, M3, M4)", () => {
     await db?.stop();
   });
 
-  // ─── H4.1 + M2: unregistered device → 403 with generic message ───────────
+  // ─── unregistered device → 403 with generic message ─────────────────────
 
-  it("H4.1/M2: PIN login from unregistered device → 403, generic error", async () => {
+  it("PIN login from unregistered device → 403, generic error", async () => {
     const res = await request(app.getHttpServer())
       .post("/auth/pin-login")
       .send({ deviceId: "completely-unknown-device-id", deviceSecret: "any", userId: cashierId, pin: "111111" })
@@ -154,9 +154,9 @@ describe("PIN + Device registry (H4, C3, dual-PIN, M1, M2, M3, M4)", () => {
     expect(res.body.message).toBe(GENERIC_PIN_ERROR);
   });
 
-  // ─── H4.2: valid device + valid PIN → success ─────────────────────────────
+  // ─── valid device + valid PIN → success ──────────────────────────────────
 
-  it("H4.2: valid device + correct cashier PIN → 201 + tokens", async () => {
+  it("valid device + correct cashier PIN → 201 + tokens", async () => {
     const res = await request(app.getHttpServer())
       .post("/auth/pin-login")
       .send({ deviceId: registeredDeviceId, deviceSecret: registeredDeviceSecret, userId: cashierId, pin: "111111" })
@@ -165,9 +165,9 @@ describe("PIN + Device registry (H4, C3, dual-PIN, M1, M2, M3, M4)", () => {
     expect(res.body.refreshToken).toBeDefined();
   });
 
-  // ─── H4.3 + M2: wrong device secret → 403 with generic message ───────────
+  // ─── wrong device secret → 403 with generic message ─────────────────────
 
-  it("H4.3/M2: wrong device secret → 403, generic error", async () => {
+  it("wrong device secret → 403, generic error", async () => {
     const res = await request(app.getHttpServer())
       .post("/auth/pin-login")
       .send({ deviceId: registeredDeviceId, deviceSecret: "wrong-secret", userId: cashierId, pin: "111111" })
@@ -175,9 +175,9 @@ describe("PIN + Device registry (H4, C3, dual-PIN, M1, M2, M3, M4)", () => {
     expect(res.body.message).toBe(GENERIC_PIN_ERROR);
   });
 
-  // ─── H4.4 + H3: wrong PIN 5× → PIN locked ────────────────────────────────
+  // ─── wrong PIN 5× → PIN locked ───────────────────────────────────────────
 
-  it("H4.4/H3: wrong PIN 5× → pinLockedUntil set, 6th attempt rejected", async () => {
+  it("wrong PIN 5× → pinLockedUntil set, 6th attempt rejected", async () => {
     const passwordHash = await argon2.hash("Password123");
     const cashierPinHash = await argon2.hash("222222");
     const lockedCashier = await prisma.appUser.create({
@@ -198,7 +198,7 @@ describe("PIN + Device registry (H4, C3, dual-PIN, M1, M2, M3, M4)", () => {
         .post("/auth/pin-login")
         .send({ deviceId: registeredDeviceId, deviceSecret: registeredDeviceSecret, userId: lockedCashier.id, pin: "000000" })
         .expect(401);
-      // M2: wrong-PIN failure must use the generic error.
+      // wrong-PIN failure must use the generic error.
       expect(res.body.message).toBe(GENERIC_PIN_ERROR);
     }
 
@@ -215,9 +215,9 @@ describe("PIN + Device registry (H4, C3, dual-PIN, M1, M2, M3, M4)", () => {
     expect(lockMs).toBeLessThan(16 * 60 * 1000);
   });
 
-  // ─── H4.5 + M2: cashier of wrong branch → 403 with generic message ────────
+  // ─── cashier of wrong branch → 403 with generic message ─────────────────
 
-  it("H4.5/M2: cashier of different branch → 403, generic error", async () => {
+  it("cashier of different branch → 403, generic error", async () => {
     const branch2 = await prisma.branch.create({
       data: { code: "PDV2", name: "POS Branch 2", address: "Addr 2", phone: "0900000002" },
     });
@@ -243,9 +243,9 @@ describe("PIN + Device registry (H4, C3, dual-PIN, M1, M2, M3, M4)", () => {
     expect(res.body.message).toBe(GENERIC_PIN_ERROR);
   });
 
-  // ─── M4: password-locked account cannot PIN-login ─────────────────────────
+  // ─── password-locked account cannot PIN-login ────────────────────────────
 
-  it("M4: account with lockedUntil set cannot PIN-login even with correct PIN", async () => {
+  it("account with lockedUntil set cannot PIN-login even with correct PIN", async () => {
     const passwordHash = await argon2.hash("Password123");
     const cashierPinHash = await argon2.hash("444444");
     const futureDate = new Date(Date.now() + 15 * 60 * 1000);
@@ -271,9 +271,9 @@ describe("PIN + Device registry (H4, C3, dual-PIN, M1, M2, M3, M4)", () => {
     expect(res.body.message).toBe(GENERIC_PIN_ERROR);
   });
 
-  // ─── M3: DeviceStatus enum — suspended device is denied ──────────────────
+  // ─── DeviceStatus enum — suspended device is denied ─────────────────────
 
-  it("M3: suspended device → 403, generic error", async () => {
+  it("suspended device → 403, generic error", async () => {
     const reg = await deviceSvc.register({ branchId, label: "Terminal to suspend" });
     await deviceSvc.suspend(reg.deviceId);
 
@@ -288,9 +288,9 @@ describe("PIN + Device registry (H4, C3, dual-PIN, M1, M2, M3, M4)", () => {
     expect(res.body.message).toBe(GENERIC_PIN_ERROR);
   });
 
-  // ─── C3: Dual-PIN separation ──────────────────────────────────────────────
+  // ─── Dual-PIN separation ──────────────────────────────────────────────────
 
-  it("C3: cashierPinHash and approvalPinHash stored in separate columns", async () => {
+  it("cashierPinHash and approvalPinHash stored in separate columns", async () => {
     const user = await prisma.appUser.findUnique({ where: { id: cashierId } });
     expect(user!.cashierPinHash).toBeDefined();
     expect(user!.approvalPinHash).toBeDefined();

@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { AuditHarness, setupAuditHarness } from "./audit-test-harness";
 
 /**
- * GA-01 / Red Team H1: audit_log is append-only against everyone but a superuser.
+ * audit_log is append-only against everyone but a superuser.
  *  - app role: UPDATE/DELETE revoked (privilege layer)
  *  - privileged non-superuser: keeps the privilege, blocked by the trigger
  *  - superuser: escape hatch for DR
@@ -70,7 +70,7 @@ describe("audit_log immutability (integration)", () => {
     ).resolves.toBeDefined();
   });
 
-  it("non-owner cannot DROP or DISABLE the trigger (owner segregation, C1)", async () => {
+  it("non-owner cannot DROP or DISABLE the trigger (owner segregation)", async () => {
     // audit_privileged has table DML privileges but does NOT own audit_log
     // (audit_owner does), so it cannot remove or disable the guard.
     await expect(

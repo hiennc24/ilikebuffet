@@ -1,7 +1,7 @@
 /**
  * Passport JWT strategy. Validates the bearer token and loads the minimal
  * user payload into request.user. Token version (tv) is checked per-request
- * in JwtAuthGuard via RevocationService (Red Team M4/V2).
+ * in JwtAuthGuard via RevocationService.
  *
  * Payload additions (security review fixes):
  *  - mcp (mustChangePassword): carried in access token; JwtAuthGuard enforces
@@ -23,12 +23,12 @@ export interface JwtPayload {
   chainWide: boolean;
   /** Branch IDs the user belongs to (empty for chain-wide roles) */
   branchIds: string[];
-  /** Token version — bumped on logout-all / account lock (M4/V2) */
+  /** Token version — bumped on logout-all / account lock */
   tv: number;
-  /** mustChangePassword — carried in access token; enforced per-request (C2) */
+  /** mustChangePassword — carried in access token; enforced per-request */
   mcp: boolean;
   /** Device this token is bound to — set only for PIN (device) login. Offline
-   *  sync enforces bill.deviceId === this when present (Red Team C1). */
+   *  sync enforces bill.deviceId === this when present. */
   deviceId?: string;
   /** Token type — "access" or "refresh"; guards reject the wrong type (L10) */
   typ: "access" | "refresh";

@@ -1,5 +1,5 @@
 /**
- * BranchController — CRUD + status management (NT-01).
+ * BranchController — CRUD + status management.
  *
  * Role gates:
  *   - Mutations (create, update, status-change): QUAN_TRI_HQ only.
@@ -37,7 +37,7 @@ export class BranchController {
 
   /**
    * List branches.
-   * H3 fix: chain-wide roles see all; non-chainWide users see only their branches.
+   * Chain-wide roles see all; non-chainWide users see only their branches.
    * bankAccount is never returned to non-members (VietQR data — branch-confidential).
    */
   @Unscoped()
@@ -49,7 +49,7 @@ export class BranchController {
 
   /**
    * Get one branch. BranchScopeGuard enforces membership via :branchId param.
-   * H3 fix: strip bankAccount for non-members.
+   * Strip bankAccount for non-members.
    */
   @Get(":branchId")
   async findOne(@Param("branchId") branchId: string, @Request() req: ScopedRequest) {

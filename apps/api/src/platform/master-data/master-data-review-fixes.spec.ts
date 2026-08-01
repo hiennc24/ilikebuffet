@@ -1,5 +1,5 @@
 /**
- * Tests that prove each code-review finding is fixed (C1, H1, M1, M2, M5).
+ * Tests that prove each code-review finding is fixed.
  *
  * These tests are intentionally narrow — one test per invariant — so that
  * a future regression is immediately attributable to a specific fix.
@@ -49,14 +49,14 @@ function makeMockPrisma(txOverrides: Record<string, unknown> = {}) {
   return { prisma, tx };
 }
 
-// ─── C1: class-validator DTO — factorToBase NaN / non-positive ───────────────
+// ─── factorToBase NaN / non-positive validation ───────────────────────────────
 
 /**
  * The HTTP boundary is enforced by ValidationPipe + class-validator decorators.
  * These tests verify the SERVICE rejects the same bad values at the service
  * boundary (defence in depth via validatePurchaseUnits).
  */
-describe("C1 — factorToBase service-layer validation", () => {
+describe("factorToBase service-layer validation", () => {
   it("rejects factorToBase = 0 (service layer)", async () => {
     const { prisma } = makeMockPrisma();
     const service = new MasterDataService(prisma as never, makeAudit() as never);
@@ -102,9 +102,9 @@ describe("C1 — factorToBase service-layer validation", () => {
   });
 });
 
-// ─── H1: isHoliday() timezone — year and dateStr from same VN normalisation ──
+// ─── isHoliday() timezone — year and dateStr from same VN normalisation ───────
 
-describe("H1 — isHoliday() Asia/Ho_Chi_Minh normalisation", () => {
+describe("isHoliday() Asia/Ho_Chi_Minh normalisation", () => {
 
   it("uses year 2026 for a date that is 2026-01-01 in Asia/Ho_Chi_Minh", async () => {
     // 2025-12-31T17:30:00Z is 2026-01-01T00:30:00+07:00 — VN year is 2026.
@@ -165,9 +165,9 @@ describe("H1 — isHoliday() Asia/Ho_Chi_Minh normalisation", () => {
   });
 });
 
-// ─── M1: seedDefaultAccounts() idempotency ────────────────────────────────────
+// ─── seedDefaultAccounts() idempotency ───────────────────────────────────────
 
-describe("M1 — seedDefaultAccounts() idempotency", () => {
+describe("seedDefaultAccounts() idempotency", () => {
   it("skips existing groups and accounts (does not create duplicates)", async () => {
     // accountGroup.findUnique returns a group → already exists.
     // account.findFirst returns an account → already exists.
@@ -218,9 +218,9 @@ describe("M1 — seedDefaultAccounts() idempotency", () => {
   });
 });
 
-// ─── M2: generateIngredientCode uses crypto.randomInt ────────────────────────
+// ─── generateIngredientCode uses crypto.randomInt ────────────────────────────
 
-describe("M2 — generateIngredientCode uses crypto.randomInt (no Math.random)", () => {
+describe("generateIngredientCode uses crypto.randomInt (no Math.random)", () => {
   it("generates a code in NLxxxx format", async () => {
     const tx = makeMockTx();
     const code = await generateIngredientCode(tx);

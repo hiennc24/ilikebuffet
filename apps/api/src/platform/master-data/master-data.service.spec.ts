@@ -1,5 +1,5 @@
 /**
- * MasterDataService unit tests (TDD — NT-03 acceptance criteria).
+ * MasterDataService unit tests.
  *
  * Tests:
  *   - Ingredient purchase unit limit (max 3).
@@ -165,7 +165,7 @@ describe("ingredientHasTransactions()", () => {
 // ─── MasterDataService — Ingredients ─────────────────────────────────────────
 
 describe("MasterDataService — ingredients", () => {
-  it("rejects more than 3 purchase units (NT-03.1)", async () => {
+  it("rejects more than 3 purchase units", async () => {
     const { prisma } = makeMockPrisma();
     const service = new MasterDataService(prisma as never, makeAudit() as never);
 
@@ -244,7 +244,7 @@ describe("MasterDataService — ingredients", () => {
     ).rejects.toThrow(ForbiddenException);
   });
 
-  it("deactivates ingredient (Ngừng sử dụng) with audit — NT-03.2", async () => {
+  it("deactivates ingredient (Ngừng sử dụng) with audit", async () => {
     const { prisma } = makeMockPrisma();
     const audit = makeAudit();
     const service = new MasterDataService(prisma as never, audit as never);
@@ -287,7 +287,7 @@ describe("MasterDataService — suppliers", () => {
     expect(result).toBeDefined();
   });
 
-  it("creates BRANCH_SPECIFIC supplier with PENDING_HQ status (NT-03.5)", async () => {
+  it("creates BRANCH_SPECIFIC supplier with PENDING_HQ status", async () => {
     const { prisma, tx } = makeMockPrisma();
     const pendingSupplier = makeSupplier({ scope: "BRANCH_SPECIFIC", status: "PENDING_HQ", branchId: "br1" });
     (tx as unknown as Record<string, Record<string, unknown>>).supplier = {
@@ -403,7 +403,7 @@ describe("MasterDataService — accounts", () => {
 
 // ─── MasterDataService — isHoliday ───────────────────────────────────────────
 
-describe("MasterDataService — isHoliday() (Red Team M2)", () => {
+describe("MasterDataService — isHoliday()", () => {
   function makeIsHolidayPrisma(
     branchEntry: boolean,
     chainEntry: boolean,

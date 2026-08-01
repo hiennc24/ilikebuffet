@@ -12,7 +12,7 @@ import { AuditExportService } from "../src/audit/audit-export.service";
  * The audit log for a sensitive action lives or dies WITH that action:
  * a rolled-back business tx must leave no audit row; a committed one must leave
  * exactly one with the correct before/after. Plus a micro-benchmark of the
- * in-tx audit insert (Red Team C4/AD7 — measured at P2, not deferred to P7).
+ * in-tx audit insert cost.
  */
 describe("audit in-transaction semantics (integration)", () => {
   let db: StartedTestDb;
@@ -80,7 +80,7 @@ describe("audit in-transaction semantics (integration)", () => {
     expect(rows[0].reason).toBe("price update");
   });
 
-  it("micro-benchmark: in-tx audit insert cost (C4/AD7)", async () => {
+  it("micro-benchmark: in-tx audit insert cost", async () => {
     const N = 50;
     const start = process.hrtime.bigint();
     for (let i = 0; i < N; i++) {
@@ -90,7 +90,7 @@ describe("audit in-transaction semantics (integration)", () => {
     }
     const elapsedMs = Number(process.hrtime.bigint() - start) / 1e6;
     const avgMs = elapsedMs / N;
-    // Informational — printed so P7 has a number before building the bill hot path.
+    // Informational — printed for baseline visibility before building the bill hot path.
     // Generous ceiling only to catch a pathological regression, not to gate perf.
     console.log(`[audit-bench] ${N} in-tx audit inserts: ${elapsedMs.toFixed(1)}ms total, ${avgMs.toFixed(2)}ms/insert`);
     expect(avgMs).toBeLessThan(50);

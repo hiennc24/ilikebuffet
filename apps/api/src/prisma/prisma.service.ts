@@ -10,8 +10,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
   constructor() {
     // The app runtime must connect as the NON-owner `ilikebuffet_app` role so
-    // the audit-log REVOKE layer applies (an owner-class connection bypasses it,
-    // Red Team H1). Migrations/tooling use DATABASE_URL (owner); the running app
+    // the audit-log REVOKE layer applies (an owner-class connection bypasses it).
+    // Migrations/tooling use DATABASE_URL (owner); the running app
     // sets APP_DATABASE_URL. Falls back to the default (DATABASE_URL) for tests.
     super(
       process.env.APP_DATABASE_URL
@@ -36,7 +36,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
    * (bill numbering, audit writes). Hot paths that need row locks issue
    * `SELECT ... FOR UPDATE` via `$queryRaw` on the `tx` handle — see
    * {@link lockRowForUpdate}. Keep the locked section SHORT and lock in a
-   * fixed order (counter -> audit) to avoid deadlocks (Red Team C4).
+   * fixed order (counter -> audit) to avoid deadlocks.
    */
   withTx<T>(
     fn: (tx: TxClient) => Promise<T>,

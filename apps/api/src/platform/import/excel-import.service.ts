@@ -1,11 +1,11 @@
 /**
- * ExcelImportService — validate-before-write Excel import with pluggable column-map (Red Team H7).
+ * ExcelImportService — validate-before-write Excel import with pluggable column-map.
  *
  * Column mapping is driven by a ColumnMap config object, NOT hard-coded column indices.
  * This is the seam for all future import/export templates (ingredients, suppliers,
- * accounting — when real client files arrive for #8).
+ * accounting — when real client files arrive).
  *
- * Import contract (NT-03.3):
+ * Import contract:
  *   1. Parse rows via ExcelJS.
  *   2. Validate ALL rows first: duplicate name (normalized), missing required field,
  *      unknown unit code, conversion factor ≤ 0.
@@ -13,18 +13,18 @@
  *   4. Write ONLY valid rows in ONE transaction (all-or-nothing per batch).
  *   5. Produce an error workbook (same columns + "Lỗi" column) for re-submission.
  *
- * H7 note: The 6 accounting export templates are NOT implemented here.
- * They are deferred pending real client files (needs-client-confirm #8).
- * The ColumnMap interface is the extension point — add a new map when files arrive.
+ * The 6 accounting export templates are NOT implemented here.
+ * They are deferred pending real client files. The ColumnMap interface is the
+ * extension point — add a new map when files arrive.
  */
 import { BadRequestException, Injectable, Logger } from "@nestjs/common";
 import * as ExcelJS from "exceljs";
 import { PrismaService } from "../../prisma/prisma.service";
 import { vnNormalize } from "@ilikebuffet/shared";
-// M2 fix: reuse the single crypto.randomInt-based helper from master-data service.
+// Reuse the single crypto.randomInt-based helper from master-data service.
 import { generateIngredientCode } from "../master-data/master-data.service";
 
-// ─── Column-map config (H7 seam) ─────────────────────────────────────────────
+// ─── Column-map config (pluggable seam) ──────────────────────────────────────
 
 /**
  * Maps a spreadsheet column (1-based index OR header label) to a field name.
@@ -49,12 +49,12 @@ export interface ColumnMap {
   columns: ColumnDef[];
 }
 
-// ─── Ingredient import column map (NT-03.3 template) ─────────────────────────
+// ─── Ingredient import column map ────────────────────────────────────────────
 
 /**
  * Standard ingredient import template.
  * Headers match the downloadable template the API will expose.
- * Changing headers here updates the template — no other code changes needed (H7).
+ * Changing headers here updates the template — no other code changes needed.
  */
 export const INGREDIENT_COLUMN_MAP: ColumnMap = {
   templateName: "Nguyên liệu",
@@ -112,7 +112,7 @@ export class ExcelImportService {
    * Steps: parse → validate → write valid rows atomically.
    *
    * @param fileBuffer   Raw bytes of the uploaded .xlsx file.
-   * @param actorId      For future audit rows on each created ingredient (wired in P4 full flow).
+   * @param actorId      For future audit rows on each created ingredient.
    * @returns            ImportResult with counts, errors, and optional error workbook.
    */
   async importIngredients(
@@ -137,7 +137,7 @@ export class ExcelImportService {
     const unitByCode = new Map(units.map((u) => [u.code.toUpperCase(), u.id]));
     const groupByName = new Map(groups.map((g) => [g.name, g.id]));
     // Normalized set of existing ingredient names — for duplicate detection across
-    // both the DB and within the current batch (NT-03.3).
+    // both the DB and within the current batch.
     const existingNormalized = new Set(existingIngredients.map((i) => vnNormalize(i.name)));
 
     // 3. Validate all rows; collect errors.
@@ -160,7 +160,7 @@ export class ExcelImportService {
       if (!groupName) rowErrors.push("Thiếu nhóm nguyên liệu");
       if (!baseUnitCode) rowErrors.push("Thiếu đơn vị gốc");
 
-      // Duplicate name detection (NT-03.3): normalize then check DB + batch.
+      // Duplicate name detection: normalize then check DB + batch.
       const normalized = vnNormalize(name);
       if (name && (existingNormalized.has(normalized) || batchNormalized.has(normalized))) {
         rowErrors.push(`Tên "${name}" bị trùng (chuẩn hoá không dấu: "${normalized}")`);
@@ -214,7 +214,7 @@ export class ExcelImportService {
         }
       }
 
-      // M5 fix: invalid defaultMinStock must produce a row error, not silently coerce to 0.
+      // Invalid defaultMinStock must produce a row error, not silently coerce to 0.
       let defaultMinStock = 0;
       const minStockRaw = d["defaultMinStock"];
       if (minStockRaw !== undefined && minStockRaw !== null && String(minStockRaw).trim() !== "") {
@@ -251,11 +251,11 @@ export class ExcelImportService {
       `Ingredient import: ${valid.length} valid, ${errors.length} errors out of ${rows.length} rows`,
     );
 
-    // 4. Write valid rows atomically — all-or-nothing per batch (NT-03.3).
+    // 4. Write valid rows atomically — all-or-nothing per batch.
     if (valid.length > 0) {
       await this.prisma.withTx(async (tx) => {
         for (const { parsed } of valid) {
-          // Auto-generate code if not provided — uses the shared crypto.randomInt helper (M2 fix).
+          // Auto-generate code if not provided — uses the shared crypto.randomInt helper.
           const code = parsed.code ?? (await generateIngredientCode(tx));
 
           const ingredient = await tx.ingredient.create({

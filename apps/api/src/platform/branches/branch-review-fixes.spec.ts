@@ -1,7 +1,7 @@
 /**
- * Tests that prove H3 fix: branch list scoped to caller's branches for non-chainWide users.
+ * Tests that branch list is scoped to caller's branches for non-chainWide users.
  *
- * Tests the BranchService.list() allowedBranchIds filter parameter introduced in H3.
+ * Tests the BranchService.list() allowedBranchIds filter parameter.
  * The controller layer maps req.user.chainWide/branchIds to this parameter.
  */
 import { BranchService } from "./branch.service";
@@ -72,9 +72,9 @@ function makeAudit() {
   return { record: jest.fn().mockResolvedValue(undefined) };
 }
 
-// ─── H3: BranchService.list() with allowedBranchIds ─────────────────────────
+// ─── BranchService.list() with allowedBranchIds ──────────────────────────────
 
-describe("H3 — BranchService.list() branch scoping", () => {
+describe("BranchService.list() branch scoping", () => {
   it("returns all branches when allowedBranchIds is undefined (chain-wide)", async () => {
     const { prisma } = makeMockPrisma([CN01, CN02]);
     const service = new BranchService(prisma as never, makeAudit() as never);

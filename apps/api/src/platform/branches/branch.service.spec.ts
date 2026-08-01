@@ -1,5 +1,5 @@
 /**
- * BranchService unit tests (TDD — NT-01 acceptance criteria).
+ * BranchService unit tests.
  *
  * Uses in-memory Prisma mocks — no DB container needed.
  * Tests:
@@ -78,7 +78,7 @@ function makeAuditService() {
 
 describe("branchHasTransactions()", () => {
   it("returns false when no checkers are registered", async () => {
-    // The registry starts empty (P3 baseline).
+    // The registry starts empty.
     const fakeTx = {} as TxClient;
     const result = await branchHasTransactions("br1", fakeTx);
     expect(result).toBe(false);
@@ -87,7 +87,7 @@ describe("branchHasTransactions()", () => {
   it("returns true when a checker stub finds transactions", async () => {
     const fakeTx = {} as TxClient;
 
-    // Simulate P7 injecting a Bill checker that finds a row.
+    // Simulate the billing module injecting a Bill checker that finds a row.
     const stubChecker: TransactionChecker = jest.fn().mockResolvedValue(true);
     registerTransactionChecker(stubChecker);
 
@@ -112,7 +112,7 @@ describe("BranchService", () => {
       await expect(service.assertBranchAcceptsTransactions("br1")).resolves.toBeUndefined();
     });
 
-    it("throws ForbiddenException for SUSPENDED branch (NT-01.4)", async () => {
+    it("throws ForbiddenException for SUSPENDED branch", async () => {
       const { prisma } = makeMockPrisma({ status: "SUSPENDED" });
       const service = new BranchService(prisma as never, makeAuditService() as never);
       await expect(service.assertBranchAcceptsTransactions("br1")).rejects.toThrow(
@@ -242,7 +242,7 @@ describe("BranchService", () => {
     });
 
     it("blocks code change when a transaction checker signals existing transactions", async () => {
-      // Simulate P7 checker finding a Bill row.
+      // Simulate billing module checker finding a Bill row.
       const { prisma } = makeMockPrisma({ code: "CN01" });
 
       // Patch the tx inside withTx so branchHasTransactions returns true.

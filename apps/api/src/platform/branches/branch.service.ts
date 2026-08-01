@@ -1,14 +1,14 @@
 /**
- * BranchService — CRUD + status management for Branch (NT-01).
+ * BranchService — CRUD + status management for Branch.
  *
  * Key invariants:
  *   - Branch code is IMMUTABLE once the branch has transactions.
  *     branchHasTransactions() is the extensible checker (currently always false;
- *     P7 will register Bills as a transactional table).
- *   - SUSPENDED branches → assertBranchAcceptsTransactions() throws (P7 uses this).
+ *     billing module will register a Bill checker when ready).
+ *   - SUSPENDED branches → assertBranchAcceptsTransactions() throws.
  *   - CLOSED branches: no hard delete, soft status only.
- *   - Every create/update/status-change writes an audit row inside the same tx (NT-01.6).
- *   - Copy-from-template copies CONFIG tables only, never transaction data (NT-01.3).
+ *   - Every create/update/status-change writes an audit row inside the same tx.
+ *   - Copy-from-template copies CONFIG tables only, never transaction data.
  */
 import {
   BadRequestException,
@@ -27,18 +27,18 @@ import type {
   BranchListQuery,
 } from "./branch.dto";
 
-// ─── Transactional-table registry (extensible — P7 adds Bill) ─────────────────
+// ─── Transactional-table registry (extensible) ────────────────────────────────
 
 /**
  * A checker function that returns true if `branchId` has any rows in a
- * transactional table. P7 will add a checker for the Bill table.
+ * transactional table. The billing module will register a Bill checker.
  *
  * Currently empty → always returns false (no transactional tables yet).
  */
 export type TransactionChecker = (branchId: string, tx: TxClient) => Promise<boolean>;
 
 const transactionCheckers: TransactionChecker[] = [
-  // P7 will push: (branchId, tx) => tx.bill.count({ where: { branchId } }).then(n => n > 0)
+  // Billing module will push: (branchId, tx) => tx.bill.count({ where: { branchId } }).then(n => n > 0)
 ];
 
 /**
@@ -53,7 +53,7 @@ export async function branchHasTransactions(branchId: string, tx: TxClient): Pro
 }
 
 /**
- * Register an additional transactional-table checker (called by P7+).
+ * Register an additional transactional-table checker.
  * Must be called before any service method that reads it (i.e., at module init).
  */
 export function registerTransactionChecker(checker: TransactionChecker): void {
@@ -71,12 +71,11 @@ export class BranchService {
     private readonly audit: AuditService,
   ) {}
 
-  // ─── Public guard (used by P7 transaction endpoints) ──────────────────────
+  // ─── Public guard (used by transaction endpoints) ─────────────────────────
 
   /**
    * Throw ForbiddenException if the branch is not in ACTIVE status.
    * SUSPENDED → transactions blocked. CLOSED → transactions blocked.
-   * Used by P7 bill/shift endpoints (NT-01.4).
    */
   async assertBranchAcceptsTransactions(branchId: string): Promise<void> {
     const branch = await this.prisma.branch.findUnique({
@@ -116,7 +115,7 @@ export class BranchService {
         },
       });
 
-      // Copy configuration from template branch if requested (NT-01.3).
+      // Copy configuration from template branch if requested.
       if (dto.copyFromBranchId) {
         await this.copyConfigFromTemplate(dto.copyFromBranchId, branch.id, tx);
       }
@@ -208,7 +207,7 @@ export class BranchService {
       const branch = await tx.branch.findUnique({ where: { id: branchId } });
       if (!branch) throw new NotFoundException(`Branch ${branchId} not found`);
 
-      // CLOSED → no hard delete, stay in reports (NT-01.4).
+      // CLOSED → no hard delete, stay in reports.
       // Any status transition is allowed at the service level; guard/role check
       // happens at controller.
 
@@ -243,7 +242,7 @@ export class BranchService {
   /**
    * List branches.
    *
-   * H3 fix: `allowedBranchIds` scopes the result to a specific set of branches.
+   * `allowedBranchIds` scopes the result to a specific set of branches.
    * Pass `undefined` for chain-wide users (no restriction).
    * Non-chainWide users pass their branchIds so they only see their own branches.
    */
@@ -256,7 +255,7 @@ export class BranchService {
         { code: { contains: query.search, mode: "insensitive" } },
       ];
     }
-    // Scope to caller's branches when not chain-wide (H3).
+    // Scope to caller's branches when not chain-wide.
     if (allowedBranchIds !== undefined) {
       where.id = { in: allowedBranchIds };
     }
@@ -282,7 +281,7 @@ export class BranchService {
     };
   }
 
-  // ─── Template copy (NT-01.3) ───────────────────────────────────────────────
+  // ─── Template copy ────────────────────────────────────────────────────────
 
   /**
    * Copy CONFIG from `templateId` into `targetId`.
@@ -290,7 +289,7 @@ export class BranchService {
    * Transactional data (bills, shifts, stock movements) is NEVER copied.
    *
    * Currently copies: supplier chain-wide associations.
-   * P6 will add: price tables. KH will add: ingredient applicability.
+   * Price tables and ingredient applicability will be added in later phases.
    */
   private async copyConfigFromTemplate(
     templateId: string,
@@ -307,16 +306,16 @@ export class BranchService {
 
     // Copy chain-wide suppliers (no transaction data — just the catalog link).
     // Branch-specific suppliers are not copied — they belong to the source branch.
-    // This is intentionally a no-op for now; P6 adds price table copy here.
+    // This is intentionally a no-op for now; price table copy will be added in a later phase.
     this.logger.log(
-      `Template copy: from=${templateId} → to=${targetId} (supplier links deferred to P6)`,
+      `Template copy: from=${templateId} → to=${targetId} (supplier links deferred)`,
     );
   }
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
 
   private validateCode(code: string): void {
-    // NT-01.1: 2–5 uppercase characters (letters A-Z and digits 0-9), e.g. "CN01".
+    // Branch code: 2–5 uppercase characters (letters A-Z and digits 0-9), e.g. "CN01".
     // Must start with a letter. All characters uppercase.
     if (!/^[A-Z][A-Z0-9]{1,4}$/.test(code)) {
       throw new BadRequestException(

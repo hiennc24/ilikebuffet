@@ -1,8 +1,8 @@
 /**
- * DTOs for Branch CRUD endpoints (NT-01).
+ * DTOs for Branch CRUD endpoints.
  *
  * Using classes with class-validator decorators so the global ValidationPipe
- * enforces the NT trust boundary at HTTP ingress (C1 fix).
+ * enforces the trust boundary at HTTP ingress.
  */
 import {
   IsString,
@@ -33,7 +33,7 @@ export class DayHoursDto {
   close!: string;
 }
 
-/** Optional bank account JSON (NT-01.2 — for VietQR). */
+/** Optional bank account JSON (for VietQR). */
 export class BankAccountDto {
   @IsString()
   @IsNotEmpty()
@@ -93,7 +93,7 @@ export class CreateBranchDto {
   @IsUrl({}, { message: "logoUrl must be a valid URL" })
   logoUrl?: string;
 
-  /** Copy configuration (not transaction data) from this branch. NT-01.3. */
+  /** Copy configuration (not transaction data) from this branch. */
   @IsOptional()
   @IsString()
   copyFromBranchId?: string;

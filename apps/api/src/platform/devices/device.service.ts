@@ -1,12 +1,12 @@
 /**
- * DeviceService — server-side device registry (Red Team H4).
+ * DeviceService — server-side device registry.
  *
  * deviceId is SERVER-ISSUED (randomUUID), not client-chosen. The per-device
  * secret is returned exactly once at registration and argon2-hashed at rest.
  * PIN quick-login requires a valid (deviceId + deviceSecret) pair — unknown
  * or unregistered devices are denied before the PIN is even checked.
  *
- * Device.status uses the DeviceStatus enum (M3) — no bare string comparisons.
+ * Device.status uses the DeviceStatus enum — no bare string comparisons.
  */
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { DeviceStatus } from "@prisma/client";

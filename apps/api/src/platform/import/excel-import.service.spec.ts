@@ -1,5 +1,5 @@
 /**
- * ExcelImportService unit tests (TDD — NT-03.3 + Red Team H7).
+ * ExcelImportService unit tests.
  *
  * Tests cover the ingredient import with a fixture workbook built in-memory
  * (no real file needed — the column-map config drives the parsing).
@@ -14,7 +14,7 @@
  *   - Mixed valid + errors → only valid rows written atomically, error workbook produced.
  *   - Empty file → 0 rows, 0 errors.
  *
- * H7 invariant: import uses INGREDIENT_COLUMN_MAP config, not hard-coded indices.
+ * Column-map invariant: import uses INGREDIENT_COLUMN_MAP config, not hard-coded indices.
  *   The fixture builder uses the SAME map so column reordering would still pass
  *   (the test would just rebuild the fixture in the new order).
  */
@@ -26,7 +26,7 @@ import { ExcelImportService, INGREDIENT_COLUMN_MAP } from "./excel-import.servic
 
 /**
  * Build an in-memory xlsx buffer from a list of row objects.
- * Headers are taken from INGREDIENT_COLUMN_MAP so the test is config-driven (H7).
+ * Headers are taken from INGREDIENT_COLUMN_MAP so the test is config-driven.
  */
 async function buildIngredientFixture(
   rows: Array<Record<string, unknown>>,
@@ -275,7 +275,7 @@ describe("ExcelImportService — importIngredients()", () => {
     expect(prisma._createdIngredients).toHaveLength(0);
   });
 
-  it("H7: column order can be changed in the map without breaking the parser", async () => {
+  it("column order can be changed in the map without breaking the parser", async () => {
     // Build fixture using the REVERSED column order — header row will mismatch
     // column indices but the header-based parser should still find the right values.
     const reversedMap = {
@@ -325,9 +325,9 @@ describe("ExcelImportService — parseWorkbook()", () => {
   });
 });
 
-// ─── M5: defaultMinStock invalid string → row error (not silent 0) ───────────
+// ─── defaultMinStock invalid string → row error (not silent 0) ───────────────
 
-describe("M5 — defaultMinStock invalid string produces row error", () => {
+describe("defaultMinStock invalid string produces row error", () => {
   it("reports a row error for a non-numeric defaultMinStock string", async () => {
     const buf = await buildIngredientFixture([
       {

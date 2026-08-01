@@ -13,8 +13,8 @@ import { AuditService } from "./audit.service";
 import { AUDITED_KEY, AuditedMeta } from "./audited.decorator";
 
 /**
- * Request context the auth layer (P3) attaches to `request`. All optional here
- * so audited reads work before auth lands; P3 populates actor/branch/device.
+ * Request context the auth layer attaches to `request`. All optional here
+ * so audited reads work before auth lands; auth layer populates actor/branch/device.
  */
 interface AuditableRequest {
   auditActorId?: string;
@@ -30,7 +30,7 @@ interface AuditableRequest {
  * the request, but this path is for already-committed/side-effect-free actions,
  * so a lost read-audit row is tolerable (unlike in-tx sensitive audits).
  *
- * NOT globally registered yet — P3 wires it once auth populates the context.
+ * NOT globally registered yet — wired in once auth populates the context.
  */
 @Injectable()
 export class AuditInterceptor implements NestInterceptor {

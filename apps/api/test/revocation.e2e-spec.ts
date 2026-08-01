@@ -1,11 +1,11 @@
 /**
- * E2E: Token revocation ≤30s (Red Team M4/V2) + Redis-fail-safe (H1).
+ * E2E: Token revocation ≤30s + Redis fail-safe.
  *
  * Proves:
- *  M4/V2: logout-all bumps tv → same access token rejected immediately.
- *  M4/V2: 5 failed logins lock account → pre-lock token rejected.
- *  M4/V2: after revokeAllSessions, refresh token also rejected.
- *  H1:    invalidateAndSet uses DEL before SET — even if a stale Redis key
+ *  logout-all bumps tv → same access token rejected immediately.
+ *  5 failed logins lock account → pre-lock token rejected.
+ *  after revokeAllSessions, refresh token also rejected.
+ *  invalidateAndSet uses DEL before SET — even if a stale Redis key
  *         exists with the OLD tv, the guard re-reads from DB and rejects.
  *         Simulated by manually writing the old tv to Redis AFTER bumping DB,
  *         then verifying the request still fails (DB fallback triggered).
@@ -27,7 +27,7 @@ import { AuthService } from "../src/auth/auth.service";
 const REPO_ROOT = join(__dirname, "..", "..", "..");
 const SCHEMA = join(REPO_ROOT, "prisma", "schema.prisma");
 
-describe("Token revocation ≤30s + Redis fail-safe (M4/V2, H1)", () => {
+describe("Token revocation ≤30s + Redis fail-safe", () => {
   let db: StartedTestDb;
   let app: INestApplication;
   let prisma: PrismaService;
@@ -60,9 +60,9 @@ describe("Token revocation ≤30s + Redis fail-safe (M4/V2, H1)", () => {
     await db?.stop();
   });
 
-  // ─── M4/V2: logout-all → immediate rejection ──────────────────────────────
+  // ─── logout-all → immediate rejection ────────────────────────────────────
 
-  it("M4/V2: access token rejected immediately after logout-all", async () => {
+  it("access token rejected immediately after logout-all", async () => {
     const passwordHash = await argon2.hash("Password123");
     await prisma.appUser.create({
       data: {
@@ -91,9 +91,9 @@ describe("Token revocation ≤30s + Redis fail-safe (M4/V2, H1)", () => {
     expect(response.body).toMatchObject({ statusCode: 401 });
   });
 
-  // ─── M4/V2: account lock → pre-lock token rejected ────────────────────────
+  // ─── account lock → pre-lock token rejected ──────────────────────────────
 
-  it("M4/V2: 5 failed logins lock account → pre-lock token rejected immediately", async () => {
+  it("5 failed logins lock account → pre-lock token rejected immediately", async () => {
     const passwordHash = await argon2.hash("Password123");
     await prisma.appUser.create({
       data: {
@@ -120,9 +120,9 @@ describe("Token revocation ≤30s + Redis fail-safe (M4/V2, H1)", () => {
       .expect(401);
   });
 
-  // ─── M4/V2: refresh token also revoked ────────────────────────────────────
+  // ─── refresh token also revoked ───────────────────────────────────────────
 
-  it("M4/V2: after revokeAllSessions, refresh token rejected", async () => {
+  it("after revokeAllSessions, refresh token rejected", async () => {
     const passwordHash = await argon2.hash("Password123");
     await prisma.appUser.create({
       data: {
@@ -149,9 +149,9 @@ describe("Token revocation ≤30s + Redis fail-safe (M4/V2, H1)", () => {
       .expect(401);
   });
 
-  // ─── H1: stale Redis key falls back to DB (DEL-before-SET invariant) ──────
+  // ─── stale Redis key falls back to DB (DEL-before-SET invariant) ─────────
 
-  it("H1: token rejected even when Redis has stale OLD tv (DB fallback always authoritative)", async () => {
+  it("token rejected even when Redis has stale OLD tv (DB fallback always authoritative)", async () => {
     const passwordHash = await argon2.hash("Password123");
     const user = await prisma.appUser.create({
       data: {

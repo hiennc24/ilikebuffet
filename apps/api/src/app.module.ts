@@ -1,8 +1,8 @@
 /**
  * Root application module.
  *
- * Global guards registered as APP_GUARD (Red Team H2 — fail-closed):
- *   1. JwtAuthGuard  — validates JWT + per-request token-version check (M4/V2).
+ * Global guards registered as APP_GUARD (fail-closed):
+ *   1. JwtAuthGuard  — validates JWT + per-request token-version check.
  *   2. BranchScopeGuard — enforces branch membership; cross-branch → 403 + audit.
  *
  * Both guards apply to every route by default. Opt-out:
