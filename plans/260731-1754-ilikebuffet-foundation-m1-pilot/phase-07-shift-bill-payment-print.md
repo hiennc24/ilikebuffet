@@ -70,4 +70,6 @@ Lõi bán hàng **online trước**: mở ca, tạo bill (giá server, snapshot)
 
 **POS PWA — DONE (26 test).** Session context (device id + gate mở ca) → màn Bán (grid loại vé thật, ước giá qua `/sales/pricing/resolve`, giỏ hàng lưu Dexie **survive refresh/lock** H8, hydrate khi mở lại) → PayDialog (tạo bill server = tổng + số bill chuẩn, idempotent theo clientUuid; thanh toán kết hợp phải khớp tổng; VietQR tối thiểu; print stub; xoá draft khi xong). Dev proxy + prefill login.
 
-**Còn lại P7:** `packages/print-agent` (HTTP local 80mm, lỗi in không chặn lưu — H6 transport spike; real-printer test **blocked** chờ Sprint-0 chọn 2 model); UI hủy bill (nhập PIN QL — backend đã có); VietQR hoàn thiện.
+**print-agent — DONE (10 test).** `packages/print-agent`: ESC/POS builder 80mm (header/dòng/tổng/thanh toán/BẢN SAO/cut), PrintDriver (Loopback M1 + USB/LAN stub fail-loud chờ Sprint-0), HTTP server localhost. Lỗi in báo 502 **không chặn bán** (BH-04.4); CORS cho POS; H6 mixed-content ghi chú Sprint-0. **Real-printer test vẫn blocked** chờ chọn 2 model.
+
+**Còn lại P7:** UI hủy bill trong POS (danh sách bill ca + dialog nhập PIN QL — backend `POST /sales/bills/:id/cancel` đã có + test); nối print stub POS → print-agent; VietQR hoàn thiện. Load test BH-02.6 → P9.
