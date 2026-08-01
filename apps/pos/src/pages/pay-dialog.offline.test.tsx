@@ -81,8 +81,16 @@ describe("PayDialog — offline", () => {
   it("queues the bill to the outbox with a temp number and completes locally", async () => {
     render(<Host />, { wrapper: Wrapper });
 
-    // The offline bill is created into the outbox and we reach the payment step.
+    // We reach the payment step, but nothing is in the outbox yet — an unpaid
+    // bill must not sync (it would get an official number prematurely).
     await waitFor(() => expect(screen.getByLabelText(/số tiền nhận/i)).toBeTruthy());
+    expect(await getPendingBills("branch-01")).toHaveLength(0);
+
+    // Confirm payment → the completed bill (with its payment) enters the outbox.
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /xác nhận thanh toán/i }));
+    });
+    expect(await screen.findByText(/đã lưu bill offline/i)).toBeTruthy();
 
     const pending = await getPendingBills("branch-01");
     expect(pending).toHaveLength(1);
@@ -90,12 +98,6 @@ describe("PayDialog — offline", () => {
     expect(pending[0].tempNumber).toMatch(/^CN01-\d{6}-TDEVA\d{3}$/);
     expect(pending[0].lines).toEqual([{ ticketTypeId: "tt-1", qty: 2 }]);
     expect(pending[0].clockOffsetMs).toBeDefined();
-
-    // Confirm → local success (no server payment POST), bill stays queued.
-    await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: /xác nhận thanh toán/i }));
-    });
-    expect(await screen.findByText(/đã lưu bill offline/i)).toBeTruthy();
-    expect(await getPendingBills("branch-01")).toHaveLength(1);
+    expect(pending[0].payments).toEqual([{ method: "CASH", amountVnd: 400000 }]);
   });
 });

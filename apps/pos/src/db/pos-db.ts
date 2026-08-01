@@ -73,6 +73,8 @@ export interface OutboxBill {
   deviceClockAt?: string;
   clockOffsetMs?: number;
   lines: OutboxLine[];
+  /** Payment(s) taken offline for this bill (BH-03). Synced with the bill. */
+  payments?: Array<{ method: "CASH" | "VIETQR" | "CARD"; amountVnd: number; reference?: string }>;
   status: OutboxStatus;
   /** Official gapless number assigned after successful sync. */
   officialNumber?: string;

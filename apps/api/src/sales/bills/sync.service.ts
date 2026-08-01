@@ -172,12 +172,19 @@ export class SyncService {
         const forced = opts?.forceQuarantine;
         const skewMs = Math.abs(dto.clockOffsetMs ?? 0);
         const skewExceeded = skewMs > CLOCK_SKEW_TOLERANCE_MS;
-        const quarantined = !!forced || skewExceeded;
+        // A payment total that doesn't match the SERVER-recomputed total means the
+        // offline price estimate drifted from the authoritative price — accept but
+        // quarantine for accounting (never reject a printed, paid sale).
+        const paymentSum = (dto.payments ?? []).reduce((s, p) => s + p.amountVnd, 0);
+        const paymentMismatch = (dto.payments?.length ?? 0) > 0 && paymentSum !== totalVnd;
+        const quarantined = !!forced || skewExceeded || paymentMismatch;
         const quarantineReason = forced
           ? forced.reason
           : skewExceeded
             ? `clock_skew_${Math.round(skewMs / 1000)}s_exceeds_${CLOCK_SKEW_TOLERANCE_MS / 1000}s`
-            : null;
+            : paymentMismatch
+              ? `payment_mismatch_paid_${paymentSum}_vs_total_${totalVnd}`
+              : null;
 
         // Allocate official gapless number (counter→audit lock order — C4)
         const { seq, number } = await this.billNumber.allocate(
@@ -208,6 +215,17 @@ export class SyncService {
             clockOffsetMs: dto.clockOffsetMs ?? null,
             quarantined,
             quarantineReason,
+            // Offline bills carry their payment; the sale was settled at creation.
+            paidAt: dto.payments?.length ? createdAt : null,
+            payments: dto.payments?.length
+              ? {
+                  create: dto.payments.map((p) => ({
+                    method: p.method,
+                    amountVnd: p.amountVnd,
+                    reference: p.reference ?? null,
+                  })),
+                }
+              : undefined,
             lines: {
               create: resolvedLines.map((l) => ({
                 ticketTypeId: l.ticketTypeId,

@@ -271,6 +271,41 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     expect(audit.record).not.toHaveBeenCalled();
   });
 
+  // ── 7f. offline payments recorded on sync ────────────────────────────────
+  it("records offline payments and sets paidAt when the total matches (BH-03)", async () => {
+    const prisma = makePrisma();
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+
+    // Pricing 185000 × qty 2 = 370000 total.
+    const result = await svc.processBill(
+      { ...BASE_BILL, payments: [{ method: "CASH", amountVnd: 370000 }] },
+      ACTOR,
+      ALLOWED,
+    );
+
+    expect(result.status).toBe("committed");
+    const data = prisma._tx.bill.create.mock.calls[0][0].data as { paidAt: unknown; quarantined: boolean; payments: { create: unknown[] } };
+    expect(data.paidAt).not.toBeNull();
+    expect(data.payments.create).toHaveLength(1);
+    expect(data.quarantined).toBe(false);
+  });
+
+  it("quarantines a bill whose offline payment total ≠ server-recomputed total", async () => {
+    const prisma = makePrisma();
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+
+    const result = await svc.processBill(
+      { ...BASE_BILL, payments: [{ method: "CASH", amountVnd: 300000 }] }, // ≠ 370000
+      ACTOR,
+      ALLOWED,
+    );
+
+    expect(result.status).toBe("committed"); // never reject a paid, printed sale
+    const data = prisma._tx.bill.create.mock.calls[0][0].data as { quarantined: boolean; quarantineReason: string };
+    expect(data.quarantined).toBe(true);
+    expect(data.quarantineReason).toMatch(/payment_mismatch/);
+  });
+
   // ── 8. tempNumber stored on bill (C8) ─────────────────────────────────────
   it("passes tempNumber to bill.create for audit/high-water-mark (C8)", async () => {
     const prisma = makePrisma();

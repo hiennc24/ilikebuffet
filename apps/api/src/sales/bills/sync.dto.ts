@@ -11,6 +11,13 @@ export interface SyncBillLineDto {
   qty: number;
 }
 
+/** A payment taken offline, synced with the bill (BH-03/BH-05). */
+export interface SyncPaymentDto {
+  method: "CASH" | "VIETQR" | "CARD";
+  amountVnd: number;
+  reference?: string;
+}
+
 export interface SyncBillDto {
   /** Stable UUID generated on-device at bill-creation time (CSPRNG). */
   clientUuid: string;
@@ -26,6 +33,8 @@ export interface SyncBillDto {
   /** Device→server clock offset (ms) recorded at last online sync (H5). */
   clockOffsetMs?: number;
   lines: SyncBillLineDto[];
+  /** Payments taken offline for this bill (BH-03). Recorded on sync. */
+  payments?: SyncPaymentDto[];
 }
 
 /**

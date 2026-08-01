@@ -156,5 +156,6 @@ function toSyncDto(bill: OutboxBill) {
     deviceClockAt: bill.deviceClockAt,
     clockOffsetMs: bill.clockOffsetMs,
     lines: bill.lines,
+    payments: bill.payments,
   };
 }

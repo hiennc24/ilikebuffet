@@ -76,8 +76,11 @@ export const PayDialog: React.FC<PayDialogProps> = ({
   const [branch, setBranch] = React.useState<BranchInfo | null>(null);
   const [step, setStep] = React.useState<Step>("creating");
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
-  // True when the bill was queued offline (no server number yet).
+  // True when the bill was created offline (no server number yet).
   const [isOfflineBill, setIsOfflineBill] = React.useState(false);
+  // Offline bill metadata captured at creation, used to write the outbox row at
+  // payment confirmation (a bill only enters the outbox once it is paid).
+  const offlineMetaRef = React.useRef<{ tempNumber: string; createdAt: string; clockOffsetMs: number } | null>(null);
 
   const [method, setMethod] = React.useState<PaymentMethod>("CASH");
   const [amountInput, setAmountInput] = React.useState("");
@@ -130,23 +133,8 @@ export const PayDialog: React.FC<PayDialogProps> = ({
         const tempNumber = buildTempNumber(branchCode, deviceId, selectedBranchId, new Date(nowIso));
         const estTotal = cartItems.reduce((s, i) => s + multiplyVnd(i.unitPrice, i.quantity), 0);
         const guest = cartItems.reduce((s, i) => s + i.quantity, 0);
-        try {
-          await addToOutbox({
-            clientUuid,
-            tempNumber,
-            branchId: selectedBranchId,
-            shiftId,
-            deviceId,
-            createdAt: nowIso,
-            deviceClockAt: nowIso,
-            clockOffsetMs: clockSkew?.offsetMs ?? 0,
-            lines: cartItems.map((i) => ({ ticketTypeId: i.id, qty: i.quantity })),
-          });
-        } catch {
-          setErrorMsg("Không lưu được bill offline — thử lại.");
-          setStep("error");
-          return;
-        }
+        // The bill enters the outbox only once paid (see handleConfirmPayment).
+        offlineMetaRef.current = { tempNumber, createdAt: nowIso, clockOffsetMs: clockSkew?.offsetMs ?? 0 };
         if (cancelled) return;
         setBillId(clientUuid);
         setBill({
@@ -217,12 +205,34 @@ export const PayDialog: React.FC<PayDialogProps> = ({
     const amountVnd = parseInt(amountInput, 10);
     if (amountVnd !== bill.totalVnd) return; // Button should be disabled, guard anyway.
 
-    // Offline: the bill is already queued in the outbox. There is no server to
-    // POST the payment to; the sale is complete locally (paper bill printed) and
-    // the bill syncs on reconnect. Payment method is captured for the local
-    // record; payment reconciliation on sync is an M1 follow-up.
+    // Offline: write the completed bill (with its payment) to the outbox now.
+    // There is no server to POST to; the sale is settled locally and the bill —
+    // including the payment method taken — syncs on reconnect.
     if (isOfflineBill) {
-      console.log("[PayDialog] offline bill queued", { tempNumber: bill.number, method, amountVnd });
+      const meta = offlineMetaRef.current;
+      if (!meta || !selectedBranchId || !shiftId) {
+        setErrorMsg("Thiếu dữ liệu bill offline — thử lại.");
+        setStep("error");
+        return;
+      }
+      try {
+        await addToOutbox({
+          clientUuid: billId,
+          tempNumber: meta.tempNumber,
+          branchId: selectedBranchId,
+          shiftId,
+          deviceId,
+          createdAt: meta.createdAt,
+          deviceClockAt: meta.createdAt,
+          clockOffsetMs: meta.clockOffsetMs,
+          lines: cartItems.map((i) => ({ ticketTypeId: i.id, qty: i.quantity })),
+          payments: [{ method, amountVnd }],
+        });
+      } catch {
+        setErrorMsg("Không lưu được bill offline — thử lại.");
+        setStep("error");
+        return;
+      }
       setStep("success");
       onPaymentSuccess();
       triggerSync(); // no-op while offline; drains the outbox once back online
@@ -249,7 +259,7 @@ export const PayDialog: React.FC<PayDialogProps> = ({
       );
       setStep("error");
     }
-  }, [api, bill, billId, amountInput, method, onPaymentSuccess, isOfflineBill, triggerSync]);
+  }, [api, bill, billId, amountInput, method, onPaymentSuccess, isOfflineBill, triggerSync, cartItems, selectedBranchId, shiftId, deviceId]);
 
   const remaining = bill ? bill.totalVnd - (parseInt(amountInput, 10) || 0) : 0;
   const payDisabled =
