@@ -1,7 +1,20 @@
-# P0 — Admin list-screen foundation
+# P0 — Admin list-screen foundation  ✅ DONE (2026-08-02)
 
 **Goal:** shared building blocks so every list screen (P1–P5) is consistent and cheap.
 Unblocks all other phases.
+
+## Actual (deviations from plan, KISS/YAGNI)
+- `DataTable`, `Card`, `Select`, `InlineError`, `Badge`, `Empty/Loading/ErrorState`,
+  `PageStack`, `toErrorMessage` **already existed** in `_shared/admin-ui.tsx` (M1 built a
+  local DataTable) → reused, not recreated.
+- **Added** to `_shared/admin-ui.tsx`: `FilterBar`, `Pagination`, `DetailDrawer`.
+- **Added** `lib/use-paged-list.ts` (`usePagedList` + `buildListQuery`) and
+  `lib/unwrap-list.ts` (`unwrapList` + `listTotal`, extracted from auth-context — DRY).
+- **Skipped** client-side sortable headers (server sorts via query params — YAGNI).
+- **Deferred** nav/route wiring to each screen's phase (avoid dead placeholder pages);
+  add `/orders`, `/branches`, `/master-data/*`, `/users`, `/devices`, `/audit` when their
+  phase lands, behind the RBAC `can()` from P6.
+- Tests: `lib/use-paged-list.test.tsx` (5), `_shared/admin-ui.test.tsx` (7). Admin 42 green.
 
 ## Requirements
 - `DataTable` component (deferred from M1): columns config, sortable header, row click,

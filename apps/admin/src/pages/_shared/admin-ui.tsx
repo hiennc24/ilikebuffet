@@ -352,6 +352,197 @@ export const PageStack: React.FC<{ children: React.ReactNode }> = ({ children })
   </div>
 );
 
+// ── Filter bar ────────────────────────────────────────────────────────────────
+
+/**
+ * FilterBar — a horizontal row of filter controls (selects, search, date range)
+ * with optional right-aligned actions. A thin layout wrapper so every list
+ * screen arranges its filters the same way.
+ */
+export const FilterBar: React.FC<{ children: React.ReactNode; actions?: React.ReactNode }> = ({
+  children,
+  actions,
+}) => (
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      alignItems: "center",
+      gap: "var(--space-3)",
+      marginBottom: "var(--space-4)",
+    }}
+  >
+    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "var(--space-3)" }}>
+      {children}
+    </div>
+    {actions && <div style={{ marginLeft: "auto", display: "flex", gap: "var(--space-2)" }}>{actions}</div>}
+  </div>
+);
+
+// ── Pagination ──────────────────────────────────────────────────────────────
+
+export interface PaginationProps {
+  page: number;
+  pageCount: number;
+  total: number;
+  onPageChange: (page: number) => void;
+}
+
+/** Pagination — prev/next + "Trang X/Y · N mục". 1-based page index. */
+export const Pagination: React.FC<PaginationProps> = ({ page, pageCount, total, onPageChange }) => {
+  const btn = (label: string, toPage: number, disabled: boolean) => (
+    <button
+      type="button"
+      aria-label={label}
+      disabled={disabled}
+      onClick={() => onPageChange(toPage)}
+      style={{
+        height: "var(--input-height, 44px)",
+        minWidth: "44px",
+        padding: "0 var(--space-3)",
+        border: "1px solid var(--border-default)",
+        borderRadius: "var(--radius-md)",
+        background: "var(--bg-raised, #FFFFFF)",
+        color: disabled ? "var(--text-muted)" : "var(--text-primary)",
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.6 : 1,
+        fontFamily: "var(--font-sans)",
+        fontSize: "var(--text-sm)",
+      }}
+    >
+      {label}
+    </button>
+  );
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "var(--space-3)",
+        marginTop: "var(--space-4)",
+      }}
+    >
+      <span
+        style={{
+          fontFamily: "var(--font-sans)",
+          fontSize: "var(--text-sm)",
+          color: "var(--text-muted)",
+        }}
+      >
+        Trang {page}/{pageCount} · {total} mục
+      </span>
+      <div style={{ display: "flex", gap: "var(--space-2)" }}>
+        {btn("Trước", page - 1, page <= 1)}
+        {btn("Sau", page + 1, page >= pageCount)}
+      </div>
+    </div>
+  );
+};
+
+// ── Detail drawer ─────────────────────────────────────────────────────────────
+
+export interface DetailDrawerProps {
+  open: boolean;
+  title: string;
+  onClose: () => void;
+  children: React.ReactNode;
+  /** Optional action row pinned to the drawer footer. */
+  footer?: React.ReactNode;
+}
+
+/**
+ * DetailDrawer — right-side slide-over panel for a row's detail (order, user,
+ * audit event). Closes on backdrop click or Escape. Renders nothing when closed.
+ */
+export const DetailDrawer: React.FC<DetailDrawerProps> = ({ open, title, onClose, children, footer }) => {
+  React.useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
+  if (!open) return null;
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", justifyContent: "flex-end" }}>
+      <div
+        aria-hidden="true"
+        onClick={onClose}
+        style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.32)" }}
+      />
+      <aside
+        role="dialog"
+        aria-label={title}
+        style={{
+          position: "relative",
+          width: "min(480px, 100%)",
+          height: "100%",
+          background: "var(--bg-raised, #FFFFFF)",
+          borderLeft: "1px solid var(--border-subtle)",
+          boxShadow: "var(--shadow-lg, -8px 0 24px rgba(0,0,0,0.12))",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <header
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "var(--space-4)",
+            padding: "var(--space-4) var(--space-5)",
+            borderBottom: "1px solid var(--border-subtle)",
+          }}
+        >
+          <h2
+            style={{
+              margin: 0,
+              fontFamily: "var(--font-sans)",
+              fontSize: "var(--text-base)",
+              fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"],
+              color: "var(--text-primary)",
+            }}
+          >
+            {title}
+          </h2>
+          <button
+            type="button"
+            aria-label="Đóng"
+            onClick={onClose}
+            style={{
+              border: "none",
+              background: "transparent",
+              cursor: "pointer",
+              fontSize: "var(--text-lg)",
+              color: "var(--text-muted)",
+              lineHeight: 1,
+            }}
+          >
+            ✕
+          </button>
+        </header>
+        <div style={{ flex: 1, overflowY: "auto", padding: "var(--space-5)" }}>{children}</div>
+        {footer && (
+          <footer
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "var(--space-2)",
+              padding: "var(--space-4) var(--space-5)",
+              borderTop: "1px solid var(--border-subtle)",
+            }}
+          >
+            {footer}
+          </footer>
+        )}
+      </aside>
+    </div>
+  );
+};
+
 /**
  * Small helper to turn an unknown thrown value into a Vietnamese message.
  *

@@ -13,6 +13,7 @@
 
 import * as React from "react";
 import { ApiClient, ApiError } from "../lib/api-client";
+import { unwrapList } from "../lib/unwrap-list";
 // ApiClient is the admin-local subclass (adds download()); ApiError is re-exported from shared.
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -52,17 +53,6 @@ const STORAGE_KEYS = {
 } as const;
 
 // ── Context ───────────────────────────────────────────────────────────────────
-
-/**
- * Normalise a list response. Platform list endpoints (branches, master data)
- * use a paginated `{ data, total }` envelope, while /sales/* return bare arrays.
- * Accept either shape so callers don't care which convention an endpoint uses.
- */
-function unwrapList<T>(res: T[] | { data: T[] } | null | undefined): T[] {
-  if (Array.isArray(res)) return res;
-  if (res && Array.isArray((res as { data?: T[] }).data)) return (res as { data: T[] }).data;
-  return [];
-}
 
 export const AuthContext = React.createContext<AuthContextValue | null>(null);
 

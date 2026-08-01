@@ -32,7 +32,7 @@ sự thật. Mọi màn tôn trọng RBAC (fail-closed) + branch-scoping. Tiền
 
 | Phase | Tên | Backend | Phụ thuộc | Status |
 |-------|-----|---------|-----------|--------|
-| P0 | [List-screen foundation](./phase-00-admin-foundation.md) | — | — | planned |
+| P0 | [List-screen foundation](./phase-00-admin-foundation.md) | — | — | **done** |
 | P1 | [Đơn hàng (Orders) + Hoàn tiền](./phase-01-orders.md) | + list endpoint, + refund (schema/migration) | P0 | planned |
 | P2 | [Chi nhánh (Branches)](./phase-02-branches.md) | done (UI only) | P0 | planned |
 | P3 | [Master-data screens](./phase-03-master-data.md) | done (UI only) | P0 | planned |
