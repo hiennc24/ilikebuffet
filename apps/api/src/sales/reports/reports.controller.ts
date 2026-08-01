@@ -29,6 +29,12 @@ export class ReportsController {
     return { chainWide: req.user.chainWide, branchIds: req.user.branchIds };
   }
 
+  /** Dashboard KPIs — any authenticated admin user; branch-scoped by the token. */
+  @Get("dashboard")
+  dashboard(@Query("branchId") branchId: string, @Request() req: ScopedRequest) {
+    return this.reports.dashboard({ chainWide: req.user.chainWide, branchIds: req.user.branchIds }, branchId || undefined);
+  }
+
   @Get("revenue")
   revenue(@Query() query: RevenueQuery, @Request() req: ScopedRequest) {
     return this.reports.revenue(query, this.access(req));

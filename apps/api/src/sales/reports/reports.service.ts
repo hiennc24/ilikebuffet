@@ -7,7 +7,7 @@
  */
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import { sumVnd } from "@ilikebuffet/shared";
+import { sumVnd, toVnDateStr } from "@ilikebuffet/shared";
 import { PrismaService } from "../../prisma/prisma.service";
 import { AuditService } from "../../audit/audit.service";
 import { assertBranchAccess, type BranchAccess } from "../../platform/rbac/branch-access";
@@ -176,6 +176,37 @@ export class ReportsService {
         shiftCount: rows.length,
       },
       rows,
+    };
+  }
+
+  // ─── Dashboard ──────────────────────────────────────────────────────────────
+
+  /** Quick KPIs for the admin dashboard, branch-scoped, for today (VN date). */
+  async dashboard(access: BranchAccess, branchId?: string) {
+    const today = toVnDateStr(new Date());
+    const scope = this.branchWhere(access, branchId);
+
+    const [todayBills, openShiftCount, quarantineOpenCount] = await Promise.all([
+      this.prisma.bill.findMany({
+        where: { ...scope, businessDate: new Date(`${today}T00:00:00Z`) },
+        select: { status: true, totalVnd: true, guestCount: true, refunds: { select: { amountVnd: true } } },
+      }),
+      this.prisma.shift.count({
+        where: { status: "OPEN", ...(access.chainWide ? {} : { branchId: { in: access.branchIds } }), ...(branchId ? { branchId } : {}) },
+      }),
+      this.prisma.bill.count({ where: { ...scope, quarantined: true, quarantineResolvedAt: null } }),
+    ]);
+
+    const completed = todayBills.filter((b) => b.status === "COMPLETED");
+    const grossVnd = sumVnd(completed.map((b) => b.totalVnd));
+    const refundedVnd = sumVnd(completed.flatMap((b) => b.refunds.map((r) => r.amountVnd)));
+    return {
+      date: today,
+      todayNetVnd: grossVnd - refundedVnd,
+      todayBillCount: completed.length,
+      todayGuestCount: completed.reduce((s, b) => s + b.guestCount, 0),
+      openShiftCount,
+      quarantineOpenCount,
     };
   }
 

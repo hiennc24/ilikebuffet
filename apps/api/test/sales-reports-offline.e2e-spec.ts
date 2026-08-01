@@ -89,6 +89,15 @@ describe("Offline reconciliation reports (integration)", () => {
     expect(res.body.data[0].quarantineReason).toBe("clock_skew");
   });
 
+  it("dashboard returns KPI shape + open quarantine count (any authed role)", async () => {
+    const res = await request(app.getHttpServer()).get(`/sales/reports/dashboard`).set("Authorization", `Bearer ${hqToken}`).expect(200);
+    expect(typeof res.body.todayNetVnd).toBe("number");
+    expect(res.body.quarantineOpenCount).toBe(1); // the one unresolved quarantined bill
+    expect(typeof res.body.openShiftCount).toBe("number");
+    // dashboard is not report-role-gated: a cashier can load it (branch-scoped)
+    await request(app.getHttpServer()).get(`/sales/reports/dashboard`).set("Authorization", `Bearer ${cashierToken}`).expect(200);
+  });
+
   it("detects the missing bill number (seq gap)", async () => {
     const res = await request(app.getHttpServer()).get(`/sales/reports/number-gaps?branchId=${branchId}&businessDate=${DAY}`).set("Authorization", `Bearer ${hqToken}`).expect(200);
     expect(res.body.missing).toEqual([3]);
