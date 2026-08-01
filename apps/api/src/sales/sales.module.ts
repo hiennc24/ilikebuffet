@@ -27,6 +27,8 @@ import {
   DiscountReasonController,
 } from "./discounts/discounts.controller";
 
+import { BillNumberService } from "./bills/bill-number.service";
+
 @Module({
   imports: [PrismaModule, AuditModule, MasterDataModule],
   controllers: [
@@ -40,7 +42,7 @@ import {
     ApprovalPinController,
     DiscountReasonController,
   ],
-  providers: [TicketTypesService, PricingService, DiscountsService],
-  exports: [TicketTypesService, PricingService, DiscountsService],
+  providers: [TicketTypesService, PricingService, DiscountsService, BillNumberService],
+  exports: [TicketTypesService, PricingService, DiscountsService, BillNumberService],
 })
 export class SalesModule {}

@@ -22,12 +22,12 @@ datasource db {
 
 /// 6 fixed roles (NT-02). No custom roles in MVP.
 enum Role {
-  QUAN_TRI_HQ      // Quản trị HQ — system administrator
-  CHU_CHUOI        // Chủ chuỗi — chain owner
-  KE_TOAN_CHUOI    // Kế toán chuỗi — chain accountant
-  QUAN_LY_CN       // Quản lý CN — branch manager
-  THU_NGAN         // Thu ngân — cashier
-  THU_KHO          // Thủ kho — warehouse keeper
+  QUAN_TRI_HQ // Quản trị HQ — system administrator
+  CHU_CHUOI // Chủ chuỗi — chain owner
+  KE_TOAN_CHUOI // Kế toán chuỗi — chain accountant
+  QUAN_LY_CN // Quản lý CN — branch manager
+  THU_NGAN // Thu ngân — cashier
+  THU_KHO // Thủ kho — warehouse keeper
 }
 
 /// Branch operational status.
@@ -51,7 +51,7 @@ enum IngredientStatus {
 
 /// Account flow type — income (Thu) or expense (Chi).
 enum AccountFlow {
-  INCOME  // Thu
+  INCOME // Thu
   EXPENSE // Chi
 }
 
@@ -64,7 +64,7 @@ enum SupplierScope {
 /// Supplier approval status for branch-scoped NCC (NT-03.5).
 enum SupplierStatus {
   ACTIVE
-  PENDING_HQ   // Chờ HQ duyệt
+  PENDING_HQ // Chờ HQ duyệt
   INACTIVE
 }
 
@@ -76,9 +76,9 @@ enum TicketTypeStatus {
 
 /// Discount kind (VG-03.1).
 enum DiscountKind {
-  PERCENT      // Giảm % trên tổng
+  PERCENT // Giảm % trên tổng
   FIXED_AMOUNT // Giảm số tiền cố định
-  VOUCHER      // Mã voucher nhập tại quầy
+  VOUCHER // Mã voucher nhập tại quầy
 }
 
 /// Discount program lifecycle.
@@ -87,31 +87,53 @@ enum DiscountProgramStatus {
   INACTIVE
 }
 
+/// Shift lifecycle (BH-01). FORCE_CLOSED = a hung prior shift closed with a
+/// manager PIN so a device can open a new one (BH-01.4); its figures are frozen
+/// for the later finance wave (TC-03) — M1 only marks + audits it.
+enum ShiftStatus {
+  OPEN
+  CLOSED
+  FORCE_CLOSED
+}
+
+/// Bill lifecycle (BH-06). CANCELLED keeps its number (no gap in the range).
+enum BillStatus {
+  COMPLETED
+  CANCELLED
+}
+
+/// Payment method (BH-03). Combined payments = multiple Payment rows on a bill.
+enum PaymentMethod {
+  CASH
+  VIETQR
+  CARD
+}
+
 // ─── Domain models ───────────────────────────────────────────────────────────
 
 /// A physical or logical branch (cửa hàng / chi nhánh). Extended in P4 (NT-01).
 model Branch {
-  id      String       @id @default(cuid())
+  id     String       @id @default(cuid())
   /// Short unique code, 2–5 uppercase letters, e.g. "CN01". IMMUTABLE after transactions (enforced in service layer).
-  code    String       @unique @db.VarChar(5)
-  name    String
-  status  BranchStatus @default(ACTIVE)
+  code   String       @unique @db.VarChar(5)
+  name   String
+  status BranchStatus @default(ACTIVE)
 
   // NT-01.1 required fields
   address String
-  phone   String       @db.VarChar(20)
+  phone   String @db.VarChar(20)
 
   /// Operating hours per weekday. JSON: { "MON": { "open": "10:30", "close": "22:00" }, ... }
   /// Keys: MON TUE WED THU FRI SAT SUN. Null = closed that day.
-  operatingHours Json?  @db.JsonB
+  operatingHours Json? @db.JsonB
 
   // NT-01.2 optional fields
   /// Bank account for VietQR (BH-03). Stored as JSON { number, bank, holder }.
-  bankAccount    Json?  @db.JsonB
+  bankAccount Json?   @db.JsonB
   /// Bill header override — null = inherit chain default.
-  billInfo       Json?  @db.JsonB
+  billInfo    Json?   @db.JsonB
   /// Logo URL override — null = inherit chain default.
-  logoUrl        String?
+  logoUrl     String?
 
   createdAt DateTime @default(now()) @db.Timestamptz(3)
 
@@ -170,7 +192,7 @@ model Device {
   /// Server-issued, returned once at registration.
   deviceId   String       @unique @default(cuid())
   branchId   String
-  secretHash String       // argon2 hash of the one-time secret
+  secretHash String // argon2 hash of the one-time secret
   label      String?
   status     DeviceStatus @default(ACTIVE)
   createdAt  DateTime     @default(now()) @db.Timestamptz(3)
@@ -186,11 +208,11 @@ model Device {
 model Unit {
   id        String   @id @default(cuid())
   code      String   @unique @db.VarChar(20) // e.g. "KG", "LIT", "CAI"
-  name      String   // e.g. "Kilogram", "Lít", "Cái"
+  name      String // e.g. "Kilogram", "Lít", "Cái"
   createdAt DateTime @default(now()) @db.Timestamptz(3)
 
-  ingredients      Ingredient[]
-  purchaseUnits    IngredientPurchaseUnit[]
+  ingredients   Ingredient[]
+  purchaseUnits IngredientPurchaseUnit[]
 
   @@map("unit")
 }
@@ -199,11 +221,11 @@ model Unit {
 
 /// Ingredient group with default wastage %. HQ-manageable (NT-03.1).
 model IngredientGroup {
-  id              String  @id @default(cuid())
-  name            String  @unique // "Hải sản tươi", "Thịt", etc.
+  id                String   @id @default(cuid())
+  name              String   @unique // "Hải sản tươi", "Thịt", etc.
   /// Default wastage percentage for the group (0–100). Overridable per ingredient.
-  defaultWastagePct Decimal @db.Decimal(5, 2) @default(0)
-  createdAt       DateTime @default(now()) @db.Timestamptz(3)
+  defaultWastagePct Decimal  @default(0) @db.Decimal(5, 2)
+  createdAt         DateTime @default(now()) @db.Timestamptz(3)
 
   ingredients Ingredient[]
 
@@ -212,18 +234,18 @@ model IngredientGroup {
 
 /// Ingredient (nguyên liệu). Code auto-generated, editable before first transaction (NT-03.1).
 model Ingredient {
-  id      String           @id @default(cuid())
+  id              String           @id @default(cuid())
   /// Short code — auto-generated (e.g. "NL001"), editable before any transaction.
-  code    String           @unique @db.VarChar(20)
-  name    String
-  groupId String
-  unitId  String           // base unit
+  code            String           @unique @db.VarChar(20)
+  name            String
+  groupId         String
+  unitId          String // base unit
   /// Wastage % override. Null = inherit from group.
-  wastagePct Decimal?      @db.Decimal(5, 2)
+  wastagePct      Decimal?         @db.Decimal(5, 2)
   /// Default minimum stock level (override per CN in KH-04 later).
-  defaultMinStock Decimal  @db.Decimal(12, 3) @default(0)
-  status  IngredientStatus @default(ACTIVE)
-  createdAt DateTime       @default(now()) @db.Timestamptz(3)
+  defaultMinStock Decimal          @default(0) @db.Decimal(12, 3)
+  status          IngredientStatus @default(ACTIVE)
+  createdAt       DateTime         @default(now()) @db.Timestamptz(3)
 
   group         IngredientGroup          @relation(fields: [groupId], references: [id])
   unit          Unit                     @relation(fields: [unitId], references: [id])
@@ -264,13 +286,13 @@ model AccountGroup {
 
 /// Account (Khoản thu-chi) — leaf node of the 2-level chart of accounts (NT-03.4).
 model Account {
-  id          String      @id @default(cuid())
-  groupId     String
-  name        String
-  flow        AccountFlow // Thu or Chi
+  id                   String      @id @default(cuid())
+  groupId              String
+  name                 String
+  flow                 AccountFlow // Thu or Chi
   /// Approval threshold in integer VND (NT-03.4 — used by TC-01). 0 = no threshold.
-  approvalThresholdVnd Int @default(0)
-  createdAt   DateTime    @default(now()) @db.Timestamptz(3)
+  approvalThresholdVnd Int         @default(0)
+  createdAt            DateTime    @default(now()) @db.Timestamptz(3)
 
   group AccountGroup @relation(fields: [groupId], references: [id])
 
@@ -282,18 +304,18 @@ model Account {
 
 /// Supplier (NCC — Nhà cung cấp). NT-03.5.
 model Supplier {
-  id          String         @id @default(cuid())
-  name        String
-  taxCode     String?        @db.VarChar(20) // MST
-  contact     String?        // phone/email/address (freeform for MVP)
-  debtTerms   Int            @default(0)   // days
-  scope       SupplierScope  @default(CHAIN_WIDE)
-  status      SupplierStatus @default(ACTIVE)
+  id        String         @id @default(cuid())
+  name      String
+  taxCode   String?        @db.VarChar(20) // MST
+  contact   String? // phone/email/address (freeform for MVP)
+  debtTerms Int            @default(0) // days
+  scope     SupplierScope  @default(CHAIN_WIDE)
+  status    SupplierStatus @default(ACTIVE)
   /// Set when scope=BRANCH_SPECIFIC — the branch this supplier is scoped to.
-  branchId    String?
-  createdAt   DateTime       @default(now()) @db.Timestamptz(3)
+  branchId  String?
+  createdAt DateTime       @default(now()) @db.Timestamptz(3)
 
-  branch      Branch?             @relation(fields: [branchId], references: [id])
+  branch      Branch?              @relation(fields: [branchId], references: [id])
   ingredients SupplierIngredient[]
 
   @@map("supplier")
@@ -319,7 +341,7 @@ model HolidayCalendar {
   id        String   @id @default(cuid())
   /// Year this calendar applies to (solar year, e.g. 2025).
   year      Int
-  name      String   // e.g. "Lịch lễ 2025"
+  name      String // e.g. "Lịch lễ 2025"
   /// Optional branch — null = applies chain-wide.
   branchId  String?
   createdAt DateTime @default(now()) @db.Timestamptz(3)
@@ -336,7 +358,7 @@ model HolidayEntry {
   calendarId String
   /// The holiday date (date only — stored as Timestamptz at midnight UTC for Prisma compat).
   date       DateTime @db.Date
-  name       String   // e.g. "Tết Nguyên Đán", "30 Tết", "Giỗ Tổ Hùng Vương"
+  name       String // e.g. "Tết Nguyên Đán", "30 Tết", "Giỗ Tổ Hùng Vương"
   /// True = lunar-calendar date (custom, e.g. "30 Tết") — must be explicitly entered per year.
   isCustom   Boolean  @default(false)
 
@@ -353,10 +375,10 @@ model HolidayEntry {
 /// Free flag: price always = 0 but COUNTS toward guest total (VG-01.2, M7).
 model TicketType {
   id           String           @id @default(cuid())
-  name         String           // e.g. "Người lớn", "Trẻ em 1m–1m3"
-  description  String?          // Điều kiện áp dụng — printed on bill (VG-01.1)
+  name         String // e.g. "Người lớn", "Trẻ em 1m–1m3"
+  description  String? // Điều kiện áp dụng — printed on bill (VG-01.1)
   displayOrder Int              @default(0) // POS button sort order (VG-01.1)
-  color        String           @db.VarChar(20) @default("#3B82F6") // hex or tailwind token
+  color        String           @default("#3B82F6") @db.VarChar(20) // hex or tailwind token
   isFree       Boolean          @default(false) // Giá luôn = 0, vẫn đếm khách (VG-01.2)
   status       TicketTypeStatus @default(ACTIVE)
   createdAt    DateTime         @default(now()) @db.Timestamptz(3)
@@ -372,12 +394,12 @@ model TicketType {
 /// Time window (Khung giờ). HQ defines; no overlaps enforced in service (VG-02.1).
 /// startMinute/endMinute = minutes since midnight (0–1439).
 model TimeWindow {
-  id          String   @id @default(cuid())
-  name        String   // e.g. "Trưa", "Tối"
-  startMinute Int      // inclusive, 0–1439
-  endMinute   Int      // exclusive, 1–1440 (endMinute > startMinute)
-  displayOrder Int     @default(0)
-  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  id           String   @id @default(cuid())
+  name         String // e.g. "Trưa", "Tối"
+  startMinute  Int // inclusive, 0–1439
+  endMinute    Int // exclusive, 1–1440 (endMinute > startMinute)
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
 
   priceCells PriceCell[]
 
@@ -389,12 +411,12 @@ model TimeWindow {
 /// A price book version. Immutable once effectiveFrom <= now (VG-02.3).
 /// branchId null = chain-wide. Branch-specific requires BranchPriceFlag.allowOwnPrice=true.
 model PriceBookVersion {
-  id            String    @id @default(cuid())
-  name          String    // e.g. "Bảng giá Q1/2026"
-  effectiveFrom DateTime  @db.Date // Date only; version is active from 0h that day (VN time)
-  branchId      String?   // null = chain-wide version
-  createdAt     DateTime  @default(now()) @db.Timestamptz(3)
-  createdBy     String?   // actorId
+  id            String   @id @default(cuid())
+  name          String // e.g. "Bảng giá Q1/2026"
+  effectiveFrom DateTime @db.Date // Date only; version is active from 0h that day (VN time)
+  branchId      String? // null = chain-wide version
+  createdAt     DateTime @default(now()) @db.Timestamptz(3)
+  createdBy     String? // actorId
 
   cells PriceCell[]
 
@@ -405,16 +427,16 @@ model PriceBookVersion {
 /// day-type: "REGULAR" | "WEEKEND" | "HOLIDAY" (priority: HOLIDAY>WEEKEND>REGULAR).
 /// branchId null = chain-wide cell; branch cell overrides chain cell (VG-02.4).
 model PriceCell {
-  id               String   @id @default(cuid())
-  versionId        String
-  ticketTypeId     String
-  timeWindowId     String
+  id           String  @id @default(cuid())
+  versionId    String
+  ticketTypeId String
+  timeWindowId String
   /// "REGULAR" | "WEEKEND" | "HOLIDAY"
-  dayType          String   @db.VarChar(20)
+  dayType      String  @db.VarChar(20)
   /// Unit price in integer VND. 0 for free-ticket cells.
-  priceVnd         Int
+  priceVnd     Int
   /// null = chain-wide cell; set = branch-specific override (VG-02.4)
-  branchId         String?
+  branchId     String?
 
   version    PriceBookVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
   ticketType TicketType       @relation(fields: [ticketTypeId], references: [id])
@@ -436,26 +458,26 @@ model BranchPriceFlag {
 
 /// Discount / voucher program (VG-03.1). HQ creates; max 1 per bill (MVP).
 model DiscountProgram {
-  id          String               @id @default(cuid())
-  name        String
-  kind        DiscountKind
+  id             String                @id @default(cuid())
+  name           String
+  kind           DiscountKind
   /// Percent (0–100) for PERCENT kind. Null for FIXED_AMOUNT/VOUCHER.
-  pct         Int?
+  pct            Int?
   /// Fixed amount VND for FIXED_AMOUNT kind. Null for PERCENT/VOUCHER.
-  amountVnd   Int?
+  amountVnd      Int?
   /// Voucher code (case-insensitive). Required for VOUCHER kind.
-  voucherCode String?              @db.VarChar(100)
+  voucherCode    String?               @db.VarChar(100)
   /// Voucher quota — max total redemptions. Null = unlimited.
-  quotaTotal  Int?
+  quotaTotal     Int?
   /// Remaining redemptions (decremented with FOR UPDATE lock, VG-03.4).
   quotaRemaining Int?
   /// Effective date range (inclusive). Null = open-ended.
-  validFrom   DateTime?            @db.Date
-  validUntil  DateTime?            @db.Date
+  validFrom      DateTime?             @db.Date
+  validUntil     DateTime?             @db.Date
   /// JSON array of branchIds this program applies to. Null = all branches.
-  branchScope Json?                @db.JsonB
-  status      DiscountProgramStatus @default(ACTIVE)
-  createdAt   DateTime             @default(now()) @db.Timestamptz(3)
+  branchScope    Json?                 @db.JsonB
+  status         DiscountProgramStatus @default(ACTIVE)
+  createdAt      DateTime              @default(now()) @db.Timestamptz(3)
 
   @@map("discount_program")
 }
@@ -505,4 +527,130 @@ model AuditLog {
   @@index([branchId, action, createdAt])
   @@index([objectType, objectId])
   @@map("audit_log")
+}
+
+// ─── Sales: shifts, bills, payments (P7 — BH-01→04, BH-06, BH-07) ─────────────
+
+/// A cashier shift on one device (BH-01). At most one OPEN shift per device is
+/// enforced by a partial unique index (see migration) — Prisma can't express
+/// "unique where status = OPEN", so it is added as raw SQL in the migration.
+model Shift {
+  id              String      @id @default(cuid())
+  branchId        String
+  deviceId        String
+  /// Business date the shift belongs to (VN calendar day). Drives bill numbering.
+  businessDate    DateTime    @db.Date
+  status          ShiftStatus @default(OPEN)
+  openedBy        String // actorId (THU_NGAN)
+  openedAt        DateTime    @default(now()) @db.Timestamptz(3)
+  openingCashVnd  Int // tiền đầu ca
+  /// Close-out fields (BH-07). Null until closed.
+  closedBy        String?
+  closedAt        DateTime?   @db.Timestamptz(3)
+  /// Theoretical cash = opening + cash bill payments (M1 minimal; receipts/vouchers = later wave).
+  expectedCashVnd Int?
+  /// Counted cash entered at close.
+  countedCashVnd  Int?
+  /// countedCash − expectedCash. Negative = short. Non-zero requires a note.
+  varianceVnd     Int?
+  varianceNote    String?
+  /// When a shift is force-closed to unstick a device, the manager who approved it.
+  forceClosedBy   String?
+
+  bills Bill[]
+
+  @@index([branchId, businessDate])
+  @@index([deviceId, status])
+  @@map("shift")
+}
+
+/// Gapless per-(branch, business date) bill counter (BH-02). The next number is
+/// allocated inside the bill-create transaction via SELECT … FOR UPDATE on this
+/// row, then lastNo + 1. NOT a SEQUENCE (rollback would skip numbers). last_no
+/// is reconcilable from MAX(bill.seq) for DR (Red Team C7).
+model BillCounter {
+  branchId     String
+  businessDate DateTime @db.Date
+  lastNo       Int      @default(0)
+
+  @@id([branchId, businessDate])
+  @@map("bill_counter")
+}
+
+/// A sales bill (BH-02). Money is server-authoritative: the client sends only
+/// (ticketType, qty); the server prices each line via the P6 resolver and
+/// snapshots names/prices so later price-book edits never mutate a closed bill.
+model Bill {
+  id               String     @id @default(cuid())
+  /// Human number "[CODE]-[YYMMDD]-[NNNN]" — gapless per branch+date.
+  number           String     @unique
+  /// Monotonic per (branch, businessDate) sequence backing `number` (DR reconcile, C7).
+  seq              Int
+  branchId         String
+  shiftId          String
+  deviceId         String
+  businessDate     DateTime   @db.Date
+  status           BillStatus @default(COMPLETED)
+  /// Deciding price timestamp (createdAt by default; V1) — snapshot input.
+  createdBy        String
+  createdAt        DateTime   @default(now()) @db.Timestamptz(3)
+  paidAt           DateTime?  @db.Timestamptz(3)
+  totalVnd         Int
+  guestCount       Int // number of tickets incl. free (denominator for cost/guest, M7)
+  /// Offline dedup key (P8): unique per device so a re-synced create is idempotent.
+  clientUuid       String?
+  /// Cancellation (BH-06) — number is retained.
+  cancelledBy      String?
+  cancelledAt      DateTime?  @db.Timestamptz(3)
+  cancelReason     String?
+  cancelApprovedBy String?
+
+  shift    Shift      @relation(fields: [shiftId], references: [id])
+  lines    BillLine[]
+  payments Payment[]
+
+  @@unique([branchId, businessDate, seq])
+  @@unique([deviceId, clientUuid])
+  @@index([shiftId])
+  @@index([branchId, businessDate])
+  @@map("bill")
+}
+
+/// One line on a bill — fully snapshotted (no live FK to the price book).
+model BillLine {
+  id             String  @id @default(cuid())
+  billId         String
+  ticketTypeId   String
+  ticketTypeName String // snapshot
+  unitPriceVnd   Int // snapshot — resolved server-side at bill createdAt
+  qty            Int
+  lineTotalVnd   Int
+  isFree         Boolean @default(false)
+  /// Pricing context snapshot (for reprint / audit).
+  timeWindowId   String?
+  timeWindowName String?
+  dayType        String? @db.VarChar(20)
+  priceVersionId String?
+
+  bill Bill @relation(fields: [billId], references: [id], onDelete: Cascade)
+
+  @@index([billId])
+  @@map("bill_line")
+}
+
+/// A payment against a bill (BH-03). Combined payment = several rows; the sum
+/// must equal the bill total (validated server-side).
+model Payment {
+  id        String        @id @default(cuid())
+  billId    String
+  method    PaymentMethod
+  amountVnd Int
+  /// Bank/card reference for VietQR/CARD (manual confirm; auto-reconcile = TC-02 wave).
+  reference String?
+  createdAt DateTime      @default(now()) @db.Timestamptz(3)
+
+  bill Bill @relation(fields: [billId], references: [id], onDelete: Cascade)
+
+  @@index([billId])
+  @@map("payment")
 }
