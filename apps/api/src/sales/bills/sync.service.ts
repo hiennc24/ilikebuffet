@@ -129,26 +129,22 @@ export class SyncService {
           priceVersionId: string | null;
         }> = [];
 
+        // Batch-load ticket types + build the price resolver ONCE (HI-1) — the
+        // whole batch shares this branch + createdAt.
+        const ticketTypes = await tx.ticketType.findMany({
+          where: { id: { in: [...new Set(dto.lines.map((l) => l.ticketTypeId))] } },
+        });
+        const ticketTypeById = new Map(ticketTypes.map((t) => [t.id, t]));
+        const resolver = await this.pricing.buildResolver(dto.branchId, createdAt);
+
         for (const lineDto of dto.lines) {
-          const ticketType = await tx.ticketType.findUnique({
-            where: { id: lineDto.ticketTypeId },
-          });
+          const ticketType = ticketTypeById.get(lineDto.ticketTypeId);
           if (!ticketType) throw new Error(`TicketType ${lineDto.ticketTypeId} not found`);
 
-          const priceResult = await this.pricing.resolvePrice({
-            branchId: dto.branchId,
-            ticketTypeId: lineDto.ticketTypeId,
-            createdAt: dto.createdAt,
-          });
+          const priceResult = resolver.resolve(lineDto.ticketTypeId, ticketType.isFree);
 
           // Never reject a sale already printed (C5) — flag accounting instead
           const unitPriceVnd = priceResult.kind === "PRICE" ? priceResult.priceVnd : 0;
-
-          let timeWindowName: string | null = null;
-          if (priceResult.kind === "PRICE" && priceResult.timeWindowId) {
-            const tw = await tx.timeWindow.findUnique({ where: { id: priceResult.timeWindowId } });
-            timeWindowName = tw?.name ?? null;
-          }
 
           resolvedLines.push({
             ticketTypeId: lineDto.ticketTypeId,
@@ -158,7 +154,8 @@ export class SyncService {
             lineTotalVnd: unitPriceVnd * lineDto.qty,
             isFree: ticketType.isFree,
             timeWindowId: priceResult.kind === "PRICE" ? (priceResult.timeWindowId ?? null) : null,
-            timeWindowName,
+            timeWindowName:
+              priceResult.kind === "PRICE" ? resolver.timeWindowName(priceResult.timeWindowId) : null,
             dayType: priceResult.kind === "PRICE" ? (priceResult.dayType ?? null) : null,
             priceVersionId: priceResult.kind === "PRICE" ? (priceResult.versionId ?? null) : null,
           });

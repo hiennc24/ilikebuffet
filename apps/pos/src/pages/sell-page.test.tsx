@@ -30,13 +30,25 @@ const TICKET_TYPES = [
   { id: "tt-4", name: "Không bán", color: "#aaa", displayOrder: 4, isFree: false, status: "INACTIVE" },
 ];
 
-const PRICES: Record<string, number> = {
-  "tt-1": 185000,
-  "tt-2": 90000,
+// Snapshot pricing tt-1 = 185k, tt-2 = 90k across all day types.
+const SNAPSHOT = {
+  snapshotGeneratedAt: 0,
+  timeWindows: [{ id: "tw", name: "Cả ngày", startMinute: 0, endMinute: 1440 }],
+  versions: [
+    {
+      id: "v1",
+      effectiveDateStr: "2026-01-01",
+      branchId: null,
+      cells: (["REGULAR", "WEEKEND", "HOLIDAY"] as const).flatMap((dt) => [
+        { ticketTypeId: "tt-1", timeWindowId: "tw", dayType: dt, priceVnd: 185000, branchId: null },
+        { ticketTypeId: "tt-2", timeWindowId: "tw", dayType: dt, priceVnd: 90000, branchId: null },
+      ]),
+    },
+  ],
 };
 
 function makeFetch() {
-  return vi.fn(async (url: string, init?: RequestInit): Promise<Response> => {
+  return vi.fn(async (url: string): Promise<Response> => {
     const path = String(url).replace(/^https?:\/\/[^/]+/, "");
     const json = (status: number, body: unknown) =>
       new Response(JSON.stringify(body), {
@@ -44,20 +56,11 @@ function makeFetch() {
         headers: { "Content-Type": "application/json" },
       });
 
-    if (path.startsWith("/sales/ticket-types")) {
-      return json(200, TICKET_TYPES);
-    }
-    if (path.startsWith("/sales/pricing/resolve")) {
-      const body = JSON.parse((init?.body as string) ?? "{}") as { ticketTypeId?: string };
-      const price = body.ticketTypeId ? PRICES[body.ticketTypeId] : undefined;
-      if (price !== undefined) {
-        return json(200, { kind: "PRICE", priceVnd: price });
-      }
-      return json(200, { kind: "NO_PRICE" });
-    }
-    if (path.startsWith("/sales/shifts/open")) {
-      return json(200, { id: "shift-test", branchId: "branch-01" });
-    }
+    // refreshCatalog fetches these three; the sell screen prices client-side.
+    if (path.startsWith("/sales/pricing/versions/snapshot")) return json(200, SNAPSHOT);
+    if (path.startsWith("/sales/ticket-types")) return json(200, TICKET_TYPES);
+    if (path.startsWith("/branches")) return json(200, { data: [{ id: "branch-01", code: "CN01" }] });
+    if (path.startsWith("/sales/shifts/open")) return json(200, { id: "shift-test", branchId: "branch-01" });
     return json(404, { error: "not found" });
   }) as typeof globalThis.fetch;
 }
@@ -91,6 +94,7 @@ beforeEach(async () => {
   );
   await posDb.open();
   await posDb.draft_bills.clear();
+  await posDb.catalog_cache.clear();
   localStorage.clear();
   sessionStorage.clear();
   seedAuth();

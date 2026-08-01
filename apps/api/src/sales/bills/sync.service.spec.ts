@@ -19,12 +19,16 @@ import type { AuditService } from "../../audit/audit.service";
 // ─── Mock helpers ─────────────────────────────────────────────────────────────
 
 function makePricing(kind: "PRICE" | "NO_PRICE" = "PRICE"): jest.Mocked<PricingService> {
+  const priceResult =
+    kind === "PRICE"
+      ? { kind: "PRICE", priceVnd: 185_000, versionId: "v1", timeWindowId: "tw-1", dayType: "REGULAR" }
+      : { kind: "NO_PRICE", reason: "OUT_OF_HOURS" };
   return {
-    resolvePrice: jest.fn().mockResolvedValue(
-      kind === "PRICE"
-        ? { kind: "PRICE", priceVnd: 185_000, versionId: "v1", timeWindowId: "tw-1", dayType: "REGULAR" }
-        : { kind: "NO_PRICE", reason: "OUT_OF_HOURS" },
-    ),
+    resolvePrice: jest.fn().mockResolvedValue(priceResult),
+    buildResolver: jest.fn().mockResolvedValue({
+      resolve: jest.fn().mockReturnValue(priceResult),
+      timeWindowName: jest.fn().mockReturnValue("Trưa"),
+    }),
   } as unknown as jest.Mocked<PricingService>;
 }
 
@@ -54,7 +58,10 @@ function makePrisma(txOverrides: Record<string, any> = {}, existingBill: unknown
       findUnique: jest.fn().mockResolvedValue({ id: "shift-1", branchId: "branch-1", status: "OPEN" }),
     },
     branch: { findUnique: jest.fn().mockResolvedValue({ id: "branch-1", code: "CN01" }) },
-    ticketType: { findUnique: jest.fn().mockResolvedValue({ id: "tt-1", name: "Buffet người lớn", isFree: false }) },
+    ticketType: {
+      findUnique: jest.fn().mockResolvedValue({ id: "tt-1", name: "Buffet người lớn", isFree: false }),
+      findMany: jest.fn().mockResolvedValue([{ id: "tt-1", name: "Buffet người lớn", isFree: false }]),
+    },
     timeWindow: { findUnique: jest.fn().mockResolvedValue({ id: "tw-1", name: "Trưa" }) },
     auditLog: { create: jest.fn().mockResolvedValue(undefined) },
     ...txOverrides,
@@ -151,17 +158,16 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
   });
 
   // ── 3. Server recomputes price (C2) ────────────────────────────────────────
-  it("calls pricing.resolvePrice for each line (server never trusts client prices)", async () => {
+  it("recomputes price server-side via buildResolver (never trusts client prices)", async () => {
     const prisma = makePrisma();
     const pricing = makePricing();
     const svc = new SyncService(prisma as never, makeAudit(), pricing, makeBillNumber());
 
     await svc.processBill(BASE_BILL, ACTOR, ALLOWED);
 
-    expect(pricing.resolvePrice).toHaveBeenCalledTimes(1);
-    expect(pricing.resolvePrice).toHaveBeenCalledWith(
-      expect.objectContaining({ ticketTypeId: "tt-1", branchId: "branch-1" }),
-    );
+    // One resolver built per bill (branch + createdAt), used for every line.
+    expect(pricing.buildResolver).toHaveBeenCalledTimes(1);
+    expect(pricing.buildResolver).toHaveBeenCalledWith("branch-1", expect.any(Date));
   });
 
   // ── 4. NO_PRICE → unitPriceVnd=0, still committed (C5: never reject a printed sale) ──

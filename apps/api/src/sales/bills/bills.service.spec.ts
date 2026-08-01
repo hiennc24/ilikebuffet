@@ -19,16 +19,23 @@ import type { DiscountsService } from "../discounts/discounts.service";
 
 // ─── Mock factory helpers ─────────────────────────────────────────────────────
 
-function makePricingService(overrides: Partial<PricingService> = {}): jest.Mocked<PricingService> {
+const DEFAULT_PRICE_RESULT = {
+  kind: "PRICE",
+  priceVnd: 150_000,
+  versionId: "ver-1",
+  timeWindowId: "tw-1",
+  dayType: "REGULAR",
+};
+
+/** Mock PricingService. The service now prices via buildResolver(); the returned
+ *  resolver yields `priceResult` for every line. */
+function makePricingService(priceResult: unknown = DEFAULT_PRICE_RESULT): jest.Mocked<PricingService> {
   return {
-    resolvePrice: jest.fn().mockResolvedValue({
-      kind: "PRICE",
-      priceVnd: 150_000,
-      versionId: "ver-1",
-      timeWindowId: "tw-1",
-      dayType: "REGULAR",
+    resolvePrice: jest.fn().mockResolvedValue(priceResult),
+    buildResolver: jest.fn().mockResolvedValue({
+      resolve: jest.fn().mockReturnValue(priceResult),
+      timeWindowName: jest.fn().mockReturnValue("Trưa"),
     }),
-    ...overrides,
   } as unknown as jest.Mocked<PricingService>;
 }
 
@@ -109,7 +116,10 @@ function makePrisma(txOverrides: Record<string, any> = {}) {
     },
     shift: { findUnique: jest.fn().mockResolvedValue(makeShift()) },
     branch: { findUnique: jest.fn().mockResolvedValue(makeBranch()) },
-    ticketType: { findUnique: jest.fn().mockResolvedValue(makeTicketType()) },
+    ticketType: {
+      findUnique: jest.fn().mockResolvedValue(makeTicketType()),
+      findMany: jest.fn().mockResolvedValue([makeTicketType()]),
+    },
     timeWindow: { findUnique: jest.fn().mockResolvedValue(makeTimeWindow()) },
     ...txOverrides,
   };
@@ -161,19 +171,15 @@ describe("BillsService", () => {
 
     const result = await svc.createBill(BASE_DTO, ACTOR, ROLE);
 
-    // Pricing service was called — server resolved the price
-    expect(pricing.resolvePrice).toHaveBeenCalledWith(
-      expect.objectContaining({ branchId: "branch-1", ticketTypeId: "tt-1" }),
-    );
+    // Pricing resolver was built server-side for this branch (server priced it).
+    expect(pricing.buildResolver).toHaveBeenCalledWith("branch-1", expect.any(Date));
     // The bill's line price matches server-resolved value
     expect(result.lines[0].unitPriceVnd).toBe(150_000);
   });
 
   // ── 2. NO_PRICE → BadRequest ─────────────────────────────────────────────────
   it("throws BadRequestException when pricing returns NO_PRICE", async () => {
-    const pricing = makePricingService({
-      resolvePrice: jest.fn().mockResolvedValue({ kind: "NO_PRICE", reason: "OUT_OF_HOURS" }),
-    });
+    const pricing = makePricingService({ kind: "NO_PRICE", reason: "OUT_OF_HOURS" });
     const prisma = makePrisma();
 
     const svc = new BillsService(
@@ -194,18 +200,17 @@ describe("BillsService", () => {
   it("throws BadRequestException when all lines are free tickets (policy V4)", async () => {
     // isFree=true → server returns priceVnd=0
     const pricing = makePricingService({
-      resolvePrice: jest.fn().mockResolvedValue({
-        kind: "PRICE",
-        priceVnd: 0,
-        versionId: "",
-        timeWindowId: "tw-1",
-        dayType: "REGULAR",
-      }),
+      kind: "PRICE",
+      priceVnd: 0,
+      versionId: "",
+      timeWindowId: "tw-1",
+      dayType: "REGULAR",
     });
 
     const prisma = makePrisma({
       ticketType: {
         findUnique: jest.fn().mockResolvedValue(makeTicketType(true /* isFree */)),
+        findMany: jest.fn().mockResolvedValue([makeTicketType(true /* isFree */)]),
       },
       timeWindow: { findUnique: jest.fn().mockResolvedValue(makeTimeWindow()) },
       bill: { findUnique: jest.fn(), create: jest.fn() },
@@ -305,19 +310,26 @@ describe("BillsService", () => {
 
   // ── 6. guestCount includes free tickets ──────────────────────────────────────
   it("counts free tickets in guestCount (M7)", async () => {
-    const pricing = makePricingService({
-      resolvePrice: jest.fn()
-        // First line: paid ticket 150k
-        .mockResolvedValueOnce({ kind: "PRICE", priceVnd: 150_000, versionId: "v1", timeWindowId: "tw-1", dayType: "REGULAR" })
-        // Second line: free ticket 0
-        .mockResolvedValueOnce({ kind: "PRICE", priceVnd: 0, versionId: "", timeWindowId: "tw-1", dayType: "REGULAR" }),
-    });
+    // The resolver prices by isFree: paid → 150k, free → 0.
+    const pricing = {
+      resolvePrice: jest.fn(),
+      buildResolver: jest.fn().mockResolvedValue({
+        resolve: jest.fn((_ttId: string, isFree: boolean) =>
+          isFree
+            ? { kind: "PRICE", priceVnd: 0, versionId: "", timeWindowId: "tw-1", dayType: "REGULAR" }
+            : { kind: "PRICE", priceVnd: 150_000, versionId: "v1", timeWindowId: "tw-1", dayType: "REGULAR" },
+        ),
+        timeWindowName: jest.fn().mockReturnValue("Trưa"),
+      }),
+    } as unknown as jest.Mocked<PricingService>;
 
     const prisma = makePrisma({
       ticketType: {
-        findUnique: jest.fn()
-          .mockResolvedValueOnce({ id: "tt-1", name: "Người lớn", isFree: false })
-          .mockResolvedValueOnce({ id: "tt-free", name: "Trẻ em", isFree: true }),
+        findUnique: jest.fn(),
+        findMany: jest.fn().mockResolvedValue([
+          { id: "tt-1", name: "Người lớn", isFree: false },
+          { id: "tt-free", name: "Trẻ em", isFree: true },
+        ]),
       },
       timeWindow: { findUnique: jest.fn().mockResolvedValue(makeTimeWindow()) },
       shift: { findUnique: jest.fn().mockResolvedValue(makeShift()) },

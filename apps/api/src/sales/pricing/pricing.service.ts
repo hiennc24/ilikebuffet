@@ -72,6 +72,14 @@ function isVnWeekend(date: Date): boolean {
   return dow === 0 || dow === 6;
 }
 
+/** A price resolver bound to one branch + deciding timestamp (see buildResolver). */
+export interface PriceResolver {
+  /** Price one line from the pre-built snapshot — pure, no I/O. */
+  resolve(ticketTypeId: string, isFree: boolean): PriceResult;
+  /** Time-window name from the snapshot (for the bill-line snapshot), or null. */
+  timeWindowName(timeWindowId: string | null | undefined): string | null;
+}
+
 // ─── Service ─────────────────────────────────────────────────────────────────
 
 @Injectable()
@@ -467,6 +475,26 @@ export class PricingService {
       isVnWeekend,
       snapshot,
     );
+  }
+
+  /**
+   * Build a reusable price resolver for one branch + deciding timestamp. The
+   * price-book snapshot and the holiday lookup are loaded ONCE; the returned
+   * `resolve` is pure and can price every line of a bill without re-hitting the
+   * DB. This is the hot-path entry (bill create / offline sync) — avoids the
+   * O(lines) full-snapshot rebuild that resolvePrice() incurs per call.
+   */
+  async buildResolver(branchId: string, createdAt: Date): Promise<PriceResolver> {
+    const snapshot = await this.buildSnapshot();
+    const decidingDateStr = toVnDateStr(createdAt);
+    const isHoliday = await this.masterData.isHoliday(createdAt, branchId);
+    const isHolidayFn = (dateStr: string): boolean => (dateStr === decidingDateStr ? isHoliday : false);
+    const twName = new Map(snapshot.timeWindows.map((tw) => [tw.id, tw.name]));
+    return {
+      resolve: (ticketTypeId: string, isFree: boolean): PriceResult =>
+        resolvePrice(branchId, ticketTypeId, isFree, { createdAt }, isHolidayFn, isVnWeekend, snapshot),
+      timeWindowName: (id) => (id ? (twName.get(id) ?? null) : null),
+    };
   }
 
   // ─── Excel export (VG-02.7) ───────────────────────────────────────────────

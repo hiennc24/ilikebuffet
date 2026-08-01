@@ -98,33 +98,23 @@ export class BillsService {
         priceVersionId: string | null;
       }> = [];
 
+      // Batch-load ticket types + build the price resolver ONCE (snapshot +
+      // holiday loaded a single time), instead of per line (HI-1).
+      const ticketTypes = await tx.ticketType.findMany({
+        where: { id: { in: [...new Set(dto.lines.map((l) => l.ticketTypeId))] } },
+      });
+      const ticketTypeById = new Map(ticketTypes.map((t) => [t.id, t]));
+      const resolver = await this.pricing.buildResolver(dto.branchId, createdAt);
+
       for (const lineDto of dto.lines) {
-        const ticketType = await tx.ticketType.findUnique({
-          where: { id: lineDto.ticketTypeId },
-        });
+        const ticketType = ticketTypeById.get(lineDto.ticketTypeId);
         if (!ticketType) {
           throw new BadRequestException(`TicketType ${lineDto.ticketTypeId} not found`);
         }
 
-        const priceResult = await this.pricing.resolvePrice({
-          branchId: dto.branchId,
-          ticketTypeId: lineDto.ticketTypeId,
-          createdAt: createdAt.toISOString(),
-        });
-
+        const priceResult = resolver.resolve(lineDto.ticketTypeId, ticketType.isFree);
         if (priceResult.kind === "NO_PRICE") {
-          throw new BadRequestException(
-            "Ngoài khung giờ hoặc chưa có giá",
-          );
-        }
-
-        // Load timeWindow name for snapshot (if we have a timeWindowId)
-        let timeWindowName: string | null = null;
-        if (priceResult.timeWindowId) {
-          const tw = await tx.timeWindow.findUnique({
-            where: { id: priceResult.timeWindowId },
-          });
-          timeWindowName = tw?.name ?? null;
+          throw new BadRequestException("Ngoài khung giờ hoặc chưa có giá");
         }
 
         const unitPriceVnd = priceResult.priceVnd;
@@ -138,7 +128,7 @@ export class BillsService {
           lineTotalVnd,
           isFree: ticketType.isFree,
           timeWindowId: priceResult.timeWindowId || null,
-          timeWindowName,
+          timeWindowName: resolver.timeWindowName(priceResult.timeWindowId),
           dayType: priceResult.dayType ?? null,
           priceVersionId: priceResult.versionId || null,
         });
