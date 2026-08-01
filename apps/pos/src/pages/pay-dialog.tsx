@@ -82,6 +82,9 @@ export const PayDialog: React.FC<PayDialogProps> = ({
   // Offline bill metadata captured at creation, used to write the outbox row at
   // payment confirmation (a bill only enters the outbox once it is paid).
   const offlineMetaRef = React.useRef<{ tempNumber: string; createdAt: string; clockOffsetMs: number } | null>(null);
+  // Synchronous re-entry guard so a double-tap on "Xác nhận thanh toán" cannot
+  // submit twice before React re-renders and disables the button (CR-3).
+  const submittingRef = React.useRef(false);
 
   const [method, setMethod] = React.useState<PaymentMethod>("CASH");
   const [amountInput, setAmountInput] = React.useState("");
@@ -202,63 +205,72 @@ export const PayDialog: React.FC<PayDialogProps> = ({
   }, [open]); // intentionally omits stable refs: api, selectedBranchId, deviceId, shiftId, cartItems, clientUuid are captured at open-time
 
   const handleConfirmPayment = React.useCallback(async () => {
-    if (!billId || !bill) return;
+    if (submittingRef.current || !billId || !bill) return;
     const amountVnd = parseInt(amountInput, 10);
     if (amountVnd !== bill.totalVnd) return; // Button should be disabled, guard anyway.
 
-    // Offline: write the completed bill (with its payment) to the outbox now.
-    // There is no server to POST to; the sale is settled locally and the bill —
-    // including the payment method taken — syncs on reconnect.
-    if (isOfflineBill) {
-      const meta = offlineMetaRef.current;
-      if (!meta || !selectedBranchId || !shiftId) {
-        setErrorMsg("Thiếu dữ liệu bill offline — thử lại.");
-        setStep("error");
-        return;
-      }
-      try {
-        await addToOutbox({
-          clientUuid: billId,
-          tempNumber: meta.tempNumber,
-          branchId: selectedBranchId,
-          shiftId,
-          deviceId,
-          createdAt: meta.createdAt,
-          deviceClockAt: meta.createdAt,
-          clockOffsetMs: meta.clockOffsetMs,
-          lines: cartItems.map((i) => ({ ticketTypeId: i.id, qty: i.quantity })),
-          payments: [{ method, amountVnd }],
-        });
-      } catch {
-        setErrorMsg("Không lưu được bill offline — thử lại.");
-        setStep("error");
-        return;
-      }
-      setStep("success");
-      onPaymentSuccess();
-      triggerSync(); // no-op while offline; drains the outbox once back online
-      return;
-    }
-
-    setStep("paying");
+    submittingRef.current = true;
+    setStep("paying"); // disables the button once React re-renders
     try {
-      await api.request<unknown>(`/sales/bills/${billId}/payments`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          payments: [{ method, amountVnd, reference: undefined }],
-        }),
-      });
-      console.log("[PayDialog] payment success", { billId, bill, method, amountVnd });
-      setStep("success");
-      onPaymentSuccess();
-    } catch (err) {
-      setErrorMsg(
-        err instanceof ApiError
-          ? `Thanh toán thất bại: ${err.message}`
-          : "Lỗi kết nối — thử lại",
-      );
-      setStep("error");
+      // Offline: write the completed bill (with its payment) to the outbox now.
+      // There is no server to POST to; the sale is settled locally and the bill —
+      // including the payment method taken — syncs on reconnect.
+      if (isOfflineBill) {
+        const meta = offlineMetaRef.current;
+        if (!meta || !selectedBranchId || !shiftId) {
+          setErrorMsg("Thiếu dữ liệu bill offline — thử lại.");
+          setStep("error");
+          return;
+        }
+        try {
+          await addToOutbox({
+            clientUuid: billId,
+            tempNumber: meta.tempNumber,
+            branchId: selectedBranchId,
+            shiftId,
+            deviceId,
+            createdAt: meta.createdAt,
+            deviceClockAt: meta.createdAt,
+            clockOffsetMs: meta.clockOffsetMs,
+            lines: cartItems.map((i) => ({ ticketTypeId: i.id, qty: i.quantity })),
+            payments: [{ method, amountVnd }],
+          });
+        } catch (err) {
+          // A duplicate clientUuid (Dexie ConstraintError) means a prior tap
+          // already queued this bill — the sale is settled, so treat it as
+          // success rather than showing an error on a paid bill (CR-3).
+          if (!(err instanceof Error && err.name === "ConstraintError")) {
+            setErrorMsg("Không lưu được bill offline — thử lại.");
+            setStep("error");
+            return;
+          }
+        }
+        setStep("success");
+        onPaymentSuccess();
+        triggerSync(); // no-op while offline; drains the outbox once back online
+        return;
+      }
+
+      try {
+        await api.request<unknown>(`/sales/bills/${billId}/payments`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            payments: [{ method, amountVnd, reference: undefined }],
+          }),
+        });
+        setStep("success");
+        onPaymentSuccess();
+      } catch (err) {
+        setErrorMsg(
+          err instanceof ApiError
+            ? `Thanh toán thất bại: ${err.message}`
+            : "Lỗi kết nối — thử lại",
+        );
+        setStep("error");
+      }
+    } finally {
+      submittingRef.current = false;
     }
   }, [api, bill, billId, amountInput, method, onPaymentSuccess, isOfflineBill, triggerSync, cartItems, selectedBranchId, shiftId, deviceId]);
 

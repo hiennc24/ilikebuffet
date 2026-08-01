@@ -100,4 +100,20 @@ describe("PayDialog — offline", () => {
     expect(pending[0].clockOffsetMs).toBeDefined();
     expect(pending[0].payments).toEqual([{ method: "CASH", amountVnd: 400000 }]);
   });
+
+  it("double-tapping confirm queues the bill exactly once, no error (CR-3)", async () => {
+    render(<Host />, { wrapper: Wrapper });
+    await waitFor(() => expect(screen.getByLabelText(/số tiền nhận/i)).toBeTruthy());
+
+    const btn = screen.getByRole("button", { name: /xác nhận thanh toán/i });
+    await act(async () => {
+      fireEvent.click(btn);
+      fireEvent.click(btn); // rapid second tap
+    });
+
+    // Success, not an error — and exactly one bill in the outbox.
+    expect(await screen.findByText(/đã lưu bill offline/i)).toBeTruthy();
+    expect(screen.queryByText(/không lưu được bill/i)).toBeNull();
+    expect(await getPendingBills("branch-01")).toHaveLength(1);
+  });
 });
