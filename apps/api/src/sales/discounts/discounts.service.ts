@@ -299,6 +299,7 @@ export class DiscountsService {
   ): Promise<VerifyApprovalPinResult> {
     const manager = await this.prisma.appUser.findUnique({
       where: { id: dto.managerId },
+      include: { branches: true },
     });
 
     if (!manager) {
@@ -307,6 +308,21 @@ export class DiscountsService {
 
     if (manager.role !== "QUAN_LY_CN") {
       throw new ForbiddenException("Approval PIN can only be verified for QUAN_LY_CN users");
+    }
+
+    // The manager must belong to the branch the operation targets, so a manager
+    // from another branch cannot approve a cancel/force-close here (Red Team).
+    if (dto.branchId && !manager.branches.some((b) => b.branchId === dto.branchId)) {
+      await this.audit.record(this.prisma, {
+        actorId,
+        actorRole,
+        action: "approval_pin.branch_mismatch",
+        objectType: "app_user",
+        objectId: dto.managerId,
+        branchId: dto.branchId,
+        reason: dto.reason,
+      });
+      throw new ForbiddenException("Quản lý không thuộc chi nhánh của thao tác này");
     }
 
     if (!manager.approvalPinHash) {

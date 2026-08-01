@@ -54,6 +54,7 @@ function makeUser(overrides: Record<string, unknown> = {}) {
     approvalPinHash: null, // set in individual tests
     pinFailedCount: 0,
     pinLockedUntil: null,
+    branches: [] as Array<{ branchId: string }>,
     ...overrides,
   };
 }
@@ -415,6 +416,25 @@ describe("DiscountsService", () => {
 
     beforeEach(async () => {
       pinHash = await argon2.hash("123456");
+    });
+
+    it("rejects a manager who does not belong to the operation's branch (Red Team)", async () => {
+      prisma.appUser.findUnique.mockResolvedValue(
+        makeUser({ role: "QUAN_LY_CN", approvalPinHash: pinHash, branches: [{ branchId: "branch-A" }] }),
+      );
+      await expect(
+        service.verifyApprovalPin({ managerId: "mgr1", pin: "123456", branchId: "branch-B" }),
+      ).rejects.toThrow(ForbiddenException);
+      // PIN is never even checked on a branch mismatch.
+      expect(prisma.appUser.update).not.toHaveBeenCalled();
+    });
+
+    it("accepts a branch-member manager with the correct PIN (branch bound)", async () => {
+      prisma.appUser.findUnique.mockResolvedValue(
+        makeUser({ role: "QUAN_LY_CN", approvalPinHash: pinHash, branches: [{ branchId: "branch-A" }] }),
+      );
+      const result = await service.verifyApprovalPin({ managerId: "mgr1", pin: "123456", branchId: "branch-A" });
+      expect(result.approved).toBe(true);
     });
 
     it("returns approved=true for correct PIN and resets failure count", async () => {
