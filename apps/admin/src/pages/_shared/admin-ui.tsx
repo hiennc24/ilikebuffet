@@ -177,6 +177,80 @@ export function DataTable<T>({
   );
 }
 
+// ── Form primitives ───────────────────────────────────────────────────────────
+
+export interface SelectProps {
+  id?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  children: React.ReactNode;
+  "aria-label"?: string;
+  /** Minimum width. Defaults to "auto". */
+  minWidth?: string;
+  /** Height. Defaults to touch-friendly "44px" (--input-height token). */
+  height?: string;
+}
+
+/**
+ * Select — styled `<select>` on design tokens (touch-sized by default).
+ * Replaces ~4 duplicated inline `<select>` blocks across the admin screens.
+ */
+export const Select: React.FC<SelectProps> = ({
+  id,
+  value,
+  onChange,
+  children,
+  "aria-label": ariaLabel,
+  minWidth = "auto",
+  height = "var(--input-height, 44px)",
+}) => (
+  <select
+    id={id}
+    aria-label={ariaLabel}
+    value={value}
+    onChange={onChange}
+    style={{
+      height,
+      padding: "0 var(--space-3)",
+      border: "1px solid var(--border-default)",
+      borderRadius: "var(--radius-md)",
+      background: "var(--bg-raised, #FFFFFF)",
+      fontFamily: "var(--font-sans)",
+      fontSize: "var(--text-sm)",
+      color: "var(--text-primary)",
+      cursor: "pointer",
+      minWidth,
+    }}
+  >
+    {children}
+  </select>
+);
+
+export interface InlineErrorProps {
+  message: string | null;
+}
+
+/**
+ * InlineError — inline validation / server error message on design tokens.
+ * Renders nothing when `message` is null/empty.
+ * Replaces ~8 duplicated `<span role="alert">` blocks.
+ */
+export const InlineError: React.FC<InlineErrorProps> = ({ message }) => {
+  if (!message) return null;
+  return (
+    <span
+      role="alert"
+      style={{
+        fontFamily: "var(--font-sans)",
+        fontSize: "var(--text-sm)",
+        color: "#C0392B",
+      }}
+    >
+      {message}
+    </span>
+  );
+};
+
 // ── Badge ────────────────────────────────────────────────────────────────────
 
 export type BadgeTone = "neutral" | "active" | "muted" | "warn";

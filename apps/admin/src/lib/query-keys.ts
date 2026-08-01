@@ -1,0 +1,38 @@
+/**
+ * query-keys — centralized React Query key factories for the admin SPA.
+ *
+ * Keeping keys here prevents typo-driven coupling where editing a ticket type
+ * accidentally invalidates the pricing matrix (both referenced ["ticket-types"]
+ * as a raw literal). Consumers import from here instead of writing inline arrays.
+ *
+ * Scoping rule:
+ *   - Keys with a dynamic segment (e.g. versionId) are factory functions.
+ *   - Keys that are list-level share a common root so invalidateQueries on the
+ *     root busts all related sub-keys without over-invalidating unrelated views.
+ */
+
+export const QUERY_KEYS = {
+  /** All open shifts for a branch. Polled on the shift monitor page. */
+  openShifts: (branchId: string | null) => ["open-shifts", branchId] as const,
+
+  /** Live summary for a single shift. Polled on the shift monitor page. */
+  shiftSummary: (shiftId: string | null) => ["shift-summary", shiftId] as const,
+
+  /** Master list of ticket types. Mutated by ticket-types-page. */
+  ticketTypes: () => ["ticket-types"] as const,
+
+  /** Master list of time windows. Mutated by pricing-page (TimeWindowCard). */
+  timeWindows: () => ["time-windows"] as const,
+
+  /** List of all price-book versions. */
+  pricingVersions: () => ["pricing-versions"] as const,
+
+  /** A single price-book version with its cells. */
+  pricingVersion: (versionId: string) => ["pricing-version", versionId] as const,
+
+  /** Discount programs list. */
+  discountPrograms: () => ["discount-programs"] as const,
+
+  /** Discount reasons list. */
+  discountReasons: () => ["discount-reasons"] as const,
+} as const;

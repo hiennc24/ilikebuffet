@@ -9,9 +9,10 @@
 
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
+import { QUERY_KEYS } from "../lib/query-keys";
 import { formatVnd } from "@ilikebuffet/shared";
 import { useAuth } from "../auth/auth-context";
-import { Card, DataTable, PageStack, LoadingState, ErrorState, EmptyState, toErrorMessage } from "./_shared/admin-ui";
+import { Card, DataTable, PageStack, LoadingState, ErrorState, EmptyState, Select, toErrorMessage } from "./_shared/admin-ui";
 
 interface OpenShift {
   id: string;
@@ -52,20 +53,34 @@ export const ShiftMonitorPage: React.FC = () => {
   const [shiftId, setShiftId] = React.useState<string | null>(null);
 
   const openShiftsQuery = useQuery({
-    queryKey: ["open-shifts", selectedBranchId],
+    queryKey: QUERY_KEYS.openShifts(selectedBranchId),
     queryFn: () => api.get<OpenShift[]>(`/sales/shifts?status=OPEN&branchId=${selectedBranchId}`),
     enabled: !!selectedBranchId,
     refetchInterval: 60_000,
   });
 
-  // Auto-select the first open shift once loaded.
   const openShifts = openShiftsQuery.data ?? [];
+
+  // Keep selected shift in sync with the polled open-shift list:
+  //   1. Auto-select the first shift when none is selected and shifts exist.
+  //   2. If the selected shift has closed (no longer in the list), fall back
+  //      to the first remaining shift, or null if no shifts are open.
+  //      Without this, the summary query fires on a stale ID, gets a 404,
+  //      and the UI shows a permanent loading spinner.
   React.useEffect(() => {
-    if (!shiftId && openShifts.length > 0) setShiftId(openShifts[0].id);
-  }, [shiftId, openShifts]);
+    if (openShiftsQuery.isLoading) return;
+    const ids = openShifts.map((s) => s.id);
+    if (shiftId && !ids.includes(shiftId)) {
+      // Selected shift closed — reset to first available or null.
+      setShiftId(openShifts[0]?.id ?? null);
+    } else if (!shiftId && openShifts.length > 0) {
+      // Initial auto-select.
+      setShiftId(openShifts[0].id);
+    }
+  }, [openShifts, openShiftsQuery.isLoading, shiftId]);
 
   const summaryQuery = useQuery({
-    queryKey: ["shift-summary", shiftId],
+    queryKey: QUERY_KEYS.shiftSummary(shiftId),
     queryFn: () => api.get<ShiftSummary>(`/sales/shifts/${shiftId}/summary`),
     enabled: !!shiftId,
     refetchInterval: 30_000, // realtime ≤60s
@@ -83,25 +98,18 @@ export const ShiftMonitorPage: React.FC = () => {
         description="Cập nhật ~30 giây. Chỉ chi nhánh trong phạm vi."
         actions={
           openShifts.length > 0 ? (
-            <select
+            <Select
               aria-label="Chọn ca"
               value={shiftId ?? ""}
               onChange={(e) => setShiftId(e.target.value)}
-              style={{
-                height: "36px",
-                border: "1px solid var(--border-default)",
-                borderRadius: "var(--radius-md)",
-                padding: "0 var(--space-3)",
-                fontFamily: "var(--font-sans)",
-                fontSize: "var(--text-sm)",
-              }}
+              height="36px"
             >
               {openShifts.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.deviceId} · mở {new Date(s.openedAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
                 </option>
               ))}
-            </select>
+            </Select>
           ) : undefined
         }
       >

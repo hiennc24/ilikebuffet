@@ -25,11 +25,14 @@ import {
   PageStack,
   LoadingState,
   ErrorState,
+  Select,
+  InlineError,
   toErrorMessage,
   type Column,
   type BadgeTone,
 } from "./_shared/admin-ui";
 import { useAuth } from "../auth/auth-context";
+import { QUERY_KEYS } from "../lib/query-keys";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -200,26 +203,11 @@ const CreateProgramDialog: React.FC<CreateProgramDialogProps> = ({
           >
             Loại giảm giá *
           </label>
-          <select
-            id="field-kind"
-            value={form.kind}
-            onChange={set("kind")}
-            style={{
-              height: "var(--input-height, 44px)",
-              padding: "0 var(--space-4)",
-              border: "1px solid var(--input-border, #E7E2DC)",
-              borderRadius: "var(--radius-md)",
-              background: "var(--bg-raised, #FFFFFF)",
-              fontFamily: "var(--font-sans)",
-              fontSize: "var(--text-sm)",
-              color: "var(--text-primary)",
-              cursor: "pointer",
-            }}
-          >
+          <Select id="field-kind" value={form.kind} onChange={set("kind")}>
             <option value="PERCENT">Phần trăm</option>
             <option value="FIXED_AMOUNT">Số tiền cố định</option>
             <option value="VOUCHER">Voucher</option>
-          </select>
+          </Select>
         </div>
 
         <FormField
@@ -288,18 +276,7 @@ const CreateProgramDialog: React.FC<CreateProgramDialogProps> = ({
           placeholder="YYYY-MM-DD"
         />
 
-        {(validationError ?? submitError) && (
-          <span
-            role="alert"
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "var(--text-sm)",
-              color: "#C0392B",
-            }}
-          >
-            {validationError ?? submitError}
-          </span>
-        )}
+        <InlineError message={validationError ?? submitError} />
 
         <div
           style={{
@@ -404,18 +381,7 @@ const EditProgramDialog: React.FC<EditProgramDialogProps> = ({
           placeholder="branch-id-1, branch-id-2"
         />
 
-        {submitError && (
-          <span
-            role="alert"
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "var(--text-sm)",
-              color: "#C0392B",
-            }}
-          >
-            {submitError}
-          </span>
-        )}
+        <InlineError message={submitError} />
 
         <div
           style={{
@@ -537,18 +503,7 @@ const CreateReasonDialog: React.FC<CreateReasonDialogProps> = ({
           placeholder="VD: Khách VIP, sinh nhật, khiếu nại"
         />
 
-        {submitError && (
-          <span
-            role="alert"
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "var(--text-sm)",
-              color: "#C0392B",
-            }}
-          >
-            {submitError}
-          </span>
-        )}
+        <InlineError message={submitError} />
 
         <div
           style={{
@@ -594,15 +549,12 @@ export const DiscountsPage: React.FC = () => {
 
   // ── Queries ─────────────────────────────────────────────────────────────────
 
-  const PROGRAMS_KEY = ["discount-programs"] as const;
-  const REASONS_KEY = ["discount-reasons"] as const;
-
   const {
     data: programs,
     isLoading: programsLoading,
     error: programsError,
   } = useQuery({
-    queryKey: PROGRAMS_KEY,
+    queryKey: QUERY_KEYS.discountPrograms(),
     queryFn: () => api.get<DiscountProgram[]>("/sales/discounts/programs"),
   });
 
@@ -611,7 +563,7 @@ export const DiscountsPage: React.FC = () => {
     isLoading: reasonsLoading,
     error: reasonsError,
   } = useQuery({
-    queryKey: REASONS_KEY,
+    queryKey: QUERY_KEYS.discountReasons(),
     queryFn: () => api.get<DiscountReason[]>("/sales/discounts/reasons"),
   });
 
@@ -621,7 +573,7 @@ export const DiscountsPage: React.FC = () => {
     mutationFn: (dto: Record<string, unknown>) =>
       api.post<DiscountProgram>("/sales/discounts/programs", dto),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: PROGRAMS_KEY });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.discountPrograms() });
       setProgramDialog("closed");
       setProgramCreateError(null);
     },
@@ -640,7 +592,7 @@ export const DiscountsPage: React.FC = () => {
         body: JSON.stringify(dto),
       }),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: PROGRAMS_KEY });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.discountPrograms() });
       setProgramDialog("closed");
       setEditingProgram(null);
       setProgramEditError(null);
@@ -656,7 +608,7 @@ export const DiscountsPage: React.FC = () => {
     mutationFn: (id: string) =>
       api.request<void>(`/sales/discounts/programs/${id}`, { method: "DELETE" }),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: PROGRAMS_KEY });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.discountPrograms() });
       setProgramDialog("closed");
       setDeactivatingProgram(null);
       setProgramDeactivateError(null);
@@ -672,7 +624,7 @@ export const DiscountsPage: React.FC = () => {
     mutationFn: (name: string) =>
       api.post<DiscountReason>("/sales/discounts/reasons", { name }),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: REASONS_KEY });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.discountReasons() });
       setReasonDialogOpen(false);
       setReasonCreateError(null);
     },

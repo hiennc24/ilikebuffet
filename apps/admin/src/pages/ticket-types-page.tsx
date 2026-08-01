@@ -17,10 +17,12 @@ import {
   PageStack,
   LoadingState,
   ErrorState,
+  InlineError,
   toErrorMessage,
   type Column,
 } from "./_shared/admin-ui";
 import { useAuth } from "../auth/auth-context";
+import { QUERY_KEYS } from "../lib/query-keys";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -48,7 +50,6 @@ type DialogMode = "closed" | "create" | "edit" | "deactivate";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const QUERY_KEY = ["ticket-types"] as const;
 const DEFAULT_COLOR = "#3B82F6";
 
 const EMPTY_FORM: TicketTypeFormData = {
@@ -178,18 +179,7 @@ const TicketTypeFormDialog: React.FC<TicketTypeFormDialogProps> = ({
           </label>
         </div>
 
-        {submitError && (
-          <span
-            role="alert"
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "var(--text-sm)",
-              color: "#C0392B",
-            }}
-          >
-            {submitError}
-          </span>
-        )}
+        <InlineError message={submitError} />
 
         <div
           style={{
@@ -248,18 +238,7 @@ const DeactivateDialog: React.FC<DeactivateDialogProps> = ({
           này có thể hoàn tác bằng cách cập nhật trạng thái.
         </p>
 
-        {submitError && (
-          <span
-            role="alert"
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "var(--text-sm)",
-              color: "#C0392B",
-            }}
-          >
-            {submitError}
-          </span>
-        )}
+        <InlineError message={submitError} />
 
         <div
           style={{
@@ -297,7 +276,7 @@ export const TicketTypesPage: React.FC = () => {
   // ── Fetch list ──────────────────────────────────────────────────────────────
 
   const { data, isLoading, error } = useQuery({
-    queryKey: QUERY_KEY,
+    queryKey: QUERY_KEYS.ticketTypes(),
     queryFn: () => api.get<TicketType[]>("/sales/ticket-types"),
   });
 
@@ -312,7 +291,7 @@ export const TicketTypesPage: React.FC = () => {
       isFree?: boolean;
     }) => api.post<TicketType>("/sales/ticket-types", dto),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ticketTypes() });
       closeDialog();
     },
     onError: (err) => {
@@ -342,7 +321,7 @@ export const TicketTypesPage: React.FC = () => {
         body: JSON.stringify(dto),
       }),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ticketTypes() });
       closeDialog();
     },
     onError: (err) => {
@@ -356,7 +335,7 @@ export const TicketTypesPage: React.FC = () => {
     mutationFn: (id: string) =>
       api.request<void>(`/sales/ticket-types/${id}`, { method: "DELETE" }),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ticketTypes() });
       closeDeactivateDialog();
     },
     onError: (err) => {

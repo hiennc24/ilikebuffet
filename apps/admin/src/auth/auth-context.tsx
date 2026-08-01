@@ -13,6 +13,7 @@
 
 import * as React from "react";
 import { ApiClient, ApiError } from "../lib/api-client";
+// ApiClient is the admin-local subclass (adds download()); ApiError is re-exported from shared.
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 

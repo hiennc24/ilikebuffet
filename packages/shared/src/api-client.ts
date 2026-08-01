@@ -65,6 +65,23 @@ export class ApiClient {
   }
 
   async request<T>(path: string, init: RequestInit = {}): Promise<T> {
+    const response = await this.fetchRaw(path, init);
+    if (!response.ok) {
+      throw new ApiError(response.status, await response.text());
+    }
+    return response.json() as Promise<T>;
+  }
+
+  /**
+   * Like `request` but returns the raw Response instead of parsing JSON.
+   * Use this when the caller needs to read the body as a Blob, stream, or
+   * text — for example, xlsx file downloads. The same 401-silent-refresh
+   * and x-branch-id auth flow applies.
+   *
+   * Throws ApiError on non-2xx (the caller must call `.blob()` / `.text()`
+   * on the returned Response when it is ok).
+   */
+  async fetchRaw(path: string, init: RequestInit = {}): Promise<Response> {
     const response = await this.doRequest(path, init);
 
     if (response.status === 401) {
@@ -78,22 +95,17 @@ export class ApiClient {
 
       // Retry with the new token.
       const retried = await this.doRequest(path, init);
-      if (!retried.ok) {
-        // M1 fix: if the retried request also returns 401, the session is
-        // dead (e.g. server-side revocation). Call onAuthFailure so the
-        // caller is not left with a silently broken session.
-        if (retried.status === 401) {
-          this.deps.onAuthFailure();
-        }
-        throw new ApiError(retried.status, await retried.text());
+      // M1 fix: if the retried request also returns 401, the session is
+      // dead (e.g. server-side revocation). Call onAuthFailure so the
+      // caller is not left with a silently broken session.
+      if (retried.status === 401) {
+        this.deps.onAuthFailure();
+        throw new ApiError(401, await retried.text());
       }
-      return retried.json() as Promise<T>;
+      return retried;
     }
 
-    if (!response.ok) {
-      throw new ApiError(response.status, await response.text());
-    }
-    return response.json() as Promise<T>;
+    return response;
   }
 
   get<T>(path: string, init?: RequestInit): Promise<T> {

@@ -15,6 +15,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { FormField, Button, Dialog } from "@ilikebuffet/ui";
 import { formatVnd } from "@ilikebuffet/shared";
 import { useAuth } from "../auth/auth-context";
+import { QUERY_KEYS } from "../lib/query-keys";
 import {
   Card,
   DataTable,
@@ -23,6 +24,8 @@ import {
   LoadingState,
   ErrorState,
   EmptyState,
+  Select,
+  InlineError,
   toErrorMessage,
 } from "./_shared/admin-ui";
 
@@ -78,21 +81,14 @@ const DAY_TYPE_LABELS: Record<string, string> = {
 
 const DAY_TYPES = ["REGULAR", "WEEKEND", "HOLIDAY"] as const;
 
-/** Download xlsx from a version-export endpoint using raw fetch with stored auth. */
-async function exportVersionXlsx(versionId: string): Promise<void> {
-  const token = sessionStorage.getItem("ibb_admin_at");
-  const branchId = localStorage.getItem("ibb_admin_branch");
-  const res = await fetch(`/sales/pricing/versions/${versionId}/export`, {
-    headers: {
-      Authorization: `Bearer ${token ?? ""}`,
-      "x-branch-id": branchId ?? "",
-    },
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Xuất Excel thất bại (${res.status}): ${text}`);
-  }
-  const blob = await res.blob();
+/** Trigger an xlsx download for the given version via the ApiClient auth path. */
+async function downloadVersionXlsx(
+  api: ReturnType<typeof useAuth>["api"],
+  versionId: string,
+): Promise<void> {
+  // Uses api.download() — same auth headers + 401-silent-refresh as all
+  // other requests. No raw fetch, no hardcoded storage keys.
+  const blob = await api.download(`/sales/pricing/versions/${versionId}/export`);
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -111,7 +107,7 @@ const TimeWindowCard: React.FC<TimeWindowCardProps> = ({ api }) => {
   const qc = useQueryClient();
 
   const { data, isLoading, error } = useQuery<TimeWindow[]>({
-    queryKey: ["time-windows"],
+    queryKey: QUERY_KEYS.timeWindows(),
     queryFn: () => api.get<TimeWindow[]>("/sales/pricing/time-windows"),
   });
 
@@ -163,7 +159,7 @@ const TimeWindowCard: React.FC<TimeWindowCardProps> = ({ api }) => {
         startMinute: start,
         endMinute: end,
       });
-      await qc.invalidateQueries({ queryKey: ["time-windows"] });
+      await qc.invalidateQueries({ queryKey: QUERY_KEYS.timeWindows() });
       setDialogOpen(false);
     } catch (err) {
       setSubmitError(toErrorMessage(err, "Tạo khung giờ thất bại"));
@@ -259,14 +255,7 @@ const TimeWindowCard: React.FC<TimeWindowCardProps> = ({ api }) => {
               {hhmm(parseInt(endMinute, 10) || 0)}
             </p>
           )}
-          {submitError && (
-            <span
-              role="alert"
-              style={{ fontSize: "var(--text-sm)", color: "#C0392B", fontFamily: "var(--font-sans)" }}
-            >
-              {submitError}
-            </span>
-          )}
+          <InlineError message={submitError} />
           <div style={{ display: "flex", gap: "var(--space-3)", justifyContent: "flex-end" }}>
             <Button variant="ghost" onClick={() => setDialogOpen(false)}>
               Hủy
@@ -293,7 +282,7 @@ const VersionCard: React.FC<VersionCardProps> = ({ api, selectedVersionId, onSel
   const qc = useQueryClient();
 
   const { data: versions, isLoading, error } = useQuery<PriceBookVersion[]>({
-    queryKey: ["pricing-versions"],
+    queryKey: QUERY_KEYS.pricingVersions(),
     queryFn: () => api.get<PriceBookVersion[]>("/sales/pricing/versions"),
   });
 
@@ -336,7 +325,7 @@ const VersionCard: React.FC<VersionCardProps> = ({ api, selectedVersionId, onSel
       };
       if (cloneFrom) body.cloneFromVersionId = cloneFrom;
       const created = await api.post<PriceBookVersion>("/sales/pricing/versions", body);
-      await qc.invalidateQueries({ queryKey: ["pricing-versions"] });
+      await qc.invalidateQueries({ queryKey: QUERY_KEYS.pricingVersions() });
       onSelectVersion(created.id);
       setCreateOpen(false);
     } catch (err) {
@@ -351,7 +340,7 @@ const VersionCard: React.FC<VersionCardProps> = ({ api, selectedVersionId, onSel
     setExportError(null);
     setExporting(true);
     try {
-      await exportVersionXlsx(selectedVersionId);
+      await downloadVersionXlsx(api, selectedVersionId);
     } catch (err) {
       setExportError(toErrorMessage(err, "Xuất Excel thất bại"));
     } finally {
@@ -391,22 +380,12 @@ const VersionCard: React.FC<VersionCardProps> = ({ api, selectedVersionId, onSel
                 >
                   Bảng giá:
                 </label>
-                <select
+                <Select
                   id="version-select"
                   value={selectedVersionId ?? ""}
                   onChange={(e) => onSelectVersion(e.target.value)}
-                  style={{
-                    fontFamily: "var(--font-sans)",
-                    fontSize: "var(--text-sm)",
-                    border: "1px solid var(--border-default)",
-                    borderRadius: "var(--radius-md)",
-                    padding: "0 var(--space-3)",
-                    height: "36px",
-                    background: "var(--bg-raised, #FFFFFF)",
-                    color: "var(--text-primary)",
-                    cursor: "pointer",
-                    minWidth: "260px",
-                  }}
+                  minWidth="260px"
+                  height="36px"
                 >
                   <option value="">— Chọn bảng giá —</option>
                   {versionList.map((v) => (
@@ -414,7 +393,7 @@ const VersionCard: React.FC<VersionCardProps> = ({ api, selectedVersionId, onSel
                       {v.name} ({v.effectiveFrom})
                     </option>
                   ))}
-                </select>
+                </Select>
                 {selectedVersionId && (
                   <Button
                     variant="ghost"
@@ -426,14 +405,7 @@ const VersionCard: React.FC<VersionCardProps> = ({ api, selectedVersionId, onSel
                 )}
               </div>
             )}
-            {exportError && (
-              <span
-                role="alert"
-                style={{ fontSize: "var(--text-sm)", color: "#C0392B", fontFamily: "var(--font-sans)" }}
-              >
-                {exportError}
-              </span>
-            )}
+            <InlineError message={exportError} />
           </div>
         )}
       </Card>
@@ -472,21 +444,10 @@ const VersionCard: React.FC<VersionCardProps> = ({ api, selectedVersionId, onSel
               >
                 Sao chép từ (tuỳ chọn)
               </label>
-              <select
+              <Select
                 id="clone-from-select"
                 value={cloneFrom}
                 onChange={(e) => setCloneFrom(e.target.value)}
-                style={{
-                  fontFamily: "var(--font-sans)",
-                  fontSize: "var(--text-sm)",
-                  border: "1px solid var(--border-default)",
-                  borderRadius: "var(--radius-md)",
-                  padding: "0 var(--space-3)",
-                  height: "44px",
-                  background: "var(--bg-raised, #FFFFFF)",
-                  color: "var(--text-primary)",
-                  cursor: "pointer",
-                }}
               >
                 <option value="">— Không sao chép —</option>
                 {versionList.map((v) => (
@@ -494,17 +455,10 @@ const VersionCard: React.FC<VersionCardProps> = ({ api, selectedVersionId, onSel
                     {v.name} ({v.effectiveFrom})
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
           )}
-          {createError && (
-            <span
-              role="alert"
-              style={{ fontSize: "var(--text-sm)", color: "#C0392B", fontFamily: "var(--font-sans)" }}
-            >
-              {createError}
-            </span>
-          )}
+          <InlineError message={createError} />
           <div style={{ display: "flex", gap: "var(--space-3)", justifyContent: "flex-end" }}>
             <Button variant="ghost" onClick={() => setCreateOpen(false)}>
               Hủy
@@ -543,17 +497,17 @@ const PriceMatrixCard: React.FC<PriceMatrixCardProps> = ({ api, versionId }) => 
   const qc = useQueryClient();
 
   const { data: timeWindows } = useQuery<TimeWindow[]>({
-    queryKey: ["time-windows"],
+    queryKey: QUERY_KEYS.timeWindows(),
     queryFn: () => api.get<TimeWindow[]>("/sales/pricing/time-windows"),
   });
 
   const { data: ticketTypes } = useQuery<TicketType[]>({
-    queryKey: ["ticket-types"],
+    queryKey: QUERY_KEYS.ticketTypes(),
     queryFn: () => api.get<TicketType[]>("/sales/ticket-types"),
   });
 
   const { data: versionData, isLoading, error } = useQuery<VersionWithCells>({
-    queryKey: ["pricing-version", versionId],
+    queryKey: QUERY_KEYS.pricingVersion(versionId),
     queryFn: () => api.get<VersionWithCells>(`/sales/pricing/versions/${versionId}`),
     enabled: !!versionId,
   });
@@ -614,7 +568,7 @@ const PriceMatrixCard: React.FC<PriceMatrixCardProps> = ({ api, versionId }) => 
           priceVnd,
         }),
       });
-      await qc.invalidateQueries({ queryKey: ["pricing-version", versionId] });
+      await qc.invalidateQueries({ queryKey: QUERY_KEYS.pricingVersion(versionId) });
       setEditTarget(null);
     } catch (err) {
       setEditError(toErrorMessage(err, "Cập nhật giá thất bại"));
@@ -625,7 +579,7 @@ const PriceMatrixCard: React.FC<PriceMatrixCardProps> = ({ api, versionId }) => 
 
   const windows = timeWindows ?? [];
   const types = (ticketTypes ?? [])
-    .filter((t) => t.status === "ACTIVE" || t.status === "active")
+    .filter((t) => t.status === "ACTIVE")
     .sort((a, b) => a.displayOrder - b.displayOrder);
 
   return (
@@ -815,14 +769,7 @@ const PriceMatrixCard: React.FC<PriceMatrixCardProps> = ({ api, versionId }) => 
               onChange={(e) => setEditPrice(e.target.value)}
               placeholder="VD: 150000"
             />
-            {editError && (
-              <span
-                role="alert"
-                style={{ fontSize: "var(--text-sm)", color: "#C0392B", fontFamily: "var(--font-sans)" }}
-              >
-                {editError}
-              </span>
-            )}
+            <InlineError message={editError} />
             <div style={{ display: "flex", gap: "var(--space-3)", justifyContent: "flex-end" }}>
               <Button variant="ghost" onClick={() => setEditTarget(null)}>
                 Hủy

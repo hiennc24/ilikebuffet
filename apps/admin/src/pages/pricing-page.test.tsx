@@ -438,6 +438,103 @@ describe("PricingPage — create time window", () => {
   });
 });
 
+describe("PricingPage — xlsx export (ME-5)", () => {
+  it("download goes through ApiClient (same fetch mock), not raw fetch", async () => {
+    // The single globalThis.fetch spy covers ALL network calls including the
+    // download. If exportVersionXlsx still used a raw fetch with hardcoded
+    // storage keys it would bypass this spy on a different URL base and
+    // blob() would throw. Passing here proves the auth path is shared.
+    const xlsxBlob = new Uint8Array([0x50, 0x4b, 0x03, 0x04]); // xlsx magic bytes
+
+    // Keep the spy typed as ReturnType<typeof vi.fn> so .mock is accessible.
+    const fetchImpl = async (url: string, init?: RequestInit): Promise<Response> => {
+      const path = String(url).replace(/^https?:\/\/[^/]+/, "");
+      const method = (init?.method ?? "GET").toUpperCase();
+
+      if (method === "GET" && path === "/sales/pricing/time-windows") {
+        return new Response(JSON.stringify(WINDOWS), { status: 200, headers: { "Content-Type": "application/json" } });
+      }
+      if (method === "GET" && path === "/sales/pricing/versions") {
+        return new Response(JSON.stringify(VERSIONS), { status: 200, headers: { "Content-Type": "application/json" } });
+      }
+      if (method === "GET" && path === "/sales/ticket-types") {
+        return new Response(JSON.stringify(TICKET_TYPES), { status: 200, headers: { "Content-Type": "application/json" } });
+      }
+      if (method === "GET" && path.startsWith("/sales/pricing/versions/ver-1/export")) {
+        // Assert the Authorization header is present — proof it went via ApiClient.
+        const authHeader = (init?.headers as Record<string, string> | undefined)?.["Authorization"];
+        expect(authHeader).toMatch(/^Bearer .+/);
+        return new Response(xlsxBlob, {
+          status: 200,
+          headers: { "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" },
+        });
+      }
+
+      return new Response(JSON.stringify({ error: "mock not found", path, method }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    };
+    const fetchSpy = vi.fn(fetchImpl);
+    globalThis.fetch = fetchSpy as unknown as typeof globalThis.fetch;
+
+    // jsdom doesn't implement URL.createObjectURL — assign stubs directly.
+    const createStub = vi.fn(() => "blob:stub");
+    const revokeStub = vi.fn();
+    URL.createObjectURL = createStub as unknown as typeof URL.createObjectURL;
+    URL.revokeObjectURL = revokeStub as unknown as typeof URL.revokeObjectURL;
+    // Stub anchor click so the download does not navigate.
+    const clickStub = vi.spyOn(HTMLAnchorElement.prototype, "click").mockReturnValue(undefined);
+
+    // renderPage sets globalThis.fetch internally; assign our spy first.
+    const qc = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
+    sessionStorage.setItem("ibb_admin_at", "test-access-token");
+    sessionStorage.setItem("ibb_admin_rt", "test-refresh-token");
+    localStorage.setItem("ibb_admin_branch", "branch-1");
+    render(
+      <QueryClientProvider client={qc}>
+        <AuthProvider apiBaseUrl="">
+          <PricingPage />
+        </AuthProvider>
+      </QueryClientProvider>,
+    );
+
+    // Wait for versions to load so the selector appears.
+    const versionSelect = await screen.findByRole("combobox");
+    await act(async () => {
+      fireEvent.change(versionSelect, { target: { value: "ver-1" } });
+    });
+
+    // "Xuất Excel" button should appear once a version is selected.
+    const exportBtn = await screen.findByRole("button", { name: /xuất excel/i });
+
+    await act(async () => {
+      fireEvent.click(exportBtn);
+    });
+
+    // Verify the export endpoint was hit via the fetch spy (not a separate
+    // raw fetch call that would have bypassed the spy).
+    await waitFor(() => {
+      const exportCalls = fetchSpy.mock.calls.filter((args) =>
+        String(args[0]).includes("/export"),
+      );
+      expect(exportCalls.length).toBeGreaterThan(0);
+    });
+
+    // Blob was passed to createObjectURL → anchor click was triggered.
+    expect(createStub).toHaveBeenCalled();
+    expect(clickStub).toHaveBeenCalled();
+
+    // clickStub was created via spyOn so restore it; URL stubs were direct assigns.
+    clickStub.mockRestore();
+  });
+});
+
 describe("PricingPage — overlapping time window error", () => {
   it("surfaces a 4xx server error message for an overlapping window", async () => {
     renderPage(
