@@ -22,8 +22,14 @@ import { useAuth } from "./auth-context";
 
 export const LoginPage: React.FC = () => {
   const { status, login, error, loading } = useAuth();
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  // Dev convenience: pre-fill the seeded local admin so review doesn't require
+  // typing. Guarded by import.meta.env.DEV — always empty in a production build.
+  const [username, setUsername] = React.useState(
+    import.meta.env.DEV ? "admin@ilikebuffet.vn" : "",
+  );
+  const [password, setPassword] = React.useState(
+    import.meta.env.DEV ? "Password123" : "",
+  );
 
   // H1: redirect away if we're no longer unauthenticated.
   if (status === "authenticated") return <Navigate to="/" replace />;

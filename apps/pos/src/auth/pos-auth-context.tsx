@@ -48,6 +48,17 @@ const STORAGE = {
   userId: "ibb_pos_user_id",
 } as const;
 
+/**
+ * Normalise a list response: GET /branches wraps its results in { data: [] }
+ * while other endpoints return bare arrays. Accept either shape.
+ * TODO(contract): align GET /branches with the bare-array convention.
+ */
+function unwrapList<T>(res: T[] | { data: T[] } | null | undefined): T[] {
+  if (Array.isArray(res)) return res;
+  if (res && Array.isArray((res as { data?: T[] }).data)) return (res as { data: T[] }).data;
+  return [];
+}
+
 export const PosAuthContext = React.createContext<PosAuthContextValue | null>(null);
 
 export function usePosAuth(): PosAuthContextValue {
@@ -158,10 +169,17 @@ export const PosAuthProvider: React.FC<PosAuthProviderProps> = ({
       }
 
       // Fetch branches (M5 fix: surface error instead of silently continuing).
+      // Pass the fresh token explicitly — React state (which the ApiClient reads)
+      // has not updated in this tick, so relying on it sends no Authorization
+      // header → 401 → bounce back to login.
       interface BranchResponse { id: string; name: string; address?: string }
       let branches: BranchResponse[];
       try {
-        branches = await apiRef.current.get<BranchResponse[]>("/branches");
+        branches = unwrapList(
+          await apiRef.current.get<BranchResponse[] | { data: BranchResponse[] }>("/branches", {
+            headers: { Authorization: `Bearer ${data.accessToken}` },
+          }),
+        );
       } catch (branchErr) {
         setError(branchErr instanceof ApiError
           ? `Không tải được danh sách chi nhánh (${branchErr.status})`
