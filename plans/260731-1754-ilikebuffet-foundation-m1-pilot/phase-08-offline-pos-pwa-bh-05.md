@@ -77,6 +77,9 @@ Nền tảng idempotency + pricing arbiter đã vững; phần còn lại là ha
 - **H5 clock-skew (server) — DONE.** Bill mang device-clock + offset; skew >±2' → **nhận nhưng quarantine** (không reject sale đã in) + audit; cột `deviceClockAt/clockOffsetMs/quarantined/quarantineReason`.
 - **H3 force-close — DONE.** `POST /sales/bills/force-close` nhận bill kẹt thành sale **quarantined** (PIN QL), không để device chết khóa chốt ca; audit `bill.force_close`.
 - **C8 đầy đủ — DONE.** Sync batch ghi `voided_before_sync` (audit, theo branch) để phân biệt void/suppression; chốt ca upload **high-water-mark** (`Shift.tempHighWater`).
-- **Còn lại:** H5 client (đo skew qua server-time + chặn offline UI khi >±2'); **C1 device↔token binding** + **C3** re-verify (phụ thuộc auth device-bound / luồng duyệt offline — chốt thiết kế trước).
+- **H5 client — DONE.** Đo skew qua `/health` timestamp lúc mount + mỗi lần online; skew >±2' → banner cảnh báo đỏ; `clockSkew` expose trên network-status để luồng tạo bill offline stamp `clockOffsetMs`.
 
-Backend arbiter P8 đã hardening: C1(hash)/C2/C5/C6/C8/H3/H5 + 6 kịch bản AC pass. Còn lại chủ yếu là UI client (H5 skew) + 2 hạng mục phụ thuộc mô hình auth (C1-device/C3).
+Backend arbiter P8 đã hardening đầy đủ: C1(hash)/C2/C5/C6/C8/H3/H5 + 6 kịch bản AC pass.
+**Còn lại (để P8 chạy offline thật):**
+- **Nối luồng tạo bill offline** — khi mất mạng, pay-dialog ghi bill vào **outbox** (Dexie) + stamp `clockOffsetMs/deviceClockAt` thay vì POST online; online lại thì sync-engine đẩy batch. (Máy sync/outbox đã dựng + test; chỉ chưa nối vào luồng thanh toán.)
+- **C1 device↔token binding** + **C3** re-verify — phụ thuộc auth device-bound / luồng duyệt offline; chốt thiết kế trước.
