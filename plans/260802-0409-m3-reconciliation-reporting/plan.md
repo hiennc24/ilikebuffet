@@ -54,11 +54,12 @@ integer VND — dùng `sumVnd`/helpers, không float. Không lộ hash/mã nội
 - TDD: e2e cho mọi endpoint tổng hợp (đúng số + branch-scope + role); FE test luồng chính.
 - Không giảm coverage; build + lint + test xanh mọi package.
 
-## Câu hỏi mở (chốt trước khi vào phase liên quan)
-1. **Doanh thu thuần (R1):** net = gross(COMPLETED) − refunds, bỏ CANCELLED — đúng chứ?
-   Có tính guestCount theo bill COMPLETED (kể cả vé free) không?
-2. **Quarantine (R3):** chỉ **xem** (read-only), hay cho **đánh dấu đã xử lý**
-   (write + audit `bill.quarantine_resolved`)?
-3. **Export:** **xlsx** (tái dùng `api.download` + backend workbook) hay CSV nhẹ?
-4. **Số bill thiếu (R3):** chỉ soát bill đã có trong DB (seq thiếu trong [1..max]), hay
-   đối chiếu cả temp-number offline chưa sync (khó hơn, cần thiết bị báo)?
+## Quyết định đã chốt (2026-08-02)
+1. **Doanh thu thuần (R1):** `net = Σ(COMPLETED.totalVnd) − Σ(refund.amountVnd)`; bill
+   CANCELLED loại; guestCount theo bill COMPLETED (kể cả vé free).
+2. **Quarantine (R3):** **cho đánh dấu đã xử lý** — thêm cột `Bill.quarantineResolvedAt`/
+   `quarantineResolvedBy`/`quarantineResolveNote` (migration additive) + endpoint resolve +
+   audit `bill.quarantine_resolved`.
+3. **Export:** **Excel (.xlsx)** — backend workbook + `api.download` (như export bảng giá).
+4. **Số bill thiếu (R3):** chỉ soát **seq thiếu trong DB** theo `(chi nhánh, ngày)`
+   ([min..max] đã có); không đối chiếu temp offline chưa sync ở bản này.

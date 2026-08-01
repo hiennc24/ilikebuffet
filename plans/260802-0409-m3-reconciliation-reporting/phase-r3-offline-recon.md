@@ -8,8 +8,10 @@
 - `GET /sales/reports/number-gaps?branchId&businessDate` — với `(branch, businessDate)`:
   lấy MIN..MAX seq đã có, trả các seq **thiếu** (holes) trong khoảng (chốt Q4: chỉ soát
   DB, không đối chiếu temp offline chưa sync ở bản này).
-- (Q2) Nếu chốt cho đánh dấu đã xử lý: `POST /sales/reports/quarantine/:billId/resolve`
-  { note } → set cờ + audit `bill.quarantine_resolved`. Mặc định: **read-only**.
+- **Đánh dấu đã xử lý (đã chốt):** migration additive thêm `Bill.quarantineResolvedAt`,
+  `quarantineResolvedBy`, `quarantineResolveNote`. `POST /sales/reports/quarantine/:billId/resolve`
+  { note } → set 3 cột + audit `bill.quarantine_resolved` (in-tx, branch-scoped, role-gated).
+  List quarantine trả kèm trạng thái đã/chưa xử lý (filter `resolved=true|false`).
 
 ## Frontend
 - `offline-recon-page.tsx`: 2 phần —
