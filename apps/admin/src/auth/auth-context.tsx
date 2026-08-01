@@ -52,6 +52,19 @@ const STORAGE_KEYS = {
 
 // ── Context ───────────────────────────────────────────────────────────────────
 
+/**
+ * Normalise a list response. Most endpoints return a bare array, but some
+ * platform list endpoints (e.g. GET /branches) wrap results in a { data: [] }
+ * envelope. Accept either shape so the auth flow is resilient to the mismatch.
+ * TODO(contract): align GET /branches with the bare-array convention used by
+ * /sales/* and remove this shim once the API is consistent.
+ */
+function unwrapList<T>(res: T[] | { data: T[] } | null | undefined): T[] {
+  if (Array.isArray(res)) return res;
+  if (res && Array.isArray((res as { data?: T[] }).data)) return (res as { data: T[] }).data;
+  return [];
+}
+
 export const AuthContext = React.createContext<AuthContextValue | null>(null);
 
 export function useAuth(): AuthContextValue {
@@ -180,10 +193,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         // Fetch branches the user has access to (GET /branches).
         // M5 fix: surface error when /branches fails — silently continuing
         // left the user on choose-branch with an empty list and no feedback.
+        //
+        // Pass the freshly-issued access token explicitly: React state (which
+        // the ApiClient's getTokens() closure reads) has NOT updated yet in this
+        // tick, so without this the request goes out with no Authorization header
+        // and the API returns 401 → silent-refresh fails → onAuthFailure bounces
+        // the user back to /login. The mock fetch in tests ignored headers, which
+        // is why this never surfaced until running against the real API.
         interface BranchResponse { id: string; name: string; address?: string }
         let branches: Branch[];
         try {
-          branches = await apiRef.current.get<BranchResponse[]>("/branches");
+          branches = unwrapList(
+            await apiRef.current.get<BranchResponse[] | { data: BranchResponse[] }>("/branches", {
+              headers: { Authorization: `Bearer ${data.accessToken}` },
+            }),
+          );
         } catch (branchErr) {
           const msg = branchErr instanceof ApiError
             ? `Không tải được danh sách chi nhánh (${branchErr.status})`
@@ -255,7 +279,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         });
         // After successful change, proceed to branch selection.
         interface BranchResponse { id: string; name: string; address?: string }
-        const branches = await apiRef.current.get<BranchResponse[]>("/branches");
+        const branches = unwrapList(await apiRef.current.get<BranchResponse[] | { data: BranchResponse[] }>("/branches"));
         setState((s) => ({
           ...s,
           mustChangePassword: false,
