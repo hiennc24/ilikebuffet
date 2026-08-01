@@ -56,3 +56,17 @@ Offline-hoá quầy: tạo/in bill khi mất mạng, tự sync khi có mạng, s
 - **H5 (clock skew)** — ghi skew `server−device` mỗi lần online; lệch >±2' **chặn offline + cảnh báo QL**; stamp bill kèm device-clock + offset server last-known-good; server **quarantine** bill skew xuyên 0h. Test: offline clock lệch xuyên 0h → server phát hiện, không im lặng nhận.
 - **H3 (force-close)** — bill kẹt sync không thể phục hồi (device chết/DB evict) → **force-close có PIN QL + ghi ngoại lệ** (đóng băng chờ kế toán TC-03), không để khoá chốt ca vĩnh viễn. Test: stuck-bill → force-close path.
 - New success criteria: [ ] sync authz + dedup theo (device,uuid); [ ] server recompute giá offline; [ ] full-map + per-bill idempotent, không reject sale đã in; [ ] persist()+eviction test; [ ] voided_before_sync + high-water-mark; [ ] clock-skew detect; [ ] force-close có lối thoát.
+
+## Progress
+
+**Foundation — DONE (7 sync unit + 39 POS test).** `POST /sales/bills/sync` (THU_NGAN): xử lý từng bill idempotent — authz branch từ token + dedup `(deviceId, clientUuid)` (C1 phần), server tính lại giá & **không reject sale đã in** (C2/C5), luôn trả full map `{clientUuid→result}`, lưu `tempNumber` (C8 phần). Client: Dexie outbox (schema v2) + sync-engine backoff, `navigator.storage.persist()` (C6), banner offline. Đã tích hợp vào SalesModule; build + 295 API unit + 39 POS test xanh.
+
+**⚠️ Còn thiếu (phần "không được cắt" quan trọng nhất của P8):**
+- **C1** — chưa ràng buộc device↔token (đang tin `dto.deviceId`; cần token gắn device qua pin-login); chưa 409+audit khi dedup-hit khác content-hash.
+- **C3** — PIN duyệt offline soft-gate + server re-verify khi sync (chưa có).
+- **H5** — phát hiện clock-skew, chặn offline >±2', quarantine bill xuyên 0h (chưa có).
+- **H3** — force-close bill kẹt sync có PIN (chưa có).
+- **C8 đầy đủ** — event `voided_before_sync` + high-water-mark temp index lúc chốt ca (mới lưu tempNumber, chưa upload HWM).
+- **6 kịch bản AC BH-05.6 (a–g)** — bộ test cốt lõi định nghĩa Done: chưa tự động hoá (cần harness real-Postgres + mô phỏng đa thiết bị).
+
+Nền tảng idempotency + pricing arbiter đã vững; phần còn lại là hardening bảo mật/độ bền + bộ AC test — nên làm như spike có kiểm soát, không gộp một lần.
