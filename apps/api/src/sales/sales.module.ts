@@ -1,5 +1,6 @@
 /**
  * SalesModule — P6: Ticket Types, Pricing, Discounts (VG-01/02/03).
+ *               P7: Shifts, Bills, Payments (BH-01→04, BH-06, BH-07).
  *
  * Imports MasterDataModule to get MasterDataService for isHoliday() (Red Team M2).
  */
@@ -28,6 +29,13 @@ import {
 } from "./discounts/discounts.controller";
 
 import { BillNumberService } from "./bills/bill-number.service";
+import { BillsService } from "./bills/bills.service";
+import { BillsController } from "./bills/bills.controller";
+import { PaymentsService } from "./payments/payments.service";
+import { PaymentsController } from "./payments/payments.controller";
+
+import { ShiftsService } from "./shifts/shifts.service";
+import { ShiftsController } from "./shifts/shifts.controller";
 
 @Module({
   imports: [PrismaModule, AuditModule, MasterDataModule],
@@ -41,8 +49,19 @@ import { BillNumberService } from "./bills/bill-number.service";
     VoucherController,
     ApprovalPinController,
     DiscountReasonController,
+    ShiftsController,
+    BillsController,
+    PaymentsController,
   ],
-  providers: [TicketTypesService, PricingService, DiscountsService, BillNumberService],
-  exports: [TicketTypesService, PricingService, DiscountsService, BillNumberService],
+  providers: [
+    TicketTypesService,
+    PricingService,
+    DiscountsService,
+    BillNumberService,
+    ShiftsService,
+    BillsService,
+    PaymentsService,
+  ],
+  exports: [TicketTypesService, PricingService, DiscountsService, BillNumberService, BillsService, PaymentsService],
 })
 export class SalesModule {}
