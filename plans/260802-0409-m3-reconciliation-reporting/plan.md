@@ -37,7 +37,7 @@ integer VND — dùng `sumVnd`/helpers, không float. Không lộ hash/mã nội
 
 | Phase | Tên | Backend | Phụ thuộc | Status |
 |-------|-----|---------|-----------|--------|
-| R0 | [Reporting foundation](./phase-r0-foundation.md) | — | — | planned |
+| R0 | [Reporting foundation](./phase-r0-foundation.md) | — | — | **done** (FE) |
 | R1 | [Báo cáo doanh thu (net)](./phase-r1-revenue.md) | + revenue agg | R0 | planned |
 | R2 | [Đối soát tiền mặt theo ca](./phase-r2-shift-cash.md) | + shift-cash | R0 | planned |
 | R3 | [Đối soát offline (quarantine + số bill)](./phase-r3-offline-recon.md) | + quarantine, number-gaps | R0 | planned |

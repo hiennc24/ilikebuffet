@@ -70,4 +70,11 @@ export const QUERY_KEYS = {
   /** Accounting accounts + groups. */
   accounts: () => ["accounts"] as const,
   accountGroups: () => ["account-groups"] as const,
+
+  /** Reports (params appended by useReport). */
+  revenueReport: () => ["report-revenue"] as const,
+  shiftCashReport: () => ["report-shift-cash"] as const,
+  quarantineReport: () => ["report-quarantine"] as const,
+  numberGapsReport: () => ["report-number-gaps"] as const,
+  dashboardReport: () => ["report-dashboard"] as const,
 } as const;

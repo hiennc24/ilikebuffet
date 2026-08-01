@@ -34,16 +34,20 @@ export interface PagedResult<T> {
   refetch: () => void;
 }
 
-/** Serialise page/pageSize + non-empty filters into a query string. */
-export function buildListQuery(page: number, pageSize: number, filters: Filters = {}): string {
+/** Serialise non-empty filters into a query string (omits null/undefined/empty). */
+export function buildQuery(filters: Filters = {}): string {
   const params = new URLSearchParams();
-  params.set("page", String(page));
-  params.set("pageSize", String(pageSize));
   for (const [key, value] of Object.entries(filters)) {
     if (value === null || value === undefined || value === "") continue;
     params.set(key, String(value));
   }
   return params.toString();
+}
+
+/** Serialise page/pageSize + non-empty filters into a query string. */
+export function buildListQuery(page: number, pageSize: number, filters: Filters = {}): string {
+  const base = buildQuery(filters);
+  return `page=${page}&pageSize=${pageSize}${base ? `&${base}` : ""}`;
 }
 
 type ListResponse<T> = T[] | { data: T[]; total?: number };
