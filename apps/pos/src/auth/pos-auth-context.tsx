@@ -172,7 +172,7 @@ export const PosAuthProvider: React.FC<PosAuthProviderProps> = ({
         localStorage.setItem(STORAGE.userId, data.sub);
       }
 
-      // Fetch branches (M5 fix: surface error instead of silently continuing).
+      // Fetch branches (surface error instead of silently continuing).
       // Pass the fresh token explicitly — React state (which the ApiClient reads)
       // has not updated in this tick, so relying on it sends no Authorization
       // header → 401 → bounce back to login.

@@ -47,7 +47,7 @@ describe("PIN + Device registry", () => {
   let registeredDeviceId: string;
   let registeredDeviceSecret: string;
 
-  // Tokens for M1 role-gate tests
+  // Tokens for role-gate tests
   let cashierToken: string;
   let managerToken: string;
   let hqToken: string;
@@ -100,7 +100,7 @@ describe("PIN + Device registry", () => {
     });
     cashierId = cashier.id;
 
-    // Branch manager — for M1 approval-PIN gate test.
+    // Branch manager — for the approval-PIN gate test.
     const manager = await prisma.appUser.create({
       data: {
         username: "manager-pin-test",
@@ -297,7 +297,7 @@ describe("PIN + Device registry", () => {
     expect(user!.cashierPinHash).not.toBe(user!.approvalPinHash);
   });
 
-  it("C3: approval PIN (999999) rejected for cashier quick-login", async () => {
+  it("approval PIN (999999) rejected for cashier quick-login", async () => {
     const res = await request(app.getHttpServer())
       .post("/auth/pin-login")
       .send({ deviceId: registeredDeviceId, deviceSecret: registeredDeviceSecret, userId: cashierId, pin: "999999" })
@@ -305,7 +305,7 @@ describe("PIN + Device registry", () => {
     expect(res.body.message).toBe(GENERIC_PIN_ERROR);
   });
 
-  it("C3: API responses never include PIN hashes", async () => {
+  it("API responses never include PIN hashes", async () => {
     const res = await request(app.getHttpServer())
       .post("/auth/pin-login")
       .send({ deviceId: registeredDeviceId, deviceSecret: registeredDeviceSecret, userId: cashierId, pin: "111111" })
@@ -316,9 +316,9 @@ describe("PIN + Device registry", () => {
     expect(body).not.toContain("passwordHash");
   });
 
-  // ─── M1: role-gated PIN setters ───────────────────────────────────────────
+  // ─── Role-gated PIN setters ───────────────────────────────────────────
 
-  it("M1: THU_NGAN can set cashier PIN via POST /auth/profile/cashier-pin", async () => {
+  it("THU_NGAN can set cashier PIN via POST /auth/profile/cashier-pin", async () => {
     await request(app.getHttpServer())
       .post("/auth/profile/cashier-pin")
       .set("Authorization", `Bearer ${cashierToken}`)
@@ -332,7 +332,7 @@ describe("PIN + Device registry", () => {
     await auth.setCashierPin(cashierId, "111111", "THU_NGAN");
   });
 
-  it("M1: QUAN_LY_CN can set approval PIN via POST /auth/profile/approval-pin", async () => {
+  it("QUAN_LY_CN can set approval PIN via POST /auth/profile/approval-pin", async () => {
     await request(app.getHttpServer())
       .post("/auth/profile/approval-pin")
       .set("Authorization", `Bearer ${managerToken}`)
@@ -340,7 +340,7 @@ describe("PIN + Device registry", () => {
       .expect(201);
   });
 
-  it("M1: HQ (QUAN_TRI_HQ) cannot set cashier PIN → 403", async () => {
+  it("HQ (QUAN_TRI_HQ) cannot set cashier PIN → 403", async () => {
     await request(app.getHttpServer())
       .post("/auth/profile/cashier-pin")
       .set("Authorization", `Bearer ${hqToken}`)
@@ -348,7 +348,7 @@ describe("PIN + Device registry", () => {
       .expect(403);
   });
 
-  it("M1: HQ (QUAN_TRI_HQ) cannot set approval PIN → 403", async () => {
+  it("HQ (QUAN_TRI_HQ) cannot set approval PIN → 403", async () => {
     await request(app.getHttpServer())
       .post("/auth/profile/approval-pin")
       .set("Authorization", `Bearer ${hqToken}`)
@@ -356,7 +356,7 @@ describe("PIN + Device registry", () => {
       .expect(403);
   });
 
-  it("M1: THU_NGAN cannot set approval PIN → 403", async () => {
+  it("THU_NGAN cannot set approval PIN → 403", async () => {
     await request(app.getHttpServer())
       .post("/auth/profile/approval-pin")
       .set("Authorization", `Bearer ${cashierToken}`)
@@ -364,7 +364,7 @@ describe("PIN + Device registry", () => {
       .expect(403);
   });
 
-  it("M1: QUAN_LY_CN cannot set cashier PIN → 403", async () => {
+  it("QUAN_LY_CN cannot set cashier PIN → 403", async () => {
     await request(app.getHttpServer())
       .post("/auth/profile/cashier-pin")
       .set("Authorization", `Bearer ${managerToken}`)

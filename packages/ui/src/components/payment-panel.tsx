@@ -2,12 +2,12 @@
  * PaymentPanel — POS payment summary shell.
  *
  * Displays order items, subtotal, and a confirm-payment CTA.
- * Shell only for M1 — actual payment logic lives in apps/pos P7.
+ * Shell only — actual payment logic lives in apps/pos.
  *
  * Touch targets ≥48px (DECISION #8). Action button uses --action-bg,
  * NOT terracotta (DECISION #1).
  *
- * DataTable deferred to reporting wave (H10).
+ * DataTable deferred to reporting wave.
  */
 
 import * as React from "react";

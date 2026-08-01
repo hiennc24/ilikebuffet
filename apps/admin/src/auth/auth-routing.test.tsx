@@ -1,5 +1,5 @@
 /**
- * Auth routing behavior tests (H1 fix verification).
+ * Auth routing behavior tests.
  *
  * These tests render <App/> (full React tree including router and auth
  * context) with a mocked fetch, then drive the auth state machine and
@@ -53,7 +53,7 @@ afterEach(() => {
 
 // ── Tests ──────────────────────────────────────────────────────────────────
 
-describe("Auth routing — H1: screen transitions after login", () => {
+describe("Auth routing — screen transitions after login", () => {
   it("multi-branch login → choose-branch screen shown (not stuck on /login)", async () => {
     globalThis.fetch = mockFetchSequence({
       "/auth/login": {

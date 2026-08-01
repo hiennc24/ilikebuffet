@@ -102,14 +102,14 @@ export class SyncEngine {
         return;
       }
 
-      // Process the full result map (C5: server always returns all)
+      // Process the full result map (server always returns all)
       const resultMap = new Map(batchResult.results.map((r) => [r.clientUuid, r]));
       const settled: SyncBillResult[] = [];
 
       for (const bill of pending) {
         const result = resultMap.get(bill.clientUuid);
         if (!result) {
-          // Should never happen — server must return full map (C5).
+          // Should never happen — server must return full map.
           // Treat as retry so we don't permanently lose the bill.
           await markRetry(bill.clientUuid, "missing_from_server_response");
           continue;
@@ -126,7 +126,7 @@ export class SyncEngine {
           // status="retry" — back off
           const attempts = (bill.attempts ?? 0) + 1;
           if (attempts >= MAX_ATTEMPTS) {
-            // Cap reached — leave as retry so force-close path can handle it (H3).
+            // Cap reached — leave as retry so force-close path can handle it.
             await markRetry(bill.clientUuid, `max_attempts_reached (${result.error ?? "unknown"})`);
           } else {
             await markRetry(bill.clientUuid, result.error ?? "server_retry");

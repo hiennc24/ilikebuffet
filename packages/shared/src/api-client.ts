@@ -2,7 +2,7 @@
 /**
  * ApiClient — shared fetch wrapper for ilikebuffet apps.
  *
- * Lifted from apps/admin into packages/shared (H2 fix) so Admin and POS
+ * Lifted from apps/admin into packages/shared so Admin and POS
  * share the same 401-refresh path. Divergence on the security-critical
  * refresh path was the risk: one copy means one place to audit/fix.
  *
@@ -11,16 +11,16 @@
  *     passed in by each app's auth context. Zero side-effects here.
  *   - 401 → one silent refresh attempt → retry original request.
  *   - If refresh fails → deps.onAuthFailure() then throw ApiError(401).
- *   - If RETRY returns 401 → deps.onAuthFailure() then throw (M1 fix:
+ *   - If RETRY returns 401 → deps.onAuthFailure() then throw (
  *     prevents a dead session where the client silently stops working).
  *   - Concurrent refresh deduplicated: only one /auth/refresh in flight.
  *
  * Token storage: intentionally NOT here — each app keeps tokens in
  * sessionStorage/localStorage per its own security trade-offs.
  *
- * ACCEPTED RISK (M3): access tokens live in sessionStorage (XSS-exfiltrable)
+ * ACCEPTED RISK: access tokens live in sessionStorage (XSS-exfiltrable)
  * and the POS deviceSecret lives in localStorage (plaintext). This is an
- * accepted M1 risk. P8 follow-up: migrate refresh token to httpOnly cookie
+ * accepted risk. Follow-up: migrate refresh token to httpOnly cookie
  * and implement secure device-secret binding.
  */
 
@@ -95,7 +95,7 @@ export class ApiClient {
 
       // Retry with the new token.
       const retried = await this.doRequest(path, init);
-      // M1 fix: if the retried request also returns 401, the session is
+      // If the retried request also returns 401, the session is
       // dead (e.g. server-side revocation). Call onAuthFailure so the
       // caller is not left with a silently broken session.
       if (retried.status === 401) {

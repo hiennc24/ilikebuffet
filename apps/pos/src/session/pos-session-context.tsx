@@ -1,5 +1,5 @@
 /**
- * PosSessionContext — shift lifecycle for the POS PWA (M1).
+ * PosSessionContext — shift lifecycle for the POS PWA.
  *
  * Provides:
  *   - deviceId: stable ID stored in localStorage (generated on first use)

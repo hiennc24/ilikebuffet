@@ -1,7 +1,7 @@
 /**
  * @ilikebuffet/ui — public API
  *
- * Exports only M1-needed, POS-first primitives (H10).
+ * Exports only the POS-first primitives needed here.
  * DataTable (allowWrap, shared total-row) is DEFERRED to reporting wave.
  */
 

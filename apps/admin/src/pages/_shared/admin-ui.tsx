@@ -3,7 +3,7 @@
  * (ticket types, pricing, discounts).
  *
  * These are office-tier (non-touch) building blocks that sit on the design
- * tokens. The @ilikebuffet/ui DataTable was deferred (H10, POS-first), so
+ * tokens. The @ilikebuffet/ui DataTable was deferred (POS-first), so
  * these local helpers cover the admin CRUD tables without pulling a heavier
  * component into the shared library before the reporting wave needs it.
  */

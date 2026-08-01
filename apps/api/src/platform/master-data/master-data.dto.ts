@@ -111,7 +111,7 @@ export class CreateIngredientDto {
   /** Up to 3 purchase units. */
   @IsOptional()
   @IsArray()
-  @ArrayMaxSize(3, { message: "At most 3 purchase units allowed (NT-03.1)" })
+  @ArrayMaxSize(3, { message: "At most 3 purchase units allowed" })
   @ValidateNested({ each: true })
   @Type(() => PurchaseUnitDto)
   purchaseUnits?: PurchaseUnitDto[];
@@ -149,7 +149,7 @@ export class UpdateIngredientDto {
 
   @IsOptional()
   @IsArray()
-  @ArrayMaxSize(3, { message: "At most 3 purchase units allowed (NT-03.1)" })
+  @ArrayMaxSize(3, { message: "At most 3 purchase units allowed" })
   @ValidateNested({ each: true })
   @Type(() => PurchaseUnitDto)
   purchaseUnits?: PurchaseUnitDto[];

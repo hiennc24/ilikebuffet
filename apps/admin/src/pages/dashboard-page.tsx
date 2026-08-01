@@ -9,7 +9,7 @@ import * as React from "react";
 export const DashboardPage: React.FC = () => {
   return (
     <div style={{ fontFamily: "var(--font-sans)", color: "var(--text-secondary)" }}>
-      <p>Dashboard (P5 shell — widgets added in subsequent phases).</p>
+      <p>Dashboard (widgets added in subsequent phases).</p>
     </div>
   );
 };

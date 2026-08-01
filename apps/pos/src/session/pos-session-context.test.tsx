@@ -146,7 +146,7 @@ describe("PosSessionContext — shift lifecycle", () => {
     });
   });
 
-  it("network failure (5xx) surfaces 'error' status and keeps existing shiftId (HI-5)", async () => {
+  it("network failure (5xx) surfaces 'error' status and keeps existing shiftId", async () => {
     seedAuth();
     // First call: shift found → ready.
     // Second call (refresh): 503 transient error → must NOT clear shiftId.

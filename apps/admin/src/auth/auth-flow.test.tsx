@@ -100,7 +100,7 @@ describe("ApiClient — 401 → silent refresh → retry", () => {
     }
   });
 
-  it("M1: calls onAuthFailure when RETRIED request returns 401 (dead session)", async () => {
+  it("calls onAuthFailure when RETRIED request returns 401 (dead session)", async () => {
     // Scenario: refresh succeeds (returns new token) but the server has
     // revoked the session server-side, so the retried request also 401s.
     // The client must call onAuthFailure — otherwise the caller is left
@@ -128,7 +128,7 @@ describe("ApiClient — 401 → silent refresh → retry", () => {
     }
   });
 
-  it("M4: concurrent 401s result in exactly ONE /auth/refresh call", async () => {
+  it("concurrent 401s result in exactly ONE /auth/refresh call", async () => {
     // Real concurrency test: the refresh promise is NOT yet resolved when
     // the second request hits 401, so both await the same in-flight promise.
     let refreshCalls = 0;
@@ -179,7 +179,7 @@ describe("ApiClient — 401 → silent refresh → retry", () => {
 
       await Promise.all([p1, p2]);
 
-      // EXACTLY one refresh call despite two concurrent 401s (M4 strengthened).
+      // EXACTLY one refresh call despite two concurrent 401s (strengthened).
       expect(refreshCalls).toBe(1);
     } finally {
       globalThis.fetch = original;

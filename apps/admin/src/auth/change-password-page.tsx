@@ -4,8 +4,8 @@
  * Shown when mustChangePassword=true in the auth flow (SC-HT-01).
  * On success AuthContext transitions to choosing-branch or authenticated.
  *
- * H1 fix: redirects away when status is no longer must-change-password.
- * NOTE (M2): the server is the real gate — JwtAuthGuard rejects all routes
+ * Redirects away when status is no longer must-change-password.
+ * NOTE: the server is the real gate — JwtAuthGuard rejects all routes
  * except /auth/change-password while the JWT `mcp` (mustChangePassword) claim
  * is set. The FE redirect is UX convenience, not a security boundary.
  */
@@ -18,7 +18,7 @@ import { useAuth } from "./auth-context";
 export const ChangePasswordPage: React.FC = () => {
   const { status, changePassword, error, loading } = useAuth();
 
-  // H1: redirect when status moved on from must-change-password.
+  // Redirect when status moved on from must-change-password.
   if (status === "authenticated") return <Navigate to="/" replace />;
   if (status === "choosing-branch") return <Navigate to="/choose-branch" replace />;
   if (status === "unauthenticated") return <Navigate to="/login" replace />;

@@ -192,7 +192,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         }
 
         // Fetch branches the user has access to (GET /branches).
-        // M5 fix: surface error when /branches fails — silently continuing
+        // Surface error when /branches fails — silently continuing
         // left the user on choose-branch with an empty list and no feedback.
         //
         // Pass the freshly-issued access token explicitly: React state (which

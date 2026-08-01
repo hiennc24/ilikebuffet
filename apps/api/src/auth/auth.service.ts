@@ -217,7 +217,7 @@ export class AuthService implements OnModuleInit {
     });
   }
 
-  // ─── PIN login (device quick-login, NT-04) ────────────────────────────────
+  // ─── PIN login (device quick-login) ────────────────────────────────
 
   async pinLogin(dto: PinLoginDto): Promise<LoginResponse> {
     const { deviceId, deviceSecret, userId, pin } = dto;

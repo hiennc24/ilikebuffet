@@ -23,15 +23,15 @@ describe("formatVnd", () => {
     expect(formatVnd(1234567)).toBe("1.234.567đ");
   });
 
-  it("throws on NaN (defense-in-depth HI-6)", () => {
+  it("throws on NaN (defense-in-depth)", () => {
     expect(() => formatVnd(NaN)).toThrow(TypeError);
   });
 
-  it("throws on Infinity (defense-in-depth HI-6)", () => {
+  it("throws on Infinity (defense-in-depth)", () => {
     expect(() => formatVnd(Infinity)).toThrow(TypeError);
   });
 
-  it("throws on a float (defense-in-depth HI-6)", () => {
+  it("throws on a float (defense-in-depth)", () => {
     expect(() => formatVnd(99.5)).toThrow(TypeError);
   });
 });

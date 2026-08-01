@@ -1,5 +1,5 @@
 /**
- * Bill-level policies — reversible build-defaults (V4).
+ * Bill-level policies — reversible build-defaults.
  *
  * Each policy is a plain object constant so switching is one edit here,
  * not a hunt across the service. The service imports and calls the policy
@@ -13,7 +13,7 @@ export interface BillPolicyViolation {
 }
 
 /**
- * Check whether the bill lines satisfy the free-ticket companion policy (V4).
+ * Check whether the bill lines satisfy the free-ticket companion policy.
  *
  * Default: "REQUIRE_PAID_COMPANION" — at least one line must have unitPriceVnd > 0.
  * Returns a violation message when the policy is violated, undefined when OK.

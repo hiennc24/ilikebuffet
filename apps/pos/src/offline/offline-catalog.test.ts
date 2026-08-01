@@ -1,5 +1,5 @@
 /**
- * Offline catalog cache + offline pricing (P8: cold-boot offline).
+ * Offline catalog cache + offline pricing (cold-boot offline).
  * Proves the cache round-trips and that offline pricing (shared resolver over
  * the cached snapshot) yields the effective-version price for the day type.
  */

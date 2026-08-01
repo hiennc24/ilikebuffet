@@ -2,8 +2,8 @@
  * SellGridTile — POS menu item tile for the sell grid.
  *
  * Touch target: enforces 48×48px minimum per DECISION #8.
- * Used in the POS sell screen (M1 scope).
- * DataTable and reporting widgets are DEFERRED (H10).
+ * Used in the POS sell screen.
+ * DataTable and reporting widgets are DEFERRED.
  */
 
 import * as React from "react";

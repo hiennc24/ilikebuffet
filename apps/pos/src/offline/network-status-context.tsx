@@ -77,7 +77,7 @@ export const NetworkStatusProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   }, [api, branchId, refreshCount]);
 
-  // Request persistent storage on mount (C6).
+  // Request persistent storage on mount.
   React.useEffect(() => {
     if (!navigator.storage?.persist) {
       setPersistenceGranted(false);
@@ -86,7 +86,7 @@ export const NetworkStatusProvider: React.FC<{ children: React.ReactNode }> = ({
     navigator.storage.persist().then((granted) => {
       setPersistenceGranted(granted);
       if (!granted) {
-        console.warn("[POS] IndexedDB persistence NOT granted — offline data may be evicted (C6)");
+        console.warn("[POS] IndexedDB persistence NOT granted — offline data may be evicted");
       }
     });
   }, []);

@@ -32,7 +32,7 @@ import { assertVndInteger } from "../money";
 
 export type DayType = "HOLIDAY" | "WEEKEND" | "REGULAR";
 
-// ─── Snapshot data structures (P8-portable, no Prisma types) ─────────────────
+// ─── Snapshot data structures (portable, no Prisma types) ─────────────────
 
 /** One price cell inside a snapshot. */
 export interface PriceCellSnapshot {
@@ -101,7 +101,7 @@ export const PRICE_TIMESTAMP_FIELD: "createdAt" | "paidAt" = "createdAt";
 export const OUT_OF_HOURS_POLICY = "BLOCK" as const;
 
 /**
- * Free-ticket-must-have-paid-companion policy (build-default #4 / V4).
+ * Free-ticket-must-have-paid-companion policy (build default, awaiting client signature).
  * Exported so bill layer can import and check, keeping resolver single-purpose.
  * "REQUIRE_PAID_COMPANION" = bill must contain ≥1 ticket with price > 0.
  * Build-default; awaiting client signature before golive.
@@ -111,7 +111,7 @@ export interface FreeTicketPolicy {
   kind: "REQUIRE_PAID_COMPANION" | "ALLOW_STANDALONE";
 }
 export const FREE_TICKET_POLICY: FreeTicketPolicy = {
-  // build-default, awaiting client signature (V4)
+  // build default, awaiting client signature
   kind: "REQUIRE_PAID_COMPANION",
 };
 
@@ -240,7 +240,7 @@ export function resolvePrice(
     };
   }
 
-  // Pick the deciding timestamp (C9 — config constant).
+  // Pick the deciding timestamp (config constant).
   const decidingTs = pickDecidingTimestamp(timestamps);
   const dateStr = toVnDateStr(decidingTs);
   const minuteOfDay = toVnMinuteOfDay(decidingTs);
@@ -388,14 +388,14 @@ function findPriceCell(
   return undefined;
 }
 
-// ─── Cache staleness detection (C2/AD3 hydration-parity hook) ────────────────
+// ─── Cache staleness detection (hydration-parity hook) ────────────────
 
 /**
  * Compare a client cache snapshot against the server's current snapshot.
  *
  * Returns true if the client cache is OLDER than the server snapshot — meaning
  * bills created while offline against the stale cache may have incorrect prices.
- * The caller (P7/P8 reconnect flow) MUST flag those bills for server recompute.
+ * The caller (reconnect flow) MUST flag those bills for server recompute.
  *
  * This is the hydration-parity hook: the server recomputes at reconciliation,
  * not here. This function only DETECTS the mismatch condition.

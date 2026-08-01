@@ -197,7 +197,7 @@ describe("BillsService", () => {
   });
 
   // ── 3. All-free-ticket policy → BadRequest ────────────────────────────────────
-  it("throws BadRequestException when all lines are free tickets (policy V4)", async () => {
+  it("throws BadRequestException when all lines are free tickets", async () => {
     // isFree=true → server returns priceVnd=0
     const pricing = makePricingService({
       kind: "PRICE",
@@ -309,7 +309,7 @@ describe("BillsService", () => {
   });
 
   // ── 6. guestCount includes free tickets ──────────────────────────────────────
-  it("counts free tickets in guestCount (M7)", async () => {
+  it("counts free tickets in guestCount", async () => {
     // The resolver prices by isFree: paid → 150k, free → 0.
     const pricing = {
       resolvePrice: jest.fn(),

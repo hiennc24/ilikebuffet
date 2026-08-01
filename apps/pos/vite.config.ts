@@ -20,7 +20,7 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       // App-shell precache strategy: cache the shell HTML + assets on install.
-      // Full offline data sync is deferred to P8.
+      // Full offline data sync is deferred.
       injectRegister: "auto",
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],

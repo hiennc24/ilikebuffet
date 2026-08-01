@@ -1,17 +1,17 @@
 /**
- * MasterDataService — NT-03 master catalog management.
+ * MasterDataService — master catalog management.
  *
  * Covers: Unit, IngredientGroup, Ingredient, AccountGroup, Account,
  *         Supplier (with HQ approval flow), HolidayCalendar.
  *
  * Invariants:
- *   - Already-transacted entities: no hard delete, deactivate only (NT-03.2).
+ *   - Already-transacted entities: no hard delete, deactivate only.
  *   - Ingredient code: auto-generated if omitted; editable before first transaction.
  *     "First transaction" = any IngredientPurchaseUnit usage or (later) stock movement.
  *     For MVP with no stock tables yet the code is always editable (same extensible
  *     pattern as branchHasTransactions — ingredientHasTransactions() always false now).
  *   - Supplier scope: CHAIN_WIDE created by HQ; BRANCH_SPECIFIC by QL_CN for own branch
- *     → status PENDING_HQ, usable by that branch's PO immediately (NT-03.5).
+ *     → status PENDING_HQ, usable by that branch's PO immediately.
  *   - HolidayCalendar: isHoliday(date, branchId?) checks branch calendar first,
  *     falls back to chain-wide.
  *   - All sensitive changes audited in-tx.
@@ -55,7 +55,7 @@ export type IngredientTransactionChecker = (
 ) => Promise<boolean>;
 
 const ingredientTransactionCheckers: IngredientTransactionChecker[] = [
-  // P7/KH will push stock movement / PO line checkers here.
+  // Stock movement / PO line checkers will hook in here.
 ];
 
 export async function ingredientHasTransactions(
@@ -241,7 +241,7 @@ export class MasterDataService implements OnModuleInit {
     actorRole?: string,
   ) {
     if ((dto.purchaseUnits?.length ?? 0) > 3) {
-      throw new BadRequestException("An ingredient may have at most 3 purchase units (NT-03.1)");
+      throw new BadRequestException("An ingredient may have at most 3 purchase units");
     }
     this.validatePurchaseUnits(dto.purchaseUnits ?? []);
 
@@ -292,7 +292,7 @@ export class MasterDataService implements OnModuleInit {
     actorRole?: string,
   ) {
     if ((dto.purchaseUnits?.length ?? 0) > 3) {
-      throw new BadRequestException("An ingredient may have at most 3 purchase units (NT-03.1)");
+      throw new BadRequestException("An ingredient may have at most 3 purchase units");
     }
     if (dto.purchaseUnits) this.validatePurchaseUnits(dto.purchaseUnits);
 
@@ -576,7 +576,7 @@ export class MasterDataService implements OnModuleInit {
     callerBranchIds?: string[],
   ) {
     return this.prisma.withTx(async (tx) => {
-      // NT-03.5: QL_CN creates BRANCH_SPECIFIC → PENDING_HQ, usable immediately.
+      // QL_CN creates BRANCH_SPECIFIC → PENDING_HQ, usable immediately.
       let status: SupplierStatus = SupplierStatus.ACTIVE;
       if (dto.scope === "BRANCH_SPECIFIC") {
         if (!dto.branchId) {

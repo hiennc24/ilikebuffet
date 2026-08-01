@@ -7,7 +7,7 @@
  *   - "Đang đồng bộ X bill…" when online but pendingCount > 0.
  *   - Nothing when online and pendingCount === 0.
  *
- * Persistence warning: shown once per session if storage.persist() was denied (C6).
+ * Persistence warning: shown once per session if storage.persist() was denied.
  */
 
 import * as React from "react";

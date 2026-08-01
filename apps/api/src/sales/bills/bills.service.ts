@@ -87,7 +87,7 @@ export class BillsService {
 
       // Step 4: resolve prices for each line (server-authoritative). Batch-load
       // ticket types + build the price resolver ONCE (snapshot + holiday loaded a
-      // single time), then resolve every line from it (HI-1). Online create
+      // single time), then resolve every line from it. Online create
       // rejects a line with no applicable price.
       const ticketTypes = await tx.ticketType.findMany({
         where: { id: { in: [...new Set(dto.lines.map((l) => l.ticketTypeId))] } },

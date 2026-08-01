@@ -1,7 +1,7 @@
 /**
  * LoginPage — step 1 of the SC-HT-01 auth flow.
  *
- * H1 fix: guards on auth status so React Router doesn't keep rendering this
+ * Guards on auth status so React Router doesn't keep rendering this
  * page after login() transitions the context. The /login route is NOT inside
  * AuthGate, so without the guard a user who just logged in (status changes
  * to "choosing-branch" or "authenticated") would stay stuck on /login.
@@ -31,7 +31,7 @@ export const LoginPage: React.FC = () => {
     import.meta.env.DEV ? "Password123" : "",
   );
 
-  // H1: redirect away if we're no longer unauthenticated.
+  // Redirect away if we're no longer unauthenticated.
   if (status === "authenticated") return <Navigate to="/" replace />;
   if (status === "choosing-branch") return <Navigate to="/choose-branch" replace />;
   if (status === "must-change-password") return <Navigate to="/change-password" replace />;

@@ -21,7 +21,7 @@ export interface StartedTestDb {
 /**
  * Start an isolated Postgres container for a test run.
  *
- * NOTE (Red Team AD7/M4): concurrency tests (bill numbering) must NOT rely on a
+ * NOTE: concurrency tests (bill numbering) must NOT rely on a
  * shared reused container with leftover rows — each such suite should create its
  * own schema or wrap work in a rolled-back transaction so prior test rows can't
  * fake a gapless result. This bootstrap gives one clean DB per call by default.

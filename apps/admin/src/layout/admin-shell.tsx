@@ -152,7 +152,7 @@ export const AdminShell: React.FC<AdminShellProps> = ({
 
   const selectedBranch = availableBranches.find((b) => b.id === selectedBranchId);
 
-  // M6: branch switcher state — show native select on click.
+  // Branch switcher state — show native select on click.
   const [switcherOpen, setSwitcherOpen] = React.useState(false);
 
   const navItemStyle = (isActive: boolean): React.CSSProperties => ({
@@ -233,7 +233,7 @@ export const AdminShell: React.FC<AdminShellProps> = ({
           </span>
         </div>
 
-        {/* Branch switcher (M6: wired to selectBranch) */}
+        {/* Branch switcher (wired to selectBranch) */}
         <div style={{ padding: "12px", borderBottom: "1px solid var(--bg-page, #FAF8F6)", position: "relative" }}>
           {/* Native select for branch switching — opens on button click.
               selectBranch() updates auth context which re-scopes x-branch-id. */}

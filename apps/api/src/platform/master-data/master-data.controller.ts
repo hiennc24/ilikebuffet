@@ -1,5 +1,5 @@
 /**
- * MasterDataController — NT-03 HTTP endpoints.
+ * MasterDataController — HTTP endpoints.
  *
  * Role gates:
  *   - Ingredient groups, units, accounts, chain-wide suppliers: QUAN_TRI_HQ.

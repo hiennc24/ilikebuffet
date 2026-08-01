@@ -114,7 +114,7 @@ describe("print server", () => {
   });
 });
 
-describe("validatePayload — money/qty guards (HI-6)", () => {
+describe("validatePayload — money/qty guards", () => {
   let port: number;
   let handle: ReturnType<typeof createPrintServer>;
 

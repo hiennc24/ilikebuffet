@@ -14,7 +14,7 @@ import { useAuth } from "./auth-context";
 export const ChooseBranchPage: React.FC = () => {
   const { status, availableBranches, selectBranch } = useAuth();
 
-  // H1: if status moved on (e.g. single-branch auto-selected), redirect.
+  // If status moved on (e.g. single-branch auto-selected), redirect.
   if (status === "authenticated") return <Navigate to="/" replace />;
   if (status === "unauthenticated") return <Navigate to="/login" replace />;
   if (status === "must-change-password") return <Navigate to="/change-password" replace />;

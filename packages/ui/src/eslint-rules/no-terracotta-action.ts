@@ -1,5 +1,5 @@
 /**
- * ESLint rule: no-terracotta-action (M6 token-conformance lint)
+ * ESLint rule: no-terracotta-action (token-conformance lint)
  *
  * Enforces DECISION #1: the brand terracotta colour (#C96442, #AC4E31,
  * etc.) must NOT appear on variant="action" buttons.
@@ -8,7 +8,7 @@
  * or touch={true} must not have an explicit height/minHeight/width/minWidth
  * below 48px in JSX style literals.
  *
- * Replaces brittle colour snapshot tests (M6 rationale: snapshots test
+ * Replaces brittle colour snapshot tests (rationale: snapshots test
  * structure not behaviour; they break on any cosmetic rename and give false
  * confidence when the token changes upstream).
  *

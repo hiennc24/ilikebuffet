@@ -4,7 +4,7 @@
  * Touch tier (DECISION #8): all interactive elements ≥48px.
  * CTA uses action variant (lam teal), NOT terracotta (DECISION #1).
  *
- * H1 fix: redirects away when status moves past unauthenticated so the
+ * Redirects away when status moves past unauthenticated so the
  * login form does not re-render after a successful login() call.
  *
  * NOTE (ACCEPTED RISK): tokens in sessionStorage, deviceSecret in
@@ -20,7 +20,7 @@ import { usePosAuth } from "./pos-auth-context";
 export const PosLoginPage: React.FC = () => {
   const { status, login, error, loading } = usePosAuth();
 
-  // H1: redirect away when login() has transitioned status.
+  // Redirect away when login() has transitioned status.
   if (status === "authenticated") return <Navigate to="/" replace />;
   if (status === "choosing-branch") return <Navigate to="/choose-branch" replace />;
   if (status === "locked") return <Navigate to="/lock" replace />;

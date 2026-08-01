@@ -1,5 +1,5 @@
 /**
- * Clock-skew measurement (H5). The device compares its wall clock to the
+ * Clock-skew measurement. The device compares its wall clock to the
  * server's (`/health` returns the server `timestamp`). If the offset exceeds the
  * tolerance, offline bill creation must be blocked and the manager warned — a
  * skewed clock corrupts the createdAt used for pricing and the day/number range.

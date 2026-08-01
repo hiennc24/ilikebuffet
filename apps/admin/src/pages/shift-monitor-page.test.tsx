@@ -2,7 +2,7 @@
  * ShiftMonitorPage — polls the selected open shift's summary.
  *
  * Additional coverage:
- *   HI-8: when the polled shift list no longer contains the selected shiftId
+ *   When the polled shift list no longer contains the selected shiftId
  *         (shift just closed), the page resets selection instead of showing
  *         a permanent loading spinner.
  */
@@ -89,7 +89,7 @@ describe("ShiftMonitorPage", () => {
     expect(screen.queryByRole("status")).toBeNull();
   });
 
-  it("resets selected shift when it disappears from the polled list (HI-8)", async () => {
+  it("resets selected shift when it disappears from the polled list", async () => {
     // First poll returns shift-1; subsequent polls return empty (shift closed).
     let callCount = 0;
     globalThis.fetch = vi.fn(async (url: string): Promise<Response> => {

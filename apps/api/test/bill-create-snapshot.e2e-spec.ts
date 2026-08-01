@@ -247,7 +247,7 @@ describe("Bill creation — server price + snapshot immutability (integration)",
   });
 
   // ── 3. guestCount includes free tickets ───────────────────────────────────
-  it("guestCount counts free tickets (M7)", async () => {
+  it("guestCount counts free tickets", async () => {
     const res = await request(app.getHttpServer())
       .post("/sales/bills")
       .set("Authorization", `Bearer ${cashierToken}`)

@@ -9,7 +9,7 @@
  *
  * Touch target: ops tier enforces min 48×48px via `touch` prop (DECISION #8).
  *
- * M6: No snapshot tests on color. Token-conformance is enforced by the
+ * No snapshot tests on color. Token-conformance is enforced by the
  * no-terracotta-action eslint rule + the touch-size behavior test.
  */
 

@@ -145,7 +145,7 @@ export class SyncService {
         const createdAtSkewMs = Math.abs(serverNow.getTime() - createdAt.getTime());
         const createdAtImplausible = createdAtSkewMs > CREATED_AT_PLAUSIBILITY_MS;
 
-        // Batch-load ticket types + build the price resolver ONCE (HI-1) — the
+        // Batch-load ticket types + build the price resolver ONCE $1 the
         // whole batch shares this branch + createdAt. Offline sync never rejects
         // a printed sale on a missing price (accepts at 0, flags for accounting).
         const ticketTypes = await tx.ticketType.findMany({

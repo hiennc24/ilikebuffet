@@ -1,5 +1,5 @@
 /**
- * Button behavior tests (M6 — behavior, not color snapshots).
+ * Button behavior tests (behavior, not color snapshots).
  *
  * What we test:
  *   1. action variant does NOT use terracotta in inline style (DECISION #1)
@@ -7,7 +7,7 @@
  *   3. disabled state prevents click
  *   4. all variants render without crashing
  *
- * We do NOT snapshot the rendered HTML — that would be brittle (M6).
+ * We do NOT snapshot the rendered HTML — that would be brittle.
  */
 
 import { describe, it, expect, vi } from "vitest";

@@ -6,7 +6,7 @@
  *   - getPendingBills returns pending+retry, not committed/syncing
  *   - markCommitted sets officialNumber + status="committed"
  *   - markRetry increments attempts + sets lastError
- *   - clearCommitted removes committed bills (C5: only clear after officialNumber received)
+ *   - clearCommitted removes committed bills (only clear after officialNumber received)
  *   - countPending counts pending+retry+syncing
  *   - buildTempNumber format is correct and sequences increment per day
  */
@@ -105,7 +105,7 @@ describe("outbox-store — CRUD", () => {
     expect(bill2!.attempts).toBe(2);
   });
 
-  it("clearCommitted removes only committed bills (C5: pending bills preserved)", async () => {
+  it("clearCommitted removes only committed bills (pending bills preserved)", async () => {
     await posDb.offline_outbox.bulkAdd([
       { ...BASE_BILL, clientUuid: "u1", status: "committed", attempts: 1, officialNumber: "CN01-260801-0001" },
       { ...BASE_BILL, clientUuid: "u2", status: "pending", attempts: 0 },

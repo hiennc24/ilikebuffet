@@ -1,12 +1,12 @@
 /**
- * Global branch-scoping guard (Red Team H2 — fail-closed on keyed routes).
+ * Global branch-scoping guard (fail-closed on keyed routes).
  *
  * Registered as APP_GUARD (second, after JwtAuthGuard). Applies to every
  * authenticated route by default. Opt-out:
  *   @Public()   — no auth, no scope (login, health)
  *   @Unscoped() — auth required, scope check skipped (HQ chain-wide config)
  *
- * Contract (C1 fix — replaces the old "fail-open on keyless" behaviour):
+ * Contract (replaces the old "fail-open on keyless" behaviour):
  *
  *   For EVERY scoped request (not @Public / @Unscoped) the guard attaches
  *   scope context to the request:
@@ -22,7 +22,7 @@
  *     query branch-keyed data MUST call BranchScopeHelper.requireScope(req)
  *     and use the returned filter — that is the DB-level enforcement boundary.
  *
- *   TODO (P4): add a CI lint rule that flags data-repository methods that do
+ *   TODO: add a CI lint rule that flags data-repository methods that do
  *   not call requireScope(), once the repository layer exists.
  *
  * Branch resolution order from the HTTP request:

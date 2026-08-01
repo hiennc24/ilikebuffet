@@ -1,9 +1,9 @@
 /**
- * SellPage — real POS sell screen (P7).
+ * SellPage — real POS sell screen.
  *
  * - Fetches active ticket types from GET /sales/ticket-types
  * - Resolves estimated unit price per type via POST /sales/pricing/resolve
- * - Cart state persisted to Dexie (H8: survives refresh/lock)
+ * - Cart state persisted to Dexie (survives refresh/lock)
  * - Hydrates cart from Dexie on mount
  * - Opens PayDialog on "Thanh toán"
  */
@@ -45,7 +45,7 @@ interface TicketTypeWithPrice extends TicketType {
 // ── Hooks ──────────────────────────────────────────────────────────────────
 
 /** Price a cached catalog client-side with the shared resolver (same code the
- *  server uses), so online and offline show the same prices (HI-3 parity). */
+ *  server uses), so online and offline show the same prices. */
 function priceCatalog(catalog: CatalogCache, branchId: string): TicketTypeWithPrice[] {
   const snapshot = catalog.snapshot;
   const now = new Date();
@@ -72,8 +72,8 @@ function useTicketTypesWithPrices(branchId: string | null) {
     queryFn: async () => {
       // Online: refresh the catalog (a single snapshot fetch) then price
       // client-side; offline: fall back to the cached catalog. Both paths use
-      // the same shared resolver, so prices agree (HI-2 removes the per-ticket
-      // POST /pricing/resolve; HI-3 closes the online/offline parity gap).
+      // the same shared resolver, so prices agree (removes the per-ticket
+      // POST /pricing/resolve; closes the online/offline parity gap).
       const fresh = branchId ? await refreshCatalog(api, branchId) : null;
       const catalog = fresh ?? (branchId ? await getCachedCatalog(branchId) : null);
       if (!catalog) throw new Error("Không tải được danh mục");

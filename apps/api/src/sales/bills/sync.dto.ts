@@ -28,7 +28,7 @@ export interface SyncBillDto {
   branchId: string;
   shiftId: string;
   deviceId: string;
-  /** ISO-8601: price deciding timestamp (server re-resolves at this instant, V1). */
+  /** ISO-8601: price deciding timestamp (server re-resolves at this instant). */
   createdAt: string;
   /** Device wall-clock at creation (ISO-8601) — for skew audit. */
   deviceClockAt?: string;

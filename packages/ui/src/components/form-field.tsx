@@ -1,7 +1,7 @@
 /**
  * FormField — label + text/number input + error message.
  *
- * Single control set for M1 screens. Matches the admin login mockup
+ * Single control set for the app screens. Matches the admin login mockup
  * (SC-HT-01): 44px input height, border-focus ring from --input-focus-ring.
  *
  * Touch prop enlarges input to 48px for POS tier (DECISION #8).

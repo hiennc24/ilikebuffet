@@ -232,7 +232,7 @@ describe("Part 1 — Resolver Purity", () => {
     });
   });
 
-  describe("C9 — deciding timestamp contract (parametrized, not hard-coded)", () => {
+  describe("deciding timestamp contract (parametrized, not hard-coded)", () => {
     /**
      * Contract: ONE timestamp decides price. Which one is config-driven.
      * Test locks the contract — bill created 13:58, paid 14:05.
@@ -447,7 +447,7 @@ describe("Part 1 — Resolver Purity", () => {
       }
     });
 
-    it("free ticket counts toward guest total — invariant (M7: do not remove this test; BC-01 denominator depends on it)", () => {
+    it("free ticket counts toward guest total — invariant (do not remove this test; BC-01 denominator depends on it)", () => {
       // This test documents the BILLING LAYER contract, not the resolver.
       // A free ticket isFree=true MUST be included in guest-count even when priceVnd=0.
       // The resolver returns price=0; the bill accumulates guestCount += quantity for ALL tickets.
@@ -470,13 +470,13 @@ describe("Part 1 — Resolver Purity", () => {
         // Free ticket price = 0; paid ticket price > 0.
         expect(freeResult.priceVnd).toBe(0);
         expect(paidResult.priceVnd).toBeGreaterThan(0);
-        // CRITICAL INVARIANT (M7 — BC-01 depends on this):
+        // CRITICAL INVARIANT (BC-01 depends on this):
         // billing layer must count quantity of freeResult ticket into guestTotal
         // even though priceVnd = 0. The denominator for cost/guest must include free guests.
       }
     });
 
-    it("FREE_TICKET_POLICY is exported and defaults to REQUIRE_PAID_COMPANION (V4 build-default)", () => {
+    it("FREE_TICKET_POLICY is exported and defaults to REQUIRE_PAID_COMPANION (build default)", () => {
       // Policy default: free-ticket cannot stand alone.
       // Awaiting client signature before golive.
       expect(FREE_TICKET_POLICY.kind).toBe("REQUIRE_PAID_COMPANION");
@@ -555,9 +555,9 @@ describe("Part 1 — Resolver Purity", () => {
   });
 });
 
-// ─── Part 2: HYDRATION PARITY (C2/AD3) ───────────────────────────────────────
+// ─── Part 2: HYDRATION PARITY ───────────────────────────────────────
 
-describe("Part 2 — Hydration Parity (C2/AD3)", () => {
+describe("Part 2 — Hydration Parity", () => {
   /**
    * Scenario: device is offline during a mid-day price-book version change.
    *

@@ -54,7 +54,7 @@ export class AuthController {
   /**
    * POST /auth/change-password — authenticated, chain-wide (user changes their
    * own password; not branch-keyed).
-   * @PasswordChangeAllowed — exempt from the mustChangePassword gate (C2) so
+   * @PasswordChangeAllowed — exempt from the mustChangePassword gate so
    * users with mcp=true can reach this endpoint to satisfy the requirement.
    */
   @Unscoped()
@@ -72,7 +72,7 @@ export class AuthController {
   }
 
   /**
-   * POST /auth/pin-login — device quick-login for cashiers (NT-04).
+   * POST /auth/pin-login — device quick-login for cashiers.
    * @Public because the JWT for the session is issued here.
    */
   @Public()
@@ -85,7 +85,7 @@ export class AuthController {
   }
 
   /**
-   * POST /auth/profile/cashier-pin — THU_NGAN sets their quick-login PIN (M1).
+   * POST /auth/profile/cashier-pin — THU_NGAN sets their quick-login PIN.
    * Role gate is enforced in AuthService.setCashierPin().
    */
   @Unscoped()
@@ -100,7 +100,7 @@ export class AuthController {
   }
 
   /**
-   * POST /auth/profile/approval-pin — QUAN_LY_CN sets their approval PIN (M1).
+   * POST /auth/profile/approval-pin — QUAN_LY_CN sets their approval PIN.
    * Role gate is enforced in AuthService.setApprovalPin().
    */
   @Unscoped()

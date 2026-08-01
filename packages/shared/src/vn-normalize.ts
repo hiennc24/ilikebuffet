@@ -1,5 +1,5 @@
 /**
- * Vietnamese text normalization for duplicate detection (NT-03.3, Red Team H7).
+ * Vietnamese text normalization for duplicate detection.
  *
  * vnNormalize(s) → strips diacritics + lowercases + collapses whitespace so that
  * "Tôm sú" and "tom su" produce the same string, enabling collision detection

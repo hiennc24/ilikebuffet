@@ -12,7 +12,7 @@ import "fake-indexeddb/auto";
 import { PosDb } from "./pos-db";
 import type { DraftBill } from "./pos-db";
 
-describe("PosDb — draft_bills table (H8 scaffold)", () => {
+describe("PosDb — draft_bills table", () => {
   let db: PosDb;
 
   beforeEach(async () => {

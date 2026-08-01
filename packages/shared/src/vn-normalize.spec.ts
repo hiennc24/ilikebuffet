@@ -2,7 +2,7 @@
  * TDD: Step 1 RED — Vietnamese diacritic normalization for duplicate detection.
  *
  * Spec: normalize(s) strips Vietnamese diacritics + lowercases + trims so that
- * "Tôm sú" and "tom su" collide (NT-03.3, Red Team H7).
+ * "Tôm sú" and "tom su" collide.
  */
 import { vnNormalize } from "./vn-normalize";
 
@@ -51,7 +51,7 @@ describe("vnNormalize — diacritic stripping + case fold for duplicate detectio
       expect(vnNormalize("bắp cải")).toBe("bap cai");
     });
 
-    it("handles full ingredient name collision (NT-03.3 spec example)", () => {
+    it("handles full ingredient name collision", () => {
       // These must produce the same normalized string — the duplicate check
       // catches them even with different casing / spacing / diacritics.
       const a = vnNormalize("Tôm sú");
