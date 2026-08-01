@@ -33,6 +33,7 @@ import { BranchesPage } from "./pages/branches-page";
 import { SuppliersPage } from "./pages/suppliers-page";
 import { UsersPage } from "./pages/users-page";
 import { AuditPage } from "./pages/audit-page";
+import { canAccessPath } from "./lib/rbac";
 import "@ilikebuffet/ui/tokens.css";
 
 const queryClient = new QueryClient({
@@ -52,6 +53,13 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   if (status === "must-change-password") return <Navigate to="/change-password" replace />;
   if (status === "choosing-branch") return <Navigate to="/choose-branch" replace />;
 
+  return <>{children}</>;
+}
+
+/** Gate a restricted screen by role (server still enforces; this hides the UI). */
+function RequireAccess({ path, children }: { path: string; children: React.ReactNode }) {
+  const { role } = useAuth();
+  if (!canAccessPath(role, path)) return <Navigate to="/" replace />;
   return <>{children}</>;
 }
 
@@ -123,41 +131,51 @@ export function App() {
                     <Route
                       path="/orders"
                       element={
-                        <ShellLayout pageTitle="Đơn hàng">
-                          <OrdersPage />
-                        </ShellLayout>
+                        <RequireAccess path="/orders">
+                          <ShellLayout pageTitle="Đơn hàng">
+                            <OrdersPage />
+                          </ShellLayout>
+                        </RequireAccess>
                       }
                     />
                     <Route
                       path="/settings/branches"
                       element={
-                        <ShellLayout pageTitle="Chi nhánh">
-                          <BranchesPage />
-                        </ShellLayout>
+                        <RequireAccess path="/settings/branches">
+                          <ShellLayout pageTitle="Chi nhánh">
+                            <BranchesPage />
+                          </ShellLayout>
+                        </RequireAccess>
                       }
                     />
                     <Route
                       path="/master-data/suppliers"
                       element={
-                        <ShellLayout pageTitle="Nhà cung cấp">
-                          <SuppliersPage />
-                        </ShellLayout>
+                        <RequireAccess path="/master-data/suppliers">
+                          <ShellLayout pageTitle="Nhà cung cấp">
+                            <SuppliersPage />
+                          </ShellLayout>
+                        </RequireAccess>
                       }
                     />
                     <Route
                       path="/settings/users"
                       element={
-                        <ShellLayout pageTitle="Người dùng & vai trò">
-                          <UsersPage />
-                        </ShellLayout>
+                        <RequireAccess path="/settings/users">
+                          <ShellLayout pageTitle="Người dùng & vai trò">
+                            <UsersPage />
+                          </ShellLayout>
+                        </RequireAccess>
                       }
                     />
                     <Route
                       path="/settings/log"
                       element={
-                        <ShellLayout pageTitle="Nhật ký">
-                          <AuditPage />
-                        </ShellLayout>
+                        <RequireAccess path="/settings/log">
+                          <ShellLayout pageTitle="Nhật ký">
+                            <AuditPage />
+                          </ShellLayout>
+                        </RequireAccess>
                       }
                     />
                     <Route

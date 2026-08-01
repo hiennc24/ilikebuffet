@@ -1,4 +1,20 @@
-# P6 — RBAC-per-screen, hardening & docs
+# P6 — RBAC-per-screen, hardening & docs  ✅ DONE (core, 2026-08-02)
+
+## Actual
+- `lib/rbac.ts`: `decodeRole(token)` (JWT role claim, display-only) + `RESTRICTED_SCREENS`
+  map + `canAccessPath(role, path)` (default-allow → M1 screens unaffected).
+- auth-context exposes `role` (decoded from access token).
+- 2 lớp FE: (1) admin-shell **ẩn nav** thiếu quyền; (2) app.tsx `RequireAccess` **chặn
+  route** (redirect "/"). Lớp 3 (API 403) đã fail-closed từ M1.
+- Ma trận: orders = HQ/owner/accountant/QL_CN; branches = HQ/owner; suppliers =
+  HQ/owner/QL_CN; users + audit = HQ/QL_CN. Tests `rbac.test` (6). Admin 64.
+- Docs: tạo `docs/project-roadmap.md` (M1 done, M2 status, M3+ backlog).
+- Còn nhẹ: e2e RBAC-denial cho endpoint mới đã có sẵn trong từng phase (users/audit
+  e2e); ma trận per-màn của M1 screens giữ default-allow (không siết thêm ở M2).
+
+---
+Original below.
+
 
 **Goal:** khoá quyền theo màn, đồng bộ trạng thái UI, e2e cross-cutting, cập nhật docs.
 Chạy sau khi P1–P5 xong.

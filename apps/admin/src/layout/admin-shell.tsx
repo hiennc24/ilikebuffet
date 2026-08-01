@@ -11,6 +11,7 @@
 
 import * as React from "react";
 import { useAuth } from "../auth/auth-context";
+import { canAccessPath } from "../lib/rbac";
 
 export interface NavItem {
   id: string;
@@ -154,7 +155,7 @@ export const AdminShell: React.FC<AdminShellProps> = ({
   pageTitle,
   topbarActions,
 }) => {
-  const { selectedBranchId, availableBranches, selectBranch, logout } = useAuth();
+  const { selectedBranchId, availableBranches, selectBranch, logout, role } = useAuth();
 
   const selectedBranch = availableBranches.find((b) => b.id === selectedBranchId);
 
@@ -370,7 +371,7 @@ export const AdminShell: React.FC<AdminShellProps> = ({
                   {group.label}
                 </div>
               )}
-              {group.items.map((item) => {
+              {group.items.filter((item) => canAccessPath(role, item.path)).map((item) => {
                 const isActive = activePath === item.path;
                 return (
                   <button
@@ -431,7 +432,7 @@ export const AdminShell: React.FC<AdminShellProps> = ({
           >
             Hệ thống
           </div>
-          {SYSTEM_ITEMS.map((item) => (
+          {SYSTEM_ITEMS.filter((item) => canAccessPath(role, item.path)).map((item) => (
             <button
               key={item.id}
               onClick={() => onNavigate?.(item.path)}
