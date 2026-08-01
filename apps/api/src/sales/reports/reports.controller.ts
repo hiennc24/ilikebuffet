@@ -9,7 +9,7 @@ import { Controller, ForbiddenException, Get, Query, Request } from "@nestjs/com
 import { ReportsService } from "./reports.service";
 import { Role } from "../../platform/rbac/role.enum";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
-import type { RevenueQuery } from "./reports.dto";
+import type { RevenueQuery, ShiftCashQuery } from "./reports.dto";
 
 export const REPORT_VIEW_ROLES = new Set<Role>([
   Role.QUAN_TRI_HQ,
@@ -32,5 +32,10 @@ export class ReportsController {
   @Get("revenue")
   revenue(@Query() query: RevenueQuery, @Request() req: ScopedRequest) {
     return this.reports.revenue(query, this.access(req));
+  }
+
+  @Get("shift-cash")
+  shiftCash(@Query() query: ShiftCashQuery, @Request() req: ScopedRequest) {
+    return this.reports.shiftCash(query, this.access(req));
   }
 }

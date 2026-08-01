@@ -78,11 +78,12 @@ describe("Revenue report (integration)", () => {
     await prisma.userBranch.create({ data: { userId: cashier.id, branchId: branchAId } });
 
     const tt = await prisma.ticketType.create({ data: { name: "Người lớn", isFree: false, displayOrder: 0 } });
-    const shiftA = await prisma.shift.create({ data: { branchId: branchAId, deviceId: "dev-x", businessDate: new Date(`${DAY}T00:00:00Z`), status: "CLOSED", openedBy: "seed", openingCashVnd: 0 } });
-    const shiftB = await prisma.shift.create({ data: { branchId: branchBId, deviceId: "dev-y", businessDate: new Date(`${DAY}T00:00:00Z`), status: "CLOSED", openedBy: "seed", openingCashVnd: 0 } });
+    const shiftA = await prisma.shift.create({ data: { branchId: branchAId, deviceId: "dev-x", businessDate: new Date(`${DAY}T00:00:00Z`), status: "CLOSED", openedBy: "seed", openingCashVnd: 0, expectedCashVnd: 400_000, countedCashVnd: 390_000, varianceVnd: -10_000, varianceNote: "thiếu" } });
+    const shiftB = await prisma.shift.create({ data: { branchId: branchBId, deviceId: "dev-y", businessDate: new Date(`${DAY}T00:00:00Z`), status: "CLOSED", openedBy: "seed", openingCashVnd: 0, expectedCashVnd: 300_000, countedCashVnd: 300_000, varianceVnd: 0 } });
 
     // Branch A: 2 completed (200k each), 1 cancelled, 1 refund of 50k on the first.
     const b1 = await seedBill(branchAId, shiftA.id, 1, 200_000, 2, "COMPLETED", tt.id);
+    await prisma.payment.create({ data: { billId: b1.id, method: "CASH", amountVnd: 200_000 } });
     await seedBill(branchAId, shiftA.id, 2, 200_000, 2, "COMPLETED", tt.id);
     await seedBill(branchAId, shiftA.id, 3, 200_000, 2, "CANCELLED", tt.id);
     await prisma.refund.create({ data: { billId: b1.id, amountVnd: 50_000, method: "CASH", reason: "test", refundedBy: "seed", approvedBy: "seed" } });
@@ -123,5 +124,28 @@ describe("Revenue report (integration)", () => {
 
   it("a cashier is forbidden", async () => {
     await request(app.getHttpServer()).get(`/sales/reports/revenue?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${cashierToken}`).expect(403);
+  });
+
+  // ─── shift-cash ──────────────────────────────────────────────────────────────
+
+  it("shift-cash: variance + system cash per CLOSED shift", async () => {
+    const res = await request(app.getHttpServer()).get(`/sales/reports/shift-cash?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${hqToken}`).expect(200);
+    const rows = res.body.rows as { branchId: string; varianceVnd: number; cashRevenueVnd: number }[];
+    const a = rows.find((r) => r.branchId === branchAId)!;
+    expect(a.varianceVnd).toBe(-10_000);
+    expect(a.cashRevenueVnd).toBe(200_000); // the one CASH payment
+    expect(res.body.totals.shortCount).toBe(1);
+    expect(res.body.totals.shiftCount).toBe(2);
+  });
+
+  it("shift-cash: a branch manager sees only their branch", async () => {
+    const res = await request(app.getHttpServer()).get(`/sales/reports/shift-cash?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${managerAToken}`).expect(200);
+    const rows = res.body.rows as { branchId: string }[];
+    expect(rows.length).toBe(1);
+    expect(rows[0].branchId).toBe(branchAId);
+  });
+
+  it("shift-cash: cashier forbidden", async () => {
+    await request(app.getHttpServer()).get(`/sales/reports/shift-cash?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${cashierToken}`).expect(403);
   });
 });

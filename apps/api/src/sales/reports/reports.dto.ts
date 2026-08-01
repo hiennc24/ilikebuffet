@@ -6,3 +6,9 @@ export interface RevenueQuery {
   branchId?: string;
   groupBy?: "day" | "branch" | "shift";
 }
+
+export interface ShiftCashQuery {
+  from?: string;
+  to?: string;
+  branchId?: string;
+}

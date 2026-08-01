@@ -69,6 +69,12 @@ const DEFAULT_GROUPS: NavGroup[] = [
         path: "/reports/revenue",
         iconPath: "M3 3v18h18M7 15l3-4 3 2 4-6",
       },
+      {
+        id: "shift-cash-report",
+        label: "Đối soát tiền mặt",
+        path: "/reports/shift-cash",
+        iconPath: "M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6",
+      },
     ],
   },
   {

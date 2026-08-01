@@ -10,7 +10,7 @@ import { Prisma } from "@prisma/client";
 import { sumVnd } from "@ilikebuffet/shared";
 import { PrismaService } from "../../prisma/prisma.service";
 import type { BranchAccess } from "../../platform/rbac/branch-access";
-import type { RevenueQuery } from "./reports.dto";
+import type { RevenueQuery, ShiftCashQuery } from "./reports.dto";
 
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -103,6 +103,75 @@ export class ReportsService {
       },
       rows,
       byTicketType: [...ttMap.values()].sort((a, b) => b.grossVnd - a.grossVnd),
+    };
+  }
+
+  /** Cash reconciliation for CLOSED shifts: expected vs counted vs system cash. */
+  async shiftCash(query: ShiftCashQuery, access: BranchAccess) {
+    const businessDate: { gte?: Date; lte?: Date } = {};
+    if (query.from) businessDate.gte = new Date(`${query.from}T00:00:00Z`);
+    if (query.to) businessDate.lte = new Date(`${query.to}T00:00:00Z`);
+
+    const where: Prisma.ShiftWhereInput = {
+      status: "CLOSED",
+      ...(access.chainWide ? {} : { branchId: { in: access.branchIds } }),
+      ...(query.branchId ? { branchId: query.branchId } : {}),
+      ...(businessDate.gte || businessDate.lte ? { businessDate } : {}),
+    };
+
+    const shifts = await this.prisma.shift.findMany({
+      where,
+      orderBy: [{ businessDate: "desc" }, { closedAt: "desc" }],
+      select: {
+        id: true,
+        branchId: true,
+        businessDate: true,
+        openedAt: true,
+        closedAt: true,
+        openingCashVnd: true,
+        expectedCashVnd: true,
+        countedCashVnd: true,
+        varianceVnd: true,
+        varianceNote: true,
+      },
+    });
+
+    // System cash per shift = Σ CASH payments of that shift's bills.
+    const shiftIds = shifts.map((s) => s.id);
+    const payments = shiftIds.length
+      ? await this.prisma.payment.findMany({
+          where: { method: "CASH", bill: { shiftId: { in: shiftIds } } },
+          select: { amountVnd: true, bill: { select: { shiftId: true } } },
+        })
+      : [];
+    const cashByShift = new Map<string, number>();
+    for (const p of payments) {
+      const sid = p.bill.shiftId;
+      cashByShift.set(sid, (cashByShift.get(sid) ?? 0) + p.amountVnd);
+    }
+
+    const rows = shifts.map((s) => ({
+      shiftId: s.id,
+      branchId: s.branchId,
+      businessDate: dayKey(s.businessDate),
+      openedAt: s.openedAt,
+      closedAt: s.closedAt,
+      openingCashVnd: s.openingCashVnd,
+      expectedCashVnd: s.expectedCashVnd ?? 0,
+      countedCashVnd: s.countedCashVnd ?? 0,
+      varianceVnd: s.varianceVnd ?? 0,
+      varianceNote: s.varianceNote,
+      cashRevenueVnd: cashByShift.get(s.id) ?? 0,
+    }));
+
+    return {
+      totals: {
+        varianceVnd: rows.reduce((sum, r) => sum + r.varianceVnd, 0),
+        shortCount: rows.filter((r) => r.varianceVnd < 0).length,
+        overCount: rows.filter((r) => r.varianceVnd > 0).length,
+        shiftCount: rows.length,
+      },
+      rows,
     };
   }
 }
