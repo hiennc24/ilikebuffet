@@ -17,6 +17,7 @@ import { usePosAuth } from "../auth/pos-auth-context";
 import { usePosSession } from "../session/pos-session-context";
 import { useNetworkStatus } from "../offline/network-status-context";
 import { addToOutbox, buildTempNumber } from "../offline/outbox-store";
+import { printBill, type PrintBillPayload } from "../offline/print-client";
 import { ApiError } from "../lib/pos-api-client";
 import type { OrderItem } from "@ilikebuffet/ui";
 import { formatVnd, multiplyVnd } from "@ilikebuffet/shared";
@@ -261,6 +262,36 @@ export const PayDialog: React.FC<PayDialogProps> = ({
     }
   }, [api, bill, billId, amountInput, method, onPaymentSuccess, isOfflineBill, triggerSync, cartItems, selectedBranchId, shiftId, deviceId]);
 
+  // Build the print-agent payload from the current bill (null until priced).
+  const buildPrintPayload = React.useCallback(
+    (isReprint = false): PrintBillPayload | null => {
+      if (!bill) return null;
+      return {
+        branchName: branch?.name ?? "ilikebuffet",
+        billNumber: bill.number,
+        createdAt: offlineMetaRef.current?.createdAt ?? new Date().toISOString(),
+        lines: bill.lines.map((l) => ({
+          name: l.ticketTypeName,
+          qty: l.qty,
+          unitPriceVnd: l.unitPriceVnd,
+          lineTotalVnd: l.lineTotalVnd,
+        })),
+        totalVnd: bill.totalVnd,
+        guestCount: bill.guestCount,
+        payments: [{ method, amountVnd: bill.totalVnd }],
+        isReprint,
+      };
+    },
+    [bill, branch, method],
+  );
+
+  // Auto-print once the sale is settled. Print failure is non-fatal (BH-04.4).
+  React.useEffect(() => {
+    if (step !== "success") return;
+    const payload = buildPrintPayload();
+    if (payload) void printBill(payload);
+  }, [step, buildPrintPayload]);
+
   const remaining = bill ? bill.totalVnd - (parseInt(amountInput, 10) || 0) : 0;
   const payDisabled =
     step === "paying" || !bill || parseInt(amountInput, 10) !== bill.totalVnd;
@@ -301,10 +332,14 @@ export const PayDialog: React.FC<PayDialogProps> = ({
           <Button
             variant="ghost"
             touch
-            onClick={() => console.log("[PayDialog] print stub", bill)}
+            onClick={() => {
+              // Reprint stamps a "BẢN SAO" banner (BH-04.5).
+              const payload = buildPrintPayload(true);
+              if (payload) void printBill(payload);
+            }}
             style={{ width: "100%" }}
           >
-            In bill
+            In lại bill
           </Button>
           <Button variant="action" touch onClick={onClose} style={{ width: "100%" }}>
             Đóng
