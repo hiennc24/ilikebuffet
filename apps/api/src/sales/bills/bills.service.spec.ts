@@ -4,7 +4,7 @@
  * Covers:
  *  1. Client-sent price is ignored; server price is always used.
  *  2. NO_PRICE from pricing → BadRequestException.
- *  3. Policy: all-free-ticket bill → BadRequestException.
+ *  3. Free-ticket-only bill is allowed (ALLOW_STANDALONE).
  *  4. Cancel IDOR: closed shift → ForbiddenException.
  *  5. Cancel IDOR: different device → ForbiddenException.
  *  6. guestCount includes free tickets in the total.
@@ -196,8 +196,8 @@ describe("BillsService", () => {
     );
   });
 
-  // ── 3. All-free-ticket policy → BadRequest ────────────────────────────────────
-  it("throws BadRequestException when all lines are free tickets", async () => {
+  // ── 3. Free-ticket-only bill is allowed (confirmed ALLOW_STANDALONE policy) ────
+  it("creates a bill when all lines are free tickets (free-only allowed)", async () => {
     // isFree=true → server returns priceVnd=0
     const pricing = makePricingService({
       kind: "PRICE",
@@ -213,9 +213,14 @@ describe("BillsService", () => {
         findMany: jest.fn().mockResolvedValue([makeTicketType(true /* isFree */)]),
       },
       timeWindow: { findUnique: jest.fn().mockResolvedValue(makeTimeWindow()) },
-      bill: { findUnique: jest.fn(), create: jest.fn() },
       shift: { findUnique: jest.fn().mockResolvedValue(makeShift()) },
       branch: { findUnique: jest.fn().mockResolvedValue(makeBranch()) },
+    });
+    prisma._defaultTx.bill.create.mockResolvedValue({
+      ...makeBill(),
+      totalVnd: 0,
+      guestCount: 1,
+      lines: [{ unitPriceVnd: 0, qty: 1, lineTotalVnd: 0, isFree: true }],
     });
 
     const svc = new BillsService(
@@ -226,10 +231,9 @@ describe("BillsService", () => {
       makeDiscountsService(),
     );
 
-    await expect(svc.createBill(BASE_DTO, ACTOR, ROLE)).rejects.toThrow(BadRequestException);
-    await expect(svc.createBill(BASE_DTO, ACTOR, ROLE)).rejects.toThrow(
-      "Bill phải có ít nhất 1 vé có phí",
-    );
+    const result = await svc.createBill(BASE_DTO, ACTOR, ROLE);
+    expect(result.totalVnd).toBe(0);
+    expect(prisma._defaultTx.bill.create).toHaveBeenCalledTimes(1);
   });
 
   // ── 4. Cancel IDOR: closed shift → Forbidden ─────────────────────────────────

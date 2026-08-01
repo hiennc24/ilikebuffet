@@ -476,10 +476,9 @@ describe("Part 1 — Resolver Purity", () => {
       }
     });
 
-    it("FREE_TICKET_POLICY is exported and defaults to REQUIRE_PAID_COMPANION (build default)", () => {
-      // Policy default: free-ticket cannot stand alone.
-      // Awaiting client signature before golive.
-      expect(FREE_TICKET_POLICY.kind).toBe("REQUIRE_PAID_COMPANION");
+    it("FREE_TICKET_POLICY is exported and is ALLOW_STANDALONE (confirmed)", () => {
+      // Confirmed policy: a free ticket can stand alone (a free-only bill is valid).
+      expect(FREE_TICKET_POLICY.kind).toBe("ALLOW_STANDALONE");
     });
   });
 

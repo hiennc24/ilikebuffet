@@ -11,11 +11,11 @@
  *   PRICE_TIMESTAMP_FIELD (default: "createdAt"). Reversing = 1 constant change.
  *   Tests lock the CONTRACT ("one timestamp decides price"), not the specific value.
  *
- *   #2 — Out-of-hours behaviour controlled by OUT_OF_HOURS_POLICY. Default:
- *   return { kind: "NO_PRICE", reason: "OUT_OF_HOURS" }. Build-default;
- *   awaiting client signature.
+ *   Out-of-hours behaviour controlled by OUT_OF_HOURS_POLICY. Confirmed policy:
+ *   selling outside a configured time window returns
+ *   { kind: "NO_PRICE", reason: "OUT_OF_HOURS" } — the bill cannot be created.
  *
- *   #4 — Free-ticket-only-bill policy is a separate policy object
+ *   Free-ticket-only-bill policy is a separate policy object
  *   (FREE_TICKET_POLICY). The resolver itself does NOT enforce it — that is the
  *   bill layer's responsibility. This keeps the resolver single-purpose.
  *
@@ -94,25 +94,25 @@ export interface PriceBookSnapshot {
 export const PRICE_TIMESTAMP_FIELD: "createdAt" | "paidAt" = "createdAt";
 
 /**
- * Out-of-hours policy (build-default #2; awaiting client signature).
+ * Out-of-hours policy (confirmed). Selling outside a configured time window
+ * blocks bill creation.
  * "BLOCK" = no price / bill cannot be created.
- * "ALLOW_NO_WINDOW" = a future policy that could allow a default price outside windows.
+ * "ALLOW_NO_WINDOW" = alternative (unused) that could price a default outside windows.
  */
 export const OUT_OF_HOURS_POLICY = "BLOCK" as const;
 
 /**
- * Free-ticket-must-have-paid-companion policy (build default, awaiting client signature).
- * Exported so bill layer can import and check, keeping resolver single-purpose.
- * "REQUIRE_PAID_COMPANION" = bill must contain ≥1 ticket with price > 0.
- * Build-default; awaiting client signature before golive.
+ * Free-ticket-only-bill policy (confirmed). A bill may contain only free tickets
+ * — a paid companion is NOT required.
+ * Exported so the bill layer can import and check, keeping the resolver single-purpose.
+ * "ALLOW_STANDALONE" = a free ticket can stand alone (a free-only bill is valid).
+ * "REQUIRE_PAID_COMPANION" = alternative (unused) requiring ≥1 priced line.
  */
 export interface FreeTicketPolicy {
-  /** "REQUIRE_PAID_COMPANION": a free-ticket cannot stand alone. Build-default. */
   kind: "REQUIRE_PAID_COMPANION" | "ALLOW_STANDALONE";
 }
 export const FREE_TICKET_POLICY: FreeTicketPolicy = {
-  // build default, awaiting client signature
-  kind: "REQUIRE_PAID_COMPANION",
+  kind: "ALLOW_STANDALONE",
 };
 
 // ─── Resolver input / output ──────────────────────────────────────────────────

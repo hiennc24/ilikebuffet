@@ -42,7 +42,7 @@ Trước khi bắt đầu **P6**, phải chốt với khách #2 (giờ ngoài kh
 | 3 | [Auth RBAC & Branch-Scoping](./phase-03-auth-rbac-branch-scoping.md) | Done | NT-02, NT-04 |
 | 4 | [Branch & Master Data](./phase-04-branch-master-data.md) | Done | NT-01, NT-03 |
 | 5 | [Frontend Foundation & App Shells](./phase-05-frontend-foundation-app-shells.md) | Done | — (FE nền) |
-| 6 | [Ticket Types & Price Matrix](./phase-06-ticket-types-price-matrix.md) | Done (code; #2/#4 defaults chờ khách ký) | VG-01, VG-02, VG-03 |
+| 6 | [Ticket Types & Price Matrix](./phase-06-ticket-types-price-matrix.md) | Done (#2 chặn ngoài khung, #4 cho vé free đứng 1 mình — đã chốt) | VG-01, VG-02, VG-03 |
 | 7 | [Shift Bill Payment & Print](./phase-07-shift-bill-payment-print.md) | Done (core; print-wire/VietQR polish) | BH-01→04, BH-06, BH-07 |
 | 8 | [Offline POS PWA (BH-05)](./phase-08-offline-pos-pwa-bh-05.md) | Done (offline core + hardening; C3 N/A M1) | BH-05★ |
 | 9 | [Realtime Monitor & M1 Hardening](./phase-09-realtime-monitor-m1-hardening.md) | Done (code+ops; load/DR = operational) | BH-08, load/DR |
@@ -126,9 +126,10 @@ Verification pass: **skip** (Red Team Review đã có evidence; greenfield, khô
 | V1 | Mốc tính giá (needs-client-confirm #3) | **Thời điểm TẠO bill** (default để build, **chờ khách ký**) | P6 resolver default `createdAt`; P7 snapshot; P8 offline |
 | V2 | Khóa tài khoản ≤30s (M4) | **Check revocation mỗi request + Redis** | P3: mọi request tra revocation list; Redis giữ ở M1 (bác bỏ đề xuất bỏ Redis của SC3) |
 | V3 | DR posture (C7) | **PITR-to-crash (WAL)**, RPO ~giây | P9 DR runbook; giảm rủi ro reset counter |
-| V4 | Vé miễn phí đứng một mình (needs-client-confirm #4) | **Bắt buộc ≥1 vé có phí** (default để build, **chờ khách ký**) | P6/P7 policy object (đảo được) |
+| V4 | Vé miễn phí đứng một mình (#4) | **Cho phép bill toàn vé free** (`ALLOW_STANDALONE` — đã chốt 2026-08-02) | P6/P7 policy object (đảo được) |
+| — | Giờ ngoài khung (#2) | **Chặn — không tạo được bill** (`OUT_OF_HOURS_POLICY="BLOCK"` — đã chốt 2026-08-02) | P6 resolver `NO_PRICE` ngoài khung |
 
-**Còn chờ khách ký:** V1, V4 là default để build (resolver/policy config-driven, đảo = đổi config) — vẫn phải lấy chữ ký khách trước golive. V2 xác nhận **Redis ở lại M1** (chỉ revocation), khớp H9 (bỏ BullMQ, giữ Redis).
+**Còn chờ khách ký:** V1 (#3 mốc tính giá = createdAt) là default để build (resolver config-driven, đảo = đổi 1 config) — vẫn phải lấy chữ ký trước golive. #2 (giờ ngoài khung = chặn) và #4 (vé free đứng một mình = cho phép) **đã chốt 2026-08-02**. V2 xác nhận **Redis ở lại M1** (chỉ revocation).
 
 ### Whole-Plan Consistency Sweep (validation)
 Propagate: V1→P6 (default createdAt, giữ config paidAt); V2→P3 (per-request revocation, Redis stays — không mâu thuẫn H9 vì H9 chỉ bỏ BullMQ); V3→P9 (PITR); V4→P6/P7 (policy default). Không mâu thuẫn mới. Verification Failed: 0 → plan đủ điều kiện cook.

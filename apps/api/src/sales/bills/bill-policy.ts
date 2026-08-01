@@ -15,8 +15,10 @@ export interface BillPolicyViolation {
 /**
  * Check whether the bill lines satisfy the free-ticket companion policy.
  *
- * Default: "REQUIRE_PAID_COMPANION" — at least one line must have unitPriceVnd > 0.
- * Returns a violation message when the policy is violated, undefined when OK.
+ * Confirmed policy is "ALLOW_STANDALONE": a free-only bill is valid, so this
+ * returns undefined. Kept as a seam — under "REQUIRE_PAID_COMPANION" it requires
+ * at least one line with unitPriceVnd > 0. Returns a violation message when the
+ * active policy is violated, undefined when OK.
  */
 export function checkFreeTicketPolicy(
   lines: Array<{ unitPriceVnd: number }>,
