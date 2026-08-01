@@ -293,6 +293,40 @@ describe("SyncService — offline bill sync", () => {
     expect(prisma._tx.bill.create).not.toHaveBeenCalled();
   });
 
+  it("rejects a bill with an unparseable createdAt (corruption)", async () => {
+    const prisma = makePrisma();
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+
+    const result = await svc.processBill(
+      { ...BASE_BILL, createdAt: "not-a-date" },
+      ACTOR,
+      ALLOWED,
+    );
+
+    expect(result.status).toBe("rejected");
+    expect(result.error).toBe("invalid_created_at");
+    expect(prisma._tx.bill.create).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["fractional amountVnd", [{ method: "CASH", amountVnd: 100.5 }]],
+    ["non-cash tendered", [{ method: "VIETQR", amountVnd: 100, tenderedVnd: 200 }]],
+    ["tendered below amount", [{ method: "CASH", amountVnd: 100, tenderedVnd: 90 }]],
+  ])("rejects offline payment corruption: %s", async (_label, payments) => {
+    const prisma = makePrisma();
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+
+    const result = await svc.processBill(
+      { ...BASE_BILL, payments } as never,
+      ACTOR,
+      ALLOWED,
+    );
+
+    expect(result.status).toBe("rejected");
+    expect(result.error).toBe("invalid_payment");
+    expect(prisma._tx.bill.create).not.toHaveBeenCalled();
+  });
+
   // ── 7d. Force-close → committed + quarantined with approver ──────────────
   it("force-close accepts a stuck bill as quarantined with the manager as approver", async () => {
     const prisma = makePrisma();

@@ -21,6 +21,16 @@ import { PosSessionProvider } from "../session/pos-session-context";
 import { SellPage } from "./sell-page";
 import { posDb } from "../db/pos-db";
 
+// Stub PayDialog so tests can read the clientUuid it receives and trigger success.
+vi.mock("./pay-dialog", () => ({
+  PayDialog: ({ clientUuid, onPaymentSuccess }: { clientUuid: string; onPaymentSuccess: () => void }) => (
+    <div>
+      <span data-testid="pd-uuid">{clientUuid}</span>
+      <button onClick={onPaymentSuccess}>pd-succeed</button>
+    </div>
+  ),
+}));
+
 // ── helpers ────────────────────────────────────────────────────────────────
 
 const TICKET_TYPES = [
@@ -228,5 +238,41 @@ describe("SellPage — cart interactions", () => {
       expect(screen.getByText("3×")).toBeTruthy();
     });
     expect(screen.getAllByText(/trẻ em/i).length).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe("SellPage — clientUuid per sale", () => {
+  it("mints a fresh clientUuid for the sale after a successful one", async () => {
+    globalThis.fetch = makeFetch();
+    // Distinct UUID per call so a re-read after clear yields a new id.
+    let n = 0;
+    vi.spyOn(crypto, "randomUUID").mockImplementation(
+      () => `uuid-${++n}-0000-0000-000000000000` as `${string}-${string}-${string}-${string}-${string}`,
+    );
+
+    render(<SellPage />, { wrapper: makeWrapper() });
+    await waitFor(() => {
+      expect(screen.getAllByTestId("sell-grid-tile")).toHaveLength(3);
+    });
+
+    const addAndOpenPay = async () => {
+      fireEvent.click(screen.getByText("Buffet người lớn"));
+      fireEvent.click(screen.getByLabelText("Xác nhận thanh toán"));
+      await screen.findByTestId("pd-uuid");
+    };
+
+    await addAndOpenPay();
+    const firstUuid = screen.getByTestId("pd-uuid").textContent;
+    expect(firstUuid).toBeTruthy();
+
+    // Complete the sale → clears the clientUuid and forces a fresh one.
+    await act(async () => {
+      fireEvent.click(screen.getByText("pd-succeed"));
+    });
+
+    await addAndOpenPay();
+    const secondUuid = screen.getByTestId("pd-uuid").textContent;
+    expect(secondUuid).toBeTruthy();
+    expect(secondUuid).not.toBe(firstUuid);
   });
 });

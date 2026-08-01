@@ -18,6 +18,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Button } from "@ilikebuffet/ui";
 import { PosAuthProvider, usePosAuth } from "./auth/pos-auth-context";
 import { PosLoginPage } from "./auth/pos-login-page";
 import { PinLockScreen } from "./auth/pin-lock-screen";
@@ -42,7 +43,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 }
 
 function SessionGate() {
-  const { status } = usePosSession();
+  const { status, refresh } = usePosSession();
 
   if (status === "loading") {
     return (
@@ -64,6 +65,31 @@ function SessionGate() {
 
   if (status === "no-shift") {
     return <OpenShiftPage />;
+  }
+
+  // Transient failure checking the open shift (offline/5xx): do NOT fall through
+  // to the sell screen as if a shift were open — every bill would then fail.
+  if (status === "error") {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "var(--space-4)",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          fontFamily: "var(--font-sans)",
+          fontSize: "var(--text-sm)",
+          color: "var(--text-muted)",
+        }}
+      >
+        Không kiểm tra được ca làm việc — kiểm tra kết nối rồi thử lại.
+        <Button variant="action" touch onClick={() => void refresh()}>
+          Thử lại
+        </Button>
+      </div>
+    );
   }
 
   // status === "ready"

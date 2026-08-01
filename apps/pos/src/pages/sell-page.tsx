@@ -147,13 +147,18 @@ export const SellPage: React.FC = () => {
     });
   }, []);
 
-  // getOrCreateClientUuid writes to localStorage on first call; calling it
-  // during render is a side-effect. useMemo defers to the memo phase which
-  // still runs synchronously but is the correct React slot for read-once
-  // storage access. The UUID is stable until clearClientUuid() is called.
+  // Bumped after each completed sale so the memo below re-reads localStorage and
+  // mints a fresh clientUuid for the next bill (a prior success calls
+  // clearClientUuid, so re-reading yields a new id — reusing the committed one
+  // would hit the server's idempotency dedup and drop the next sale).
+  const [saleSeq, setSaleSeq] = React.useState(0);
+
+  // getOrCreateClientUuid writes to localStorage on first call, so read it in the
+  // memo phase rather than as a render side-effect. Re-runs when the branch or
+  // saleSeq changes.
   const clientUuid = React.useMemo(
     () => (effectiveBranchId ? getOrCreateClientUuid(effectiveBranchId) : ""),
-    [effectiveBranchId],
+    [effectiveBranchId, saleSeq],
   );
 
   const handlePaymentSuccess = React.useCallback(() => {
@@ -163,6 +168,7 @@ export const SellPage: React.FC = () => {
     }
     setCartItems([]);
     setPayOpen(false);
+    setSaleSeq((n) => n + 1); // force a fresh clientUuid for the next sale
   }, [effectiveBranchId]);
 
   if (isLoading) {

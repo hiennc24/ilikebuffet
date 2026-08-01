@@ -190,4 +190,18 @@ describe("validatePayload — money/qty guards", () => {
     expect(res.status).toBe(400);
     expect(res.json.error).toMatch(/qty/);
   });
+
+  it("rejects a non-integer payment amount and still responds (no hang)", async () => {
+    const payments = [{ method: "CASH", amountVnd: 1.5 }];
+    const res = await request(port, "POST", "/print", { ...VALID, payments });
+    expect(res.status).toBe(400);
+    expect(res.json.error).toMatch(/payments\[0\]\.amountVnd/);
+  });
+
+  it("accepts a valid integer payment (200)", async () => {
+    const payments = [{ method: "CASH", amountVnd: 598000 }];
+    const res = await request(port, "POST", "/print", { ...VALID, payments });
+    expect(res.status).toBe(200);
+    expect(res.json.status).toBe("printed");
+  });
 });

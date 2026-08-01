@@ -411,7 +411,7 @@ export const PayDialog: React.FC<PayDialogProps> = ({
               borderRadius: "var(--radius-sm)",
             }}
           >
-            Chưa kiểm tra đồng hồ thiết bị — tiếp tục với canh báo.
+            Chưa kiểm tra đồng hồ thiết bị — tiếp tục với cảnh báo.
           </p>
         )}
 

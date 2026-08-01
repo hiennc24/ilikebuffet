@@ -60,6 +60,19 @@ function validatePayload(body: unknown): { error: string } | undefined {
     if (!isVndInteger(lf.lineTotalVnd)) return { error: `lines[${i}].lineTotalVnd must be a finite integer >= 0` };
   }
 
+  // Payments are optional, but when present each amount is printed via formatVnd,
+  // which throws on non-integer money — validate them at the boundary too.
+  if (b.payments !== undefined) {
+    if (!Array.isArray(b.payments)) return { error: "payments must be an array" };
+    for (let i = 0; i < b.payments.length; i++) {
+      const p = (b.payments as unknown[])[i];
+      if (!p || typeof p !== "object") return { error: `payments[${i}] must be an object` };
+      const pf = p as Record<string, unknown>;
+      if (typeof pf.method !== "string") return { error: `payments[${i}].method must be a string` };
+      if (!isVndInteger(pf.amountVnd)) return { error: `payments[${i}].amountVnd must be a finite integer >= 0` };
+    }
+  }
+
   return undefined; // valid
 }
 
@@ -147,7 +160,16 @@ async function handle(
         return;
       }
       const bill = payload as PrintBillPayload;
-      const bytes = buildReceipt(bill);
+      let bytes: Uint8Array;
+      try {
+        // Building the receipt can throw (e.g. formatVnd rejecting bad money);
+        // keep it inside a guard so the request always gets a response.
+        bytes = buildReceipt(bill);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        json(res, 400, { status: "error", error: `failed to build receipt: ${message}` });
+        return;
+      }
       try {
         await driver.print(bytes);
         log(`printed bill ${bill.billNumber}${bill.isReprint ? " (BẢN SAO)" : ""} via ${driver.name}`);

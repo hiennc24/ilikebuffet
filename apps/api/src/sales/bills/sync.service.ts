@@ -21,7 +21,7 @@ import { BillNumberService } from "./bill-number.service";
 import { checkFreeTicketPolicy } from "./bill-policy";
 import { buildResolvedLines } from "./resolved-lines";
 import { sumVnd, toVnDateStr } from "@ilikebuffet/shared";
-import type { SyncBillDto, SyncBillResult, SyncVoidDto } from "./sync.dto";
+import type { SyncBillDto, SyncBillResult, SyncPaymentDto, SyncVoidDto } from "./sync.dto";
 
 /** Device-clock skew beyond this is accepted-but-quarantined (±2 min). */
 const CLOCK_SKEW_TOLERANCE_MS = 2 * 60 * 1000;
@@ -94,6 +94,24 @@ export class SyncService {
       return { ...base, status: "rejected", error: "invalid_qty" };
     }
 
+    // An unparseable createdAt would make toVnDateStr throw inside the tx and
+    // loop the client on "retry" forever — reject the corruption up front.
+    if (Number.isNaN(new Date(dto.createdAt).getTime())) {
+      this.logger.warn(`Sync invalid createdAt: clientUuid=${dto.clientUuid}`);
+      await this.recordRejectionAudit(dto, actorId, "invalid_created_at");
+      return { ...base, status: "rejected", error: "invalid_created_at" };
+    }
+
+    // Offline payments must satisfy the same money rules the online path enforces
+    // (positive-integer amounts; cash-tendered, when present, an integer >= the
+    // applied amount). A garbled payment is corruption, not a printed sale.
+    const paymentError = validateSyncPayments(dto.payments);
+    if (paymentError) {
+      this.logger.warn(`Sync invalid payment: clientUuid=${dto.clientUuid} (${paymentError})`);
+      await this.recordRejectionAudit(dto, actorId, "invalid_payment");
+      return { ...base, status: "rejected", error: "invalid_payment" };
+    }
+
     const contentHash = computeContentHash(dto);
 
     // Idempotent check — if already committed, return existing number immediately.
@@ -145,7 +163,7 @@ export class SyncService {
         const createdAtSkewMs = Math.abs(serverNow.getTime() - createdAt.getTime());
         const createdAtImplausible = createdAtSkewMs > CREATED_AT_PLAUSIBILITY_MS;
 
-        // Batch-load ticket types + build the price resolver ONCE $1 the
+        // Batch-load ticket types + build the price resolver ONCE — the
         // whole batch shares this branch + createdAt. Offline sync never rejects
         // a printed sale on a missing price (accepts at 0, flags for accounting).
         const ticketTypes = await tx.ticketType.findMany({
@@ -178,7 +196,7 @@ export class SyncService {
         // A payment total that doesn't match the SERVER-recomputed total means the
         // offline price estimate drifted from the authoritative price — accept but
         // quarantine for accounting (never reject a printed, paid sale).
-        const paymentSum = (dto.payments ?? []).reduce((s, p) => s + p.amountVnd, 0);
+        const paymentSum = sumVnd((dto.payments ?? []).map((p) => p.amountVnd));
         const paymentMismatch = (dto.payments?.length ?? 0) > 0 && paymentSum !== totalVnd;
         const quarantined = !!forced || skewExceeded || createdAtImplausible || paymentMismatch;
         const quarantineReason = forced
@@ -316,6 +334,22 @@ export class SyncService {
       // Audit failure must not block response
     }
   }
+}
+
+/**
+ * Validate an offline bill's payments with the same money rules the online
+ * PaymentsService enforces. Returns a short reason code on the first offending
+ * payment, or null when all are well-formed.
+ */
+function validateSyncPayments(payments: SyncPaymentDto[] | undefined): string | null {
+  for (const p of payments ?? []) {
+    if (!Number.isInteger(p.amountVnd) || p.amountVnd <= 0) return "amountVnd";
+    if (p.tenderedVnd !== undefined) {
+      if (p.method !== "CASH") return "tendered_non_cash";
+      if (!Number.isInteger(p.tenderedVnd) || p.tenderedVnd < p.amountVnd) return "tenderedVnd";
+    }
+  }
+  return null;
 }
 
 /**
