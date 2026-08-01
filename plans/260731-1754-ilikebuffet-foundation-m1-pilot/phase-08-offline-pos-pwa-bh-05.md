@@ -80,6 +80,11 @@ Nền tảng idempotency + pricing arbiter đã vững; phần còn lại là ha
 - **H5 client — DONE.** Đo skew qua `/health` timestamp lúc mount + mỗi lần online; skew >±2' → banner cảnh báo đỏ; `clockSkew` expose trên network-status để luồng tạo bill offline stamp `clockOffsetMs`.
 
 Backend arbiter P8 đã hardening đầy đủ: C1(hash)/C2/C5/C6/C8/H3/H5 + 6 kịch bản AC pass.
-**Còn lại (để P8 chạy offline thật):**
-- **Nối luồng tạo bill offline** — khi mất mạng, pay-dialog ghi bill vào **outbox** (Dexie) + stamp `clockOffsetMs/deviceClockAt` thay vì POST online; online lại thì sync-engine đẩy batch. (Máy sync/outbox đã dựng + test; chỉ chưa nối vào luồng thanh toán.)
+**Nối luồng tạo bill offline — DONE (47 POS test).** Mất mạng → PayDialog ghi bill vào **outbox** (số tạm + `clockOffsetMs/deviceClockAt`), bán xong tại chỗ; online lại → sync-engine đẩy batch, server cấp số chính thức + tính lại giá. Clock lệch (H5) chặn bán offline. Thêm `multiplyVnd()` (shared) cho lint tiền an toàn.
+
+**Còn lại (không chặn kịch bản chính "rớt mạng giữa ca"):**
+- **Cache catalog offline** — cache loại vé/bảng giá/mã CN xuống Dexie để bán được cả khi **khởi động lúc offline** (hiện chỉ chạy nếu đã load online trong ca).
+- **Đối soát thanh toán offline** — sync hiện chỉ đồng bộ bill (số+giá), chưa gửi phương thức/thanh toán (M1 ghi local).
 - **C1 device↔token binding** + **C3** re-verify — phụ thuộc auth device-bound / luồng duyệt offline; chốt thiết kế trước.
+
+Luồng offline chính đã chạy end-to-end: tạo offline → outbox → reconnect sync → số chính thức, phủ đủ bất biến không mất/không trùng số.
