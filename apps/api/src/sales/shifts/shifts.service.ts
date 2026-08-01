@@ -22,6 +22,7 @@ import { Prisma } from "@prisma/client";
 import { PrismaService } from "../../prisma/prisma.service";
 import { AuditService } from "../../audit/audit.service";
 import { DiscountsService } from "../discounts/discounts.service";
+import { assertBranchAccess, type BranchAccess } from "../../platform/rbac/branch-access";
 import { toVnDateStr } from "@ilikebuffet/shared";
 import type {
   OpenShiftDto,
@@ -89,10 +90,11 @@ export class ShiftsService {
 
   // ─── Close ────────────────────────────────────────────────────────────────
 
-  async close(shiftId: string, dto: CloseShiftDto, actorId: string, role: string) {
+  async close(shiftId: string, dto: CloseShiftDto, actorId: string, role: string, access: BranchAccess) {
     return this.prisma.withTx(async (tx) => {
       const shift = await tx.shift.findUnique({ where: { id: shiftId } });
       if (!shift) throw new NotFoundException(`Shift ${shiftId} not found`);
+      assertBranchAccess(access, shift.branchId); // route keyed by :id only (C1)
       if (shift.status !== "OPEN") {
         throw new ConflictException("Ca không ở trạng thái mở");
       }
@@ -164,9 +166,10 @@ export class ShiftsService {
 
   // ─── Force-close ──────────────────────────────────────────────────────────
 
-  async forceClose(shiftId: string, dto: ForceCloseShiftDto, actorId: string, role: string) {
+  async forceClose(shiftId: string, dto: ForceCloseShiftDto, actorId: string, role: string, access: BranchAccess) {
     const shift = await this.prisma.shift.findUnique({ where: { id: shiftId } });
     if (!shift) throw new NotFoundException(`Shift ${shiftId} not found`);
+    assertBranchAccess(access, shift.branchId); // route keyed by :id only (C1)
     if (shift.status !== "OPEN") {
       throw new ConflictException("Ca không ở trạng thái mở");
     }
@@ -246,9 +249,7 @@ export class ShiftsService {
     if (!shift) throw new NotFoundException(`Shift ${shiftId} not found`);
 
     // Branch scope: a manager may only monitor shifts in their own branch(es).
-    if (!access.chainWide && !access.branchIds.includes(shift.branchId)) {
-      throw new ForbiddenException("Ngoài phạm vi chi nhánh");
-    }
+    assertBranchAccess(access, shift.branchId);
 
     const bills = await this.prisma.bill.findMany({
       where: { shiftId },

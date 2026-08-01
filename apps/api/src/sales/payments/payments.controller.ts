@@ -33,6 +33,9 @@ export class PaymentsController {
     if (req.user.role !== Role.THU_NGAN) {
       throw new ForbiddenException("Only THU_NGAN can record payments");
     }
-    return this.service.addPayments(billId, dto, req.user.sub, req.user.role);
+    return this.service.addPayments(billId, dto, req.user.sub, req.user.role, {
+      chainWide: req.user.chainWide,
+      branchIds: req.user.branchIds,
+    });
   }
 }

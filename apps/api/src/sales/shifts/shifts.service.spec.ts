@@ -82,6 +82,9 @@ function makeDiscounts() {
   return { verifyApprovalPin: jest.fn() };
 }
 
+/** Caller access matching the seeded shift's branch (makeShift → "branch-1"). */
+const SHIFT_ACCESS = { chainWide: false, branchIds: ["branch-1"] };
+
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
 describe("ShiftsService", () => {
@@ -168,7 +171,7 @@ describe("ShiftsService", () => {
       prisma._tx.shift.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.close("nonexistent", { countedCashVnd: 100 }, "user-1", "THU_NGAN"),
+        service.close("nonexistent", { countedCashVnd: 100 }, "user-1", "THU_NGAN", SHIFT_ACCESS),
       ).rejects.toThrow(NotFoundException);
     });
 
@@ -176,7 +179,7 @@ describe("ShiftsService", () => {
       prisma._tx.shift.findUnique.mockResolvedValue(makeShift({ status: "CLOSED" }));
 
       await expect(
-        service.close("shift-1", { countedCashVnd: 100 }, "user-1", "THU_NGAN"),
+        service.close("shift-1", { countedCashVnd: 100 }, "user-1", "THU_NGAN", SHIFT_ACCESS),
       ).rejects.toThrow(ConflictException);
     });
 
@@ -186,8 +189,18 @@ describe("ShiftsService", () => {
       prisma._tx.payment.aggregate.mockResolvedValue({ _sum: { amountVnd: 200_000 } });
 
       await expect(
-        service.close("shift-1", { countedCashVnd: 690_000 }, "user-1", "THU_NGAN"),
+        service.close("shift-1", { countedCashVnd: 690_000 }, "user-1", "THU_NGAN", SHIFT_ACCESS),
       ).rejects.toThrow(BadRequestException);
+    });
+
+    it("throws ForbiddenException when the caller's branch excludes the shift's branch (C1)", async () => {
+      prisma._tx.shift.findUnique.mockResolvedValue(makeShift({ branchId: "branch-1" }));
+      await expect(
+        service.close("shift-1", { countedCashVnd: 100_000 }, "user-1", "THU_NGAN", {
+          chainWide: false,
+          branchIds: ["branch-OTHER"],
+        }),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it("computes expectedCashVnd = opening + CASH payments and varianceVnd correctly", async () => {
@@ -209,6 +222,7 @@ describe("ShiftsService", () => {
         { countedCashVnd: 800_000 },
         "user-1",
         "THU_NGAN",
+        SHIFT_ACCESS,
       );
 
       expect(prisma._tx.shift.update).toHaveBeenCalledWith(
@@ -237,7 +251,7 @@ describe("ShiftsService", () => {
         makeShift({ status: "CLOSED", expectedCashVnd: 100_000, countedCashVnd: 100_000, varianceVnd: 0 }),
       );
 
-      await service.close("shift-1", { countedCashVnd: 100_000 }, "user-1", "THU_NGAN");
+      await service.close("shift-1", { countedCashVnd: 100_000 }, "user-1", "THU_NGAN", SHIFT_ACCESS);
 
       // The aggregate call must filter by CASH method.
       expect(prisma._tx.payment.aggregate).toHaveBeenCalledWith(
@@ -265,6 +279,7 @@ describe("ShiftsService", () => {
         { countedCashVnd: 490_000, varianceNote: "Khách thiếu" },
         "user-1",
         "THU_NGAN",
+        SHIFT_ACCESS,
       );
 
       expect(result.varianceVnd).toBe(-10_000);
@@ -279,7 +294,7 @@ describe("ShiftsService", () => {
       prisma.shift.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.forceClose("nonexistent", { managerId: "mgr-1", pin: "123456" }, "user-1", "THU_NGAN"),
+        service.forceClose("nonexistent", { managerId: "mgr-1", pin: "123456" }, "user-1", "THU_NGAN", SHIFT_ACCESS),
       ).rejects.toThrow(NotFoundException);
     });
 
@@ -287,7 +302,7 @@ describe("ShiftsService", () => {
       prisma.shift.findUnique.mockResolvedValue(makeShift({ status: "CLOSED" }));
 
       await expect(
-        service.forceClose("shift-1", { managerId: "mgr-1", pin: "123456" }, "user-1", "THU_NGAN"),
+        service.forceClose("shift-1", { managerId: "mgr-1", pin: "123456" }, "user-1", "THU_NGAN", SHIFT_ACCESS),
       ).rejects.toThrow(ConflictException);
     });
 
@@ -296,7 +311,7 @@ describe("ShiftsService", () => {
       discounts.verifyApprovalPin.mockResolvedValue({ approved: false });
 
       await expect(
-        service.forceClose("shift-1", { managerId: "mgr-1", pin: "000000" }, "user-1", "THU_NGAN"),
+        service.forceClose("shift-1", { managerId: "mgr-1", pin: "000000" }, "user-1", "THU_NGAN", SHIFT_ACCESS),
       ).rejects.toThrow(ForbiddenException);
     });
 
@@ -313,6 +328,7 @@ describe("ShiftsService", () => {
         { managerId: "mgr-1", pin: "123456", reason: "Device hung" },
         "user-1",
         "THU_NGAN",
+        SHIFT_ACCESS,
       );
 
       expect(prisma._tx.shift.update).toHaveBeenCalledWith(

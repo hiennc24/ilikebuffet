@@ -19,6 +19,7 @@ import {
 import { PaymentMethod } from "@prisma/client";
 import { PrismaService } from "../../prisma/prisma.service";
 import { AuditService } from "../../audit/audit.service";
+import { assertBranchAccess, type BranchAccess } from "../../platform/rbac/branch-access";
 import type { AddPaymentsDto } from "./payments.dto";
 
 @Injectable()
@@ -30,7 +31,13 @@ export class PaymentsService {
     private readonly audit: AuditService,
   ) {}
 
-  async addPayments(billId: string, dto: AddPaymentsDto, actorId: string, role: string) {
+  async addPayments(
+    billId: string,
+    dto: AddPaymentsDto,
+    actorId: string,
+    role: string,
+    access: BranchAccess,
+  ) {
     // Validate input before hitting DB
     if (!dto.payments || dto.payments.length === 0) {
       throw new BadRequestException("Phải có ít nhất 1 phương thức thanh toán");
@@ -46,6 +53,9 @@ export class PaymentsService {
       where: { id: billId },
     });
     if (!bill) throw new NotFoundException(`Bill ${billId} not found`);
+
+    // The route is keyed only by billId, so re-check the bill's branch here (C1).
+    assertBranchAccess(access, bill.branchId);
 
     if (bill.status !== "COMPLETED") {
       throw new BadRequestException("Chỉ có thể thanh toán bill ở trạng thái COMPLETED");

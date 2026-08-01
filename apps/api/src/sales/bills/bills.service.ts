@@ -25,6 +25,7 @@ import { BillNumberService } from "./bill-number.service";
 import { DiscountsService } from "../discounts/discounts.service";
 import { toVnDateStr } from "@ilikebuffet/shared";
 import { checkFreeTicketPolicy } from "./bill-policy";
+import { assertBranchAccess, type BranchAccess } from "../../platform/rbac/branch-access";
 import type { CreateBillDto, CancelBillDto } from "./bills.dto";
 
 @Injectable()
@@ -224,20 +225,25 @@ export class BillsService {
 
   // ─── Get by ID ────────────────────────────────────────────────────────────────
 
-  async getById(id: string) {
+  async getById(id: string, access: BranchAccess) {
     const bill = await this.prisma.bill.findUnique({
       where: { id },
       include: { lines: true, payments: true },
     });
     if (!bill) throw new NotFoundException(`Bill ${id} not found`);
+    assertBranchAccess(access, bill.branchId); // route keyed by :id only (C1)
     return bill;
   }
 
   // ─── List by shift ────────────────────────────────────────────────────────────
 
-  async listByShift(shiftId: string) {
+  async listByShift(shiftId: string, access: BranchAccess) {
+    // Scope results to the caller's branch(es): a cross-branch shiftId returns [].
     return this.prisma.bill.findMany({
-      where: { shiftId },
+      where: {
+        shiftId,
+        ...(access.chainWide ? {} : { branchId: { in: access.branchIds } }),
+      },
       include: { lines: true, payments: true },
       orderBy: { createdAt: "asc" },
     });
@@ -250,12 +256,16 @@ export class BillsService {
     dto: CancelBillDto,
     actorId: string,
     role: string,
+    access: BranchAccess,
   ) {
     const bill = await this.prisma.bill.findUnique({
       where: { id: billId },
       include: { shift: true },
     });
     if (!bill) throw new NotFoundException(`Bill ${billId} not found`);
+
+    // Branch scope (C1) — defense-in-depth alongside the device check below.
+    assertBranchAccess(access, bill.branchId);
 
     if (bill.status !== "COMPLETED") {
       throw new BadRequestException("Chỉ có thể huỷ bill ở trạng thái COMPLETED");

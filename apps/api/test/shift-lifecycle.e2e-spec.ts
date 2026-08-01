@@ -109,6 +109,7 @@ describe("shift lifecycle (integration)", () => {
         { countedCashVnd: 100_000 },
         "cashier-1",
         "THU_NGAN",
+        { chainWide: true, branchIds: [] },
       );
 
       // Now opening again must succeed.
@@ -170,6 +171,7 @@ describe("shift lifecycle (integration)", () => {
         { countedCashVnd: 700_000 },
         "cashier-2",
         "THU_NGAN",
+        { chainWide: true, branchIds: [] },
       );
 
       expect(closed.status).toBe("CLOSED");
@@ -217,6 +219,7 @@ describe("shift lifecycle (integration)", () => {
         { countedCashVnd: 390_000, varianceNote: "Thiếu 10k" },
         "cashier-3",
         "THU_NGAN",
+        { chainWide: true, branchIds: [] },
       );
 
       expect(closed.expectedCashVnd).toBe(400_000);
@@ -282,6 +285,7 @@ describe("shift lifecycle (integration)", () => {
         { countedCashVnd: 100_000 },
         "cashier-4",
         "THU_NGAN",
+        { chainWide: true, branchIds: [] },
       );
 
       expect(closed.expectedCashVnd).toBe(100_000);

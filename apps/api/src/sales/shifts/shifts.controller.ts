@@ -79,7 +79,10 @@ export class ShiftsController {
     if (req.user.role !== Role.THU_NGAN) {
       throw new ForbiddenException("Chỉ Thu ngân mới có thể đóng ca");
     }
-    return this.service.close(id, dto, req.user.sub, req.user.role);
+    return this.service.close(id, dto, req.user.sub, req.user.role, {
+      chainWide: req.user.chainWide,
+      branchIds: req.user.branchIds,
+    });
   }
 
   /** POST /sales/shifts/:id/force-close — force-close with manager PIN approval. */
@@ -97,6 +100,9 @@ export class ShiftsController {
     ) {
       throw new ForbiddenException("Không có quyền đóng ca bắt buộc");
     }
-    return this.service.forceClose(id, dto, req.user.sub, req.user.role);
+    return this.service.forceClose(id, dto, req.user.sub, req.user.role, {
+      chainWide: req.user.chainWide,
+      branchIds: req.user.branchIds,
+    });
   }
 }

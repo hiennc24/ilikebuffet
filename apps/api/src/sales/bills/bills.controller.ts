@@ -38,16 +38,19 @@ export class BillsController {
   }
 
   @Get(":id")
-  getById(@Param("id") id: string) {
-    return this.service.getById(id);
+  getById(@Param("id") id: string, @Request() req: ScopedRequest) {
+    return this.service.getById(id, { chainWide: req.user.chainWide, branchIds: req.user.branchIds });
   }
 
   @Get()
-  listByShift(@Query("shiftId") shiftId: string) {
+  listByShift(@Query("shiftId") shiftId: string, @Request() req: ScopedRequest) {
     if (!shiftId) {
       return [];
     }
-    return this.service.listByShift(shiftId);
+    return this.service.listByShift(shiftId, {
+      chainWide: req.user.chainWide,
+      branchIds: req.user.branchIds,
+    });
   }
 
   @Post(":id/cancel")
@@ -59,6 +62,9 @@ export class BillsController {
     if (req.user.role !== Role.THU_NGAN) {
       throw new ForbiddenException("Only THU_NGAN can cancel bills");
     }
-    return this.service.cancelBill(id, dto, req.user.sub, req.user.role);
+    return this.service.cancelBill(id, dto, req.user.sub, req.user.role, {
+      chainWide: req.user.chainWide,
+      branchIds: req.user.branchIds,
+    });
   }
 }

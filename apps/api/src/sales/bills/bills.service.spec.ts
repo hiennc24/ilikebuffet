@@ -137,6 +137,8 @@ describe("BillsService", () => {
   };
   const ACTOR = "user-1";
   const ROLE = "THU_NGAN";
+  // Caller access matching the seeded bill's branch (makeBill → "branch-1").
+  const BILL_ACCESS = { chainWide: false, branchIds: ["branch-1"] };
 
   // ── 1. Server price is used; any client-side price would be ignored ──────────
   it("uses server-resolved price, ignoring any hypothetical client price field", async () => {
@@ -245,6 +247,7 @@ describe("BillsService", () => {
         { reason: "test", managerId: "mgr-1", pin: "123456", deviceId: "dev-1" },
         ACTOR,
         ROLE,
+        BILL_ACCESS,
       ),
     ).rejects.toThrow(ForbiddenException);
   });
@@ -270,6 +273,32 @@ describe("BillsService", () => {
         { reason: "test", managerId: "mgr-1", pin: "123456", deviceId: "dev-WRONG" },
         ACTOR,
         ROLE,
+        BILL_ACCESS,
+      ),
+    ).rejects.toThrow(ForbiddenException);
+  });
+
+  // ── 5b. Cancel cross-branch: caller's branch excludes the bill's branch → Forbidden (C1)
+  it("throws ForbiddenException when the caller's branch excludes the bill's branch", async () => {
+    const bill = makeBill({ deviceId: "dev-1", shift: makeShift({ status: "OPEN" }) }); // branch-1
+    const prisma = makePrisma();
+    prisma.bill.findUnique = jest.fn().mockResolvedValue(bill);
+
+    const svc = new BillsService(
+      prisma as never,
+      makeAuditService(),
+      makePricingService(),
+      makeBillNumberService(),
+      makeDiscountsService(),
+    );
+
+    await expect(
+      svc.cancelBill(
+        "bill-1",
+        { reason: "test", managerId: "mgr-1", pin: "123456", deviceId: "dev-1" },
+        ACTOR,
+        ROLE,
+        { chainWide: false, branchIds: ["branch-OTHER"] },
       ),
     ).rejects.toThrow(ForbiddenException);
   });
@@ -396,6 +425,7 @@ describe("BillsService", () => {
         { reason: "test", managerId: "mgr-1", pin: "000000", deviceId: "dev-1" },
         ACTOR,
         ROLE,
+        BILL_ACCESS,
       ),
     ).rejects.toThrow(ForbiddenException);
   });
