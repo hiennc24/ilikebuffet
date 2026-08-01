@@ -72,4 +72,6 @@ Lõi bán hàng **online trước**: mở ca, tạo bill (giá server, snapshot)
 
 **print-agent — DONE (10 test).** `packages/print-agent`: ESC/POS builder 80mm (header/dòng/tổng/thanh toán/BẢN SAO/cut), PrintDriver (Loopback M1 + USB/LAN stub fail-loud chờ Sprint-0), HTTP server localhost. Lỗi in báo 502 **không chặn bán** (BH-04.4); CORS cho POS; H6 mixed-content ghi chú Sprint-0. **Real-printer test vẫn blocked** chờ chọn 2 model.
 
-**Còn lại P7:** UI hủy bill trong POS (danh sách bill ca + dialog nhập PIN QL — backend `POST /sales/bills/:id/cancel` đã có + test); nối print stub POS → print-agent; VietQR hoàn thiện. Load test BH-02.6 → P9.
+**Hủy bill UI — DONE (3 test).** `ShiftBillsPanel` liệt kê bill ca (`GET /sales/bills?shiftId`) + dialog hủy (lý do + id QL + PIN → `POST /sales/bills/:id/cancel`); 403 (PIN sai/IDOR) hiện lỗi rõ; giữ số. Smoke test live: tạo bill → PIN sai 403 → PIN đúng CANCELLED giữ số ✅.
+
+**Còn lại P7 (polish, không chặn M1 core):** nối print stub POS → print-agent (HTTP); VietQR hoàn thiện (QR động từ TK CN). Load test BH-02.6 (<1s ở 5× tải) → **P9**.
