@@ -177,7 +177,24 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     expect(result.tempNumber).toBe("CN01-260801-T00010001");
   });
 
-  // ── 7. tempNumber stored on bill (C8) ─────────────────────────────────────
+  // ── 7b. C1 content-hash mismatch → rejected + audit ──────────────────────
+  it("rejects a dedup hit whose stored content hash differs (C1 tamper/corruption)", async () => {
+    // Same (device, uuid) already stored, but with a DIFFERENT content hash.
+    const existing = { number: "CN01-260801-0001", contentHash: "a-different-hash" };
+    const prisma = makePrisma({}, existing);
+    const audit = makeAudit();
+    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber());
+
+    const result = await svc.processBill(BASE_BILL, ACTOR, ALLOWED);
+
+    expect(result.status).toBe("rejected");
+    expect(result.error).toBe("content_mismatch");
+    expect(audit.record).toHaveBeenCalledTimes(1);
+    // Must NOT create a bill / allocate a number on a mismatch.
+    expect(prisma.withTx).not.toHaveBeenCalled();
+  });
+
+  // ── 8. tempNumber stored on bill (C8) ─────────────────────────────────────
   it("passes tempNumber to bill.create for audit/high-water-mark (C8)", async () => {
     const prisma = makePrisma();
     const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());

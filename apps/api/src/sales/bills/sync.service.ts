@@ -12,6 +12,7 @@
  * Each bill is processed independently. A failure on one does NOT block others.
  */
 
+import { createHash } from "node:crypto";
 import { Injectable, Logger } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 import { AuditService } from "../../audit/audit.service";
@@ -59,13 +60,26 @@ export class SyncService {
       return { ...base, status: "rejected", error: "branch not allowed by token" };
     }
 
-    // C5: idempotent check — if already committed, return existing number immediately
+    const contentHash = computeContentHash(dto);
+
+    // C5: idempotent check — if already committed, return existing number immediately.
+    // C1: a dedup hit whose stored content hash differs from the resubmitted bill
+    // means the same (device, uuid) was reused for DIFFERENT content (tampering or
+    // corruption). Offline bills are append-only, so this must never happen
+    // legitimately — reject + audit instead of silently returning the number.
     try {
       const existing = await this.prisma.bill.findUnique({
         where: { deviceId_clientUuid: { deviceId: dto.deviceId, clientUuid: dto.clientUuid } },
-        select: { number: true, tempNumber: true },
+        select: { number: true, contentHash: true },
       });
       if (existing) {
+        if (existing.contentHash && existing.contentHash !== contentHash) {
+          this.logger.warn(
+            `Sync content mismatch: clientUuid=${dto.clientUuid} reused with different content`,
+          );
+          await this.recordRejectionAudit(dto, actorId, "content_mismatch");
+          return { ...base, status: "rejected", error: "content_mismatch" };
+        }
         this.logger.log(`Idempotent sync hit: clientUuid=${dto.clientUuid} number=${existing.number}`);
         return { ...base, status: "committed", officialNumber: existing.number };
       }
@@ -171,6 +185,7 @@ export class SyncService {
             guestCount,
             clientUuid: dto.clientUuid,
             tempNumber: dto.tempNumber,
+            contentHash,
             lines: {
               create: resolvedLines.map((l) => ({
                 ticketTypeId: l.ticketTypeId,
@@ -228,4 +243,18 @@ export class SyncService {
       // Audit failure must not block response
     }
   }
+}
+
+/**
+ * Canonical SHA-256 of an offline bill's semantic content (C1). Stable across
+ * resubmits of the same append-only bill; changes only if the lines, quantities,
+ * shift, or createdAt change. branchId/deviceId are excluded — they form the
+ * dedup key, not the content.
+ */
+function computeContentHash(dto: SyncBillDto): string {
+  const lines = [...dto.lines]
+    .map((l) => ({ ticketTypeId: l.ticketTypeId, qty: l.qty }))
+    .sort((a, b) => (a.ticketTypeId < b.ticketTypeId ? -1 : a.ticketTypeId > b.ticketTypeId ? 1 : 0));
+  const canonical = JSON.stringify({ shiftId: dto.shiftId, createdAt: dto.createdAt, lines });
+  return createHash("sha256").update(canonical).digest("hex");
 }

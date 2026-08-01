@@ -601,6 +601,10 @@ model Bill {
   clientUuid       String?
   /// Device-issued temp number "[CN]-[YYMMDD]-T[DEVICE_SHORT][NNN]" stored for audit (P8 C8).
   tempNumber       String?
+  /// SHA-256 of the offline bill's semantic content (shift + createdAt + sorted
+  /// lines). On a dedup hit, a different hash for the same (device,uuid) means
+  /// tampering/corruption → reject + audit, never silently return the number (C1).
+  contentHash      String?
   /// Cancellation (BH-06) — number is retained.
   cancelledBy      String?
   cancelledAt      DateTime?  @db.Timestamptz(3)
