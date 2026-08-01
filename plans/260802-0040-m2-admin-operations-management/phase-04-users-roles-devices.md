@@ -1,4 +1,25 @@
-# P4 — Người dùng, vai trò & thiết bị (backend gap — lớn nhất)
+# P4 — Người dùng, vai trò & thiết bị (backend gap — lớn nhất)  ◑ PARTIAL (2026-08-02)
+
+## Đã làm (P4 — Users)
+- **BE module `platform/users`**: `GET/POST /users`, `PUT /users/:id`,
+  `POST /users/:id/{reset-password,reset-approval-pin,reset-cashier-pin,lock,unlock}`.
+  Insider-resistant: HQ toàn quyền; QL_CN chỉ quản THU_NGAN/THU_KHO trong CN mình;
+  không lộ hash (SAFE_SELECT); mật khẩu tạm sinh 1 lần + mustChangePassword; lock bump
+  tokenVersion (thu hồi session); audit mọi mutation in-tx. Reuse argon2.
+- **e2e `users-admin.e2e-spec`** (7): tạo+login+mustChange, no-hash-leak (list+create),
+  QL_CN không mint manager (403), QL_CN không đụng CN khác (403), cashier bị chặn (403),
+  reset-password ra temp mới, lock/unlock.
+- **FE `users-page.tsx`**: list (role/status/search + phân trang) + tạo (username/role/
+  branch checkboxes, hiện temp password 1 lần) + drawer (reset mật khẩu/PIN, khoá/mở).
+  Route `/settings/users`. Admin 55.
+
+## Còn lại (P4b)
+- **Devices**: `GET /devices?branchId=` (thêm vào device.controller — đang thiếu `@Get`) +
+  `devices-page` (list thiết bị + suspend + xem sync cuối).
+
+---
+Original plan below.
+
 
 **Goal:** quản lý user (6 vai trò), gán chi nhánh, reset mật khẩu/PIN, khoá/mở; quản lý
 thiết bị POS. Backend hầu như CHƯA có (chỉ auth self-service + device register/suspend).

@@ -47,4 +47,7 @@ export const QUERY_KEYS = {
 
   /** Suppliers list (scope/status/search appended by the page). */
   suppliers: () => ["suppliers"] as const,
+
+  /** Users list (role/status/search + page appended by usePagedList). */
+  users: () => ["users"] as const,
 } as const;

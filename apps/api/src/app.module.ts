@@ -19,6 +19,7 @@ import { AuthModule } from "./auth/auth.module";
 import { RbacModule } from "./platform/rbac/rbac.module";
 import { DeviceModule } from "./platform/devices/device.module";
 import { BranchModule } from "./platform/branches/branch.module";
+import { UsersModule } from "./platform/users/users.module";
 import { MasterDataModule } from "./platform/master-data/master-data.module";
 import { ExcelImportModule } from "./platform/import/excel-import.module";
 import { SalesModule } from "./sales/sales.module";
@@ -35,6 +36,7 @@ import { BranchScopeGuard } from "./platform/rbac/branch-scope.guard";
     RbacModule,
     DeviceModule,
     BranchModule,
+    UsersModule,
     MasterDataModule,
     ExcelImportModule,
     SalesModule,
