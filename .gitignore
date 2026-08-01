@@ -10,3 +10,6 @@ coverage/
 .turbo/
 *.tsbuildinfo
 prisma/*.db
+
+# Local dev infra overrides
+docker-compose.override.yml
