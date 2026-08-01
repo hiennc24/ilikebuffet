@@ -139,3 +139,19 @@ export async function countPending(branchId: string): Promise<number> {
     .filter((b) => b.status === "pending" || b.status === "retry" || b.status === "syncing")
     .count();
 }
+
+/**
+ * True when a bill has been waiting to sync longer than `thresholdMs` (BH-05.7,
+ * default 15 min) — a "stuck sync" the manager should be warned about while online.
+ */
+export async function hasStuckBills(
+  branchId: string,
+  thresholdMs = 15 * 60 * 1000,
+  nowMs: number = Date.now(),
+): Promise<boolean> {
+  const pending = await getPendingBills(branchId);
+  return pending.some((b) => {
+    const created = Date.parse(b.createdAt);
+    return Number.isFinite(created) && nowMs - created > thresholdMs;
+  });
+}

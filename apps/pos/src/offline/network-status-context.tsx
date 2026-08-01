@@ -15,7 +15,7 @@ import * as React from "react";
 import { usePosAuth } from "../auth/pos-auth-context";
 import { usePosSession } from "../session/pos-session-context";
 import { SyncEngine } from "./sync-engine";
-import { countPending } from "./outbox-store";
+import { countPending, hasStuckBills } from "./outbox-store";
 import { measureSkew, type ClockSkew } from "./clock-skew";
 
 export interface NetworkStatusContextValue {
@@ -24,6 +24,8 @@ export interface NetworkStatusContextValue {
   persistenceGranted: boolean | null; // null = not yet checked
   /** Last measured device↔server clock skew (H5). null = not yet measured. */
   clockSkew: ClockSkew | null;
+  /** A bill has been waiting to sync >15 min while online (BH-05.7). */
+  stuckSync: boolean;
   triggerSync: () => void;
 }
 
@@ -43,6 +45,7 @@ export const NetworkStatusProvider: React.FC<{ children: React.ReactNode }> = ({
   const [pendingCount, setPendingCount] = React.useState(0);
   const [persistenceGranted, setPersistenceGranted] = React.useState<boolean | null>(null);
   const [clockSkew, setClockSkew] = React.useState<ClockSkew | null>(null);
+  const [stuckSync, setStuckSync] = React.useState(false);
 
   const engineRef = React.useRef<SyncEngine | null>(null);
 
@@ -57,11 +60,12 @@ export const NetworkStatusProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
-  // Refresh pending count from Dexie.
+  // Refresh pending count + stuck-sync flag from Dexie.
   const refreshCount = React.useCallback(async () => {
     if (!branchId) return;
-    const count = await countPending(branchId);
+    const [count, stuck] = await Promise.all([countPending(branchId), hasStuckBills(branchId)]);
     setPendingCount(count);
+    setStuckSync(stuck);
   }, [branchId]);
 
   // Lazy-init engine when branchId is known.
@@ -127,6 +131,7 @@ export const NetworkStatusProvider: React.FC<{ children: React.ReactNode }> = ({
     pendingCount,
     persistenceGranted,
     clockSkew,
+    stuckSync,
     triggerSync,
   };
 

@@ -14,14 +14,15 @@ import * as React from "react";
 import { useNetworkStatus } from "./network-status-context";
 
 export const OfflineBanner: React.FC = () => {
-  const { isOnline, pendingCount, persistenceGranted, clockSkew } = useNetworkStatus();
+  const { isOnline, pendingCount, persistenceGranted, clockSkew, stuckSync } = useNetworkStatus();
 
   const showPersistWarning = persistenceGranted === false;
   const showOffline = !isOnline;
   const showSyncing = isOnline && pendingCount > 0;
   const showSkewWarning = clockSkew?.exceeded === true;
+  const showStuckWarning = isOnline && stuckSync;
 
-  if (!showOffline && !showSyncing && !showPersistWarning && !showSkewWarning) return null;
+  if (!showOffline && !showSyncing && !showPersistWarning && !showSkewWarning && !showStuckWarning) return null;
 
   return (
     <div
@@ -69,6 +70,20 @@ export const OfflineBanner: React.FC = () => {
           }}
         >
           Cảnh báo: Trình duyệt có thể xóa dữ liệu offline. Liên hệ quản trị viên để cấp quyền lưu trữ.
+        </div>
+      )}
+
+      {showStuckWarning && (
+        <div
+          role="alert"
+          style={{
+            background: "#C0392B",
+            color: "#FFFFFF",
+            padding: "var(--space-2) var(--space-4)",
+            fontSize: "var(--text-xs)",
+          }}
+        >
+          Cảnh báo: Có bill chờ đồng bộ quá 15 phút. Kiểm tra kết nối / báo quản lý (BH-05.7).
         </div>
       )}
 

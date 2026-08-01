@@ -8,7 +8,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import "fake-indexeddb/auto";
 import { posDb } from "../db/pos-db";
-import { addToOutbox, getPendingBills, countPending, clearCommitted, markCommitted } from "./outbox-store";
+import { addToOutbox, getPendingBills, countPending, clearCommitted, markCommitted, hasStuckBills } from "./outbox-store";
 
 function draft(uuid: string) {
   return {
@@ -53,5 +53,15 @@ describe("offline durability — BH-05.6 (a, d)", () => {
     expect(pending).toHaveLength(20);
     // No duplicates, all clientUuids preserved.
     expect(new Set(pending.map((b) => b.clientUuid)).size).toBe(20);
+  });
+
+  it("flags a bill stuck in the outbox >15 min (BH-05.7)", async () => {
+    const now = Date.parse("2026-08-01T14:00:00+07:00");
+    await addToOutbox({ ...draft("stuck-1"), createdAt: new Date(now - 20 * 60 * 1000).toISOString() });
+    expect(await hasStuckBills("branch-1", 15 * 60 * 1000, now)).toBe(true);
+
+    await posDb.offline_outbox.clear();
+    await addToOutbox({ ...draft("fresh-1"), createdAt: new Date(now - 2 * 60 * 1000).toISOString() });
+    expect(await hasStuckBills("branch-1", 15 * 60 * 1000, now)).toBe(false);
   });
 });

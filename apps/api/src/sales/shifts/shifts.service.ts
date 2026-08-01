@@ -230,4 +230,62 @@ export class ShiftsService {
       orderBy: { openedAt: "desc" },
     });
   }
+
+  /**
+   * Realtime shift summary for the manager monitor (BH-08). Aggregates the
+   * shift's bills: revenue + guests + bills-per-type from COMPLETED bills,
+   * cancellations, and the last-30-minute bill pace. Poll-friendly (≤60s);
+   * branch scoping is enforced by the caller/guard via the shift's branch.
+   */
+  async summary(
+    shiftId: string,
+    access: { chainWide: boolean; branchIds: string[] },
+    now: Date = new Date(),
+  ) {
+    const shift = await this.prisma.shift.findUnique({ where: { id: shiftId } });
+    if (!shift) throw new NotFoundException(`Shift ${shiftId} not found`);
+
+    // Branch scope: a manager may only monitor shifts in their own branch(es).
+    if (!access.chainWide && !access.branchIds.includes(shift.branchId)) {
+      throw new ForbiddenException("Ngoài phạm vi chi nhánh");
+    }
+
+    const bills = await this.prisma.bill.findMany({
+      where: { shiftId },
+      include: { lines: true },
+    });
+
+    const completed = bills.filter((b) => b.status === "COMPLETED");
+    const cancelledCount = bills.length - completed.length;
+
+    const revenueVnd = completed.reduce((s, b) => s + b.totalVnd, 0);
+    const guestCount = completed.reduce((s, b) => s + b.guestCount, 0);
+
+    // Tickets sold per type (name snapshot from the bill lines).
+    const byType = new Map<string, { ticketTypeId: string; name: string; qty: number }>();
+    for (const b of completed) {
+      for (const l of b.lines) {
+        const cur = byType.get(l.ticketTypeId) ?? { ticketTypeId: l.ticketTypeId, name: l.ticketTypeName, qty: 0 };
+        cur.qty += l.qty;
+        byType.set(l.ticketTypeId, cur);
+      }
+    }
+
+    // Bill pace over the last 30 minutes.
+    const cutoff = now.getTime() - 30 * 60 * 1000;
+    const last30mBills = completed.filter((b) => b.createdAt.getTime() >= cutoff).length;
+
+    return {
+      shiftId,
+      branchId: shift.branchId,
+      status: shift.status,
+      openedAt: shift.openedAt,
+      billCount: completed.length,
+      cancelledCount,
+      revenueVnd,
+      guestCount,
+      ticketsByType: [...byType.values()].sort((a, b) => b.qty - a.qty),
+      last30mBills,
+    };
+  }
 }

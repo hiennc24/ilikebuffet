@@ -58,6 +58,7 @@ function makePrisma() {
     findFirst: jest.fn(),
     findMany: jest.fn(),
   };
+  self["bill"] = { findMany: jest.fn() };
   self["withTx"] = jest.fn((fn: (tx: unknown) => Promise<unknown>) => fn(txClient));
   self["_tx"] = txClient; // expose for test assertions
 
@@ -67,6 +68,7 @@ function makePrisma() {
       findFirst: jest.Mock;
       findMany: jest.Mock;
     };
+    bill: { findMany: jest.Mock };
     withTx: jest.Mock;
     _tx: typeof txClient;
   };
@@ -331,6 +333,55 @@ describe("ShiftsService", () => {
         }),
       );
       expect(result).toBe(updated);
+    });
+  });
+
+  describe("summary (BH-08 realtime)", () => {
+    const ACCESS = { chainWide: false, branchIds: ["branch-1"] };
+    const now = new Date("2026-08-01T13:30:00+07:00");
+
+    function bill(over: Record<string, unknown>) {
+      return {
+        id: "b", status: "COMPLETED", totalVnd: 0, guestCount: 0,
+        createdAt: now, lines: [], ...over,
+      };
+    }
+
+    it("aggregates revenue, guests, tickets-by-type, cancels and 30-min pace", async () => {
+      prisma.shift.findUnique.mockResolvedValue(makeShift());
+      prisma.bill.findMany.mockResolvedValue([
+        bill({ totalVnd: 598000, guestCount: 2, createdAt: now, lines: [
+          { ticketTypeId: "tt-1", ticketTypeName: "Người lớn", qty: 2 },
+        ] }),
+        bill({ totalVnd: 159000, guestCount: 1, createdAt: new Date("2026-08-01T12:00:00+07:00"), lines: [
+          { ticketTypeId: "tt-2", ticketTypeName: "Trẻ em", qty: 1 },
+        ] }),
+        bill({ status: "CANCELLED", totalVnd: 200000, guestCount: 1, lines: [] }),
+      ]);
+
+      const s = await service.summary("shift-1", ACCESS, now);
+
+      expect(s.billCount).toBe(2);
+      expect(s.cancelledCount).toBe(1);
+      expect(s.revenueVnd).toBe(757000); // cancelled excluded
+      expect(s.guestCount).toBe(3);
+      expect(s.ticketsByType).toEqual([
+        { ticketTypeId: "tt-1", name: "Người lớn", qty: 2 },
+        { ticketTypeId: "tt-2", name: "Trẻ em", qty: 1 },
+      ]);
+      expect(s.last30mBills).toBe(1); // only the 13:00 bill is within 30' of 13:30
+    });
+
+    it("rejects a shift outside the caller's branch scope (BH-08 scope)", async () => {
+      prisma.shift.findUnique.mockResolvedValue(makeShift({ branchId: "branch-OTHER" }));
+      await expect(service.summary("shift-1", ACCESS, now)).rejects.toThrow(ForbiddenException);
+    });
+
+    it("allows a chain-wide user to view any branch", async () => {
+      prisma.shift.findUnique.mockResolvedValue(makeShift({ branchId: "branch-OTHER" }));
+      prisma.bill.findMany.mockResolvedValue([]);
+      const s = await service.summary("shift-1", { chainWide: true, branchIds: [] }, now);
+      expect(s.branchId).toBe("branch-OTHER");
     });
   });
 });

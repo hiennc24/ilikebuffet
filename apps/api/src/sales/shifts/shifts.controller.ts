@@ -46,6 +46,15 @@ export class ShiftsController {
     return this.service.getOpenShift(deviceId);
   }
 
+  /** GET /sales/shifts/:id/summary — realtime aggregate for the manager monitor (BH-08). */
+  @Get(":id/summary")
+  summary(@Param("id") id: string, @Request() req: ScopedRequest) {
+    return this.service.summary(id, {
+      chainWide: req.user.chainWide,
+      branchIds: req.user.branchIds,
+    });
+  }
+
   /** POST /sales/shifts — open a new shift on a device. */
   @Post()
   open(@Body() dto: OpenShiftDto, @Request() req: ScopedRequest) {
