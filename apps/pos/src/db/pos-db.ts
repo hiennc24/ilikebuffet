@@ -86,9 +86,37 @@ export interface OutboxBill {
 
 // ── DB class ───────────────────────────────────────────────────────────────
 
+// ── Catalog cache (P8: cold-boot offline pricing) ──────────────────────────
+
+export interface CachedTicketType {
+  id: string;
+  name: string;
+  color?: string;
+  displayOrder: number;
+  isFree: boolean;
+}
+
+/**
+ * One cached catalog per branch (P8). Lets the device price bills offline with
+ * the SAME shared resolver the server uses (offline-pricing parity), even when
+ * it boots offline. Refreshed on every successful online load.
+ */
+export interface CatalogCache {
+  /** Primary key. */
+  branchId: string;
+  branchCode: string;
+  /** PriceBookSnapshot from GET /sales/pricing/versions/snapshot (typed loosely
+   *  to avoid a hard schema coupling in the Dexie layer). */
+  snapshot: unknown;
+  ticketTypes: CachedTicketType[];
+  /** ISO-8601 when this catalog was cached. */
+  cachedAt: string;
+}
+
 export class PosDb extends Dexie {
   draft_bills!: Table<DraftBill, number>;
   offline_outbox!: Table<OutboxBill, number>;
+  catalog_cache!: Table<CatalogCache, string>;
 
   constructor() {
     super("ilikebuffet_pos");
@@ -112,6 +140,16 @@ export class PosDb extends Dexie {
     this.version(2).stores({
       draft_bills: "++id, branchId, tableId, updatedAt",
       offline_outbox: "++id, &clientUuid, branchId, status, createdAt",
+    });
+
+    /**
+     * Version 3 — P8: per-branch catalog cache for cold-boot offline pricing.
+     * Primary key = branchId (one cached catalog per branch).
+     */
+    this.version(3).stores({
+      draft_bills: "++id, branchId, tableId, updatedAt",
+      offline_outbox: "++id, &clientUuid, branchId, status, createdAt",
+      catalog_cache: "branchId",
     });
   }
 }

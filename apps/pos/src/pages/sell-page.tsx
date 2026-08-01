@@ -22,6 +22,9 @@ import {
   getOrCreateClientUuid,
   clearClientUuid,
 } from "../db/draft-bill-store";
+import { refreshCatalog, getCachedCatalog } from "../offline/catalog-cache";
+import { resolveOfflinePrice } from "../offline/offline-pricing";
+import type { PriceBookSnapshot } from "@ilikebuffet/shared";
 import { PayDialog } from "./pay-dialog";
 
 // ── API types ──────────────────────────────────────────────────────────────
@@ -54,30 +57,52 @@ function useTicketTypesWithPrices(branchId: string | null) {
     enabled: !!branchId,
     staleTime: 60_000,
     queryFn: async () => {
-      const types = await api.get<TicketType[]>("/sales/ticket-types");
-      const active = types.filter((t) => t.status === "ACTIVE");
+      try {
+        const types = await api.get<TicketType[]>("/sales/ticket-types");
+        const active = types.filter((t) => t.status === "ACTIVE");
 
-      const now = new Date().toISOString();
-      const prices = await Promise.all(
-        active.map((t) =>
-          t.isFree
-            ? Promise.resolve<PriceResolveResult>({ kind: "PRICE", priceVnd: 0 })
-            : api
-                .post<PriceResolveResult>("/sales/pricing/resolve", {
-                  branchId,
-                  ticketTypeId: t.id,
-                  createdAt: now,
-                })
-                .catch((): PriceResolveResult => ({ kind: "NO_PRICE" })),
-        ),
-      );
+        const now = new Date().toISOString();
+        const prices = await Promise.all(
+          active.map((t) =>
+            t.isFree
+              ? Promise.resolve<PriceResolveResult>({ kind: "PRICE", priceVnd: 0 })
+              : api
+                  .post<PriceResolveResult>("/sales/pricing/resolve", {
+                    branchId,
+                    ticketTypeId: t.id,
+                    createdAt: now,
+                  })
+                  .catch((): PriceResolveResult => ({ kind: "NO_PRICE" })),
+          ),
+        );
 
-      return active
-        .map((t, i) => ({
-          ...t,
-          unitPrice: prices[i].kind === "PRICE" ? (prices[i].priceVnd ?? 0) : 0,
-        }))
-        .sort((a, b) => a.displayOrder - b.displayOrder);
+        // Refresh the offline catalog cache so the device can price offline later.
+        if (branchId) void refreshCatalog(api, branchId);
+
+        return active
+          .map((t, i) => ({
+            ...t,
+            unitPrice: prices[i].kind === "PRICE" ? (prices[i].priceVnd ?? 0) : 0,
+          }))
+          .sort((a, b) => a.displayOrder - b.displayOrder);
+      } catch (err) {
+        // Offline: price from the cached catalog with the same shared resolver.
+        const cached = branchId ? await getCachedCatalog(branchId) : null;
+        if (!cached) throw err;
+        const snapshot = cached.snapshot as PriceBookSnapshot;
+        const now = new Date();
+        return cached.ticketTypes
+          .map((t) => ({
+            id: t.id,
+            name: t.name,
+            color: t.color,
+            displayOrder: t.displayOrder,
+            isFree: t.isFree,
+            status: "ACTIVE",
+            unitPrice: t.isFree ? 0 : resolveOfflinePrice(snapshot, branchId!, t, now) ?? 0,
+          }))
+          .sort((a, b) => a.displayOrder - b.displayOrder);
+      }
     },
   });
 }
