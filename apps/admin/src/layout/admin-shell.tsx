@@ -61,6 +61,17 @@ const DEFAULT_GROUPS: NavGroup[] = [
     ],
   },
   {
+    label: "Báo cáo & Đối soát",
+    items: [
+      {
+        id: "revenue-report",
+        label: "Doanh thu",
+        path: "/reports/revenue",
+        iconPath: "M3 3v18h18M7 15l3-4 3 2 4-6",
+      },
+    ],
+  },
+  {
     label: "Vé & Giá",
     items: [
       {

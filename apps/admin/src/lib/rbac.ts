@@ -35,6 +35,7 @@ export const RESTRICTED_SCREENS: Record<string, readonly string[]> = {
   "/master-data/holidays": ["QUAN_TRI_HQ"],
   "/inventory": ["QUAN_TRI_HQ"],
   "/master-data/accounts": ["QUAN_TRI_HQ"],
+  "/reports/revenue": ["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI", "QUAN_LY_CN"],
 };
 
 /** Whether a role may access a given route path. Unknown paths are allowed. */

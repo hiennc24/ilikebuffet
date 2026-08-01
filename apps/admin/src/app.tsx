@@ -37,6 +37,7 @@ import { DevicesPage } from "./pages/devices-page";
 import { HolidaysPage } from "./pages/holidays-page";
 import { IngredientsPage } from "./pages/ingredients-page";
 import { AccountsPage } from "./pages/accounts-page";
+import { RevenueReportPage } from "./pages/revenue-report-page";
 import { canAccessPath } from "./lib/rbac";
 import "@ilikebuffet/ui/tokens.css";
 
@@ -218,6 +219,16 @@ export function App() {
                         <RequireAccess path="/master-data/accounts">
                           <ShellLayout pageTitle="Tài khoản kế toán">
                             <AccountsPage />
+                          </ShellLayout>
+                        </RequireAccess>
+                      }
+                    />
+                    <Route
+                      path="/reports/revenue"
+                      element={
+                        <RequireAccess path="/reports/revenue">
+                          <ShellLayout pageTitle="Báo cáo doanh thu">
+                            <RevenueReportPage />
                           </ShellLayout>
                         </RequireAccess>
                       }
