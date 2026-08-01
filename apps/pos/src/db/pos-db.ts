@@ -69,6 +69,9 @@ export interface OutboxBill {
   deviceId: string;
   /** ISO-8601 bill creation time (price deciding timestamp, V1). */
   createdAt: string;
+  /** Device wall-clock at creation + skew vs server (H5). Non-indexed. */
+  deviceClockAt?: string;
+  clockOffsetMs?: number;
   lines: OutboxLine[];
   status: OutboxStatus;
   /** Official gapless number assigned after successful sync. */

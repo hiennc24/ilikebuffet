@@ -153,6 +153,8 @@ function toSyncDto(bill: OutboxBill) {
     shiftId: bill.shiftId,
     deviceId: bill.deviceId,
     createdAt: bill.createdAt,
+    deviceClockAt: bill.deviceClockAt,
+    clockOffsetMs: bill.clockOffsetMs,
     lines: bill.lines,
   };
 }

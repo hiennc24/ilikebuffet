@@ -74,6 +74,23 @@ export function applyPercent(amount: VndAmount, percent: number): VndAmount {
   return roundVnd(product / 100);
 }
 
+/**
+ * Multiply an integer đồng amount by an integer count (e.g. unit price × qty).
+ * Both operands must be integers, so the product is exact; guarded against
+ * overflowing the safe-integer range.
+ */
+export function multiplyVnd(amount: VndAmount, count: number): VndAmount {
+  assertVndInteger(amount);
+  if (!Number.isInteger(count) || count < 0) {
+    throw new MoneyError(`count must be a non-negative integer, got ${count}`);
+  }
+  const product = amount * count;
+  if (Math.abs(product) > Number.MAX_SAFE_INTEGER) {
+    throw new MoneyError(`money multiplication overflows safe integer range: ${amount} * ${count}`);
+  }
+  return product;
+}
+
 const vndFormatter = new Intl.NumberFormat("vi-VN");
 
 /** Format integer đồng for vi-VN display, e.g. 150000 -> "150.000 ₫". */

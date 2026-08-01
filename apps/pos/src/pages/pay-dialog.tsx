@@ -15,9 +15,11 @@ import * as React from "react";
 import { Dialog, Button, FormField } from "@ilikebuffet/ui";
 import { usePosAuth } from "../auth/pos-auth-context";
 import { usePosSession } from "../session/pos-session-context";
+import { useNetworkStatus } from "../offline/network-status-context";
+import { addToOutbox, buildTempNumber } from "../offline/outbox-store";
 import { ApiError } from "../lib/pos-api-client";
 import type { OrderItem } from "@ilikebuffet/ui";
-import { formatVnd } from "@ilikebuffet/shared";
+import { formatVnd, multiplyVnd } from "@ilikebuffet/shared";
 
 type PaymentMethod = "CASH" | "VIETQR" | "CARD";
 
@@ -40,8 +42,12 @@ interface Bill {
 interface BranchInfo {
   id: string;
   name: string;
+  code?: string;
   bankAccount?: string;
 }
+
+/** localStorage key caching the branch code for offline temp-number prefixes. */
+const BRANCH_CODE_KEY = "ibb_pos_branch_code";
 
 export interface PayDialogProps {
   open: boolean;
@@ -62,6 +68,7 @@ export const PayDialog: React.FC<PayDialogProps> = ({
 }) => {
   const { api, selectedBranchId } = usePosAuth();
   const { deviceId, shiftId } = usePosSession();
+  const { isOnline, clockSkew, triggerSync } = useNetworkStatus();
 
   // Persist billId across re-renders so retry skips creation.
   const [billId, setBillId] = React.useState<string | null>(null);
@@ -69,6 +76,8 @@ export const PayDialog: React.FC<PayDialogProps> = ({
   const [branch, setBranch] = React.useState<BranchInfo | null>(null);
   const [step, setStep] = React.useState<Step>("creating");
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+  // True when the bill was queued offline (no server number yet).
+  const [isOfflineBill, setIsOfflineBill] = React.useState(false);
 
   const [method, setMethod] = React.useState<PaymentMethod>("CASH");
   const [amountInput, setAmountInput] = React.useState("");
@@ -83,6 +92,7 @@ export const PayDialog: React.FC<PayDialogProps> = ({
       setStep("creating");
       setErrorMsg(null);
       setAmountInput("");
+      setIsOfflineBill(false);
     }
   }, [open, clientUuid]);
 
@@ -101,6 +111,60 @@ export const PayDialog: React.FC<PayDialogProps> = ({
       if (!selectedBranchId || !shiftId) {
         setErrorMsg("Thiếu thông tin chi nhánh hoặc ca làm việc");
         setStep("error");
+        return;
+      }
+
+      // ── Offline path (BH-05): queue the bill to the outbox instead of POSTing.
+      // Covers the "network drops mid-shift" case — the catalog/prices were
+      // loaded while online, so the cart carries unit prices for a local estimate;
+      // the server recomputes the authoritative total + gapless number on sync.
+      if (!isOnline) {
+        // H5: a skewed clock corrupts createdAt (price/date/number) — block.
+        if (clockSkew?.exceeded) {
+          setErrorMsg("Đồng hồ thiết bị lệch giờ — chỉnh lại giờ trước khi bán offline.");
+          setStep("error");
+          return;
+        }
+        const nowIso = new Date().toISOString();
+        const branchCode = localStorage.getItem(BRANCH_CODE_KEY) ?? "CN";
+        const tempNumber = buildTempNumber(branchCode, deviceId, selectedBranchId, new Date(nowIso));
+        const estTotal = cartItems.reduce((s, i) => s + multiplyVnd(i.unitPrice, i.quantity), 0);
+        const guest = cartItems.reduce((s, i) => s + i.quantity, 0);
+        try {
+          await addToOutbox({
+            clientUuid,
+            tempNumber,
+            branchId: selectedBranchId,
+            shiftId,
+            deviceId,
+            createdAt: nowIso,
+            deviceClockAt: nowIso,
+            clockOffsetMs: clockSkew?.offsetMs ?? 0,
+            lines: cartItems.map((i) => ({ ticketTypeId: i.id, qty: i.quantity })),
+          });
+        } catch {
+          setErrorMsg("Không lưu được bill offline — thử lại.");
+          setStep("error");
+          return;
+        }
+        if (cancelled) return;
+        setBillId(clientUuid);
+        setBill({
+          id: clientUuid,
+          number: tempNumber,
+          totalVnd: estTotal,
+          guestCount: guest,
+          status: "OFFLINE_PENDING",
+          lines: cartItems.map((i) => ({
+            ticketTypeName: i.name,
+            unitPriceVnd: i.unitPrice,
+            qty: i.quantity,
+            lineTotalVnd: multiplyVnd(i.unitPrice, i.quantity),
+          })),
+        });
+        setIsOfflineBill(true);
+        setAmountInput(String(estTotal));
+        setStep("choose-method");
         return;
       }
 
@@ -124,6 +188,8 @@ export const PayDialog: React.FC<PayDialogProps> = ({
         ]);
 
         if (cancelled) return;
+        // Cache the branch code so offline temp numbers use the right prefix.
+        if (branchResult?.code) localStorage.setItem(BRANCH_CODE_KEY, branchResult.code);
         setBillId(billResult.id);
         setBill(billResult);
         setBranch(branchResult);
@@ -151,6 +217,18 @@ export const PayDialog: React.FC<PayDialogProps> = ({
     const amountVnd = parseInt(amountInput, 10);
     if (amountVnd !== bill.totalVnd) return; // Button should be disabled, guard anyway.
 
+    // Offline: the bill is already queued in the outbox. There is no server to
+    // POST the payment to; the sale is complete locally (paper bill printed) and
+    // the bill syncs on reconnect. Payment method is captured for the local
+    // record; payment reconciliation on sync is an M1 follow-up.
+    if (isOfflineBill) {
+      console.log("[PayDialog] offline bill queued", { tempNumber: bill.number, method, amountVnd });
+      setStep("success");
+      onPaymentSuccess();
+      triggerSync(); // no-op while offline; drains the outbox once back online
+      return;
+    }
+
     setStep("paying");
     try {
       await api.request<unknown>(`/sales/bills/${billId}/payments`, {
@@ -171,7 +249,7 @@ export const PayDialog: React.FC<PayDialogProps> = ({
       );
       setStep("error");
     }
-  }, [api, bill, billId, amountInput, method, onPaymentSuccess]);
+  }, [api, bill, billId, amountInput, method, onPaymentSuccess, isOfflineBill, triggerSync]);
 
   const remaining = bill ? bill.totalVnd - (parseInt(amountInput, 10) || 0) : 0;
   const payDisabled =
@@ -206,7 +284,9 @@ export const PayDialog: React.FC<PayDialogProps> = ({
       return (
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
           <p style={{ margin: 0, fontSize: "var(--text-base)", color: "var(--text-primary)" }}>
-            Thanh toán thành công — Bill #{bill.number}
+            {isOfflineBill
+              ? `Đã lưu bill offline #${bill.number} — sẽ đồng bộ khi có mạng`
+              : `Thanh toán thành công — Bill #${bill.number}`}
           </p>
           <Button
             variant="ghost"
