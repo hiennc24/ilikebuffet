@@ -88,3 +88,11 @@ Backend arbiter P8 đã hardening đầy đủ: C1(hash)/C2/C5/C6/C8/H3/H5 + 6 k
 - **C1 device↔token binding** + **C3** re-verify — phụ thuộc auth device-bound / luồng duyệt offline; chốt thiết kế trước.
 
 Luồng offline chính đã chạy end-to-end: tạo offline → outbox → reconnect sync → số chính thức, phủ đủ bất biến không mất/không trùng số.
+
+### Hardening spike — hoàn tất
+- **Catalog cache — DONE.** Cache snapshot(+future)/loại vé/mã CN xuống Dexie (v3); bán được khi **cold-boot offline**, giá dùng chung resolver (parity test). Lễ degrade → server tính lại khi sync.
+- **Offline payment recon — DONE.** Bill offline mang payment qua outbox→sync; server ghi Payment + paidAt; lệch tổng (ước tính vs server) → quarantine, không reject.
+- **C1 device-binding — DONE.** PIN login gắn deviceId vào token; sync reject bill khác device (chỉ enforce khi token device-bound; password-login không ảnh hưởng).
+- **C3 — N/A cho M1 (có justification).** M1 offline chỉ tạo+thanh toán bill, **không có duyệt giảm/hủy offline** (cancel cần online). Không có approval offline để re-verify. Guard: nếu sau này thêm giảm/hủy offline thì **bắt buộc** kèm C3 re-verify khi sync.
+
+**P8 status: offline core "không được cắt" đã hoàn chỉnh + test-gated.** Còn tùy chọn xa: reconcile payment-method vào báo cáo tài chính (wave TC), auto-đối khớp CK (TC-02).
