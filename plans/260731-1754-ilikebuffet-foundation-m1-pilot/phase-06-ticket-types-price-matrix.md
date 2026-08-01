@@ -55,3 +55,9 @@ Loại vé + ma trận giá đa chiều (loại vé × khung giờ × loại ng�
 <!-- Updated: Validation Session 1 — V1: default mốc giá = THỜI ĐIỂM TẠO bill (createdAt), giữ config paidAt để đảo. V4: default vé miễn phí PHẢI đi kèm ≥1 vé có phí (policy object, đảo được). Cả hai là default để build — CHỜ KHÁCH KÝ trước golive. -->
 - **V1 (mốc giá)** — config default = `createdAt` (theo VG-02.5); vẫn giữ nhánh `paidAt`. Chờ khách ký.
 - **V4 (vé miễn phí)** — policy default = bill phải có ≥1 vé giá>0; là policy object đảo được. Chờ khách ký.
+
+## Progress
+
+- **Backend (VG-01/02/03)** — resolver thuần ở `packages/shared` (60 test), `sales` module (ticket-types, pricing + Excel export, discounts + voucher quota `FOR UPDATE`), migration `20260801160000_pricing`. Unit test xanh toàn bộ.
+- **Admin FE screens** — `/settings/ticket-types` (Loại vé), `/settings/pricing` (Khung giờ + Bảng giá version + Ma trận giá + Xuất Excel), `/settings/discounts` (Chương trình + Lý do). Trên component P5 (`@ilikebuffet/ui` + `_shared/admin-ui`). Wired vào router + nav. Admin build + lint sạch, 25/25 test xanh.
+- **Còn lại P6**: e2e/integration tests (voucher concurrency real-DB, price-book versioning immutability) — cần Docker; hydration-parity + cache version-stamp → dời sang P8 (chưa có client cache).
