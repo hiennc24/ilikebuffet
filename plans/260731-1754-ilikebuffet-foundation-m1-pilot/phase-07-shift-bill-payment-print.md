@@ -68,4 +68,6 @@ Lõi bán hàng **online trước**: mở ca, tạo bill (giá server, snapshot)
 - `BillsService` — giá server (resolver P6), snapshot bất biến (test đổi giá sau → bill cũ không đổi), số trong tx (lock counter→audit), idempotent theo clientUuid; cancel giữ số + PIN + **IDOR guard** (chỉ ca OPEN của chính thiết bị — cross/closed-shift → 403 + audit, M1 ✅).
 - `PaymentsService` — tổng thanh toán = tổng bill (chặn thiếu tiền), chặn thanh toán 2 lần.
 
-**Còn lại P7:** POS PWA screens (mở ca, bán, thanh toán, bill) + draft-bill survive refresh/lock (H8); `packages/print-agent` (HTTP local 80mm, lỗi in không chặn lưu — H6 transport spike; real-printer test **blocked** chờ Sprint-0 chọn 2 model). VietQR động (UI thanh toán).
+**POS PWA — DONE (26 test).** Session context (device id + gate mở ca) → màn Bán (grid loại vé thật, ước giá qua `/sales/pricing/resolve`, giỏ hàng lưu Dexie **survive refresh/lock** H8, hydrate khi mở lại) → PayDialog (tạo bill server = tổng + số bill chuẩn, idempotent theo clientUuid; thanh toán kết hợp phải khớp tổng; VietQR tối thiểu; print stub; xoá draft khi xong). Dev proxy + prefill login.
+
+**Còn lại P7:** `packages/print-agent` (HTTP local 80mm, lỗi in không chặn lưu — H6 transport spike; real-printer test **blocked** chờ Sprint-0 chọn 2 model); UI hủy bill (nhập PIN QL — backend đã có); VietQR hoàn thiện.
