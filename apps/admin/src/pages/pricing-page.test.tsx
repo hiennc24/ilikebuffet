@@ -1,5 +1,5 @@
 /**
- * Tests for PricingPage (VG-02 pricing management screen).
+ * Tests for PricingPage (pricing management screen).
  *
  * Harness mirrors ticket-types-page.test.tsx: polyfill <dialog>, mock
  * globalThis.fetch by path+method, seed sessionStorage/localStorage tokens,

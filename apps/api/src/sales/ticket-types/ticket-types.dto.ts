@@ -1,5 +1,5 @@
 /**
- * DTOs for ticket-type CRUD (VG-01).
+ * DTOs for ticket-type CRUD.
  */
 
 export interface CreateTicketTypeDto {
@@ -8,7 +8,7 @@ export interface CreateTicketTypeDto {
   displayOrder?: number;
   /** Hex or Tailwind token, e.g. "#3B82F6". */
   color?: string;
-  /** Free ticket: price always 0, still counts toward guest total (VG-01.2). */
+  /** Free ticket: price always 0, still counts toward guest total. */
   isFree?: boolean;
 }
 

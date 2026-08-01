@@ -1,5 +1,5 @@
 /**
- * TicketTypesPage tests — VG-01 ticket type management screen.
+ * TicketTypesPage tests — ticket type management screen.
  *
  * Harness: mock globalThis.fetch by path+method, seed sessionStorage/localStorage
  * tokens, wrap in QueryClientProvider + AuthProvider (mirroring auth-routing.test.tsx).
@@ -155,7 +155,7 @@ afterEach(() => {
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
-describe("TicketTypesPage — VG-01", () => {
+describe("TicketTypesPage", () => {
   it("renders ticket type names from GET /sales/ticket-types", async () => {
     const fetchMock = mockFetch({
       "/sales/ticket-types": {

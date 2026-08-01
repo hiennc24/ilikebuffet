@@ -1,13 +1,13 @@
 /**
- * TicketTypesService — VG-01 loại vé CRUD.
+ * TicketTypesService — loại vé CRUD.
  *
  * Invariants:
- *   - No hard delete once a bill has been created: deactivate only (VG-01.3).
+ *   - No hard delete once a bill has been created: deactivate only.
  *     For MVP (no Bill model yet) we allow deactivate; the hasBilledChecker
- *     extension pattern mirrors ingredientHasTransactions from P4.
+ *     extension pattern mirrors ingredientHasTransactions from master-data.
  *   - Free ticket (isFree=true): priceVnd forced to 0 but COUNTS toward guest
- *     total for cost/khách (VG-01.2, M7). The bill layer enforces the count.
- *   - All mutations audited in-tx (GA-01).
+ *     total for cost/khách. The bill layer enforces the count.
+ *   - All mutations audited in-tx.
  *   - HQ-only mutations: role gate enforced at controller level.
  */
 import {
@@ -33,7 +33,7 @@ export type BilledTicketChecker = (
 ) => Promise<boolean>;
 
 const billedCheckers: BilledTicketChecker[] = [
-  // P7 bill module will register a real checker here when Bill model exists.
+  // The bill module registers a real checker here once Bill model exists.
 ];
 
 export async function ticketTypeHasBills(
@@ -146,9 +146,9 @@ export class TicketTypesService {
   }
 
   /**
-   * Deactivate a ticket type. Hard delete is forbidden once bills exist (VG-01.3).
+   * Deactivate a ticket type. Hard delete is forbidden once bills exist.
    * For MVP (no Bill model) we always deactivate; bill-existence check added via
-   * registerBilledTicketChecker() when P7 bill module ships.
+   * registerBilledTicketChecker() when the bill module ships.
    */
   async deactivate(id: string, actorId?: string, actorRole?: string) {
     return this.prisma.withTx(async (tx) => {

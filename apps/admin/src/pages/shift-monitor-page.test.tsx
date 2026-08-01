@@ -1,5 +1,5 @@
 /**
- * ShiftMonitorPage — polls the selected open shift's summary (BH-08).
+ * ShiftMonitorPage — polls the selected open shift's summary.
  *
  * Additional coverage:
  *   HI-8: when the polled shift list no longer contains the selected shiftId

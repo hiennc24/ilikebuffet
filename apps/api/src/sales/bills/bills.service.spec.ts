@@ -283,7 +283,7 @@ describe("BillsService", () => {
     ).rejects.toThrow(ForbiddenException);
   });
 
-  // ── 5b. Cancel cross-branch: caller's branch excludes the bill's branch → Forbidden (C1)
+  // ── 5b. Cancel cross-branch: caller's branch excludes the bill's branch → Forbidden
   it("throws ForbiddenException when the caller's branch excludes the bill's branch", async () => {
     const bill = makeBill({ deviceId: "dev-1", shift: makeShift({ status: "OPEN" }) }); // branch-1
     const prisma = makePrisma();

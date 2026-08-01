@@ -1,5 +1,5 @@
 /**
- * ShiftMonitorPage — realtime shift monitor for managers (BH-08).
+ * ShiftMonitorPage — realtime shift monitor for managers.
  *
  * Lists the branch's OPEN shifts and polls the selected shift's summary every
  * 30s (≤60s requirement). Server enforces branch scope; the aggregate is

@@ -1,5 +1,5 @@
 /**
- * POS DB — Dexie draft_bills persistence test (H8 / BH-02.7).
+ * POS DB — Dexie draft_bills persistence test.
  *
  * Proves that a draft bill written to IndexedDB can be read back
  * from the same DB instance (simulates persistence across reload).

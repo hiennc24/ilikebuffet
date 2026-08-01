@@ -51,7 +51,7 @@ describe("print server", () => {
     }
   });
 
-  it("reports print failure as 502 WITHOUT throwing (BH-04.4 non-blocking)", async () => {
+  it("reports print failure as 502 WITHOUT throwing (non-blocking)", async () => {
     const handle = createPrintServer({ driver: new FailingPrintDriver("printer offline"), log: () => {} });
     const port = await listen(handle);
     try {

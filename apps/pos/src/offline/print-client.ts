@@ -1,8 +1,8 @@
 /**
- * Print client — POSTs a bill to the local print-agent (BH-04).
+ * Print client — POSTs a bill to the local print-agent.
  *
  * The agent runs on the counter machine (default http://127.0.0.1:7070). A print
- * failure is NEVER fatal to the sale (BH-04.4): every function here swallows
+ * failure is NEVER fatal to the sale: every function here swallows
  * errors and returns a boolean so callers can fire-and-forget.
  *
  * The payload shape mirrors @ilikebuffet/print-agent's PrintBillPayload; kept as

@@ -1,7 +1,7 @@
 /**
- * sync-engine — drives outbox → server sync for offline bills (P8 / BH-05).
+ * sync-engine — drives outbox → server sync for offline bills.
  *
- * Contract (C5):
+ * Contract (bills are never lost):
  *   - Bills removed from outbox ONLY after receiving officialNumber from server.
  *   - Server returns full map {clientUuid → result} — never partial.
  *   - Retry bills with exponential back-off (max 5 attempts then flag for manual).

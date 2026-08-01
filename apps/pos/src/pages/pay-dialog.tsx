@@ -128,7 +128,7 @@ export const PayDialog: React.FC<PayDialogProps> = ({
         return;
       }
 
-      // ── Offline path (BH-05): queue the bill to the outbox instead of POSTing.
+      // ── Offline path: queue the bill to the outbox instead of POSTing.
       // Covers the "network drops mid-shift" case — the catalog/prices were
       // loaded while online, so the cart carries unit prices for a local estimate;
       // the server recomputes the authoritative total + gapless number on sync.
@@ -322,7 +322,7 @@ export const PayDialog: React.FC<PayDialogProps> = ({
     [bill, branch, method],
   );
 
-  // Auto-print once the sale is settled. Print failure is non-fatal (BH-04.4).
+  // Auto-print once the sale is settled. Print failure is non-fatal.
   React.useEffect(() => {
     if (step !== "success") return;
     const payload = buildPrintPayload();
@@ -377,7 +377,7 @@ export const PayDialog: React.FC<PayDialogProps> = ({
             variant="ghost"
             touch
             onClick={() => {
-              // Reprint stamps a "BẢN SAO" banner (BH-04.5).
+              // Reprint stamps a "BẢN SAO" (copy) banner.
               const payload = buildPrintPayload(true);
               if (payload) void printBill(payload);
             }}

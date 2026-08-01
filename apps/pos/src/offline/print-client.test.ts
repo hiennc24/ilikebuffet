@@ -29,7 +29,7 @@ describe("printBill", () => {
     expect(JSON.parse(String(init?.body)).billNumber).toBe("CN01-260801-0007");
   });
 
-  it("returns false (never throws) when the agent is unreachable (BH-04.4 non-fatal)", async () => {
+  it("returns false (never throws) when the agent is unreachable", async () => {
     globalThis.fetch = vi.fn(async () => { throw new Error("connection refused"); }) as unknown as typeof fetch;
     await expect(printBill(BILL, "http://127.0.0.1:7070")).resolves.toBe(false);
   });

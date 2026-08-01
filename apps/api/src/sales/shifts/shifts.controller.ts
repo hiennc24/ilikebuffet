@@ -1,5 +1,5 @@
 /**
- * ShiftsController — BH-01 shift lifecycle endpoints.
+ * ShiftsController — shift lifecycle endpoints.
  *
  * Branch-scoped (no @Unscoped). BranchScopeGuard reads branchId from the
  * request body/query and enforces membership before this controller runs.
@@ -46,7 +46,7 @@ export class ShiftsController {
     return this.service.getOpenShift(deviceId);
   }
 
-  /** GET /sales/shifts/:id/summary — realtime aggregate for the manager monitor (BH-08). */
+  /** GET /sales/shifts/:id/summary — realtime aggregate for the manager monitor. */
   @Get(":id/summary")
   summary(@Param("id") id: string, @Request() req: ScopedRequest) {
     return this.service.summary(id, {

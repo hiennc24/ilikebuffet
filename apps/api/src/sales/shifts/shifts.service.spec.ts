@@ -193,7 +193,7 @@ describe("ShiftsService", () => {
       ).rejects.toThrow(BadRequestException);
     });
 
-    it("throws ForbiddenException when the caller's branch excludes the shift's branch (C1)", async () => {
+    it("throws ForbiddenException when the caller's branch excludes the shift's branch", async () => {
       prisma._tx.shift.findUnique.mockResolvedValue(makeShift({ branchId: "branch-1" }));
       await expect(
         service.close("shift-1", { countedCashVnd: 100_000 }, "user-1", "THU_NGAN", {
@@ -352,7 +352,7 @@ describe("ShiftsService", () => {
     });
   });
 
-  describe("summary (BH-08 realtime)", () => {
+  describe("summary (realtime shift monitor)", () => {
     const ACCESS = { chainWide: false, branchIds: ["branch-1"] };
     const now = new Date("2026-08-01T13:30:00+07:00");
 
@@ -388,7 +388,7 @@ describe("ShiftsService", () => {
       expect(s.last30mBills).toBe(1); // only the 13:00 bill is within 30' of 13:30
     });
 
-    it("rejects a shift outside the caller's branch scope (BH-08 scope)", async () => {
+    it("rejects a shift outside the caller's branch scope", async () => {
       prisma.shift.findUnique.mockResolvedValue(makeShift({ branchId: "branch-OTHER" }));
       await expect(service.summary("shift-1", ACCESS, now)).rejects.toThrow(ForbiddenException);
     });

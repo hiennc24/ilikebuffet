@@ -1,13 +1,13 @@
 /**
- * SyncService — P8 offline bill sync (BH-05).
+ * SyncService — offline bill sync.
  *
- * Invariants (Red Team):
- *   C1 — branch/device in DTO must match the calling token; rejected → 403+audit.
- *   C2 — server recomputes all prices from line-items + createdAt; no client prices accepted.
- *   C5 — always returns full map {clientUuid → result} for every bill in request; no partial.
- *        per-bill idempotent: each bill gets its own tx; all-or-nothing is NOT the contract.
- *        never rejects a sale that was already committed.
- *   C8 — stores tempNumber on bill for audit/high-water-mark reconciliation.
+ * Invariants:
+ *   - Branch/device in DTO must match the calling token; rejected → 403+audit.
+ *   - Server recomputes all prices from line-items + createdAt; no client prices accepted.
+ *   - Always returns full map {clientUuid → result} for every bill in request; no partial.
+ *     Per-bill idempotent: each bill gets its own tx; all-or-nothing is NOT the contract.
+ *     Never rejects a sale that was already committed.
+ *   - Stores tempNumber on bill for audit/high-water-mark reconciliation.
  *
  * Each bill is processed independently. A failure on one does NOT block others.
  */
@@ -48,11 +48,11 @@ export class SyncService {
 
   /**
    * Process a single offline bill. Returns a SyncBillResult regardless of
-   * success/failure so the batch always returns a full map (C5).
+   * success/failure so the batch always returns a full map.
    *
    * @param dto              one bill from the batch
    * @param actorId          user id from JWT (used for createdBy + audit)
-   * @param allowedBranchIds set of branchIds from the JWT (C1 authz check)
+   * @param allowedBranchIds set of branchIds from the JWT (authz check)
    */
   async processBill(
     dto: SyncBillDto,
@@ -68,7 +68,7 @@ export class SyncService {
     // device-set createdAt before it drives the counter/business-date.
     const serverNow = new Date();
 
-    // C1: bill's branchId must be in the caller's allowed set
+    // Branch authz: bill's branchId must be in the caller's allowed set
     if (!allowedBranchIds.has(dto.branchId)) {
       this.logger.warn(
         `Sync authz mismatch: dto.branchId=${dto.branchId} not in token branches`,
@@ -77,8 +77,8 @@ export class SyncService {
       return { ...base, status: "rejected", error: "branch not allowed by token" };
     }
 
-    // C1: when the token is device-bound (PIN login), a device may only sync its
-    // OWN bills — it cannot hijack or suppress another device's uuid.
+    // Device binding: when the token is device-bound (PIN login), a device may only
+    // sync its OWN bills — it cannot hijack or suppress another device's uuid.
     if (opts?.tokenDeviceId && dto.deviceId !== opts.tokenDeviceId) {
       this.logger.warn(`Sync device mismatch: dto.deviceId=${dto.deviceId} token=${opts.tokenDeviceId}`);
       await this.recordRejectionAudit(dto, actorId, "device_mismatch");
@@ -96,8 +96,8 @@ export class SyncService {
 
     const contentHash = computeContentHash(dto);
 
-    // C5: idempotent check — if already committed, return existing number immediately.
-    // C1: a dedup hit whose stored content hash differs from the resubmitted bill
+    // Idempotent check — if already committed, return existing number immediately.
+    // A dedup hit whose stored content hash differs from the resubmitted bill
     // means the same (device, uuid) was reused for DIFFERENT content (tampering or
     // corruption). Offline bills are append-only, so this must never happen
     // legitimately — reject + audit instead of silently returning the number.
@@ -134,10 +134,10 @@ export class SyncService {
         const branch = await tx.branch.findUnique({ where: { id: dto.branchId } });
         if (!branch) throw new Error(`Branch ${dto.branchId} not found`);
 
-        // C2: server recomputes all prices — client lines have no price.
+        // Server recomputes all prices — client lines have no price.
         // Offline bills are created before they sync, so the device-set createdAt
-        // is trusted to drive the gapless counter + business-date + price (V1:
-        // price-deciding timestamp = createdAt). We do NOT overwrite it, but a
+        // is trusted to drive the gapless counter + business-date + price
+        // (price-deciding timestamp = createdAt). We do NOT overwrite it, but a
         // createdAt implausibly far from server time (independent of the reported
         // clockOffsetMs) is flagged for reconciliation — see quarantine below.
         const createdAt = new Date(dto.createdAt);
@@ -158,7 +158,7 @@ export class SyncService {
         });
 
         const violation = checkFreeTicketPolicy(resolvedLines);
-        // C5: never reject a sale already printed — log flag instead of throwing
+        // Never reject a sale already printed — log flag instead of throwing
         if (violation) {
           this.logger.warn(`Free-ticket policy violation on offline sync: ${violation.message} clientUuid=${dto.clientUuid}`);
         }
@@ -171,7 +171,7 @@ export class SyncService {
         //  - a device clock drifted beyond tolerance (createdAt-derived
         //    price/date may be unreliable).
         //  - the createdAt is implausibly far from server time — its counter/date
-        //    allocation is honored but flagged for reconciliation (GA-02).
+        //    allocation is honored but flagged for reconciliation.
         const forced = opts?.forceQuarantine;
         const skewMs = Math.abs(dto.clockOffsetMs ?? 0);
         const skewExceeded = skewMs > CLOCK_SKEW_TOLERANCE_MS;
@@ -191,7 +191,7 @@ export class SyncService {
                 ? `payment_mismatch_paid_${paymentSum}_vs_total_${totalVnd}`
                 : null;
 
-        // Allocate official gapless number (counter→audit lock order — C4)
+        // Allocate official gapless number (counter→audit lock order)
         const { seq, number } = await this.billNumber.allocate(
           tx,
           branch.code,
@@ -199,7 +199,7 @@ export class SyncService {
           businessDate,
         );
 
-        // C8: store tempNumber alongside official number for audit/high-water-mark
+        // Store tempNumber alongside official number for audit/high-water-mark
         const bill = await tx.bill.create({
           data: {
             number,
@@ -282,8 +282,8 @@ export class SyncService {
   }
 
   /**
-   * Record a draft that was voided on-device before it ever synced (C8). No bill
-   * row exists; we append an audit event so reconciliation (GA-02) can tell an
+   * Record a draft that was voided on-device before it ever synced. No bill
+   * row exists; we append an audit event so reconciliation can tell an
    * intentional void from a suppressed/lost bill (a hole below the shift HWM).
    * Returns true if recorded, false if the branch isn't allowed by the token.
    */
@@ -319,7 +319,7 @@ export class SyncService {
 }
 
 /**
- * Canonical SHA-256 of an offline bill's semantic content (C1). Stable across
+ * Canonical SHA-256 of an offline bill's semantic content. Stable across
  * resubmits of the same append-only bill; changes only if the lines, quantities,
  * shift, or createdAt change. branchId/deviceId are excluded — they form the
  * dedup key, not the content.

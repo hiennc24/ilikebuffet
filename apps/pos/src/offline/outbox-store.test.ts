@@ -1,5 +1,5 @@
 /**
- * outbox-store tests — P8 offline bill outbox persistence.
+ * outbox-store tests — offline bill outbox persistence.
  *
  * Proves:
  *   - addToOutbox inserts with status="pending"

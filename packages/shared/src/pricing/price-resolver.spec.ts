@@ -1,18 +1,18 @@
 /**
- * Price Resolver — TDD spec (VG-02 AC + Red Team C9/C2/AD3/M7).
+ * Price Resolver — TDD spec.
  *
- * Split into two sections as required by Red Team C2/AD3:
+ * Split into two sections:
  *   Part 1 — RESOLVER PURITY: deterministic output given identical inputs.
  *   Part 2 — HYDRATION PARITY: cache version-stamp + offline version-cutover detection.
  *
- * Key AC examples covered:
- *   - Người lớn × Tối × Lễ → correct price cell (VG-02.5 example)
- *   - Fallback CN → chuỗi (VG-02.4)
- *   - Bill created 13:58, paid 14:05 → price by CREATE time (C9 contract, parametrized)
- *   - Future price-book doesn't affect today; auto-applies at 0h of effective date (VG-02.6)
- *   - Out-of-hours → NO_PRICE (build-default #2)
- *   - Free ticket → price 0 (VG-01.2 / M7 invariant)
- *   - Version-cutover mid-day while device is offline (C2/AD3 hydration-parity)
+ * Key examples covered:
+ *   - Người lớn × Tối × Lễ → correct price cell
+ *   - Fallback CN → chuỗi (branch cell > chain cell)
+ *   - Bill created 13:58, paid 14:05 → price by CREATE time (parametrized)
+ *   - Future price-book doesn't affect today; auto-applies at 0h of effective date
+ *   - Out-of-hours → NO_PRICE (build-default)
+ *   - Free ticket → price 0
+ *   - Version-cutover mid-day while device is offline (hydration-parity)
  */
 
 import {
@@ -65,7 +65,7 @@ function makeSnapshot(
     makeCell(TT_NGUOI_LON, TW_TRUA.id, "HOLIDAY",  200_000),
     makeCell(TT_NGUOI_LON, TW_TOI.id,  "REGULAR",  170_000),
     makeCell(TT_NGUOI_LON, TW_TOI.id,  "WEEKEND",  200_000),
-    makeCell(TT_NGUOI_LON, TW_TOI.id,  "HOLIDAY",  250_000), // ← VG-02.5 example cell
+    makeCell(TT_NGUOI_LON, TW_TOI.id,  "HOLIDAY",  250_000), // ← Example: Người lớn × Tối × Lễ
     makeCell(TT_TRE_EM,    TW_TRUA.id, "REGULAR",   80_000),
     makeCell(TT_TRE_EM,    TW_TOI.id,  "REGULAR",   90_000),
     ...extraCells,
@@ -110,12 +110,12 @@ function vnTime(dateStr: string, hour: number, minute: number): Date {
 
 describe("Part 1 — Resolver Purity", () => {
   // The deciding-timestamp config is a public export; tests lock the CONTRACT
-  // (a single field decides price), not the specific value. (Red Team C9)
+  // (a single field decides price), not the specific value.
   it("PRICE_TIMESTAMP_FIELD is a public export and has a defined value", () => {
     expect(["createdAt", "paidAt"]).toContain(PRICE_TIMESTAMP_FIELD);
   });
 
-  describe("VG-02.5 example — Người lớn × Tối × Lễ", () => {
+  describe("Example — Người lớn × Tối × Lễ", () => {
     it("resolves to the holiday-evening price cell (250,000 VND)", () => {
       // Date 2026-01-01 is injected as a holiday via isHolidayFn.
       const dateStr = "2026-01-01";
@@ -137,7 +137,7 @@ describe("Part 1 — Resolver Purity", () => {
     });
   });
 
-  describe("VG-02.2 — Day-type priority HOLIDAY > WEEKEND > REGULAR", () => {
+  describe("Day-type priority HOLIDAY > WEEKEND > REGULAR", () => {
     it("HOLIDAY wins over WEEKEND when both predicates are true", () => {
       const dateStr = "2026-01-01";
       const snapshot = makeSnapshot(dateStr);
@@ -193,7 +193,7 @@ describe("Part 1 — Resolver Purity", () => {
     });
   });
 
-  describe("VG-02.4 — Branch fallback: branch cell > chain cell", () => {
+  describe("Branch fallback: branch cell > chain cell", () => {
     it("uses branch-specific cell when available (BRANCH_A override)", () => {
       const dateStr = "2026-01-05";
       const branchCell = makeCell(TT_NGUOI_LON, TW_TOI.id, "REGULAR", 999_000, BRANCH_A);
@@ -303,7 +303,7 @@ describe("Part 1 — Resolver Purity", () => {
     });
   });
 
-  describe("VG-02.3 / VG-02.6 — Versioning: future price-book auto-applies at 0h", () => {
+  describe("Versioning: future price-book auto-applies at 0h of effective date", () => {
     it("future price-book version does NOT affect today", () => {
       const todayStr    = "2026-01-05";
       const tomorrowStr = "2026-01-06";
@@ -423,9 +423,9 @@ describe("Part 1 — Resolver Purity", () => {
     });
   });
 
-  describe("VG-01.2 / M7 — Free ticket: price = 0, still counts toward guest total", () => {
+  describe("Free ticket: price = 0, still counts toward guest total", () => {
     /**
-     * M7 invariant: "free ticket counts toward guest total for cost/khách (BC-01)".
+     * Invariant: free ticket counts toward guest total for cost-per-guest calculations.
      * The resolver's job is to return price=0. The billing layer counts
      * all tickets (free+paid) in the guest denominator. This test documents
      * and locks that invariant so future refactors do not silently break BC-01.
@@ -568,7 +568,7 @@ describe("Part 2 — Hydration Parity (C2/AD3)", () => {
    * On reconnect:
    *   - detectCacheStaleness(clientStamp, serverStamp) → true
    *   - billRequiresPriceRecheck(billStamp, serverStamp) → true for each offline bill
-   *   - Server recomputes prices in P7/P8 reconciliation.
+   *   - Server recomputes prices at reconciliation.
    */
   describe("Cache version-stamp detection", () => {
     it("detectCacheStaleness returns true when client cache is older than server", () => {

@@ -1,16 +1,16 @@
 /**
- * Local HTTP print server (BH-04). The POS PWA POSTs a bill payload here; the
+ * Local HTTP print server. The POS PWA POSTs a bill payload here; the
  * agent renders ESC/POS and hands it to the configured PrintDriver.
  *
- * Contract with the POS (BH-04.4): a print failure is reported (HTTP 502) but is
+ * Contract with the POS: a print failure is reported (HTTP 502) but is
  * NEVER fatal to the sale — the POS has already saved/settled the bill server-
  * side and treats printing as best-effort. The agent therefore only prints; it
  * has no bill-numbering or money authority.
  *
- * H6 (transport): a PWA served over HTTPS calling http://localhost is blocked as
- * mixed content by browsers. M1 runs the POS and agent on the same machine; the
- * production story (loopback TLS / agent-hosted origin) is pinned at Sprint-0.
- * CORS is enabled so the browser can reach the loopback origin.
+ * Transport note: a PWA served over HTTPS calling http://localhost is blocked as
+ * mixed content by browsers. The POS and agent should run on the same machine;
+ * the production story (loopback TLS / agent-hosted origin) must be pinned before
+ * deploying. CORS is enabled so the browser can reach the loopback origin.
  */
 
 import { createServer, IncomingMessage, ServerResponse, Server } from "node:http";
@@ -24,9 +24,9 @@ export interface PrintServerOptions {
    * Default: "http://localhost:5174" (Vite POS dev server).
    * Override with PRINT_AGENT_ORIGIN env var in production.
    *
-   * /print is intentionally unauthenticated for M1: the agent is a
+   * /print is intentionally unauthenticated: the agent is a
    * local actuator bound to 127.0.0.1 with no money authority.
-   * Origin-locking is the first-line control (accepted risk Sprint-0 H6).
+   * Origin-locking is the first-line control (accepted risk — loopback only).
    */
   allowOrigin?: string;
   /** Optional log sink (defaults to console). */
@@ -153,7 +153,7 @@ async function handle(
         log(`printed bill ${bill.billNumber}${bill.isReprint ? " (BẢN SAO)" : ""} via ${driver.name}`);
         json(res, 200, { status: "printed", billNumber: bill.billNumber, bytes: bytes.length });
       } catch (err) {
-        // BH-04.4: report failure; the POS does NOT treat this as fatal.
+        // Print failure is non-fatal: report via 502 so the POS can log it.
         const message = err instanceof Error ? err.message : String(err);
         log(`print FAILED for bill ${bill.billNumber}: ${message}`);
         json(res, 502, { status: "print_failed", billNumber: bill.billNumber, error: message });

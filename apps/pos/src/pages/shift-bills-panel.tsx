@@ -1,6 +1,6 @@
 /**
  * ShiftBillsPanel — lists the bills of the current shift and lets the cashier
- * cancel a COMPLETED bill (BH-06). Cancellation is server-guarded: it requires
+ * cancel a COMPLETED bill. Cancellation is server-guarded: it requires
  * a QUAN_LY_CN approval PIN and only succeeds for a bill in THIS device's OPEN
  * shift (IDOR guard). The number is retained on the server (no gap).
  */

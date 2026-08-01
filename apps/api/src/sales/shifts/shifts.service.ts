@@ -1,13 +1,13 @@
 /**
- * ShiftsService — BH-01 shift lifecycle (open, close, force-close).
+ * ShiftsService — shift lifecycle (open, close, force-close).
  *
  * Invariants:
  *   - At most one OPEN shift per device — enforced by partial unique index
  *     `shift_one_open_per_device` (Prisma P2002 on violation → ConflictException).
  *   - Close: expectedCashVnd = openingCashVnd + SUM(CASH payments on COMPLETED bills).
- *     Non-zero variance requires a note (BH-07).
- *   - ForceClose: requires QUAN_LY_CN approval PIN (BH-01.4). M1 only marks
- *     + audits; figures are frozen for the TC-03 finance wave.
+ *     Non-zero variance requires a note.
+ *   - ForceClose: requires QUAN_LY_CN approval PIN. Only marks + audits;
+ *     figures are frozen for a future finance wave.
  *   - All mutations are audited inside the same transaction.
  */
 import {
@@ -94,7 +94,7 @@ export class ShiftsService {
     return this.prisma.withTx(async (tx) => {
       const shift = await tx.shift.findUnique({ where: { id: shiftId } });
       if (!shift) throw new NotFoundException(`Shift ${shiftId} not found`);
-      assertBranchAccess(access, shift.branchId); // route keyed by :id only (C1)
+      assertBranchAccess(access, shift.branchId); // route keyed by :id only
       if (shift.status !== "OPEN") {
         throw new ConflictException("Ca không ở trạng thái mở");
       }
@@ -169,7 +169,7 @@ export class ShiftsService {
   async forceClose(shiftId: string, dto: ForceCloseShiftDto, actorId: string, role: string, access: BranchAccess) {
     const shift = await this.prisma.shift.findUnique({ where: { id: shiftId } });
     if (!shift) throw new NotFoundException(`Shift ${shiftId} not found`);
-    assertBranchAccess(access, shift.branchId); // route keyed by :id only (C1)
+    assertBranchAccess(access, shift.branchId); // route keyed by :id only
     if (shift.status !== "OPEN") {
       throw new ConflictException("Ca không ở trạng thái mở");
     }
@@ -235,7 +235,7 @@ export class ShiftsService {
   }
 
   /**
-   * Realtime shift summary for the manager monitor (BH-08). Aggregates the
+   * Realtime shift summary for the manager monitor. Aggregates the
    * shift's bills: revenue + guests + bills-per-type from COMPLETED bills,
    * cancellations, and the last-30-minute bill pace. Poll-friendly (≤60s);
    * branch scoping is enforced by the caller/guard via the shift's branch.

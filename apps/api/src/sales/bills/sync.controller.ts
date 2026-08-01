@@ -1,14 +1,14 @@
 /**
- * SyncController — P8 offline bill sync endpoint (BH-05).
+ * SyncController — offline bill sync endpoint.
  *
  * POST /sales/bills/sync
- *   Accepts a batch of offline bills; returns full result map (C5).
+ *   Accepts a batch of offline bills; returns full result map (never partial).
  *
  * Global guards (branch-scope + JWT) apply automatically — no @Unscoped.
  * BranchScopeGuard enforces token branchId matches request branchId.
  *
  * Role: THU_NGAN only (same as online bill create).
- * C1: each bill's branchId + deviceId must match the caller's token.
+ * Branch scope: each bill's branchId + deviceId must match the caller's token.
  */
 import { Body, Controller, ForbiddenException, Post, Request } from "@nestjs/common";
 import { SyncService } from "./sync.service";
@@ -29,8 +29,8 @@ export class SyncController {
    *
    * Always returns HTTP 200 with per-bill statuses. Partial failure returns
    * status="retry" on failed bills — the client retries those individually.
-   * Never returns 4xx for individual bill failures (C5: never reject a sale
-   * already printed).
+   * Never returns 4xx for individual bill failures — never rejects a sale that
+   * was already printed.
    *
    * 403 is only returned if the caller's role is wrong (not THU_NGAN).
    */
@@ -50,7 +50,7 @@ export class SyncController {
     const allowedBranchIds = new Set(req.user.branchIds);
     const tokenDeviceId = req.user.deviceId;
 
-    // Process all bills; each is independent (per-bill idempotent, C5)
+    // Process all bills; each is independent (per-bill idempotent)
     const results = await Promise.all(
       dto.bills.map((bill) =>
         this.sync.processBill(
@@ -62,7 +62,7 @@ export class SyncController {
       ),
     );
 
-    // C8: record voided-before-sync temp numbers (audit only, no bill row).
+    // Record voided-before-sync temp numbers (audit only, no bill row).
     let voidsRecorded = 0;
     if (dto.voids?.length) {
       const recorded = await Promise.all(
@@ -75,7 +75,7 @@ export class SyncController {
   }
 
   /**
-   * POST /sales/bills/force-close — H3: accept a stuck offline bill as a
+   * POST /sales/bills/force-close — accept a stuck offline bill as a
    * QUARANTINED sale, gated by a manager approval PIN, so a dead/stuck device
    * cannot block shift close and the printed paper bill is still accounted.
    */

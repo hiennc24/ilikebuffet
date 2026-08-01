@@ -1,11 +1,11 @@
 /**
- * Unit tests for SyncService — P8 offline bill sync.
+ * Unit tests for SyncService — offline bill sync.
  *
- * Covers (C5 idempotency is the #1 correctness invariant):
+ * Covers (idempotency is the #1 correctness invariant):
  *  1. Idempotent: same clientUuid submitted twice → 1 bill, "committed" both times.
- *  2. C1 authz: bill branchId not in allowedBranchIds → "rejected", audit logged.
- *  3. Server recomputes price (C2): pricing.resolvePrice is always called.
- *  4. NO_PRICE on line → bill created with unitPriceVnd=0 (never rejects a printed sale, C5).
+ *  2. Branch authz: bill branchId not in allowedBranchIds → "rejected", audit logged.
+ *  3. Server recomputes price: pricing.resolvePrice is always called.
+ *  4. NO_PRICE on line → bill created with unitPriceVnd=0 (never rejects a printed sale).
  *  5. Shift not found → "retry".
  *  6. Successful new bill → "committed" with officialNumber.
  *  7. Full map: batch with 2 bills (one idempotent, one new) → 2 results.
@@ -98,7 +98,7 @@ const ACTOR = "user-cashier-1";
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
-describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
+describe("SyncService — offline bill sync", () => {
   // ── 1. Idempotency ─────────────────────────────────────────────────────────
   it("returns committed for a bill already in DB (idempotent re-sync)", async () => {
     const existing = { number: "CN01-260801-0001", tempNumber: "CN01-260801-T00010001" };
@@ -114,7 +114,7 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     expect(prisma.withTx).not.toHaveBeenCalled();
   });
 
-  // ── 2. C1 authz rejection ──────────────────────────────────────────────────
+  // ── 2. Branch authz rejection ─────────────────────────────────────────────
   it("returns rejected when bill branchId is not in allowedBranchIds", async () => {
     const prisma = makePrisma();
     const audit = makeAudit();
@@ -134,8 +134,8 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     expect(audit.record).toHaveBeenCalledTimes(1);
   });
 
-  // ── 2b. C1 device binding: reject a bill from a different device ──────────
-  it("rejects a bill whose deviceId differs from a device-bound token (C1)", async () => {
+  // ── 2b. Device binding: reject a bill from a different device ────────────
+  it("rejects a bill whose deviceId differs from a device-bound token", async () => {
     const prisma = makePrisma();
     const audit = makeAudit();
     const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber());
@@ -160,7 +160,7 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     expect(matched.status).toBe("committed");
   });
 
-  // ── 3. Server recomputes price (C2) ────────────────────────────────────────
+  // ── 3. Server recomputes price ────────────────────────────────────────────
   it("recomputes price server-side via buildResolver (never trusts client prices)", async () => {
     const prisma = makePrisma();
     const pricing = makePricing();
@@ -173,8 +173,8 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     expect(pricing.buildResolver).toHaveBeenCalledWith("branch-1", expect.any(Date));
   });
 
-  // ── 4. NO_PRICE → unitPriceVnd=0, still committed (C5: never reject a printed sale) ──
-  it("creates bill with 0 VND when pricing returns NO_PRICE (C5: never reject printed sale)", async () => {
+  // ── 4. NO_PRICE → unitPriceVnd=0, still committed (never reject a printed sale) ──
+  it("creates bill with 0 VND when pricing returns NO_PRICE (never reject printed sale)", async () => {
     const prisma = makePrisma();
     const svc = new SyncService(prisma as never, makeAudit(), makePricing("NO_PRICE"), makeBillNumber());
 
@@ -212,8 +212,8 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     expect(result.tempNumber).toBe("CN01-260801-T00010001");
   });
 
-  // ── 7b. C1 content-hash mismatch → rejected + audit ──────────────────────
-  it("rejects a dedup hit whose stored content hash differs (C1 tamper/corruption)", async () => {
+  // ── 7b. Content-hash mismatch → rejected + audit ─────────────────────────
+  it("rejects a dedup hit whose stored content hash differs (tamper/corruption)", async () => {
     // Same (device, uuid) already stored, but with a DIFFERENT content hash.
     const existing = { number: "CN01-260801-0001", contentHash: "a-different-hash" };
     const prisma = makePrisma({}, existing);
@@ -229,8 +229,8 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     expect(prisma.withTx).not.toHaveBeenCalled();
   });
 
-  // ── 7c. H5 clock-skew → accepted but quarantined ─────────────────────────
-  it("commits but quarantines a bill whose device clock skew exceeds ±2 min (H5)", async () => {
+  // ── 7c. Clock-skew → accepted but quarantined ────────────────────────────
+  it("commits but quarantines a bill whose device clock skew exceeds ±2 min", async () => {
     const prisma = makePrisma();
     const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
 
@@ -293,8 +293,8 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     expect(prisma._tx.bill.create).not.toHaveBeenCalled();
   });
 
-  // ── 7d. H3 force-close → committed + quarantined with approver ────────────
-  it("force-close accepts a stuck bill as quarantined with the manager as approver (H3)", async () => {
+  // ── 7d. Force-close → committed + quarantined with approver ──────────────
+  it("force-close accepts a stuck bill as quarantined with the manager as approver", async () => {
     const prisma = makePrisma();
     const audit = makeAudit();
     const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber());
@@ -313,8 +313,8 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     );
   });
 
-  // ── 7e. C8 void-before-sync → audit event, branch-gated ──────────────────
-  it("records a void-before-sync audit event for an allowed branch (C8)", async () => {
+  // ── 7e. Void-before-sync → audit event, branch-gated ─────────────────────
+  it("records a void-before-sync audit event for an allowed branch", async () => {
     const prisma = makePrisma();
     const audit = makeAudit();
     const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber());
@@ -332,7 +332,7 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     );
   });
 
-  it("rejects a void-before-sync for a branch not allowed by the token (C1/C8)", async () => {
+  it("rejects a void-before-sync for a branch not allowed by the token", async () => {
     const prisma = makePrisma();
     const audit = makeAudit();
     const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber());
@@ -347,8 +347,8 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     expect(audit.record).not.toHaveBeenCalled();
   });
 
-  // ── 7f. offline payments recorded on sync ────────────────────────────────
-  it("records offline payments and sets paidAt when the total matches (BH-03)", async () => {
+  // ── 7f. Offline payments recorded on sync ────────────────────────────────
+  it("records offline payments and sets paidAt when the total matches", async () => {
     const prisma = makePrisma();
     const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
 
@@ -382,8 +382,8 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     expect(data.quarantineReason).toMatch(/payment_mismatch/);
   });
 
-  // ── 8. tempNumber stored on bill (C8) ─────────────────────────────────────
-  it("passes tempNumber to bill.create for audit/high-water-mark (C8)", async () => {
+  // ── 8. tempNumber stored on bill ──────────────────────────────────────────
+  it("passes tempNumber to bill.create for audit/high-water-mark", async () => {
     const prisma = makePrisma();
     const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
 

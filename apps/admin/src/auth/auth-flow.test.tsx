@@ -1,15 +1,15 @@
 /**
- * Auth flow behavior tests (M6 — behavior, not structure).
+ * Auth flow behavior tests (behavior, not structure).
  *
  * Covers:
  *   1. 401 → refresh → retry original request succeeds
  *   2. refresh fail → onAuthFailure called + ApiError thrown (no loop)
- *   3. M1: retried request returns 401 → onAuthFailure called before throw
- *   4. M4: concurrent 401s dedup to exactly ONE /auth/refresh call
+ *   3. Retried request returns 401 → onAuthFailure called before throw
+ *   4. Concurrent 401s dedup to exactly ONE /auth/refresh call
  *   5. Token + branch headers attached correctly
  *   6. Non-401 errors surface as ApiError with correct status
  *
- * Uses ApiClient from @ilikebuffet/shared (H2: single source of truth).
+ * Uses ApiClient from @ilikebuffet/shared (single source of truth for the HTTP client).
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";

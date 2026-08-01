@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Print-agent CLI entrypoint. M1 runs the Loopback driver (no hardware) so the
+ * Print-agent CLI entrypoint. Defaults to the Loopback driver (no hardware) so the
  * POS end-to-end flow works; swap the driver here once a printer is pinned.
  *
  *   PRINT_AGENT_PORT (default 7070), PRINT_AGENT_HOST (default 127.0.0.1),

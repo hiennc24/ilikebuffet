@@ -1,5 +1,5 @@
 /**
- * DTOs for Payments (BH-03).
+ * DTOs for Payments.
  *
  * Combined payment = multiple Payment rows on a bill.
  * Sum of amountVnd must equal bill.totalVnd exactly.

@@ -1,5 +1,5 @@
 /**
- * DTOs for shift lifecycle operations (BH-01, BH-07).
+ * DTOs for shift lifecycle operations.
  */
 
 export interface OpenShiftDto {
@@ -14,7 +14,7 @@ export interface CloseShiftDto {
   countedCashVnd: number;
   /** Required when countedCashVnd !== expectedCashVnd. */
   varianceNote?: string;
-  /** Highest device-issued temp sequence this shift (C8 high-water-mark). */
+  /** Highest device-issued temp sequence this shift (for audit high-water-mark). */
   tempHighWater?: number;
 }
 

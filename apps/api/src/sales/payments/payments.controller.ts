@@ -1,5 +1,5 @@
 /**
- * PaymentsController — BH-03 HTTP endpoint for recording payments.
+ * PaymentsController — HTTP endpoint for recording payments.
  *
  * POST sales/bills/:billId/payments → THU_NGAN only
  *

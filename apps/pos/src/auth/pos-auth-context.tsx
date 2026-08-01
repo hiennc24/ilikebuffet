@@ -5,10 +5,10 @@
  *   - PIN login via POST /auth/pin-login {deviceId, deviceSecret, userId, pin}
  *   - Standard username/password login also available (same /auth/login)
  *   - Token refresh on 401 (same as admin)
- *   - Lock screen (PIN re-entry) after idle — shell only for P5; full logic P8
+ *   - Lock screen (PIN re-entry) after idle — shell only; full offline logic deferred.
  *
  * Device credentials (deviceId, deviceSecret) are stored in localStorage
- * so PIN login works even after reload. Full offline PIN is P8.
+ * so PIN login works even after reload. Full offline PIN is deferred.
  */
 
 import * as React from "react";

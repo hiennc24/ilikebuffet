@@ -1,5 +1,5 @@
 /**
- * DiscountsController — VG-03 HTTP endpoints.
+ * DiscountsController — HTTP endpoints for discount programs, vouchers, and approval PIN.
  *
  * Role gates:
  *   - Create / update / deactivate programs: QUAN_TRI_HQ only.

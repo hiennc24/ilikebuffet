@@ -1,19 +1,19 @@
 /**
- * PricingService — VG-02 price matrix: time-windows, versioned price-book,
+ * PricingService — price matrix: time-windows, versioned price-book,
  * cells, branch overrides, server-side price resolution.
  *
  * Invariants:
- *   - Time windows must NOT overlap (VG-02.1). Validated at create/update.
+ *   - Time windows must NOT overlap. Validated at create/update.
  *   - A price-book version that is currently effective (effectiveFrom <= today)
- *     is IMMUTABLE — editing is blocked; must clone into a new version (VG-02.3).
- *   - Branch own-price: requires BranchPriceFlag.allowOwnPrice=true (VG-02.4).
+ *     is IMMUTABLE — editing is blocked; must clone into a new version.
+ *   - Branch own-price: requires BranchPriceFlag.allowOwnPrice=true.
  *   - Price resolution: delegates to the shared pure resolver with a DB snapshot.
- *     Server is the single source of price (BH-02.3 — client never sends price).
- *   - isHoliday() from MasterDataService (Red Team M2 — no reimplementation).
+ *     Server is the single source of price — client never sends price.
+ *   - isHoliday() from MasterDataService — no reimplementation.
  *   - Weekend = Saturday (dayOfWeek 6) or Sunday (0) in VN calendar. Weekend
  *     days are currently fixed (Sat+Sun); a future AC may make configurable.
- *   - All mutations audited in-tx (GA-01).
- *   - Excel export: uses ExcelJS column-map approach (VG-02.7).
+ *   - All mutations audited in-tx.
+ *   - Excel export: uses ExcelJS column-map approach.
  */
 import {
   BadRequestException,
@@ -51,7 +51,7 @@ import type {
 
 /**
  * Return true if two [start, end) half-open intervals overlap.
- * Used to enforce VG-02.1: time windows must not overlap.
+ * Used to enforce the time-window non-overlap invariant.
  */
 function intervalsOverlap(
   aStart: number, aEnd: number,
@@ -194,7 +194,7 @@ export class PricingService {
         },
       });
 
-      // Clone cells from existing version if requested (VG-02.3 create-new flow).
+      // Clone cells from existing version if requested (create-new flow).
       if (dto.cloneFromVersionId) {
         const sourceCells = await tx.priceCell.findMany({
           where: { versionId: dto.cloneFromVersionId },
@@ -237,7 +237,7 @@ export class PricingService {
   }
 
   /**
-   * Guard: a price-book version whose effectiveFrom <= today is IMMUTABLE (VG-02.3).
+   * Guard: a price-book version whose effectiveFrom <= today is IMMUTABLE.
    * Editing cells on a live version → must create a new version (clone + edit).
    */
   async assertVersionEditable(versionId: string): Promise<void> {
@@ -252,7 +252,7 @@ export class PricingService {
     if (effectiveDateStr <= todayStr) {
       throw new BadRequestException(
         `Price-book version "${version.name}" is currently effective and IMMUTABLE. ` +
-        `Create a new version (clone from this one) to change prices (VG-02.3).`,
+        `Create a new version (clone from this one) to change prices.`,
       );
     }
   }
@@ -281,7 +281,7 @@ export class PricingService {
   // ─── Price Cells ──────────────────────────────────────────────────────────
 
   /**
-   * Upsert a price cell on a version (VG-02.3 — version must be in the future).
+   * Upsert a price cell on a version (version must be in the future).
    */
   async upsertPriceCell(
     versionId: string,
@@ -383,10 +383,10 @@ export class PricingService {
    *
    * This snapshot is:
    *   1. Passed to the shared resolvePrice() on the server for each bill creation.
-   *   2. Serialised and sent to the POS client for offline caching (P8).
+   *   2. Serialised and sent to the POS client for offline caching.
    *
    * The snapshotGeneratedAt (wall-clock ms) enables cache-staleness detection
-   * on reconnect (C2/AD3 hydration-parity, Red Team).
+   * on reconnect (hydration-parity).
    */
   async buildSnapshot(): Promise<PriceBookSnapshot> {
     const [timeWindows, versions] = await Promise.all([
@@ -429,7 +429,7 @@ export class PricingService {
   /**
    * Resolve price for a ticket at bill-creation time.
    *
-   * Server is the single source of price (BH-02.3). Client never sends price.
+   * Server is the single source of price. Client never sends price.
    * Delegates to the shared pure resolver with a fresh DB snapshot.
    *
    * @param dto  Contains branchId, ticketTypeId, createdAt, optional paidAt.
@@ -447,7 +447,7 @@ export class PricingService {
     const createdAt = new Date(dto.createdAt);
     const paidAt    = dto.paidAt ? new Date(dto.paidAt) : undefined;
 
-    // isHolidayFn: uses P4 MasterDataService.isHoliday() (Red Team M2).
+    // isHolidayFn: uses MasterDataService.isHoliday() — no reimplementation here.
     // We cache the result for the deciding date to avoid N DB calls per bill.
     const isHolidayCache = new Map<string, boolean>();
     const isHolidayFn = (dateStr: string): boolean => {
@@ -497,13 +497,13 @@ export class PricingService {
     };
   }
 
-  // ─── Excel export (VG-02.7) ───────────────────────────────────────────────
+  // ─── Excel export ─────────────────────────────────────────────────────────
 
   /**
    * Export a price-book version as an Excel workbook for client sign-off.
    *
    * Layout: rows = ticket types, columns = time-window × day-type combinations.
-   * Uses ExcelJS column-map approach (same pattern as P4 excel import — reused, not re-invented).
+   * Uses ExcelJS column-map approach (same pattern as master-data excel import — reused, not re-invented).
    */
   async exportPriceBookToExcel(versionId: string): Promise<Buffer> {
     const version = await this.prisma.priceBookVersion.findUnique({
@@ -605,7 +605,7 @@ export class PricingService {
 
   /**
    * Assert that [startMinute, endMinute) does not overlap any existing
-   * time window (excluding `excludeId` for update scenarios). (VG-02.1)
+   * time window (excluding `excludeId` for update scenarios).
    */
   private async assertNoOverlap(
     tx: Prisma.TransactionClient,
@@ -624,7 +624,7 @@ export class PricingService {
     if (conflict) {
       throw new BadRequestException(
         `Time window [${startMinute}–${endMinute}) overlaps with existing window ` +
-        `"${conflict.name}" [${conflict.startMinute}–${conflict.endMinute}) (VG-02.1).`,
+        `"${conflict.name}" [${conflict.startMinute}–${conflict.endMinute}).`,
       );
     }
   }

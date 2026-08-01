@@ -1,7 +1,7 @@
 /**
- * outbox-store — Dexie CRUD helpers for the offline bill outbox (P8 / BH-05).
+ * outbox-store — Dexie CRUD helpers for the offline bill outbox.
  *
- * Rules (C5):
+ * Rules (bills are never lost):
  *   - Bills are never deleted until an officialNumber is received from server.
  *   - Status transitions: pending → syncing → committed | retry.
  *   - A committed bill is retained for display ("bill number is X") then cleared.
@@ -148,8 +148,8 @@ export async function countPending(branchId: string): Promise<number> {
 }
 
 /**
- * True when a bill has been waiting to sync longer than `thresholdMs` (BH-05.7,
- * default 15 min) — a "stuck sync" the manager should be warned about while online.
+ * True when a bill has been waiting to sync longer than `thresholdMs`
+ * (default 15 min) — a "stuck sync" the manager should be warned about while online.
  */
 export async function hasStuckBills(
   branchId: string,

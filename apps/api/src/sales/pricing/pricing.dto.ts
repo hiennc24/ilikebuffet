@@ -1,5 +1,5 @@
 /**
- * DTOs for pricing CRUD: time-windows, price-book versions, price cells (VG-02).
+ * DTOs for pricing CRUD: time-windows, price-book versions, price cells.
  */
 
 // ─── Time Window ──────────────────────────────────────────────────────────────
@@ -26,14 +26,14 @@ export interface CreatePriceBookVersionDto {
   name: string;
   /**
    * ISO date string "YYYY-MM-DD" — the calendar date from which this version
-   * is effective (VN timezone midnight). Auto-applies at 0h of this date (VG-02.6).
+   * is effective (VN timezone midnight). Auto-applies at 0h of this date.
    */
   effectiveFrom: string;
-  /** null = chain-wide; set = branch-specific (VG-02.4). */
+  /** null = chain-wide; set = branch-specific. */
   branchId?: string | null;
   /**
    * If set, clone all cells from this version as the starting point.
-   * Used by the "create-new-version from old" flow (VG-02.3 — cannot edit live version).
+   * Used by the "create-new-version from old" flow (cannot edit a live version).
    */
   cloneFromVersionId?: string;
 }
@@ -52,7 +52,7 @@ export interface UpsertPriceCellDto {
   dayType: DayTypeDto;
   /** Integer VND. Must be >= 0. */
   priceVnd: number;
-  /** null = chain-wide cell; set = branch override (VG-02.4). */
+  /** null = chain-wide cell; set = branch override. */
   branchId?: string | null;
 }
 

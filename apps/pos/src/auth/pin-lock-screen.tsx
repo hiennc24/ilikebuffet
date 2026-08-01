@@ -1,8 +1,8 @@
 /**
- * PinLockScreen — lock screen / PIN re-entry stub (P5 shell).
+ * PinLockScreen — lock screen / PIN re-entry stub.
  *
  * Wired to POST /auth/pin-login via usePosAuth().pinLogin().
- * Full offline PIN support and device registration are deferred to P8.
+ * Full offline PIN support and device registration are deferred.
  *
  * Touch tier: all targets ≥48px (DECISION #8).
  */

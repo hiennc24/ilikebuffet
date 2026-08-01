@@ -1,14 +1,14 @@
 /**
- * Catalog cache (P8): mirror the pricing catalog to Dexie so the device can
+ * Catalog cache: mirror the pricing catalog to Dexie so the device can
  * price and sell offline — including a cold boot with no network — using the
  * SAME shared resolver the server uses. Refreshed on every successful online
  * load of the sell screen.
  *
  * Cached: the price-book snapshot (incl. future-dated versions), ticket types,
- * and the branch code (for offline temp numbers). Holidays are NOT cached in
- * M1; offline pricing degrades a holiday to its weekday/weekend rate and the
- * server recomputes the authoritative price on sync (C2) — the offline price is
- * only an on-screen estimate.
+ * and the branch code (for offline temp numbers). Holidays are NOT cached
+ * for offline; offline pricing degrades a holiday to its weekday/weekend rate
+ * and the server recomputes the authoritative price on sync — the offline
+ * price is only an on-screen estimate.
  */
 
 import { posDb, type CatalogCache, type CachedTicketType } from "../db/pos-db";

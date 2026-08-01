@@ -1,14 +1,14 @@
 /**
- * BillsService — BH-02 bill creation (server-authoritative price), BH-06 cancel.
+ * BillsService — bill creation (server-authoritative price) and cancel.
  *
  * Invariants:
- *   - Server is sole source of price (BH-02.3). Client DTO has NO price fields.
+ *   - Server is sole source of price. Client DTO has NO price fields.
  *   - Bills are immutable snapshots: BillLine stores names/prices at creation time.
  *   - clientUuid dedup: if a bill for (deviceId, clientUuid) already exists, return it.
- *   - Cancel IDOR guard (BH-06.2): only the device that opened the bill's shift can cancel.
- *   - Manager PIN required for cancel (VG-03.3 approval flow).
+ *   - Cancel IDOR guard: only the device that opened the bill's shift can cancel.
+ *   - Manager PIN required for cancel (approval flow).
  *   - Gapless bill numbers: BillNumberService.allocate() inside the bill-create tx.
- *   - Audit on every state change (GA-01).
+ *   - Audit on every state change.
  */
 import {
   BadRequestException,
@@ -52,7 +52,7 @@ export class BillsService {
     }
 
     return this.prisma.withTx(async (tx) => {
-      // Step 1: idempotency check (offline resync, P8)
+      // Step 1: idempotency check (offline resync)
       if (dto.clientUuid) {
         const existing = await tx.bill.findUnique({
           where: { deviceId_clientUuid: { deviceId: dto.deviceId, clientUuid: dto.clientUuid } },
@@ -185,7 +185,7 @@ export class BillsService {
       include: { lines: true, payments: true },
     });
     if (!bill) throw new NotFoundException(`Bill ${id} not found`);
-    assertBranchAccess(access, bill.branchId); // route keyed by :id only (C1)
+    assertBranchAccess(access, bill.branchId); // route keyed by :id only
     return bill;
   }
 
@@ -218,14 +218,14 @@ export class BillsService {
     });
     if (!bill) throw new NotFoundException(`Bill ${billId} not found`);
 
-    // Branch scope (C1) — defense-in-depth alongside the device check below.
+    // Branch scope guard — defense-in-depth alongside the device check below.
     assertBranchAccess(access, bill.branchId);
 
     if (bill.status !== "COMPLETED") {
       throw new BadRequestException("Chỉ có thể huỷ bill ở trạng thái COMPLETED");
     }
 
-    // IDOR guard (BH-06.2): shift must be OPEN and device must match
+    // IDOR guard: shift must be OPEN and device must match
     const callerDeviceId = dto.deviceId;
     if (bill.shift.status !== "OPEN" || bill.deviceId !== callerDeviceId) {
       await this.audit.record(this.prisma, {

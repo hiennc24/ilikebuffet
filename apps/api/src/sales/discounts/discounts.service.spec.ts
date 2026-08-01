@@ -1,5 +1,5 @@
 /**
- * DiscountsService unit tests (VG-03 AC + Red Team C9/M7).
+ * DiscountsService unit tests.
  *
  * Covers:
  *   - Create PERCENT / FIXED_AMOUNT / VOUCHER program; validation.
@@ -136,7 +136,7 @@ describe("DiscountsService", () => {
     service = new DiscountsService(prisma as never, audit as never);
   });
 
-  // ─── VG-03.1 Create program ───────────────────────────────────────────────
+  // ─── Create program ───────────────────────────────────────────────────────
 
   describe("createProgram()", () => {
     it("creates a PERCENT program with valid pct", async () => {
@@ -271,9 +271,9 @@ describe("DiscountsService", () => {
     });
   });
 
-  // ─── VG-03.4 Voucher redemption ───────────────────────────────────────────
+  // ─── Voucher redemption ───────────────────────────────────────────────────
 
-  describe("redeemVoucher() — VG-03.4", () => {
+  describe("redeemVoucher()", () => {
     it("redeems a valid voucher with no quota limit", async () => {
       tx.$queryRaw.mockResolvedValue([makeVoucherRow({ quota_remaining: null })]);
 
@@ -370,8 +370,7 @@ describe("DiscountsService", () => {
   });
 
   /**
-   * Voucher concurrency test (VG-03.4):
-   * Two simultaneous redemptions of the last quota unit → exactly one succeeds.
+   * Voucher concurrency: two simultaneous redemptions of the last quota unit → exactly one succeeds.
    *
    * In production this is enforced by Postgres FOR UPDATE row-lock in a
    * serializable/read-committed transaction. In the unit test we simulate
@@ -381,7 +380,7 @@ describe("DiscountsService", () => {
    * For a full integration test with a real Postgres instance (testcontainers),
    * see: test/discounts-concurrency.e2e-spec.ts
    */
-  describe("Voucher concurrency — two simultaneous redemptions of last unit (VG-03.4)", () => {
+  describe("Voucher concurrency — two simultaneous redemptions of last unit", () => {
     it("second concurrent redemption is rejected when only one quota unit remains", async () => {
       let quotaRemaining = 1;
 
@@ -409,16 +408,16 @@ describe("DiscountsService", () => {
     });
   });
 
-  // ─── VG-03.3 Approval PIN ────────────────────────────────────────────────
+  // ─── Approval PIN ────────────────────────────────────────────────────────
 
-  describe("verifyApprovalPin() — VG-03.3", () => {
+  describe("verifyApprovalPin()", () => {
     let pinHash: string;
 
     beforeEach(async () => {
       pinHash = await argon2.hash("123456");
     });
 
-    it("rejects a manager who does not belong to the operation's branch (Red Team)", async () => {
+    it("rejects a manager who does not belong to the operation's branch", async () => {
       prisma.appUser.findUnique.mockResolvedValue(
         makeUser({ role: "QUAN_LY_CN", approvalPinHash: pinHash, branches: [{ branchId: "branch-A" }] }),
       );
@@ -476,7 +475,7 @@ describe("DiscountsService", () => {
       );
     });
 
-    it("Given 3 wrong PINs Then operation cancelled + PIN locked + audit log (VG-03.3)", async () => {
+    it("Given 3 wrong PINs Then operation cancelled + PIN locked + audit log", async () => {
       prisma.appUser.findUnique.mockResolvedValue(
         makeUser({ role: "QUAN_LY_CN", approvalPinHash: pinHash, pinFailedCount: 0 }),
       );

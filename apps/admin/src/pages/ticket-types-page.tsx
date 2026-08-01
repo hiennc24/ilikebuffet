@@ -1,10 +1,10 @@
 /**
- * TicketTypesPage — VG-01 ticket type management screen.
+ * TicketTypesPage — ticket type management screen.
  *
  * Allows HQ admins (QUAN_TRI_HQ) to create, edit, and deactivate ticket types.
  * Non-HQ users can view active types but mutations return 403 (surfaced via toErrorMessage).
  *
- * VG-01.2: free ticket types (isFree=true) count guests but price = 0.
+ * Free ticket types (isFree=true) count guests but price = 0.
  */
 
 import * as React from "react";
@@ -172,7 +172,7 @@ const TicketTypeFormDialog: React.FC<TicketTypeFormDialogProps> = ({
             Miễn phí{" "}
             <span
               style={{ fontWeight: 400, color: "var(--text-muted)", fontSize: "var(--text-xs)" }}
-              title="Vé miễn phí vẫn tính vào số lượng khách nhưng giá = 0 đ (VG-01.2)"
+              title="Vé miễn phí vẫn tính vào số lượng khách nhưng giá = 0 đ"
             >
               (giá 0 đ, vẫn tính khách)
             </span>
@@ -472,7 +472,7 @@ export const TicketTypesPage: React.FC = () => {
       render: (row) =>
         row.isFree ? (
           <span
-            title="Vé miễn phí vẫn tính vào số lượng khách nhưng giá = 0 đ (VG-01.2)"
+            title="Vé miễn phí vẫn tính vào số lượng khách nhưng giá = 0 đ"
             style={{ cursor: "help" }}
           >
             <Badge tone="warn">Miễn phí</Badge>
@@ -545,7 +545,7 @@ export const TicketTypesPage: React.FC = () => {
       <PageStack>
         <Card
           title="Loại vé"
-          description="Quản lý các loại vé phục vụ trong buffet (VG-01). HQ có thể thêm, sửa, ngưng loại vé."
+          description="Quản lý các loại vé phục vụ trong buffet. HQ có thể thêm, sửa, ngưng loại vé."
           actions={
             <Button variant="action" onClick={openCreate}>
               Thêm loại vé

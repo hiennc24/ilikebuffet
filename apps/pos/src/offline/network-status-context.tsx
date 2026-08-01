@@ -1,7 +1,7 @@
 /**
- * NetworkStatusContext — tracks online/offline and triggers sync (P8 / BH-05).
+ * NetworkStatusContext — tracks online/offline and triggers sync.
  *
- * On mount: calls navigator.storage.persist() and warns if denied (C6).
+ * On mount: calls navigator.storage.persist() and warns if denied.
  * Listens to window online/offline events.
  * When transitioning online: fires SyncEngine.triggerSync().
  *
@@ -22,9 +22,9 @@ export interface NetworkStatusContextValue {
   isOnline: boolean;
   pendingCount: number;
   persistenceGranted: boolean | null; // null = not yet checked
-  /** Last measured device↔server clock skew (H5). null = not yet measured. */
+  /** Last measured device↔server clock skew. null = not yet measured. */
   clockSkew: ClockSkew | null;
-  /** A bill has been waiting to sync >15 min while online (BH-05.7). */
+  /** A bill has been waiting to sync >15 min while online (stuck sync warning). */
   stuckSync: boolean;
   triggerSync: () => void;
 }
@@ -49,13 +49,13 @@ export const NetworkStatusProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const engineRef = React.useRef<SyncEngine | null>(null);
 
-  // H5: measure device↔server clock skew whenever we are (or become) online.
+  // Measure device↔server clock skew whenever we are (or become) online.
   const measure = React.useCallback(async () => {
     const skew = await measureSkew();
     if (skew) {
       setClockSkew(skew);
       if (skew.exceeded) {
-        console.warn(`[POS] Clock skew ${Math.round(skew.offsetMs / 1000)}s exceeds tolerance (H5)`);
+        console.warn(`[POS] Clock skew ${Math.round(skew.offsetMs / 1000)}s exceeds tolerance`);
       }
     }
   }, []);

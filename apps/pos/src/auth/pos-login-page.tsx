@@ -7,8 +7,8 @@
  * H1 fix: redirects away when status moves past unauthenticated so the
  * login form does not re-render after a successful login() call.
  *
- * NOTE (M3 — ACCEPTED RISK): tokens in sessionStorage, deviceSecret in
- * localStorage are XSS-exfiltrable. Accepted for M1; P8 follow-up will
+ * NOTE (ACCEPTED RISK): tokens in sessionStorage, deviceSecret in
+ * localStorage are XSS-exfiltrable. A follow-up hardening pass will
  * use httpOnly-cookie refresh and secure device-secret binding.
  */
 

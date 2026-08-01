@@ -1,8 +1,7 @@
 /**
- * SalesModule — P6: Ticket Types, Pricing, Discounts (VG-01/02/03).
- *               P7: Shifts, Bills, Payments (BH-01→04, BH-06, BH-07).
+ * SalesModule — Ticket Types, Pricing, Discounts, Shifts, Bills, Payments.
  *
- * Imports MasterDataModule to get MasterDataService for isHoliday() (Red Team M2).
+ * Imports MasterDataModule to get MasterDataService for isHoliday().
  */
 import { Module } from "@nestjs/common";
 import { PrismaModule } from "../prisma/prisma.module";

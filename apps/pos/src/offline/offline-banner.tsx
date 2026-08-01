@@ -83,7 +83,7 @@ export const OfflineBanner: React.FC = () => {
             fontSize: "var(--text-xs)",
           }}
         >
-          Cảnh báo: Có bill chờ đồng bộ quá 15 phút. Kiểm tra kết nối / báo quản lý (BH-05.7).
+          Cảnh báo: Có bill chờ đồng bộ quá 15 phút. Kiểm tra kết nối / báo quản lý.
         </div>
       )}
 

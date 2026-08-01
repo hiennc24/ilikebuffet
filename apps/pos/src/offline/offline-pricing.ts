@@ -1,10 +1,10 @@
 /**
- * Offline pricing (P8, BH-05.6f): price a ticket from the cached snapshot using
+ * Offline pricing: price a ticket from the cached snapshot using
  * the SAME pure resolver the server uses, so an offline estimate matches what
- * the server will recompute on sync (the server remains authoritative — C2).
+ * the server will recompute on sync (the server remains authoritative).
  *
- * Holidays are not cached in M1, so a holiday degrades to its weekday/weekend
- * rate offline; the server corrects it on sync.
+ * Holidays are not cached for offline use, so a holiday degrades to its
+ * weekday/weekend rate offline; the server corrects it on sync.
  */
 
 import { resolvePrice, toVnDayOfWeek, type PriceBookSnapshot } from "@ilikebuffet/shared";

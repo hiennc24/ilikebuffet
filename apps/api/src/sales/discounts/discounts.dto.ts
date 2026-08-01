@@ -1,5 +1,5 @@
 /**
- * DTOs for discount programs, reasons, voucher redemption, and approval PIN (VG-03).
+ * DTOs for discount programs, reasons, voucher redemption, and approval PIN.
  */
 
 export type DiscountKindDto = "PERCENT" | "FIXED_AMOUNT" | "VOUCHER";
@@ -40,7 +40,7 @@ export interface CreateDiscountReasonDto {
 }
 
 /**
- * Redeem a voucher at the POS (VG-03.4).
+ * Redeem a voucher at the POS.
  * Returns the program if valid and quota available; decrements quota with row lock.
  */
 export interface RedeemVoucherDto {
@@ -49,7 +49,7 @@ export interface RedeemVoucherDto {
 }
 
 /**
- * Verify a QUAN_LY_CN approval PIN for manual discounts over threshold (VG-03.3).
+ * Verify a QUAN_LY_CN approval PIN for manual discounts over threshold.
  * 3 wrong attempts → cancel + audit log.
  */
 export interface VerifyApprovalPinDto {

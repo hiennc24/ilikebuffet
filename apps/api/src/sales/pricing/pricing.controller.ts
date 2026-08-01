@@ -1,5 +1,5 @@
 /**
- * PricingController — VG-02 HTTP endpoints.
+ * PricingController — pricing HTTP endpoints.
  *
  * Role gates:
  *   - Time windows: QUAN_TRI_HQ only (chain-wide config, @Unscoped).

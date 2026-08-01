@@ -1,7 +1,7 @@
 /**
  * DashboardPage — T7 "what's open now" dashboard (DECISION #2).
  *
- * Placeholder shell for M1. Actual widgets are out of P5 scope.
+ * Placeholder shell. Dashboard widgets are not yet implemented.
  */
 
 import * as React from "react";

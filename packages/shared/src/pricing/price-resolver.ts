@@ -1,13 +1,13 @@
 /**
  * Pure, deterministic price resolver for ILikeBuffet.
  *
- * Runs IDENTICALLY on server (P6/P7) and offline client (P8) — no NestJS/DB
+ * Runs IDENTICALLY on server and offline client — no NestJS/DB
  * imports. Input is a pre-fetched snapshot; output is integer VND or a typed
  * result object.
  *
- * Design decisions (Red Team C9 / V1 / V4):
+ * Design decisions:
  *
- *   #3 (C9/V1) — The deciding timestamp (createdAt vs paidAt) is controlled by
+ *   #3 — The deciding timestamp (createdAt vs paidAt) is controlled by
  *   PRICE_TIMESTAMP_FIELD (default: "createdAt"). Reversing = 1 constant change.
  *   Tests lock the CONTRACT ("one timestamp decides price"), not the specific value.
  *
@@ -15,13 +15,13 @@
  *   return { kind: "NO_PRICE", reason: "OUT_OF_HOURS" }. Build-default;
  *   awaiting client signature.
  *
- *   #4 (V4) — Free-ticket-only-bill policy is a separate policy object
+ *   #4 — Free-ticket-only-bill policy is a separate policy object
  *   (FREE_TICKET_POLICY). The resolver itself does NOT enforce it — that is the
  *   bill layer's responsibility. This keeps the resolver single-purpose.
  *
- * Day-type priority (VG-02.2): HOLIDAY > WEEKEND > REGULAR.
- * Branch fallback (VG-02.4): branch cell → chain cell.
- * Version (VG-02.3): pick highest version with effectiveFrom <= decidingDate.
+ * Day-type priority: HOLIDAY > WEEKEND > REGULAR.
+ * Branch fallback: branch cell → chain cell.
+ * Version: pick highest version with effectiveFrom <= decidingDate.
  *
  * All money is integer VND. No floats.
  */
@@ -40,7 +40,7 @@ export interface PriceCellSnapshot {
   timeWindowId: string;
   dayType: DayType;
   priceVnd: number;
-  /** null = chain-wide cell; set = branch-specific override (VG-02.4). */
+  /** null = chain-wide cell; set = branch-specific override. */
   branchId: string | null;
 }
 
@@ -83,11 +83,11 @@ export interface PriceBookSnapshot {
   versions: PriceBookVersionSnapshot[];
 }
 
-// ─── Config constants (C9 / build-defaults) ───────────────────────────────────
+// ─── Config constants (build-defaults) ────────────────────────────────────────
 
 /**
  * Which timestamp field decides the price.
- * Default = "createdAt" (VG-02.5 / V1 confirmed decision).
+ * Default = "createdAt" (confirmed decision).
  * To use paidAt: change this constant — no other code changes needed.
  * Build-default; awaiting client signature before golive.
  */
@@ -217,7 +217,7 @@ export function resolvePrice(
   isWeekendFn: (date: Date) => boolean,
   snapshot: PriceBookSnapshot,
 ): PriceResult {
-  // Free ticket: price is always 0 regardless of any other logic (VG-01.2).
+  // Free ticket: price is always 0 regardless of any other logic.
   if (isFree) {
     // We still need a valid time-window to confirm we're within operating hours.
     // But the price itself is always 0.
@@ -260,7 +260,7 @@ export function resolvePrice(
   // 3. Resolve day-type.
   const dayType = resolveDayType(decidingTs, dateStr, isHolidayFn, isWeekendFn);
 
-  // 4. Look up price cell: branch-specific → chain fallback (VG-02.4).
+  // 4. Look up price cell: branch-specific → chain fallback.
   const cellResult = findPriceCell(version.cells, ticketTypeId, tw.id, dayType, branchId);
   if (!cellResult) {
     return { kind: "NO_PRICE", reason: "NO_CELL" };
@@ -309,7 +309,7 @@ function findTimeWindow(
  *
  * Priority: branch-specific version > chain-wide version.
  * Within each scope: pick the version with the highest effectiveDateStr
- * that is <= decidingDateStr (VG-02.3 / VG-02.6 auto-applies at 0h).
+ * that is <= decidingDateStr (auto-applies at 0h of effective date).
  */
 function findEffectiveVersion(
   versions: PriceBookVersionSnapshot[],
@@ -340,7 +340,7 @@ function findEffectiveVersion(
 }
 
 /**
- * Resolve day-type with priority HOLIDAY > WEEKEND > REGULAR (VG-02.2).
+ * Resolve day-type with priority HOLIDAY > WEEKEND > REGULAR.
  * isHolidayFn and isWeekendFn are injected so the resolver stays pure.
  */
 function resolveDayType(
@@ -365,7 +365,7 @@ function findPriceCell(
   dayType: DayType,
   branchId: string,
 ): { cell: PriceCellSnapshot; fromBranchOverride: boolean } | undefined {
-  // Branch-specific cell takes priority (VG-02.4).
+  // Branch-specific cell takes priority over chain-wide cell.
   const branchCell = cells.find(
     (c) =>
       c.ticketTypeId === ticketTypeId &&
@@ -397,8 +397,8 @@ function findPriceCell(
  * bills created while offline against the stale cache may have incorrect prices.
  * The caller (P7/P8 reconnect flow) MUST flag those bills for server recompute.
  *
- * This is the C2/AD3 hydration-parity hook: the server recomputes at P7/P8
- * reconciliation, not here. This function only DETECTS the mismatch condition.
+ * This is the hydration-parity hook: the server recomputes at reconciliation,
+ * not here. This function only DETECTS the mismatch condition.
  */
 export function detectCacheStaleness(
   clientSnapshotGeneratedAt: number,

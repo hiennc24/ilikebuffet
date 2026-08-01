@@ -6,12 +6,12 @@
  * AuthGate, so without the guard a user who just logged in (status changes
  * to "choosing-branch" or "authenticated") would stay stuck on /login.
  *
- * NOTE (M2): the server is the real gate — JwtAuthGuard rejects all
+ * NOTE: the server is the real gate — JwtAuthGuard rejects all
  * non-change-password routes while the `mcp` claim is set. The FE redirect
  * from must-change-password is UX convenience, not a security boundary.
  *
- * NOTE (M3 — ACCEPTED RISK): access and refresh tokens are stored in
- * sessionStorage (XSS-exfiltrable plaintext). Accepted for M1; P8 follow-up
+ * NOTE (ACCEPTED RISK): access and refresh tokens are stored in
+ * sessionStorage (XSS-exfiltrable plaintext). A follow-up hardening pass
  * will migrate the refresh token to an httpOnly cookie.
  */
 

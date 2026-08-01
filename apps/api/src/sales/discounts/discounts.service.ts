@@ -1,17 +1,17 @@
 /**
- * DiscountsService — VG-03 discount programs, vouchers, approval PIN.
+ * DiscountsService — discount programs, vouchers, approval PIN.
  *
  * Invariants:
- *   - Max 1 discount program per bill (MVP — no stacking, VG-03.2).
+ *   - Max 1 discount program per bill (no stacking).
  *   - Voucher quota: decremented with SELECT … FOR UPDATE row lock so two
- *     concurrent redemptions of the last unit cannot both succeed (VG-03.4).
+ *     concurrent redemptions of the last unit cannot both succeed.
  *     Uses PrismaService.$queryRaw FOR UPDATE (same pattern as lockRowForUpdate
  *     in prisma.service.ts for bill numbering).
  *   - Approval PIN: argon2.verify against approvalPinHash on AppUser.
- *     3 wrong attempts → cancel operation + audit log (VG-03.3).
- *     Only QUAN_LY_CN users have approvalPinHash set (M1 from auth phase).
+ *     3 wrong attempts → cancel operation + audit log.
+ *     Only QUAN_LY_CN users have approvalPinHash set.
  *   - All sensitive mutations (PIN verify, quota decrement) audited in-tx.
- *   - HQ creates/edits programs; QL_CN reads programs for their branch (VG-03.6).
+ *   - HQ creates/edits programs; QL_CN reads programs for their branch.
  */
 import {
   BadRequestException,
@@ -38,7 +38,7 @@ import type {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-/** Max wrong PIN attempts before the manual-discount operation is cancelled (VG-03.3). */
+/** Max wrong PIN attempts before the manual-discount operation is cancelled. */
 const MAX_PIN_ATTEMPTS = 3;
 
 // ─── Service ─────────────────────────────────────────────────────────────────
@@ -183,13 +183,13 @@ export class DiscountsService {
     return p;
   }
 
-  // ─── Voucher redemption (VG-03.4) ────────────────────────────────────────
+  // ─── Voucher redemption ───────────────────────────────────────────────────
 
   /**
    * Redeem a voucher code for a branch.
    *
    * Uses SELECT … FOR UPDATE to lock the discount_program row, ensuring two
-   * concurrent redemptions of the last quota unit cannot both succeed (VG-03.4).
+   * concurrent redemptions of the last quota unit cannot both succeed.
    *
    * Lock pattern: same as bill-numbering counter in prisma.service.ts.
    */
@@ -277,17 +277,17 @@ export class DiscountsService {
     );
   }
 
-  // ─── Approval PIN verification (VG-03.3) ─────────────────────────────────
+  // ─── Approval PIN verification ────────────────────────────────────────────
 
   /**
    * Verify a QUAN_LY_CN approval PIN for a manual discount over threshold.
    *
    * Security model:
    *   - approvalPinHash is set only for QUAN_LY_CN users (enforced by AuthService.setApprovalPin).
-   *   - 3 consecutive wrong PINs → operation cancelled + audit log (VG-03.3).
+   *   - 3 consecutive wrong PINs → operation cancelled + audit log.
    *   - Uses argon2.verify (same library as password verification in AuthService).
-   *   - PIN failure counter uses Prisma { increment: 1 } — same atomic pattern as
-   *     AuthService.handleLoginFailureAtomic (Red Team H3).
+   *   - PIN failure counter uses Prisma { increment: 1 } — atomic increment same as
+   *     AuthService.handleLoginFailureAtomic.
    *   - We track failures in pinFailedCount on AppUser (shared with cashier-PIN lock).
    *     Approval-PIN and cashier-PIN are distinct fields (approvalPinHash vs cashierPinHash)
    *     but share the same failure counter for simplicity in MVP.
@@ -316,7 +316,7 @@ export class DiscountsService {
     }
 
     // The manager must belong to the branch the operation targets, so a manager
-    // from another branch cannot approve a cancel/force-close here (Red Team).
+    // from another branch cannot approve a cancel/force-close here.
     if (dto.branchId && !manager.branches.some((b) => b.branchId === dto.branchId)) {
       await this.audit.record(this.prisma, {
         actorId,
@@ -377,7 +377,7 @@ export class DiscountsService {
       return { approved: true, approvedBy: dto.managerId };
     }
 
-    // Wrong PIN — increment failure counter atomically (H3 pattern).
+    // Wrong PIN — increment failure counter atomically.
     const updated = await this.prisma.appUser.update({
       where: { id: dto.managerId },
       data: { pinFailedCount: { increment: 1 } },

@@ -82,7 +82,7 @@ describe("offline pricing parity", () => {
     expect(price).toBe(200000);
   });
 
-  it("prices from the future version once its effective date has arrived (BH-05.6f)", () => {
+  it("prices from the future version once its effective date has arrived", () => {
     const price = resolveOfflinePrice(SNAPSHOT, "branch-1", adult, new Date("2026-08-11T13:00:00+07:00"));
     expect(price).toBe(250000);
   });

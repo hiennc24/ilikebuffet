@@ -1,5 +1,5 @@
 /**
- * admin-ui — small presentational helpers shared by the P6 config screens
+ * admin-ui — small presentational helpers shared by the config screens
  * (ticket types, pricing, discounts).
  *
  * These are office-tier (non-touch) building blocks that sit on the design

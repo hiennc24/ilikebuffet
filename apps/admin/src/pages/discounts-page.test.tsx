@@ -1,5 +1,5 @@
 /**
- * DiscountsPage tests — VG-03 discount management screen.
+ * DiscountsPage tests — discount management screen.
  *
  * Covers:
  *   1. Programs render with correct value formatting per kind.

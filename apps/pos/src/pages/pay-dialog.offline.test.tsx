@@ -1,5 +1,5 @@
 /**
- * PayDialog offline path (BH-05 / scenario a): when the network is down, the
+ * PayDialog offline path (scenario a): when the network is down, the
  * bill is written to the Dexie outbox with a temp number instead of POSTing —
  * never lost — and the sale completes locally. It syncs on reconnect.
  *

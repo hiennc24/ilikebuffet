@@ -1,5 +1,5 @@
 /**
- * PaymentsService — BH-03 record payments against a completed bill.
+ * PaymentsService — record payments against a completed bill.
  *
  * Invariants:
  *   - Bill must be COMPLETED (not CANCELLED, not already paid).
@@ -7,7 +7,7 @@
  *   - Each amountVnd must be a positive integer.
  *   - Payments array must not be empty.
  *   - All Payment rows + bill.paidAt update are atomic (withTx).
- *   - Audited in-tx (GA-01).
+ *   - Audited in-tx.
  */
 import {
   BadRequestException,
@@ -62,7 +62,7 @@ export class PaymentsService {
     });
     if (!bill) throw new NotFoundException(`Bill ${billId} not found`);
 
-    // The route is keyed only by billId, so re-check the bill's branch here (C1).
+    // The route is keyed only by billId, so re-check the bill's branch here.
     assertBranchAccess(access, bill.branchId);
 
     if (bill.status !== "COMPLETED") {

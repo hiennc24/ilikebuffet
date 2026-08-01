@@ -1,5 +1,5 @@
 /**
- * DiscountsPage — VG-03 discount management screen.
+ * DiscountsPage — discount management screen.
  *
  * Two sections:
  *   1. "Chương trình giảm giá" — CRUD for DiscountProgram (PERCENT/FIXED_AMOUNT/VOUCHER).
@@ -832,7 +832,7 @@ export const DiscountsPage: React.FC = () => {
         {/* Programs card */}
         <Card
           title="Chương trình giảm giá"
-          description="Quản lý các chương trình giảm giá (VG-03). Chỉ QUAN_TRI_HQ có thể thêm, sửa, ngưng."
+          description="Quản lý các chương trình giảm giá. Chỉ QUAN_TRI_HQ có thể thêm, sửa, ngưng."
           actions={
             <Button variant="action" onClick={openCreateProgram}>
               Thêm chương trình

@@ -1,9 +1,8 @@
 /**
- * Print transport behind a stable interface (BH-04). M1 ships the Loopback
- * driver (captures jobs, always succeeds) so the whole flow is testable without
+ * Print transport behind a stable interface. The Loopback
+ * driver (captures jobs, always succeeds) makes the whole flow testable without
  * hardware. The USB/LAN drivers are declared but throw until a printer model is
- * pinned at Sprint-0 (BH-04.6, H6) — no silent no-op that would look like a
- * successful print.
+ * pinned — no silent no-op that would look like a successful print.
  */
 
 export interface PrintDriver {
@@ -12,7 +11,7 @@ export interface PrintDriver {
 }
 
 /**
- * In-memory driver for M1 / tests. Records every job so callers (and the HTTP
+ * In-memory driver for tests. Records every job so callers (and the HTTP
  * server's tests) can assert what would have been sent to the printer.
  */
 export class LoopbackPrintDriver implements PrintDriver {
@@ -38,25 +37,25 @@ export class FailingPrintDriver implements PrintDriver {
 }
 
 /**
- * USB driver placeholder. Wiring a concrete ESC/POS-over-USB library is a
- * Sprint-0 task once the printer model is chosen; until then it fails loudly.
+ * USB driver placeholder. Wiring a concrete ESC/POS-over-USB library requires
+ * pinning a printer model first; until then it fails loudly.
  */
 export class UsbPrintDriver implements PrintDriver {
   readonly name = "usb";
   async print(): Promise<void> {
     throw new Error(
-      "USB print driver not configured — pin the printer model at Sprint-0 (BH-04.6) before enabling",
+      "USB print driver not configured — pin the printer model before enabling",
     );
   }
 }
 
-/** LAN (network 9100) driver placeholder — same Sprint-0 gate as USB. */
+/** LAN (network 9100) driver placeholder — throws until a printer model is pinned. */
 export class LanPrintDriver implements PrintDriver {
   readonly name = "lan";
   constructor(private readonly host?: string, private readonly port = 9100) {}
   async print(): Promise<void> {
     throw new Error(
-      `LAN print driver not configured (host=${this.host ?? "?"}:${this.port}) — pin the printer model at Sprint-0 before enabling`,
+      `LAN print driver not configured (host=${this.host ?? "?"}:${this.port}) — pin the printer model before enabling`,
     );
   }
 }

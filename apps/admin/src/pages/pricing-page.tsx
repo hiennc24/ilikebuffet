@@ -1,5 +1,5 @@
 /**
- * PricingPage — VG-02 pricing management screen (SC-TD pricing).
+ * PricingPage — pricing management screen (SC-TD pricing).
  *
  * Three cards:
  *   1. Khung giờ (time windows) — CRUD with overlap detection surfaced from server.
@@ -7,7 +7,7 @@
  *   3. Ma trận giá (price matrix) — ticket types × time windows × day types.
  *
  * Only QUAN_TRI_HQ may mutate; server 403 is surfaced via toErrorMessage.
- * VG-02.3: live versions cannot be edited in place — new version required.
+ * Live versions cannot be edited in place — a new version is required.
  */
 
 import * as React from "react";

@@ -2,8 +2,8 @@
  * POS IndexedDB store — Dexie schema.
  *
  * Tables:
- *   draft_bills       — unpaid in-progress orders (H8 / BH-02.7). Owner: P7.
- *   offline_outbox    — completed bills waiting for sync (P8 / BH-05).
+ *   draft_bills       — unpaid in-progress orders.
+ *   offline_outbox    — completed bills waiting for sync.
  *
  * Schema versioning rule: every breaking change increments the version and
  * provides an upgrade() callback. Never mutate an existing schema entry.
@@ -11,7 +11,7 @@
 
 import Dexie, { type Table } from "dexie";
 
-// ── Draft bill types (BH-02.7) ─────────────────────────────────────────────
+// ── Draft bill types ────────────────────────────────────────────────────────
 
 export interface DraftBillItem {
   menuItemId: string;
@@ -24,8 +24,8 @@ export interface DraftBillItem {
 /**
  * DraftBill — an unpaid, in-progress order that persists across page reloads.
  *
- * Distinct from the completed-bill outbox (P8): a draft has no paymentMethod,
- * no completedAt, and may be abandoned. P7 will add create/update/delete ops.
+ * Distinct from the completed-bill outbox: a draft has no paymentMethod,
+ * no completedAt, and may be abandoned.
  */
 export interface DraftBill {
   /** Auto-incremented local key. */
@@ -42,7 +42,7 @@ export interface DraftBill {
   note?: string;
 }
 
-// ── Offline outbox types (BH-05 / P8) ──────────────────────────────────────
+// ── Offline outbox types ────────────────────────────────────────────────────
 
 export type OutboxStatus = "pending" | "syncing" | "committed" | "retry";
 
@@ -55,25 +55,25 @@ export interface OutboxLine {
  * OutboxBill — a completed offline bill awaiting sync.
  *
  * Append-only: bills are never mutated after creation.
- * Deleted only after receiving an officialNumber from the server (C5).
+ * Deleted only after receiving an officialNumber from the server.
  */
 export interface OutboxBill {
   /** Auto-incremented local key. */
   id?: number;
   /** Stable UUID generated at creation (CSPRNG). Dedup key on server. */
   clientUuid: string;
-  /** Device-issued temp number "[CN]-[YYMMDD]-T[SHORT][NNN]" (C8). */
+  /** Device-issued temp number "[CN]-[YYMMDD]-T[SHORT][NNN]". */
   tempNumber: string;
   branchId: string;
   shiftId: string;
   deviceId: string;
-  /** ISO-8601 bill creation time (price deciding timestamp, V1). */
+  /** ISO-8601 bill creation time (price deciding timestamp). */
   createdAt: string;
-  /** Device wall-clock at creation + skew vs server (H5). Non-indexed. */
+  /** Device wall-clock at creation + skew vs server (for clock-skew detection). Non-indexed. */
   deviceClockAt?: string;
   clockOffsetMs?: number;
   lines: OutboxLine[];
-  /** Payment(s) taken offline for this bill (BH-03). Synced with the bill. */
+  /** Payment(s) taken offline for this bill. Synced with the bill. */
   payments?: Array<{
     method: "CASH" | "VIETQR" | "CARD";
     amountVnd: number;
@@ -95,7 +95,7 @@ export interface OutboxBill {
 
 // ── DB class ───────────────────────────────────────────────────────────────
 
-// ── Catalog cache (P8: cold-boot offline pricing) ──────────────────────────
+// ── Catalog cache (cold-boot offline pricing) ──────────────────────────────
 
 export interface CachedTicketType {
   id: string;
@@ -106,7 +106,7 @@ export interface CachedTicketType {
 }
 
 /**
- * One cached catalog per branch (P8). Lets the device price bills offline with
+ * One cached catalog per branch. Lets the device price bills offline with
  * the SAME shared resolver the server uses (offline-pricing parity), even when
  * it boots offline. Refreshed on every successful online load.
  */
@@ -132,7 +132,7 @@ export class PosDb extends Dexie {
 
     /**
      * Version 1 — initial schema.
-     * Index on branchId so P7 can list drafts for the current branch.
+     * Index on branchId for listing drafts for the current branch.
      * Index on tableId for table-based lookup.
      * Index on updatedAt for stale-draft cleanup (future).
      */
@@ -141,7 +141,7 @@ export class PosDb extends Dexie {
     });
 
     /**
-     * Version 2 — P8: offline outbox for completed bills pending sync.
+     * Version 2 — offline outbox for completed bills pending sync.
      * Index on status for pending-batch queries.
      * Index on branchId for branch-scoped queries.
      * Index on clientUuid for idempotency lookups.
@@ -152,7 +152,7 @@ export class PosDb extends Dexie {
     });
 
     /**
-     * Version 3 — P8: per-branch catalog cache for cold-boot offline pricing.
+     * Version 3 — per-branch catalog cache for cold-boot offline pricing.
      * Primary key = branchId (one cached catalog per branch).
      */
     this.version(3).stores({

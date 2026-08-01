@@ -1,5 +1,5 @@
 /**
- * TicketTypesController — VG-01 HTTP endpoints.
+ * TicketTypesController — ticket-type HTTP endpoints.
  *
  * Role gates:
  *   - Create / Update / Deactivate: QUAN_TRI_HQ only (@Unscoped — chain-wide config).

@@ -1,13 +1,13 @@
 /**
- * TicketTypesService unit tests (VG-01 AC).
+ * TicketTypesService unit tests.
  *
  * Covers:
  *   - Create ticket type; audit written in-tx.
  *   - Update ticket type; audit before/after.
- *   - Deactivate (no hard delete after bills — VG-01.3).
+ *   - Deactivate (no hard delete after bills).
  *   - Cannot update inactive ticket type.
  *   - List excludes inactive by default.
- *   - Free ticket isFree=true → price 0, still counts toward guest total (M7).
+ *   - Free ticket isFree=true → price 0, still counts toward guest total.
  */
 import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { TicketTypesService } from "./ticket-types.service";
@@ -73,7 +73,7 @@ describe("TicketTypesService", () => {
     service = new TicketTypesService(prisma as never, audit as never);
   });
 
-  // ─── VG-01.1 Create ──────────────────────────────────────────────────────
+  // ─── Create ───────────────────────────────────────────────────────────────
 
   describe("create()", () => {
     it("creates a ticket type with defaults", async () => {
@@ -121,7 +121,7 @@ describe("TicketTypesService", () => {
     });
   });
 
-  // ─── VG-01.1 Update ──────────────────────────────────────────────────────
+  // ─── Update ───────────────────────────────────────────────────────────────
 
   describe("update()", () => {
     it("updates name and audits before/after", async () => {
@@ -157,7 +157,7 @@ describe("TicketTypesService", () => {
     });
   });
 
-  // ─── VG-01.3 Deactivate (no hard delete) ─────────────────────────────────
+  // ─── Deactivate (no hard delete) ─────────────────────────────────────────
 
   describe("deactivate()", () => {
     it("sets status to INACTIVE and audits the transition", async () => {
@@ -194,14 +194,14 @@ describe("TicketTypesService", () => {
     });
   });
 
-  // ─── VG-01.2 / M7 — Free ticket invariant ────────────────────────────────
+  // ─── Free ticket invariant ────────────────────────────────────────────────
 
-  describe("free ticket counts toward guest total (cost/khách BC-01 later)", () => {
+  describe("free ticket counts toward guest total", () => {
     /**
-     * M7 invariant: free ticket isFree=true still contributes to guest count.
+     * Free ticket invariant: isFree=true still contributes to guest count.
      * The service creates the ticket type with isFree=true. The billing layer
-     * (P7) must count ALL tickets (free + paid) in the guest denominator.
-     * This test name is intentionally descriptive for future refactor safety.
+     * must count ALL tickets (free + paid) in the guest denominator.
+     * This test is intentionally descriptive for future refactor safety.
      */
     it("creates free ticket type with isFree=true; billing layer must include in guest count", async () => {
       const freeTicket = makeTicketType({ isFree: true, name: "Trẻ dưới 1m" });
@@ -221,9 +221,9 @@ describe("TicketTypesService", () => {
     });
   });
 
-  // ─── VG-01.4 — Audit on name/condition change ─────────────────────────────
+  // ─── Audit on name/condition change ──────────────────────────────────────
 
-  describe("VG-01.4 — bill history unaffected by ticket-type changes", () => {
+  describe("bill history unaffected by ticket-type changes", () => {
     it("updating name writes audit with before/after so history is traceable", async () => {
       tx.ticketType.update.mockResolvedValue(makeTicketType({ name: "Người lớn v2" }));
 

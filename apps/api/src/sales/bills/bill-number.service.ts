@@ -10,7 +10,7 @@ export interface AllocatedNumber {
 }
 
 /**
- * Gapless per-(branch, business date) bill numbering (BH-02).
+ * Gapless per-(branch, business date) bill numbering.
  *
  * `allocate` runs INSIDE the caller's bill-create transaction. It creates the
  * day's counter row on first use, then locks it with SELECT … FOR UPDATE so
@@ -21,9 +21,9 @@ export interface AllocatedNumber {
  * keeps its number (cancellation never touches the counter), so the range has no
  * hole there either.
  *
- * Lock order is fixed counter → audit (never reversed) to avoid AB/BA deadlocks
- * (Red Team C4). The caller must dedup by (deviceId, clientUuid) BEFORE calling
- * allocate so an offline re-sync doesn't consume a second number (P8).
+ * Lock order is fixed counter → audit (never reversed) to avoid AB/BA deadlocks.
+ * The caller must dedup by (deviceId, clientUuid) BEFORE calling allocate so an
+ * offline re-sync doesn't consume a second number.
  */
 @Injectable()
 export class BillNumberService {

@@ -1,5 +1,5 @@
 /**
- * BH-05.6 client-durability acceptance scenarios (a, d): an offline bill must
+ * Client-durability acceptance scenarios (a, d): an offline bill must
  * never be lost. These complement the server-side arbiter scenarios
  * (apps/api/test/sync-scenarios.e2e-spec.ts). Uses fake-indexeddb; closing and
  * reopening posDb simulates a page reload / power loss.
@@ -26,7 +26,7 @@ beforeEach(async () => {
   await posDb.offline_outbox.clear();
 });
 
-describe("offline durability — BH-05.6 (a, d)", () => {
+describe("offline durability — scenarios (a, d)", () => {
   it("(a) a bill queued when the network drops at payment stays pending until it has an official number", async () => {
     await addToOutbox(draft("aaa-001"));
     expect(await countPending("branch-1")).toBe(1);
@@ -55,7 +55,7 @@ describe("offline durability — BH-05.6 (a, d)", () => {
     expect(new Set(pending.map((b) => b.clientUuid)).size).toBe(20);
   });
 
-  it("flags a bill stuck in the outbox >15 min (BH-05.7)", async () => {
+  it("flags a bill stuck in the outbox >15 min", async () => {
     const now = Date.parse("2026-08-01T14:00:00+07:00");
     await addToOutbox({ ...draft("stuck-1"), createdAt: new Date(now - 20 * 60 * 1000).toISOString() });
     expect(await hasStuckBills("branch-1", 15 * 60 * 1000, now)).toBe(true);

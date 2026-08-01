@@ -1,13 +1,12 @@
 /**
- * ESC/POS receipt builder for an 80mm thermal printer (BH-04).
+ * ESC/POS receipt builder for an 80mm thermal printer.
  *
  * Produces the raw byte buffer for one bill. Kept dependency-free and pure so
  * it is trivially testable; the transport (USB/LAN) lives behind PrintDriver.
  *
- * NOTE (Sprint-0 / hardware): Vietnamese glyphs depend on the printer's
- * codepage. Text is emitted UTF-8 here; the concrete code-page selection
- * (ESC t n) is pinned once the two printer models are chosen (BH-04.6). Column
- * width assumes Font A at 80mm ≈ 48 characters.
+ * NOTE (hardware): Vietnamese glyphs depend on the printer's codepage. Text is
+ * emitted UTF-8 here; the concrete code-page selection (ESC t n) must be pinned
+ * once the printer models are chosen. Column width assumes Font A at 80mm ≈ 48 chars.
  */
 
 const ESC = 0x1b;
@@ -40,7 +39,7 @@ export interface PrintBillPayload {
   guestCount?: number;
   payments?: PrintPayment[];
   footer?: string;
-  /** Reprint stamps a "BẢN SAO" banner and is logged by the caller (BH-04.5). */
+  /** Reprint stamps a "BẢN SAO" banner and is logged by the caller. */
   isReprint?: boolean;
 }
 
@@ -191,10 +190,13 @@ function concatBytes(chunks: Array<Uint8Array | string>): Uint8Array {
 export function receiptToText(bytes: Uint8Array): string {
   // Strip the common ESC/GS control sequences so assertions read the content.
   const text = new TextDecoder().decode(bytes);
-  // Remove ESC @ / ESC a n / ESC E n / GS V n control codes.
+  // Remove ESC @ / ESC a n / ESC E n / GS V n control codes. The control bytes
+  // in these patterns are the ESC/POS command bytes we are matching by design.
+  /* eslint-disable no-control-regex */
   return text
     .replace(/\x1b[@]/g, "")
     .replace(/\x1b[a]./g, "")
     .replace(/\x1b[E]./g, "")
     .replace(/\x1d[V]../g, "");
+  /* eslint-enable no-control-regex */
 }

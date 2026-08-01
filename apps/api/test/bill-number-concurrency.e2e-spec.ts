@@ -9,7 +9,7 @@ import { BillNumberService } from "../src/sales/bills/bill-number.service";
  * contiguous 1..N range with no duplicate and no gap, and a rolled-back
  * transaction must NOT burn a number. These properties only reproduce against a
  * real Postgres (FOR UPDATE / row-lock serialization), so this runs on a fresh
- * testcontainer — never SQLite, never a shared/reused DB (Red Team AD7).
+ * testcontainer — never SQLite, never a shared/reused DB.
  */
 describe("bill numbering — concurrency + gaplessness (integration)", () => {
   let db: StartedTestDb;

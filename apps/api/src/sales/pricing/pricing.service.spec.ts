@@ -1,14 +1,14 @@
 /**
- * PricingService unit tests (VG-02 AC + Red Team C2/C9/M2).
+ * PricingService unit tests.
  *
  * Covers:
- *   - Time-window overlap → save blocked (VG-02.1).
+ *   - Time-window overlap → save blocked.
  *   - Time-window bounds validation.
- *   - Effective version is IMMUTABLE (VG-02.3).
+ *   - Effective version is IMMUTABLE.
  *   - Future version → editable; today's version → immutable.
  *   - Price-cell upsert on future version.
  *   - Price-cell rejected on live version.
- *   - resolvePrice delegates to pure resolver; isHoliday from MasterDataService (M2).
+ *   - resolvePrice delegates to pure resolver; isHoliday from MasterDataService.
  *   - buildSnapshot shape (fields present, time-windows + versions).
  *   - Branch price flag upsert.
  *   - All mutations audited in-tx.
@@ -157,9 +157,9 @@ describe("PricingService", () => {
     service = new PricingService(prisma as never, audit as never, masterData as never);
   });
 
-  // ─── VG-02.1 Time-window overlap ─────────────────────────────────────────
+  // ─── Time-window overlap ──────────────────────────────────────────────────
 
-  describe("createTimeWindow() — overlap validation (VG-02.1)", () => {
+  describe("createTimeWindow() — overlap validation", () => {
     it("creates a window when no overlaps exist", async () => {
       tx.timeWindow.findMany.mockResolvedValue([]); // no existing windows
       const result = await service.createTimeWindow(
@@ -170,7 +170,7 @@ describe("PricingService", () => {
       expect(tx.timeWindow.create).toHaveBeenCalled();
     });
 
-    it("blocks save when new window overlaps existing window (VG-02.1)", async () => {
+    it("blocks save when new window overlaps existing window", async () => {
       // Existing: Trưa 630–840
       tx.timeWindow.findMany.mockResolvedValue([
         makeTimeWindow({ startMinute: 630, endMinute: 840 }),
@@ -243,9 +243,9 @@ describe("PricingService", () => {
     });
   });
 
-  // ─── VG-02.3 Versioning — immutability of live version ───────────────────
+  // ─── Versioning — immutability of live version ───────────────────────────
 
-  describe("assertVersionEditable() — VG-02.3 immutability", () => {
+  describe("assertVersionEditable() — immutability", () => {
     it("allows editing a future version (effectiveFrom > today)", async () => {
       const futureVersion = makePriceBookVersion({
         effectiveFrom: new Date(`${daysFromNow(3)}T00:00:00.000Z`),
@@ -255,7 +255,7 @@ describe("PricingService", () => {
       await expect(service.assertVersionEditable("v1")).resolves.toBeUndefined();
     });
 
-    it("blocks editing a version effective today or earlier (VG-02.3)", async () => {
+    it("blocks editing a version effective today or earlier", async () => {
       const liveVersion = makePriceBookVersion({
         effectiveFrom: new Date(`${TODAY}T00:00:00.000Z`),
       });
@@ -264,7 +264,7 @@ describe("PricingService", () => {
       await expect(service.assertVersionEditable("v1")).rejects.toThrow(BadRequestException);
     });
 
-    it("blocks editing a version effective in the past (VG-02.3)", async () => {
+    it("blocks editing a version effective in the past", async () => {
       const pastVersion = makePriceBookVersion({
         effectiveFrom: new Date(`${daysFromNow(-5)}T00:00:00.000Z`),
       });
@@ -371,7 +371,7 @@ describe("PricingService", () => {
       );
     });
 
-    it("rejects cell upsert on a live (immutable) version (VG-02.3)", async () => {
+    it("rejects cell upsert on a live (immutable) version", async () => {
       // Live version → immutable
       prisma.priceBookVersion.findUnique.mockResolvedValue(
         makePriceBookVersion({ effectiveFrom: new Date(`${TODAY}T00:00:00.000Z`) }),
@@ -427,8 +427,8 @@ describe("PricingService", () => {
 
   // ─── resolvePrice — server delegation ────────────────────────────────────
 
-  describe("resolvePrice() — server delegates to pure resolver (M2 isHoliday)", () => {
-    it("calls masterData.isHoliday for the deciding date (Red Team M2)", async () => {
+  describe("resolvePrice() — server delegates to pure resolver", () => {
+    it("calls masterData.isHoliday for the deciding date", async () => {
       prisma.timeWindow.findMany.mockResolvedValue([
         makeTimeWindow({ startMinute: 1020, endMinute: 1320 }),
       ]);

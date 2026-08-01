@@ -8,8 +8,8 @@ import { PrismaService } from "../src/prisma/prisma.service";
 import { SyncService } from "../src/sales/bills/sync.service";
 
 /**
- * BH-05.6 acceptance scenarios for offline sync, against a real Postgres.
- * These are the "Done gate" for the arbiter — they must hold with NO duplicate
+ * Acceptance scenarios for offline sync, against a real Postgres.
+ * These are the "done gate" — they must hold with NO duplicate
  * and NO gap in numbers under every offline condition:
  *   (b) two devices offline for the same branch/date → distinct gapless numbers
  *   (c) flapping network resends the same bill → idempotent, one number
@@ -17,7 +17,7 @@ import { SyncService } from "../src/sales/bills/sync.service";
  *   (f) a price book that becomes effective later → offline bill created after
  *       that instant is repriced to the new version (server recompute parity)
  */
-describe("offline sync — BH-05.6 acceptance scenarios (integration)", () => {
+describe("offline sync — acceptance scenarios (integration)", () => {
   let db: StartedTestDb;
   let app: INestApplication;
   let prisma: PrismaService;

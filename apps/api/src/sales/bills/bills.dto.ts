@@ -1,5 +1,5 @@
 /**
- * DTOs for Bills and Payments (BH-02, BH-03, BH-06).
+ * DTOs for Bills and Payments.
  *
  * Note: client NEVER sends price fields — server prices everything.
  * DTO has no unitPriceVnd, no lineTotalVnd, no totalVnd.
@@ -17,7 +17,7 @@ export interface CreateBillDto {
   deviceId: string;
   shiftId: string;
   lines: CreateBillLineDto[];
-  /** Offline dedup key (P8). When provided, duplicate create returns existing bill. */
+  /** Offline dedup key. When provided, duplicate create returns existing bill. */
   clientUuid?: string;
 }
 
@@ -28,7 +28,7 @@ export interface CancelBillDto {
   /** QUAN_LY_CN user id whose approval PIN is being used. */
   managerId: string;
   pin: string;
-  /** Device id of the caller — must match bill.deviceId (IDOR guard BH-06.2). */
+  /** Device id of the caller — must match bill.deviceId (IDOR guard). */
   deviceId: string;
 }
 
