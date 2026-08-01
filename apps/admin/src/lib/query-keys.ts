@@ -41,4 +41,7 @@ export const QUERY_KEYS = {
 
   /** A single bill's detail (lines, payments, refunds). */
   order: (id: string) => ["order", id] as const,
+
+  /** Branches list (search/status appended by the page). */
+  branches: () => ["branches"] as const,
 } as const;

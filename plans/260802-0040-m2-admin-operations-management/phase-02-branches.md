@@ -1,6 +1,15 @@
-# P2 — Chi nhánh (Branches)
+# P2 — Chi nhánh (Branches)  ✅ DONE (2026-08-02)
 
 **Goal:** màn quản lý chi nhánh. Backend đã đủ — UI only.
+
+## Actual
+- `branches-page.tsx`: search + status filter, DataTable (mã/tên/địa chỉ/SĐT/trạng thái),
+  dialog tạo/sửa (code/name/address/phone) + đổi trạng thái (PATCH status + lý do).
+- Status là `ACTIVE/SUSPENDED/CLOSED` (không phải INACTIVE — sửa so với plan gốc).
+- Không phân trang (chi nhánh ít — YAGNI); dùng `GET /branches?search=&status=`.
+- Create/Update/Status = `QUAN_TRI_HQ` (API fail-closed); ẩn nav theo role để ở P6.
+- Thêm polyfill `HTMLDialogElement.showModal/close` vào `test-setup.ts` (dùng chung mọi test Dialog).
+- Route `/settings/branches` (khớp nav có sẵn). Tests: branches-page.test (4). Admin 49.
 
 ## Backend (done)
 `branch.controller`: `GET /branches` (list, `{data,total}`), `GET /branches/:id`,
