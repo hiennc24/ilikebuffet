@@ -53,11 +53,9 @@ const STORAGE_KEYS = {
 // ── Context ───────────────────────────────────────────────────────────────────
 
 /**
- * Normalise a list response. Most endpoints return a bare array, but some
- * platform list endpoints (e.g. GET /branches) wrap results in a { data: [] }
- * envelope. Accept either shape so the auth flow is resilient to the mismatch.
- * TODO(contract): align GET /branches with the bare-array convention used by
- * /sales/* and remove this shim once the API is consistent.
+ * Normalise a list response. Platform list endpoints (branches, master data)
+ * use a paginated `{ data, total }` envelope, while /sales/* return bare arrays.
+ * Accept either shape so callers don't care which convention an endpoint uses.
  */
 function unwrapList<T>(res: T[] | { data: T[] } | null | undefined): T[] {
   if (Array.isArray(res)) return res;

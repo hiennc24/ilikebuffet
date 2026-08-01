@@ -49,9 +49,8 @@ const STORAGE = {
 } as const;
 
 /**
- * Normalise a list response: GET /branches wraps its results in { data: [] }
- * while other endpoints return bare arrays. Accept either shape.
- * TODO(contract): align GET /branches with the bare-array convention.
+ * Normalise a list response: platform endpoints (branches, master data) use a
+ * paginated { data, total } envelope; /sales/* return bare arrays. Accept both.
  */
 function unwrapList<T>(res: T[] | { data: T[] } | null | undefined): T[] {
   if (Array.isArray(res)) return res;
