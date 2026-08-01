@@ -5,11 +5,11 @@
  * managers; cashiers/warehouse have no access. Branch-scoping is applied in the
  * service via BranchAccess. No write routes here (except quarantine-resolve in R3).
  */
-import { Controller, ForbiddenException, Get, Query, Request } from "@nestjs/common";
+import { Body, Controller, ForbiddenException, Get, Param, Post, Query, Request } from "@nestjs/common";
 import { ReportsService } from "./reports.service";
 import { Role } from "../../platform/rbac/role.enum";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
-import type { RevenueQuery, ShiftCashQuery } from "./reports.dto";
+import type { RevenueQuery, ShiftCashQuery, QuarantineQuery, ResolveQuarantineDto } from "./reports.dto";
 
 export const REPORT_VIEW_ROLES = new Set<Role>([
   Role.QUAN_TRI_HQ,
@@ -37,5 +37,20 @@ export class ReportsController {
   @Get("shift-cash")
   shiftCash(@Query() query: ShiftCashQuery, @Request() req: ScopedRequest) {
     return this.reports.shiftCash(query, this.access(req));
+  }
+
+  @Get("quarantine")
+  quarantine(@Query() query: QuarantineQuery, @Request() req: ScopedRequest) {
+    return this.reports.quarantine(query, this.access(req));
+  }
+
+  @Get("number-gaps")
+  numberGaps(@Query("branchId") branchId: string, @Query("businessDate") businessDate: string, @Request() req: ScopedRequest) {
+    return this.reports.numberGaps(branchId, businessDate, this.access(req));
+  }
+
+  @Post("quarantine/:billId/resolve")
+  resolve(@Param("billId") billId: string, @Body() dto: ResolveQuarantineDto, @Request() req: ScopedRequest) {
+    return this.reports.resolveQuarantine(billId, dto.note ?? "", req.user.sub, req.user.role, this.access(req));
   }
 }

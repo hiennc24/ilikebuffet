@@ -12,3 +12,17 @@ export interface ShiftCashQuery {
   to?: string;
   branchId?: string;
 }
+
+export interface QuarantineQuery {
+  from?: string;
+  to?: string;
+  branchId?: string;
+  /** "true"/"false" to filter by resolved state. */
+  resolved?: string;
+  page?: string;
+  pageSize?: string;
+}
+
+export interface ResolveQuarantineDto {
+  note?: string;
+}

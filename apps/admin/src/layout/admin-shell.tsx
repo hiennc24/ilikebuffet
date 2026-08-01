@@ -75,6 +75,12 @@ const DEFAULT_GROUPS: NavGroup[] = [
         path: "/reports/shift-cash",
         iconPath: "M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6",
       },
+      {
+        id: "offline-recon",
+        label: "Đối soát offline",
+        path: "/reports/offline",
+        iconPath: "M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z",
+      },
     ],
   },
   {

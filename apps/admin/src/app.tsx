@@ -39,6 +39,7 @@ import { IngredientsPage } from "./pages/ingredients-page";
 import { AccountsPage } from "./pages/accounts-page";
 import { RevenueReportPage } from "./pages/revenue-report-page";
 import { ShiftCashReportPage } from "./pages/shift-cash-report-page";
+import { OfflineReconPage } from "./pages/offline-recon-page";
 import { canAccessPath } from "./lib/rbac";
 import "@ilikebuffet/ui/tokens.css";
 
@@ -240,6 +241,16 @@ export function App() {
                         <RequireAccess path="/reports/shift-cash">
                           <ShellLayout pageTitle="Đối soát tiền mặt">
                             <ShiftCashReportPage />
+                          </ShellLayout>
+                        </RequireAccess>
+                      }
+                    />
+                    <Route
+                      path="/reports/offline"
+                      element={
+                        <RequireAccess path="/reports/offline">
+                          <ShellLayout pageTitle="Đối soát offline">
+                            <OfflineReconPage />
                           </ShellLayout>
                         </RequireAccess>
                       }

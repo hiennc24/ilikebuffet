@@ -5,18 +5,22 @@
  * BranchAccess. Revenue is net of refunds: net = Σ(COMPLETED.total) − Σ(refunds);
  * CANCELLED bills are counted but excluded from money.
  */
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { sumVnd } from "@ilikebuffet/shared";
 import { PrismaService } from "../../prisma/prisma.service";
-import type { BranchAccess } from "../../platform/rbac/branch-access";
-import type { RevenueQuery, ShiftCashQuery } from "./reports.dto";
+import { AuditService } from "../../audit/audit.service";
+import { assertBranchAccess, type BranchAccess } from "../../platform/rbac/branch-access";
+import type { RevenueQuery, ShiftCashQuery, QuarantineQuery } from "./reports.dto";
 
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 
 @Injectable()
 export class ReportsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly audit: AuditService,
+  ) {}
 
   /** Branch filter honoring scope: chain-wide may narrow by branchId; others are
    *  confined to their branches (an out-of-scope branchId yields no rows). */
@@ -173,5 +177,95 @@ export class ReportsService {
       },
       rows,
     };
+  }
+
+  // ─── Offline reconciliation (GA-02) ─────────────────────────────────────────
+
+  /** Paginated list of quarantined bills to review, filterable by resolved state. */
+  async quarantine(query: QuarantineQuery, access: BranchAccess) {
+    const page = Math.max(1, Number.parseInt(query.page ?? "1", 10) || 1);
+    const pageSize = Math.min(100, Math.max(1, Number.parseInt(query.pageSize ?? "20", 10) || 20));
+
+    const where: Prisma.BillWhereInput = {
+      quarantined: true,
+      ...this.branchWhere(access, query.branchId),
+      ...this.dateWhere(query.from, query.to),
+      ...(query.resolved === "true" ? { quarantineResolvedAt: { not: null } } : {}),
+      ...(query.resolved === "false" ? { quarantineResolvedAt: null } : {}),
+    };
+
+    const [data, total] = await Promise.all([
+      this.prisma.bill.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        select: {
+          id: true,
+          number: true,
+          tempNumber: true,
+          branchId: true,
+          businessDate: true,
+          totalVnd: true,
+          quarantineReason: true,
+          quarantineResolvedAt: true,
+          quarantineResolvedBy: true,
+          quarantineResolveNote: true,
+          createdAt: true,
+        },
+      }),
+      this.prisma.bill.count({ where }),
+    ]);
+    return { data, total, page, pageSize };
+  }
+
+  /** Missing bill numbers: gaps in the gapless seq for one (branch, businessDate). */
+  async numberGaps(branchId: string, businessDate: string, access: BranchAccess) {
+    if (!branchId || !businessDate) throw new BadRequestException("Cần chi nhánh và ngày");
+    assertBranchAccess(access, branchId);
+
+    const bills = await this.prisma.bill.findMany({
+      where: { branchId, businessDate: new Date(`${businessDate}T00:00:00Z`) },
+      select: { seq: true },
+    });
+    if (bills.length === 0) return { branchId, businessDate, min: 0, max: 0, missing: [] as number[] };
+
+    const seqs = new Set(bills.map((b) => b.seq));
+    const min = Math.min(...seqs);
+    const max = Math.max(...seqs);
+    const missing: number[] = [];
+    for (let s = min; s <= max; s++) if (!seqs.has(s)) missing.push(s);
+    return { branchId, businessDate, min, max, missing };
+  }
+
+  /** Mark a quarantined bill as reviewed/handled (append-only audit). */
+  async resolveQuarantine(billId: string, note: string, actorId: string, actorRole: string, access: BranchAccess) {
+    const bill = await this.prisma.bill.findUnique({
+      where: { id: billId },
+      select: { id: true, branchId: true, quarantined: true, quarantineResolvedAt: true, deviceId: true },
+    });
+    if (!bill) throw new NotFoundException(`Bill ${billId} not found`);
+    assertBranchAccess(access, bill.branchId);
+    if (!bill.quarantined) throw new BadRequestException("Bill không ở trạng thái cách ly");
+    if (bill.quarantineResolvedAt) throw new ForbiddenException("Bill đã được xử lý");
+
+    return this.prisma.withTx(async (tx) => {
+      const updated = await tx.bill.update({
+        where: { id: billId },
+        data: { quarantineResolvedAt: new Date(), quarantineResolvedBy: actorId, quarantineResolveNote: note || null },
+        select: { id: true, quarantineResolvedAt: true, quarantineResolvedBy: true, quarantineResolveNote: true },
+      });
+      await this.audit.record(tx, {
+        action: "bill.quarantine_resolved",
+        objectType: "bill",
+        objectId: billId,
+        actorId,
+        actorRole,
+        branchId: bill.branchId,
+        deviceId: bill.deviceId,
+        reason: note || undefined,
+      });
+      return updated;
+    });
   }
 }

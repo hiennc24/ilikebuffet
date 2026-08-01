@@ -617,6 +617,10 @@ model Bill {
   /// The sale is NEVER rejected; quarantine just routes it to reconciliation.
   quarantined      Boolean   @default(false)
   quarantineReason String?
+  /// Reconciliation review (GA-02): set when a manager marks a quarantined bill handled.
+  quarantineResolvedAt   DateTime? @db.Timestamptz(3)
+  quarantineResolvedBy   String?
+  quarantineResolveNote  String?
   /// Cancellation (BH-06) — number is retained.
   cancelledBy      String?
   cancelledAt      DateTime?  @db.Timestamptz(3)
