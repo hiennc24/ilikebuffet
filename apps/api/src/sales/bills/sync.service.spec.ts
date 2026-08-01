@@ -124,6 +124,32 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     expect(audit.record).toHaveBeenCalledTimes(1);
   });
 
+  // ── 2b. C1 device binding: reject a bill from a different device ──────────
+  it("rejects a bill whose deviceId differs from a device-bound token (C1)", async () => {
+    const prisma = makePrisma();
+    const audit = makeAudit();
+    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber());
+
+    const result = await svc.processBill(
+      { ...BASE_BILL, deviceId: "dev-1" },
+      ACTOR,
+      ALLOWED,
+      { tokenDeviceId: "dev-OTHER" },
+    );
+
+    expect(result.status).toBe("rejected");
+    expect(result.error).toMatch(/device not allowed/);
+    expect(audit.record).toHaveBeenCalledTimes(1);
+    expect(prisma.withTx).not.toHaveBeenCalled();
+  });
+
+  it("allows the bill when the device-bound token matches (or is absent)", async () => {
+    const prisma = makePrisma();
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+    const matched = await svc.processBill({ ...BASE_BILL, deviceId: "dev-1" }, ACTOR, ALLOWED, { tokenDeviceId: "dev-1" });
+    expect(matched.status).toBe("committed");
+  });
+
   // ── 3. Server recomputes price (C2) ────────────────────────────────────────
   it("calls pricing.resolvePrice for each line (server never trusts client prices)", async () => {
     const prisma = makePrisma();

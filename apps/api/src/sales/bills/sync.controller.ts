@@ -48,6 +48,7 @@ export class SyncController {
     }
 
     const allowedBranchIds = new Set(req.user.branchIds);
+    const tokenDeviceId = req.user.deviceId;
 
     // Process all bills; each is independent (per-bill idempotent, C5)
     const results = await Promise.all(
@@ -56,6 +57,7 @@ export class SyncController {
           bill,
           req.user.sub,
           allowedBranchIds,
+          { tokenDeviceId },
         ),
       ),
     );
@@ -99,7 +101,10 @@ export class SyncController {
       dto,
       req.user.sub,
       new Set(req.user.branchIds),
-      { forceQuarantine: { reason: `force_close_stuck: ${dto.reason}`, approvedBy: dto.managerId } },
+      {
+        forceQuarantine: { reason: `force_close_stuck: ${dto.reason}`, approvedBy: dto.managerId },
+        tokenDeviceId: req.user.deviceId,
+      },
     );
     return { results: [result] };
   }

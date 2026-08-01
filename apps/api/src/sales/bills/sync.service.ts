@@ -48,7 +48,7 @@ export class SyncService {
     dto: SyncBillDto,
     actorId: string,
     allowedBranchIds: Set<string>,
-    opts?: { forceQuarantine?: { reason: string; approvedBy: string } },
+    opts?: { forceQuarantine?: { reason: string; approvedBy: string }; tokenDeviceId?: string },
   ): Promise<SyncBillResult> {
     const base: Pick<SyncBillResult, "clientUuid" | "tempNumber"> = {
       clientUuid: dto.clientUuid,
@@ -62,6 +62,14 @@ export class SyncService {
       );
       await this.recordRejectionAudit(dto, actorId, "authz_mismatch");
       return { ...base, status: "rejected", error: "branch not allowed by token" };
+    }
+
+    // C1: when the token is device-bound (PIN login), a device may only sync its
+    // OWN bills — it cannot hijack or suppress another device's uuid.
+    if (opts?.tokenDeviceId && dto.deviceId !== opts.tokenDeviceId) {
+      this.logger.warn(`Sync device mismatch: dto.deviceId=${dto.deviceId} token=${opts.tokenDeviceId}`);
+      await this.recordRejectionAudit(dto, actorId, "device_mismatch");
+      return { ...base, status: "rejected", error: "device not allowed by token" };
     }
 
     const contentHash = computeContentHash(dto);

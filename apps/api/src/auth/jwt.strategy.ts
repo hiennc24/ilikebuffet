@@ -27,6 +27,9 @@ export interface JwtPayload {
   tv: number;
   /** mustChangePassword — carried in access token; enforced per-request (C2) */
   mcp: boolean;
+  /** Device this token is bound to — set only for PIN (device) login. Offline
+   *  sync enforces bill.deviceId === this when present (Red Team C1). */
+  deviceId?: string;
   /** Token type — "access" or "refresh"; guards reject the wrong type (L10) */
   typ: "access" | "refresh";
   iat?: number;

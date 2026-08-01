@@ -292,9 +292,11 @@ export class AuthService implements OnModuleInit {
 
     const branchIds = user.branches.map((b) => b.branchId);
     const chainWide = CHAIN_WIDE_ROLES.has(user.role as Role);
+    // PIN login is device-bound — carry the deviceId so offline sync can enforce
+    // that a device only syncs its own bills (Red Team C1).
     const tokens = this.issueTokens(
       user.id, user.username, user.role, chainWide, branchIds,
-      user.tokenVersion, user.mustChangePassword,
+      user.tokenVersion, user.mustChangePassword, deviceId,
     );
     return { ...tokens, mustChangePassword: user.mustChangePassword };
   }
@@ -445,8 +447,9 @@ export class AuthService implements OnModuleInit {
     branchIds: string[],
     tv: number,
     mcp: boolean,
+    deviceId?: string,
   ): { accessToken: string; refreshToken: string } {
-    const base = { sub: userId, username, role, chainWide, branchIds, tv, mcp };
+    const base = { sub: userId, username, role, chainWide, branchIds, tv, mcp, ...(deviceId ? { deviceId } : {}) };
 
     const accessTtl = this.config.get<string>("JWT_ACCESS_TTL", "15m");
     const refreshTtl = this.config.get<string>("JWT_REFRESH_TTL", "7d");
