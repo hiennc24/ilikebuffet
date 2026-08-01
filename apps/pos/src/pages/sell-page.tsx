@@ -10,8 +10,9 @@
 
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { SellGridTile, PaymentPanel } from "@ilikebuffet/ui";
+import { SellGridTile, PaymentPanel, Button } from "@ilikebuffet/ui";
 import type { OrderItem } from "@ilikebuffet/ui";
+import { ShiftBillsPanel } from "./shift-bills-panel";
 import { usePosAuth } from "../auth/pos-auth-context";
 import { usePosSession } from "../session/pos-session-context";
 import {
@@ -93,6 +94,7 @@ export const SellPage: React.FC = () => {
   const [cartItems, setCartItems] = React.useState<OrderItem[]>([]);
   const [hydrated, setHydrated] = React.useState(false);
   const [payOpen, setPayOpen] = React.useState(false);
+  const [billsOpen, setBillsOpen] = React.useState(false);
 
   // Hydrate cart from Dexie on mount (or when branch changes).
   React.useEffect(() => {
@@ -199,10 +201,26 @@ export const SellPage: React.FC = () => {
       <div
         style={{
           display: "flex",
+          flexDirection: "column",
           height: "calc(100vh - var(--touch-min, 48px))",
           overflow: "hidden",
         }}
       >
+        {/* Action bar */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            padding: "var(--space-2) var(--space-4)",
+            borderBottom: "1px solid var(--border-subtle)",
+          }}
+        >
+          <Button variant="ghost" touch onClick={() => setBillsOpen(true)}>
+            Bill trong ca
+          </Button>
+        </div>
+
+        <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         {/* Sell grid */}
         <div
           style={{
@@ -246,6 +264,7 @@ export const SellPage: React.FC = () => {
             disabled={cartItems.length === 0}
           />
         </div>
+        </div>
       </div>
 
       {payOpen && effectiveBranchId && (
@@ -257,6 +276,8 @@ export const SellPage: React.FC = () => {
           onPaymentSuccess={handlePaymentSuccess}
         />
       )}
+
+      <ShiftBillsPanel open={billsOpen} onClose={() => setBillsOpen(false)} />
     </>
   );
 };

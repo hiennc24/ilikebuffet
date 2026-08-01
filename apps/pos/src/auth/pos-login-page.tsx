@@ -24,9 +24,10 @@ export const PosLoginPage: React.FC = () => {
   if (status === "authenticated") return <Navigate to="/" replace />;
   if (status === "choosing-branch") return <Navigate to="/choose-branch" replace />;
   if (status === "locked") return <Navigate to="/lock" replace />;
-  // Dev convenience: pre-fill the seeded local admin (empty in production).
+  // Dev convenience: pre-fill the seeded local cashier (THU_NGAN — the role the
+  // POS sell/pay flow requires). Empty in production.
   const [username, setUsername] = React.useState(
-    import.meta.env.DEV ? "admin@ilikebuffet.vn" : "",
+    import.meta.env.DEV ? "thungan@ilikebuffet.vn" : "",
   );
   const [password, setPassword] = React.useState(
     import.meta.env.DEV ? "Password123" : "",
