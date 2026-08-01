@@ -56,7 +56,7 @@ Màn theo dõi ca thời gian thực cho QL (BH-08) + hardening để pilot bán
 
 ## Progress
 
-- **Realtime monitor (BH-08) — DONE (code + test).** `GET /sales/shifts/:id/summary` tổng hợp ca: doanh thu, số khách, vé theo loại, hủy, nhịp bill 30'; **branch-scope** (chain-wide bypass). Test aggregate + scope. (Màn hình FE monitor = cut-candidate #3, chưa dựng — endpoint sẵn sàng.)
+- **Realtime monitor (BH-08) — DONE (code + test).** `GET /sales/shifts/:id/summary` tổng hợp ca: doanh thu, số khách, vé theo loại, hủy, nhịp bill 30'; **branch-scope** (chain-wide bypass). Test aggregate + scope. Màn admin "Theo dõi ca" đã dựng (poll 30s: doanh thu/bill/khách/hủy/nhịp 30/vé theo loại).
 - **Stuck-sync alert (BH-05.7) — DONE.** POS cảnh báo banner khi bill kẹt outbox >15' lúc online. Test `hasStuckBills`.
 - **Load test (BH-02.6) — DELIVERABLE.** `load-test/bill-create-load.js` (k6): gate p95<1s @5× tải (40 bill/phút) 30', 0 lỗi, không trùng số. Chạy operational (chưa chạy 30' ở đây).
 - **DR runbook + go-live checklist — DELIVERABLE.** `docs/deployment-guide.md` (PITR-to-crash, reconcile counter từ `MAX(bills)`, DR pass = **không trùng số** + temp reconcile — C7/V3) + `docs/golive-cn1-checklist.md` (bảng giá ký, PIN, đăng ký thiết bị + test máy in, DR drill có owner+ngày, pilot song song 2 tuần).

@@ -74,4 +74,4 @@ Lõi bán hàng **online trước**: mở ca, tạo bill (giá server, snapshot)
 
 **Hủy bill UI — DONE (3 test).** `ShiftBillsPanel` liệt kê bill ca (`GET /sales/bills?shiftId`) + dialog hủy (lý do + id QL + PIN → `POST /sales/bills/:id/cancel`); 403 (PIN sai/IDOR) hiện lỗi rõ; giữ số. Smoke test live: tạo bill → PIN sai 403 → PIN đúng CANCELLED giữ số ✅.
 
-**Còn lại P7 (polish, không chặn M1 core):** nối print stub POS → print-agent (HTTP); VietQR hoàn thiện (QR động từ TK CN). Load test BH-02.6 (<1s ở 5× tải) → **P9**.
+**Còn lại P7 (polish):** VietQR hoàn thiện (QR động từ TK CN — hiện tối thiểu). Print-agent đã nối POS (auto-print + in lại BẢN SAO, không chặn bán). Load test BH-02.6 → P9.
