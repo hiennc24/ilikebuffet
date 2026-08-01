@@ -53,3 +53,13 @@ Màn theo dõi ca thời gian thực cho QL (BH-08) + hardening để pilot bán
 
 <!-- Updated: Validation Session 1 — V3: chốt DR = PITR-to-crash (WAL archiving), RPO ~giây. Ưu tiên hơn restore-to-backup để tránh reset counter. -->
 - **V3 (DR posture)** — dùng **PITR-to-crash (WAL archiving)**, RPO ~giây; runbook: replay WAL tới sát crash, reconcile `last_no` từ `MAX(bills)`. Restore-to-snapshot chỉ là fallback.
+
+## Progress
+
+- **Realtime monitor (BH-08) — DONE (code + test).** `GET /sales/shifts/:id/summary` tổng hợp ca: doanh thu, số khách, vé theo loại, hủy, nhịp bill 30'; **branch-scope** (chain-wide bypass). Test aggregate + scope. (Màn hình FE monitor = cut-candidate #3, chưa dựng — endpoint sẵn sàng.)
+- **Stuck-sync alert (BH-05.7) — DONE.** POS cảnh báo banner khi bill kẹt outbox >15' lúc online. Test `hasStuckBills`.
+- **Load test (BH-02.6) — DELIVERABLE.** `load-test/bill-create-load.js` (k6): gate p95<1s @5× tải (40 bill/phút) 30', 0 lỗi, không trùng số. Chạy operational (chưa chạy 30' ở đây).
+- **DR runbook + go-live checklist — DELIVERABLE.** `docs/deployment-guide.md` (PITR-to-crash, reconcile counter từ `MAX(bills)`, DR pass = **không trùng số** + temp reconcile — C7/V3) + `docs/golive-cn1-checklist.md` (bảng giá ký, PIN, đăng ký thiết bị + test máy in, DR drill có owner+ngày, pilot song song 2 tuần).
+- **Operational còn lại (không phải code):** chạy load test 30' thật + DR drill có owner/ngày trước golive; FE monitor screen nếu không cắt.
+
+Toàn bộ code M1 xanh: 550 test (shared 60 · print-agent 10 · admin 26 · POS 53 · API unit 308 · API e2e 93).
