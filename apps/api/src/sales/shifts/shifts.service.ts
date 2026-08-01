@@ -133,6 +133,7 @@ export class ShiftsService {
           countedCashVnd: dto.countedCashVnd,
           varianceVnd,
           varianceNote: dto.varianceNote ?? null,
+          tempHighWater: dto.tempHighWater ?? null,
         },
       });
 

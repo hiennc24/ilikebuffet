@@ -28,8 +28,35 @@ export interface SyncBillDto {
   lines: SyncBillLineDto[];
 }
 
+/**
+ * A draft that was assigned a temp number on-device but discarded before it
+ * ever synced (C8). Syncing the void lets reconciliation tell an intentional
+ * void from a suppressed/lost bill (a hole below the shift high-water-mark).
+ */
+export interface SyncVoidDto {
+  tempNumber: string;
+  branchId: string;
+  deviceId: string;
+  clientUuid?: string;
+  reason?: string;
+}
+
 export interface SyncBatchDto {
   bills: SyncBillDto[];
+  /** Voided-before-sync temp numbers to record (C8). */
+  voids?: SyncVoidDto[];
+}
+
+/**
+ * Force-close a stuck offline bill (H3): a bill the device printed but can never
+ * sync normally. A manager PIN approves accepting it as a QUARANTINED sale so the
+ * shift is not blocked forever and the paper bill is still accounted.
+ */
+export interface ForceCloseBillDto extends SyncBillDto {
+  reason: string;
+  /** QUAN_LY_CN user id whose approval PIN authorises the force-close. */
+  managerId: string;
+  pin: string;
 }
 
 // ─── Response types ───────────────────────────────────────────────────────────
@@ -50,4 +77,6 @@ export interface SyncBillResult {
 export interface SyncBatchResult {
   /** Full map: one entry per bill in request — never partial (C5). */
   results: SyncBillResult[];
+  /** Count of void-before-sync events recorded (C8). */
+  voidsRecorded?: number;
 }

@@ -217,6 +217,60 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
     expect(data.quarantined).toBe(false);
   });
 
+  // ── 7d. H3 force-close → committed + quarantined with approver ────────────
+  it("force-close accepts a stuck bill as quarantined with the manager as approver (H3)", async () => {
+    const prisma = makePrisma();
+    const audit = makeAudit();
+    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber());
+
+    const result = await svc.processBill(BASE_BILL, ACTOR, ALLOWED, {
+      forceQuarantine: { reason: "force_close_stuck: device dead", approvedBy: "mgr-1" },
+    });
+
+    expect(result.status).toBe("committed"); // paper bill must still be accounted
+    const data = prisma._tx.bill.create.mock.calls[0][0].data as { quarantined: boolean; quarantineReason: string };
+    expect(data.quarantined).toBe(true);
+    expect(data.quarantineReason).toMatch(/force_close_stuck/);
+    expect(audit.record).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ action: "bill.force_close", approvedBy: "mgr-1" }),
+    );
+  });
+
+  // ── 7e. C8 void-before-sync → audit event, branch-gated ──────────────────
+  it("records a void-before-sync audit event for an allowed branch (C8)", async () => {
+    const prisma = makePrisma();
+    const audit = makeAudit();
+    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber());
+
+    const ok = await svc.recordVoid(
+      { tempNumber: "CN01-260801-TDEV009", branchId: "branch-1", deviceId: "dev-1", reason: "khách bỏ" },
+      ACTOR,
+      ALLOWED,
+    );
+
+    expect(ok).toBe(true);
+    expect(audit.record).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ action: "bill.void_before_sync", branchId: "branch-1" }),
+    );
+  });
+
+  it("rejects a void-before-sync for a branch not allowed by the token (C1/C8)", async () => {
+    const prisma = makePrisma();
+    const audit = makeAudit();
+    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber());
+
+    const ok = await svc.recordVoid(
+      { tempNumber: "T1", branchId: "branch-other", deviceId: "dev-1" },
+      ACTOR,
+      new Set(["branch-1"]),
+    );
+
+    expect(ok).toBe(false);
+    expect(audit.record).not.toHaveBeenCalled();
+  });
+
   // ── 8. tempNumber stored on bill (C8) ─────────────────────────────────────
   it("passes tempNumber to bill.create for audit/high-water-mark (C8)", async () => {
     const prisma = makePrisma();

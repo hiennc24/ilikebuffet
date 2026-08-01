@@ -14,6 +14,8 @@ export interface CloseShiftDto {
   countedCashVnd: number;
   /** Required when countedCashVnd !== expectedCashVnd. */
   varianceNote?: string;
+  /** Highest device-issued temp sequence this shift (C8 high-water-mark). */
+  tempHighWater?: number;
 }
 
 export interface ForceCloseShiftDto {

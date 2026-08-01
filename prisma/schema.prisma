@@ -556,6 +556,10 @@ model Shift {
   varianceNote    String?
   /// When a shift is force-closed to unstick a device, the manager who approved it.
   forceClosedBy   String?
+  /// Highest device-issued temp sequence for this shift, uploaded at close (C8).
+  /// Reconciliation compares synced temp numbers against this high-water-mark to
+  /// tell a voided/never-synced bill (hole below HWM) from mere absence.
+  tempHighWater   Int?
 
   bills Bill[]
 

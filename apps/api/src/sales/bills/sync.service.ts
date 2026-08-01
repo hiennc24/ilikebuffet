@@ -20,7 +20,7 @@ import { PricingService } from "../pricing/pricing.service";
 import { BillNumberService } from "./bill-number.service";
 import { checkFreeTicketPolicy } from "./bill-policy";
 import { toVnDateStr } from "@ilikebuffet/shared";
-import type { SyncBillDto, SyncBillResult } from "./sync.dto";
+import type { SyncBillDto, SyncBillResult, SyncVoidDto } from "./sync.dto";
 
 /** H5: device-clock skew beyond this is accepted-but-quarantined (±2 min). */
 const CLOCK_SKEW_TOLERANCE_MS = 2 * 60 * 1000;
@@ -48,6 +48,7 @@ export class SyncService {
     dto: SyncBillDto,
     actorId: string,
     allowedBranchIds: Set<string>,
+    opts?: { forceQuarantine?: { reason: string; approvedBy: string } },
   ): Promise<SyncBillResult> {
     const base: Pick<SyncBillResult, "clientUuid" | "tempNumber"> = {
       clientUuid: dto.clientUuid,
@@ -164,14 +165,19 @@ export class SyncService {
         const guestCount = resolvedLines.reduce((sum, l) => sum + l.qty, 0);
         const totalVnd = resolvedLines.reduce((sum, l) => sum + l.lineTotalVnd, 0);
 
-        // H5: a bill whose device clock drifted beyond tolerance is still
-        // accepted (never reject a printed sale) but quarantined for accounting
-        // review — the createdAt used for pricing/date may be unreliable.
+        // Quarantine (accept-but-flag; never reject a printed sale):
+        //  H3 — a force-closed stuck bill is always quarantined with its reason.
+        //  H5 — a device clock drifted beyond tolerance (createdAt-derived
+        //       price/date may be unreliable).
+        const forced = opts?.forceQuarantine;
         const skewMs = Math.abs(dto.clockOffsetMs ?? 0);
-        const quarantined = skewMs > CLOCK_SKEW_TOLERANCE_MS;
-        const quarantineReason = quarantined
-          ? `clock_skew_${Math.round(skewMs / 1000)}s_exceeds_${CLOCK_SKEW_TOLERANCE_MS / 1000}s`
-          : null;
+        const skewExceeded = skewMs > CLOCK_SKEW_TOLERANCE_MS;
+        const quarantined = !!forced || skewExceeded;
+        const quarantineReason = forced
+          ? forced.reason
+          : skewExceeded
+            ? `clock_skew_${Math.round(skewMs / 1000)}s_exceeds_${CLOCK_SKEW_TOLERANCE_MS / 1000}s`
+            : null;
 
         // Allocate official gapless number (counter→audit lock order — C4)
         const { seq, number } = await this.billNumber.allocate(
@@ -220,17 +226,19 @@ export class SyncService {
         });
 
         await this.audit.record(tx, {
-          action: "bill.sync",
+          action: forced ? "bill.force_close" : "bill.sync",
           objectType: "bill",
           objectId: bill.id,
           actorId,
           branchId: dto.branchId,
+          approvedBy: forced?.approvedBy ?? null,
+          reason: forced?.reason ?? null,
           after: {
             number,
             tempNumber: dto.tempNumber,
             clientUuid: dto.clientUuid,
             totalVnd,
-            source: "offline_sync",
+            source: forced ? "force_close_stuck" : "offline_sync",
             quarantined,
             quarantineReason,
           },
@@ -245,6 +253,27 @@ export class SyncService {
       this.logger.error(`Sync bill failed clientUuid=${dto.clientUuid}: ${message}`);
       return { ...base, status: "retry", error: message };
     }
+  }
+
+  /**
+   * Record a draft that was voided on-device before it ever synced (C8). No bill
+   * row exists; we append an audit event so reconciliation (GA-02) can tell an
+   * intentional void from a suppressed/lost bill (a hole below the shift HWM).
+   * Returns true if recorded, false if the branch isn't allowed by the token.
+   */
+  async recordVoid(dto: SyncVoidDto, actorId: string, allowedBranchIds: Set<string>): Promise<boolean> {
+    if (!allowedBranchIds.has(dto.branchId)) return false;
+    await this.audit.record(this.prisma, {
+      action: "bill.void_before_sync",
+      objectType: "bill",
+      objectId: dto.clientUuid ?? dto.tempNumber,
+      actorId,
+      branchId: dto.branchId,
+      deviceId: dto.deviceId,
+      reason: dto.reason ?? null,
+      after: { tempNumber: dto.tempNumber, clientUuid: dto.clientUuid, reason: dto.reason },
+    });
+    return true;
   }
 
   private async recordRejectionAudit(dto: SyncBillDto, actorId: string, reason: string) {
