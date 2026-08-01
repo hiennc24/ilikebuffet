@@ -156,7 +156,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         window.location.replace("/login");
       }),
     });
-  });
+    // Re-sync only when a captured input changes; the closures then read the
+    // latest tokens/branch without rebuilding the client every render.
+  }, [apiBaseUrl, state.accessToken, state.refreshToken, state.selectedBranchId, onAuthFailure]);
 
   // ── login ──────────────────────────────────────────────────────────────────
 
