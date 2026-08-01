@@ -25,7 +25,6 @@ import {
 import { refreshCatalog, getCachedCatalog } from "../offline/catalog-cache";
 import { resolveOfflinePrice } from "../offline/offline-pricing";
 import type { CatalogCache } from "../db/pos-db";
-import type { PriceBookSnapshot } from "@ilikebuffet/shared";
 import { PayDialog } from "./pay-dialog";
 
 // ── API types ──────────────────────────────────────────────────────────────
@@ -48,7 +47,7 @@ interface TicketTypeWithPrice extends TicketType {
 /** Price a cached catalog client-side with the shared resolver (same code the
  *  server uses), so online and offline show the same prices (HI-3 parity). */
 function priceCatalog(catalog: CatalogCache, branchId: string): TicketTypeWithPrice[] {
-  const snapshot = catalog.snapshot as PriceBookSnapshot;
+  const snapshot = catalog.snapshot;
   const now = new Date();
   return catalog.ticketTypes
     .map((t) => ({

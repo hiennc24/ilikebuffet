@@ -10,6 +10,7 @@
  */
 
 import Dexie, { type Table } from "dexie";
+import type { PriceBookSnapshot } from "@ilikebuffet/shared";
 
 // ── Draft bill types ────────────────────────────────────────────────────────
 
@@ -114,9 +115,9 @@ export interface CatalogCache {
   /** Primary key. */
   branchId: string;
   branchCode: string;
-  /** PriceBookSnapshot from GET /sales/pricing/versions/snapshot (typed loosely
-   *  to avoid a hard schema coupling in the Dexie layer). */
-  snapshot: unknown;
+  /** Price-book snapshot from GET /sales/pricing/versions/snapshot, priced
+   *  offline with the shared resolver (same shape the server uses). */
+  snapshot: PriceBookSnapshot;
   ticketTypes: CachedTicketType[];
   /** ISO-8601 when this catalog was cached. */
   cachedAt: string;

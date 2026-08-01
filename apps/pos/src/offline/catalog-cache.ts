@@ -23,6 +23,9 @@ interface BranchResp {
   code?: string;
 }
 
+/** Ticket type as returned by the API — carries a status the cache filters on. */
+type FetchedTicketType = CachedTicketType & { status?: string };
+
 /**
  * Fetch the catalog for a branch and store it. Returns the cached record, or
  * null if any fetch failed (caller stays on whatever was previously cached).
@@ -31,7 +34,7 @@ export async function refreshCatalog(api: CatalogApi, branchId: string): Promise
   try {
     const [snapshot, ticketTypes, branches] = await Promise.all([
       api.get<PriceBookSnapshot>("/sales/pricing/versions/snapshot"),
-      api.get<CachedTicketType[]>("/sales/ticket-types"),
+      api.get<FetchedTicketType[]>("/sales/ticket-types"),
       api.get<BranchResp[] | { data: BranchResp[] }>("/branches"),
     ]);
     const list = Array.isArray(branches) ? branches : branches.data ?? [];
@@ -41,7 +44,7 @@ export async function refreshCatalog(api: CatalogApi, branchId: string): Promise
       branchId,
       branchCode,
       snapshot,
-      ticketTypes: ticketTypes.filter((t) => (t as { status?: string }).status !== "INACTIVE"),
+      ticketTypes: ticketTypes.filter((t) => t.status !== "INACTIVE"),
       cachedAt: new Date().toISOString(),
     };
     await posDb.catalog_cache.put(record);

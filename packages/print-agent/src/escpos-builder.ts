@@ -62,11 +62,15 @@ export function formatVnd(amount: number): string {
 
 /** Left text + right text on one line, right-aligned to `width`, truncating left if needed. */
 function twoCol(left: string, right: string, width = RECEIPT_COLS): string {
-  const gap = width - left.length - right.length;
-  if (gap >= 1) return left + " ".repeat(gap) + right;
+  // Count columns as NFC code points, not UTF-16 units, so a Vietnamese glyph
+  // (e.g. a combining "ế") is one column and truncation never splits it.
+  const l = [...left.normalize("NFC")];
+  const r = [...right.normalize("NFC")];
+  const gap = width - l.length - r.length;
+  if (gap >= 1) return l.join("") + " ".repeat(gap) + r.join("");
   // Not enough room: truncate the left part.
-  const keep = Math.max(0, width - right.length - 1);
-  return left.slice(0, keep) + " " + right;
+  const keep = Math.max(0, width - r.length - 1);
+  return l.slice(0, keep).join("") + " " + r.join("");
 }
 
 /**
