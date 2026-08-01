@@ -60,17 +60,6 @@ describe("shift lifecycle (integration)", () => {
 
   // ── helpers ──────────────────────────────────────────────────────────────────
 
-  /** Seed a minimal branch row required by no FK (shift has no branch FK in schema). */
-  async function seedBranch(id: string) {
-    // Branch FK does not exist on shift — seed only if needed by other tables.
-    // We use raw upsert to keep the helper idempotent.
-    await prisma.$executeRawUnsafe(`
-      INSERT INTO branch (id, code, name, status, address, phone, "createdAt")
-      VALUES ('${id}', 'T${id.slice(-3).toUpperCase()}', 'Test Branch', 'ACTIVE', 'Addr', '0000', now())
-      ON CONFLICT (id) DO NOTHING
-    `);
-  }
-
   // ── 1. Partial-unique: second OPEN shift on same device → ConflictException ──
 
   describe("open — partial unique enforcement", () => {

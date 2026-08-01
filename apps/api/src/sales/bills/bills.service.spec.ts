@@ -10,7 +10,7 @@
  *  6. guestCount includes free tickets in the total.
  *  7. Idempotency: duplicate clientUuid returns existing bill without re-creating.
  */
-import { BadRequestException, ConflictException, ForbiddenException, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ConflictException, ForbiddenException } from "@nestjs/common";
 import { BillsService } from "./bills.service";
 import type { PricingService } from "../pricing/pricing.service";
 import type { BillNumberService } from "./bill-number.service";

@@ -296,6 +296,11 @@ export class DiscountsService {
     dto: VerifyApprovalPinDto,
     actorId?: string,
     actorRole?: string,
+    // When a caller runs the approved operation in its own transaction, it can
+    // pass that tx so the success reset + "verified" audit commit atomically with
+    // the operation. The wrong-PIN failure counter/lock always commits on the
+    // base client — it must survive even if the caller later rolls back.
+    successTx?: Prisma.TransactionClient,
   ): Promise<VerifyApprovalPinResult> {
     const manager = await this.prisma.appUser.findUnique({
       where: { id: dto.managerId },
@@ -348,13 +353,16 @@ export class DiscountsService {
     const valid = await argon2.verify(manager.approvalPinHash, dto.pin);
 
     if (valid) {
+      // Success writes ride the caller's tx when provided, so the approval and
+      // the operation it authorises commit (or roll back) together.
+      const writer = successTx ?? this.prisma;
       // Reset failure count on success.
-      await this.prisma.appUser.update({
+      await writer.appUser.update({
         where: { id: dto.managerId },
         data: { pinFailedCount: 0, pinLockedUntil: null },
       });
 
-      await this.audit.record(this.prisma, {
+      await this.audit.record(writer, {
         actorId,
         actorRole,
         action: "approval_pin.verified",

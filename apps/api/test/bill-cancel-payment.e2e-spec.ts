@@ -277,6 +277,46 @@ describe("Bill payments + cancellation (integration)", () => {
       .expect(400);
   });
 
+  it("(a5) CASH over-tender records the change", async () => {
+    const bill = await createBill("pay-change-uuid");
+
+    const res = await request(app.getHttpServer())
+      .post(`/sales/bills/${bill.id}/payments`)
+      .set("Authorization", `Bearer ${cashierToken}`)
+      .send({
+        payments: [{ method: "CASH", amountVnd: bill.totalVnd, tenderedVnd: bill.totalVnd + 50_000 }],
+      })
+      .expect(201);
+
+    const paid = res.body as { paidAt: string | null };
+    expect(paid.paidAt).not.toBeNull();
+
+    const dbPayment = await prisma.payment.findFirst({ where: { billId: bill.id } });
+    expect(dbPayment!.amountVnd).toBe(bill.totalVnd); // applied amount == bill total
+    expect(dbPayment!.tenderedVnd).toBe(bill.totalVnd + 50_000);
+    expect(dbPayment!.changeVnd).toBe(50_000);
+  });
+
+  it("(a6) tenderedVnd on a non-CASH method → 400", async () => {
+    const bill = await createBill("pay-tender-noncash-uuid");
+
+    await request(app.getHttpServer())
+      .post(`/sales/bills/${bill.id}/payments`)
+      .set("Authorization", `Bearer ${cashierToken}`)
+      .send({ payments: [{ method: "VIETQR", amountVnd: bill.totalVnd, tenderedVnd: bill.totalVnd + 1 }] })
+      .expect(400);
+  });
+
+  it("(a7) tenderedVnd less than amountVnd → 400", async () => {
+    const bill = await createBill("pay-tender-short-uuid");
+
+    await request(app.getHttpServer())
+      .post(`/sales/bills/${bill.id}/payments`)
+      .set("Authorization", `Bearer ${cashierToken}`)
+      .send({ payments: [{ method: "CASH", amountVnd: bill.totalVnd, tenderedVnd: bill.totalVnd - 1 }] })
+      .expect(400);
+  });
+
   // ─── (b) Cancellation ──────────────────────────────────────────────────────
 
   it("(b5) cancel a bill whose shift is CLOSED → 403", async () => {

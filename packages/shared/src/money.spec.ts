@@ -4,6 +4,7 @@ import {
   splitVndEvenly,
   applyPercent,
   formatVnd,
+  sumVnd,
   MoneyError,
 } from "./money";
 
@@ -73,6 +74,22 @@ describe("money — VND integer discipline", () => {
     it("rejects when the intermediate product overflows safe-integer range", () => {
       // amount * percent (~1e17) exceeds MAX_SAFE_INTEGER (~9e15) -> precision lost.
       expect(() => applyPercent(999_999_999_999, 100_000)).toThrow(MoneyError);
+    });
+  });
+
+  describe("sumVnd — exact integer totals", () => {
+    it("sums integer đồng exactly", () => {
+      expect(sumVnd([150_000, 90_000, 200_000])).toBe(440_000);
+      expect(sumVnd([])).toBe(0);
+    });
+
+    it("rejects a non-integer addend (corrupt line can't poison a total)", () => {
+      expect(() => sumVnd([100_000, 0.5])).toThrow(MoneyError);
+      expect(() => sumVnd([100_000, NaN])).toThrow(MoneyError);
+    });
+
+    it("rejects when the running total overflows safe-integer range", () => {
+      expect(() => sumVnd([Number.MAX_SAFE_INTEGER, 1])).toThrow(MoneyError);
     });
   });
 

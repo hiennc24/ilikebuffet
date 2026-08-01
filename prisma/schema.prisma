@@ -662,8 +662,15 @@ model Payment {
   id        String        @id @default(cuid())
   billId    String
   method    PaymentMethod
+  /// Amount applied to the bill. Sum of amountVnd across a bill's payments
+  /// equals the bill total (validated server-side).
   amountVnd Int
-  /// Bank/card reference for VietQR/CARD (manual confirm; auto-reconcile = TC-02 wave).
+  /// Cash handed over by the customer for a CASH payment (>= amountVnd). Null
+  /// for non-cash or exact-pay. changeVnd = tenderedVnd - amountVnd.
+  tenderedVnd Int?
+  /// Change returned to the customer for a cash over-tender. Server-computed.
+  changeVnd   Int?
+  /// Bank/card reference for VietQR/CARD (manual confirm; auto-reconcile later).
   reference String?
   createdAt DateTime      @default(now()) @db.Timestamptz(3)
 

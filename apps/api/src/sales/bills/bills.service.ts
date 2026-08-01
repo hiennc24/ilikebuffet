@@ -23,8 +23,9 @@ import { AuditService } from "../../audit/audit.service";
 import { PricingService } from "../pricing/pricing.service";
 import { BillNumberService } from "./bill-number.service";
 import { DiscountsService } from "../discounts/discounts.service";
-import { toVnDateStr } from "@ilikebuffet/shared";
+import { sumVnd, toVnDateStr } from "@ilikebuffet/shared";
 import { checkFreeTicketPolicy } from "./bill-policy";
+import { buildResolvedLines } from "./resolved-lines";
 import { assertBranchAccess, type BranchAccess } from "../../platform/rbac/branch-access";
 import type { CreateBillDto, CancelBillDto } from "./bills.dto";
 
@@ -84,55 +85,18 @@ export class BillsService {
       const createdAt = new Date();
       const businessDate = toVnDateStr(createdAt);
 
-      // Step 4: resolve prices for each line (server-authoritative)
-      const resolvedLines: Array<{
-        ticketTypeId: string;
-        ticketTypeName: string;
-        unitPriceVnd: number;
-        qty: number;
-        lineTotalVnd: number;
-        isFree: boolean;
-        timeWindowId: string | null;
-        timeWindowName: string | null;
-        dayType: string | null;
-        priceVersionId: string | null;
-      }> = [];
-
-      // Batch-load ticket types + build the price resolver ONCE (snapshot +
-      // holiday loaded a single time), instead of per line (HI-1).
+      // Step 4: resolve prices for each line (server-authoritative). Batch-load
+      // ticket types + build the price resolver ONCE (snapshot + holiday loaded a
+      // single time), then resolve every line from it (HI-1). Online create
+      // rejects a line with no applicable price.
       const ticketTypes = await tx.ticketType.findMany({
         where: { id: { in: [...new Set(dto.lines.map((l) => l.ticketTypeId))] } },
       });
       const ticketTypeById = new Map(ticketTypes.map((t) => [t.id, t]));
       const resolver = await this.pricing.buildResolver(dto.branchId, createdAt);
-
-      for (const lineDto of dto.lines) {
-        const ticketType = ticketTypeById.get(lineDto.ticketTypeId);
-        if (!ticketType) {
-          throw new BadRequestException(`TicketType ${lineDto.ticketTypeId} not found`);
-        }
-
-        const priceResult = resolver.resolve(lineDto.ticketTypeId, ticketType.isFree);
-        if (priceResult.kind === "NO_PRICE") {
-          throw new BadRequestException("Ngoài khung giờ hoặc chưa có giá");
-        }
-
-        const unitPriceVnd = priceResult.priceVnd;
-        const lineTotalVnd = unitPriceVnd * lineDto.qty;
-
-        resolvedLines.push({
-          ticketTypeId: lineDto.ticketTypeId,
-          ticketTypeName: ticketType.name,
-          unitPriceVnd,
-          qty: lineDto.qty,
-          lineTotalVnd,
-          isFree: ticketType.isFree,
-          timeWindowId: priceResult.timeWindowId || null,
-          timeWindowName: resolver.timeWindowName(priceResult.timeWindowId),
-          dayType: priceResult.dayType ?? null,
-          priceVersionId: priceResult.versionId || null,
-        });
-      }
+      const resolvedLines = buildResolvedLines(dto.lines, ticketTypeById, resolver, {
+        rejectOnNoPrice: true,
+      });
 
       // Step 5: policy checks
       const violation = checkFreeTicketPolicy(resolvedLines);
@@ -141,7 +105,7 @@ export class BillsService {
       }
 
       const guestCount = resolvedLines.reduce((sum, l) => sum + l.qty, 0);
-      const totalVnd = resolvedLines.reduce((sum, l) => sum + l.lineTotalVnd, 0);
+      const totalVnd = sumVnd(resolvedLines.map((l) => l.lineTotalVnd));
 
       // Step 6: allocate bill number (inside same tx, counter locked)
       const { seq, number } = await this.billNumber.allocate(
@@ -282,22 +246,24 @@ export class BillsService {
       );
     }
 
-    // Verify manager approval PIN
-    const pinResult = await this.discounts.verifyApprovalPin(
-      {
-        managerId: dto.managerId,
-        pin: dto.pin,
-        branchId: bill.branchId,
-        reason: dto.reason,
-      },
-      actorId,
-      role,
-    );
-    if (!pinResult.approved) {
-      throw new ForbiddenException("PIN quản lý không hợp lệ hoặc đã bị khoá");
-    }
-
     return this.prisma.withTx(async (tx) => {
+      // Verify the manager PIN inside the tx so the approval audit commits
+      // atomically with the cancel (the wrong-PIN counter still commits eagerly).
+      const pinResult = await this.discounts.verifyApprovalPin(
+        {
+          managerId: dto.managerId,
+          pin: dto.pin,
+          branchId: bill.branchId,
+          reason: dto.reason,
+        },
+        actorId,
+        role,
+        tx,
+      );
+      if (!pinResult.approved) {
+        throw new ForbiddenException("PIN quản lý không hợp lệ hoặc đã bị khoá");
+      }
+
       const cancelledAt = new Date();
 
       const before = {

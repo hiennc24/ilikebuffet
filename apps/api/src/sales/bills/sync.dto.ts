@@ -11,10 +11,12 @@ export interface SyncBillLineDto {
   qty: number;
 }
 
-/** A payment taken offline, synced with the bill (BH-03/BH-05). */
+/** A payment taken offline, synced with the bill. */
 export interface SyncPaymentDto {
   method: "CASH" | "VIETQR" | "CARD";
   amountVnd: number;
+  /** Cash handed over (CASH only, >= amountVnd); server stores change. */
+  tenderedVnd?: number;
   reference?: string;
 }
 

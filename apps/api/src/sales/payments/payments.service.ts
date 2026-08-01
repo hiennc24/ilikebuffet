@@ -46,6 +46,14 @@ export class PaymentsService {
       if (!Number.isInteger(p.amountVnd) || p.amountVnd <= 0) {
         throw new BadRequestException("amountVnd phải là số nguyên dương");
       }
+      if (p.tenderedVnd !== undefined) {
+        if (p.method !== "CASH") {
+          throw new BadRequestException("Chỉ tiền mặt mới có số tiền khách đưa");
+        }
+        if (!Number.isInteger(p.tenderedVnd) || p.tenderedVnd < p.amountVnd) {
+          throw new BadRequestException("Tiền khách đưa phải là số nguyên và không nhỏ hơn số tiền phải trả");
+        }
+      }
     }
 
     // Load bill outside tx for a quick pre-check
@@ -82,6 +90,9 @@ export class PaymentsService {
           billId,
           method: p.method as PaymentMethod,
           amountVnd: p.amountVnd,
+          // Cash over-tender: store what the customer handed over and the change.
+          tenderedVnd: p.tenderedVnd ?? null,
+          changeVnd: p.tenderedVnd !== undefined ? p.tenderedVnd - p.amountVnd : null,
           reference: p.reference ?? null,
         })),
       });
@@ -103,7 +114,12 @@ export class PaymentsService {
         after: {
           paidAt,
           totalVnd: bill.totalVnd,
-          payments: dto.payments.map((p) => ({ method: p.method, amountVnd: p.amountVnd })),
+          payments: dto.payments.map((p) => ({
+            method: p.method,
+            amountVnd: p.amountVnd,
+            tenderedVnd: p.tenderedVnd ?? null,
+            changeVnd: p.tenderedVnd !== undefined ? p.tenderedVnd - p.amountVnd : null,
+          })),
         },
       });
 

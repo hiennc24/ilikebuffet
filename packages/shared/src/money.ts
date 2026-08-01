@@ -91,6 +91,23 @@ export function multiplyVnd(amount: VndAmount, count: number): VndAmount {
   return product;
 }
 
+/**
+ * Sum integer đồng amounts exactly. Each addend must be an integer đồng and the
+ * running total is guarded against overflowing the safe-integer range, so a
+ * corrupt line can't silently poison a bill/reconciliation total.
+ */
+export function sumVnd(amounts: readonly VndAmount[]): VndAmount {
+  let total = 0;
+  for (const amount of amounts) {
+    assertVndInteger(amount);
+    total += amount;
+    if (Math.abs(total) > Number.MAX_SAFE_INTEGER) {
+      throw new MoneyError(`money sum overflows safe integer range at ${total}`);
+    }
+  }
+  return total;
+}
+
 const vndFormatter = new Intl.NumberFormat("vi-VN");
 
 /** Format integer đồng for vi-VN display, e.g. 150000 -> "150.000 ₫". */

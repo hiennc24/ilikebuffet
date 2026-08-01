@@ -80,13 +80,16 @@ function makePrisma(txOverrides: Record<string, any> = {}, existingBill: unknown
 
 // ─── Base DTO ─────────────────────────────────────────────────────────────────
 
+// Near server time so the createdAt-clamp guard treats these as plausible.
+const RECENT_CREATED_AT = new Date().toISOString();
+
 const BASE_BILL = {
   clientUuid: "uuid-1",
   tempNumber: "CN01-260801-T00010001",
   branchId: "branch-1",
   shiftId: "shift-1",
   deviceId: "dev-1",
-  createdAt: "2026-08-01T09:00:00.000Z",
+  createdAt: RECENT_CREATED_AT,
   lines: [{ ticketTypeId: "tt-1", qty: 2 }],
 };
 
@@ -247,6 +250,47 @@ describe("SyncService — offline bill sync (C5 / C1 / C2)", () => {
 
     const data = prisma._tx.bill.create.mock.calls[0][0].data as { quarantined: boolean };
     expect(data.quarantined).toBe(false);
+  });
+
+  it("quarantines a bill whose createdAt is implausibly far from server time", async () => {
+    const prisma = makePrisma();
+    const billNum = makeBillNumber();
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), billNum);
+
+    // A createdAt years off (with a truthful clockOffsetMs) is honored for the
+    // counter/date (offline bills may sync late) but flagged for reconciliation.
+    const result = await svc.processBill(
+      { ...BASE_BILL, createdAt: "2020-01-01T00:00:00.000Z", clockOffsetMs: 0 },
+      ACTOR,
+      ALLOWED,
+    );
+
+    expect(result.status).toBe("committed"); // never reject a printed sale
+    const data = prisma._tx.bill.create.mock.calls[0][0].data as {
+      quarantined: boolean;
+      quarantineReason: string | null;
+      createdAt: Date;
+    };
+    expect(data.quarantined).toBe(true);
+    expect(data.quarantineReason).toMatch(/created_at_implausible/);
+    // createdAt is trusted, not overwritten: the bill + counter keep the 2020 date.
+    expect(data.createdAt.getUTCFullYear()).toBe(2020);
+    expect(billNum.allocate.mock.calls[0][3].startsWith("2020")).toBe(true);
+  });
+
+  it("rejects a bill with a non-positive/fractional qty (corruption, not a sale)", async () => {
+    const prisma = makePrisma();
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+
+    const result = await svc.processBill(
+      { ...BASE_BILL, lines: [{ ticketTypeId: "tt-1", qty: -3 }] },
+      ACTOR,
+      ALLOWED,
+    );
+
+    expect(result.status).toBe("rejected");
+    expect(result.error).toBe("invalid_qty");
+    expect(prisma._tx.bill.create).not.toHaveBeenCalled();
   });
 
   // ── 7d. H3 force-close → committed + quarantined with approver ────────────

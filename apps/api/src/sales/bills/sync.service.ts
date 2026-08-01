@@ -19,11 +19,21 @@ import { AuditService } from "../../audit/audit.service";
 import { PricingService } from "../pricing/pricing.service";
 import { BillNumberService } from "./bill-number.service";
 import { checkFreeTicketPolicy } from "./bill-policy";
-import { toVnDateStr } from "@ilikebuffet/shared";
+import { buildResolvedLines } from "./resolved-lines";
+import { sumVnd, toVnDateStr } from "@ilikebuffet/shared";
 import type { SyncBillDto, SyncBillResult, SyncVoidDto } from "./sync.dto";
 
-/** H5: device-clock skew beyond this is accepted-but-quarantined (±2 min). */
+/** Device-clock skew beyond this is accepted-but-quarantined (±2 min). */
 const CLOCK_SKEW_TOLERANCE_MS = 2 * 60 * 1000;
+
+/**
+ * A device-set createdAt more than this far from server receipt is implausible
+ * for an offline bill (which normally syncs within its shift/day) and is flagged
+ * for reconciliation. The timestamp is still honored for the counter/date/price
+ * (offline bills are legitimately created before they sync) — this is a flag,
+ * not an override.
+ */
+const CREATED_AT_PLAUSIBILITY_MS = 24 * 60 * 60 * 1000;
 
 @Injectable()
 export class SyncService {
@@ -54,6 +64,9 @@ export class SyncService {
       clientUuid: dto.clientUuid,
       tempNumber: dto.tempNumber,
     };
+    // Server receipt time — the authoritative clock used to sanity-check the
+    // device-set createdAt before it drives the counter/business-date.
+    const serverNow = new Date();
 
     // C1: bill's branchId must be in the caller's allowed set
     if (!allowedBranchIds.has(dto.branchId)) {
@@ -70,6 +83,15 @@ export class SyncService {
       this.logger.warn(`Sync device mismatch: dto.deviceId=${dto.deviceId} token=${opts.tokenDeviceId}`);
       await this.recordRejectionAudit(dto, actorId, "device_mismatch");
       return { ...base, status: "rejected", error: "device not allowed by token" };
+    }
+
+    // A non-integer / non-positive qty is corruption, not a legitimate printed
+    // sale — reject it instead of committing a negative/NaN total. (The
+    // never-reject rule protects real sales, not tampered/garbled payloads.)
+    if (dto.lines.some((l) => !Number.isInteger(l.qty) || l.qty < 1)) {
+      this.logger.warn(`Sync invalid qty: clientUuid=${dto.clientUuid}`);
+      await this.recordRejectionAudit(dto, actorId, "invalid_qty");
+      return { ...base, status: "rejected", error: "invalid_qty" };
     }
 
     const contentHash = computeContentHash(dto);
@@ -112,54 +134,28 @@ export class SyncService {
         const branch = await tx.branch.findUnique({ where: { id: dto.branchId } });
         if (!branch) throw new Error(`Branch ${dto.branchId} not found`);
 
-        // C2: server recomputes all prices — client lines have no price
+        // C2: server recomputes all prices — client lines have no price.
+        // Offline bills are created before they sync, so the device-set createdAt
+        // is trusted to drive the gapless counter + business-date + price (V1:
+        // price-deciding timestamp = createdAt). We do NOT overwrite it, but a
+        // createdAt implausibly far from server time (independent of the reported
+        // clockOffsetMs) is flagged for reconciliation — see quarantine below.
         const createdAt = new Date(dto.createdAt);
         const businessDate = toVnDateStr(createdAt);
-
-        const resolvedLines: Array<{
-          ticketTypeId: string;
-          ticketTypeName: string;
-          unitPriceVnd: number;
-          qty: number;
-          lineTotalVnd: number;
-          isFree: boolean;
-          timeWindowId: string | null;
-          timeWindowName: string | null;
-          dayType: string | null;
-          priceVersionId: string | null;
-        }> = [];
+        const createdAtSkewMs = Math.abs(serverNow.getTime() - createdAt.getTime());
+        const createdAtImplausible = createdAtSkewMs > CREATED_AT_PLAUSIBILITY_MS;
 
         // Batch-load ticket types + build the price resolver ONCE (HI-1) — the
-        // whole batch shares this branch + createdAt.
+        // whole batch shares this branch + createdAt. Offline sync never rejects
+        // a printed sale on a missing price (accepts at 0, flags for accounting).
         const ticketTypes = await tx.ticketType.findMany({
           where: { id: { in: [...new Set(dto.lines.map((l) => l.ticketTypeId))] } },
         });
         const ticketTypeById = new Map(ticketTypes.map((t) => [t.id, t]));
         const resolver = await this.pricing.buildResolver(dto.branchId, createdAt);
-
-        for (const lineDto of dto.lines) {
-          const ticketType = ticketTypeById.get(lineDto.ticketTypeId);
-          if (!ticketType) throw new Error(`TicketType ${lineDto.ticketTypeId} not found`);
-
-          const priceResult = resolver.resolve(lineDto.ticketTypeId, ticketType.isFree);
-
-          // Never reject a sale already printed (C5) — flag accounting instead
-          const unitPriceVnd = priceResult.kind === "PRICE" ? priceResult.priceVnd : 0;
-
-          resolvedLines.push({
-            ticketTypeId: lineDto.ticketTypeId,
-            ticketTypeName: ticketType.name,
-            unitPriceVnd,
-            qty: lineDto.qty,
-            lineTotalVnd: unitPriceVnd * lineDto.qty,
-            isFree: ticketType.isFree,
-            timeWindowId: priceResult.kind === "PRICE" ? (priceResult.timeWindowId ?? null) : null,
-            timeWindowName:
-              priceResult.kind === "PRICE" ? resolver.timeWindowName(priceResult.timeWindowId) : null,
-            dayType: priceResult.kind === "PRICE" ? (priceResult.dayType ?? null) : null,
-            priceVersionId: priceResult.kind === "PRICE" ? (priceResult.versionId ?? null) : null,
-          });
-        }
+        const resolvedLines = buildResolvedLines(dto.lines, ticketTypeById, resolver, {
+          rejectOnNoPrice: false,
+        });
 
         const violation = checkFreeTicketPolicy(resolvedLines);
         // C5: never reject a sale already printed — log flag instead of throwing
@@ -168,12 +164,14 @@ export class SyncService {
         }
 
         const guestCount = resolvedLines.reduce((sum, l) => sum + l.qty, 0);
-        const totalVnd = resolvedLines.reduce((sum, l) => sum + l.lineTotalVnd, 0);
+        const totalVnd = sumVnd(resolvedLines.map((l) => l.lineTotalVnd));
 
         // Quarantine (accept-but-flag; never reject a printed sale):
-        //  H3 — a force-closed stuck bill is always quarantined with its reason.
-        //  H5 — a device clock drifted beyond tolerance (createdAt-derived
-        //       price/date may be unreliable).
+        //  - a force-closed stuck bill is always quarantined with its reason.
+        //  - a device clock drifted beyond tolerance (createdAt-derived
+        //    price/date may be unreliable).
+        //  - the createdAt is implausibly far from server time — its counter/date
+        //    allocation is honored but flagged for reconciliation (GA-02).
         const forced = opts?.forceQuarantine;
         const skewMs = Math.abs(dto.clockOffsetMs ?? 0);
         const skewExceeded = skewMs > CLOCK_SKEW_TOLERANCE_MS;
@@ -182,14 +180,16 @@ export class SyncService {
         // quarantine for accounting (never reject a printed, paid sale).
         const paymentSum = (dto.payments ?? []).reduce((s, p) => s + p.amountVnd, 0);
         const paymentMismatch = (dto.payments?.length ?? 0) > 0 && paymentSum !== totalVnd;
-        const quarantined = !!forced || skewExceeded || paymentMismatch;
+        const quarantined = !!forced || skewExceeded || createdAtImplausible || paymentMismatch;
         const quarantineReason = forced
           ? forced.reason
           : skewExceeded
             ? `clock_skew_${Math.round(skewMs / 1000)}s_exceeds_${CLOCK_SKEW_TOLERANCE_MS / 1000}s`
-            : paymentMismatch
-              ? `payment_mismatch_paid_${paymentSum}_vs_total_${totalVnd}`
-              : null;
+            : createdAtImplausible
+              ? `created_at_implausible_${Math.round(createdAtSkewMs / 1000)}s_from_server`
+              : paymentMismatch
+                ? `payment_mismatch_paid_${paymentSum}_vs_total_${totalVnd}`
+                : null;
 
         // Allocate official gapless number (counter→audit lock order — C4)
         const { seq, number } = await this.billNumber.allocate(
@@ -227,6 +227,9 @@ export class SyncService {
                   create: dto.payments.map((p) => ({
                     method: p.method,
                     amountVnd: p.amountVnd,
+                    tenderedVnd: p.tenderedVnd ?? null,
+                    changeVnd:
+                      p.tenderedVnd !== undefined ? p.tenderedVnd - p.amountVnd : null,
                     reference: p.reference ?? null,
                   })),
                 }
