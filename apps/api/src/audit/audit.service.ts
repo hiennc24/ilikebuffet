@@ -24,6 +24,8 @@ export interface AuditQuery {
   objectType?: string;
   objectId?: string;
   branchId?: string;
+  /** Restrict to these branches (branch-scoping for non-chain-wide callers). */
+  branchIds?: string[];
   from?: Date;
   to?: Date;
   limit?: number;
@@ -90,27 +92,32 @@ export class AuditService {
     });
   }
 
-  /** Filtered lookup across configured dimensions, newest first. */
-  async query(filter: AuditQuery): Promise<AuditRecordView[]> {
+  /** Filtered lookup across configured dimensions, newest first, with a total. */
+  async query(filter: AuditQuery): Promise<{ data: AuditRecordView[]; total: number }> {
     const where: Prisma.AuditLogWhereInput = {
       actorId: filter.actorId,
       action: filter.action,
       objectType: filter.objectType,
       objectId: filter.objectId,
-      branchId: filter.branchId,
+      // A branchIds allow-list (branch-scoping) wins; else an optional exact filter.
+      ...(filter.branchIds ? { branchId: { in: filter.branchIds } } : { branchId: filter.branchId }),
     };
     if (filter.from || filter.to) {
       where.createdAt = { gte: filter.from, lte: filter.to };
     }
 
-    const rows = await this.prisma.auditLog.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      take: Math.min(filter.limit ?? 100, 1000),
-      skip: filter.offset ?? 0,
-    });
+    const take = Math.min(filter.limit ?? 100, 1000);
+    const [rows, total] = await Promise.all([
+      this.prisma.auditLog.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        take,
+        skip: filter.offset ?? 0,
+      }),
+      this.prisma.auditLog.count({ where }),
+    ]);
 
-    return rows.map((r) => ({
+    const data = rows.map((r) => ({
       id: r.id.toString(),
       actorId: r.actorId,
       actorRole: r.actorRole,
@@ -125,5 +132,6 @@ export class AuditService {
       approvedBy: r.approvedBy,
       createdAt: r.createdAt,
     }));
+    return { data, total };
   }
 }

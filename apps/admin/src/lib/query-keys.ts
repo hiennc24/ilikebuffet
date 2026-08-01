@@ -50,4 +50,7 @@ export const QUERY_KEYS = {
 
   /** Users list (role/status/search + page appended by usePagedList). */
   users: () => ["users"] as const,
+
+  /** Audit log list (filters + page appended by usePagedList). */
+  audit: () => ["audit"] as const,
 } as const;

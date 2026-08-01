@@ -32,6 +32,7 @@ import { OrdersPage } from "./pages/orders-page";
 import { BranchesPage } from "./pages/branches-page";
 import { SuppliersPage } from "./pages/suppliers-page";
 import { UsersPage } from "./pages/users-page";
+import { AuditPage } from "./pages/audit-page";
 import "@ilikebuffet/ui/tokens.css";
 
 const queryClient = new QueryClient({
@@ -148,6 +149,14 @@ export function App() {
                       element={
                         <ShellLayout pageTitle="Người dùng & vai trò">
                           <UsersPage />
+                        </ShellLayout>
+                      }
+                    />
+                    <Route
+                      path="/settings/log"
+                      element={
+                        <ShellLayout pageTitle="Nhật ký">
+                          <AuditPage />
                         </ShellLayout>
                       }
                     />

@@ -1,4 +1,16 @@
-# P5 — Nhật ký (Audit viewer)
+# P5 — Nhật ký (Audit viewer)  ✅ DONE (2026-08-02)
+
+## Actual
+- BE: `audit.controller` `GET /audit` (read-only) — role gate HQ+QL_CN, branch-scoped
+  (QL_CN → `branchIds` allow-list), filters actor/action/objectType/objectId/date +
+  phân trang; `audit.service.query` giờ trả `{data,total}`. Không có route ghi/xoá.
+- e2e `audit-query.e2e-spec` (4): HQ thấy tất cả, QL_CN chỉ CN mình, cashier 403, filter action.
+- FE `audit-page.tsx`: filters + bảng + drawer xem before/after JSON. Route `/settings/log`.
+- Không lộ hash: audit không bao giờ ghi hash nên before/after an toàn. Admin 58.
+
+---
+Original below.
+
 
 **Goal:** màn xem nhật ký GA-01 (append-only) có filter — phục vụ điều tra/đối soát.
 Backend chưa có endpoint query (chỉ có audit-export.service).
