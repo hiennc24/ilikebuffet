@@ -75,4 +75,8 @@ Nền tảng idempotency + pricing arbiter đã vững; phần còn lại là ha
 - **C1 content-hash — DONE.** Lưu SHA-256 nội dung bill; dedup-hit khác hash → reject+audit, không cấp lại số (8→10 sync unit test).
 - **AC scenarios BH-05.6 — DONE.** Server real-Postgres: (b) 2 máy không trùng số, (c) chập chờn idempotent, (e) xuyên 0h dải số theo createdAt, (f) bảng giá tương lai tự áp (repriced). Client Dexie: (a) bill kẹt giữ pending tới khi có số chính thức, (d) 20 bill sống qua close+reopen. (g eviction: cơ chế `persist()`.)
 - **H5 clock-skew (server) — DONE.** Bill mang device-clock + offset; skew >±2' → **nhận nhưng quarantine** (không reject sale đã in) + audit; cột `deviceClockAt/clockOffsetMs/quarantined/quarantineReason`.
-- **Còn lại:** H5 client (đo skew + chặn offline UI); **H3** force-close bill kẹt có PIN; **C8 đầy đủ** (`voided_before_sync` + HWM lúc chốt ca); **C1 device↔token binding** + **C3** (phụ thuộc auth device-bound / luồng duyệt offline — chốt thiết kế trước).
+- **H3 force-close — DONE.** `POST /sales/bills/force-close` nhận bill kẹt thành sale **quarantined** (PIN QL), không để device chết khóa chốt ca; audit `bill.force_close`.
+- **C8 đầy đủ — DONE.** Sync batch ghi `voided_before_sync` (audit, theo branch) để phân biệt void/suppression; chốt ca upload **high-water-mark** (`Shift.tempHighWater`).
+- **Còn lại:** H5 client (đo skew qua server-time + chặn offline UI khi >±2'); **C1 device↔token binding** + **C3** re-verify (phụ thuộc auth device-bound / luồng duyệt offline — chốt thiết kế trước).
+
+Backend arbiter P8 đã hardening: C1(hash)/C2/C5/C6/C8/H3/H5 + 6 kịch bản AC pass. Còn lại chủ yếu là UI client (H5 skew) + 2 hạng mục phụ thuộc mô hình auth (C1-device/C3).
