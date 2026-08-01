@@ -261,14 +261,17 @@ export const ErrorState: React.FC<{ message: string }> = ({ message }) => (
 
 // ── Page layout ───────────────────────────────────────────────────────────────
 
-/** Vertical stack for a page's cards. */
+/** Vertical stack for a page's cards, centered within the content area. */
 export const PageStack: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div
     style={{
       display: "flex",
       flexDirection: "column",
       gap: "var(--space-5)",
-      maxWidth: "1040px",
+      width: "100%",
+      maxWidth: "1200px",
+      // Center the content column horizontally in the (wide, office-tier) main area.
+      margin: "0 auto",
     }}
   >
     {children}
