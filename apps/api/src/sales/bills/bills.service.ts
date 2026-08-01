@@ -18,6 +18,7 @@ import {
   Logger,
   NotFoundException,
 } from "@nestjs/common";
+import { PaymentMethod } from "@prisma/client";
 import { PrismaService } from "../../prisma/prisma.service";
 import { AuditService } from "../../audit/audit.service";
 import { PricingService } from "../pricing/pricing.service";
@@ -27,7 +28,7 @@ import { sumVnd, toVnDateStr } from "@ilikebuffet/shared";
 import { checkFreeTicketPolicy } from "./bill-policy";
 import { buildResolvedLines } from "./resolved-lines";
 import { assertBranchAccess, type BranchAccess } from "../../platform/rbac/branch-access";
-import type { CreateBillDto, CancelBillDto } from "./bills.dto";
+import type { CreateBillDto, CancelBillDto, BillListQuery, RefundBillDto } from "./bills.dto";
 
 @Injectable()
 export class BillsService {
@@ -182,7 +183,7 @@ export class BillsService {
   async getById(id: string, access: BranchAccess) {
     const bill = await this.prisma.bill.findUnique({
       where: { id },
-      include: { lines: true, payments: true },
+      include: { lines: true, payments: true, refunds: true },
     });
     if (!bill) throw new NotFoundException(`Bill ${id} not found`);
     assertBranchAccess(access, bill.branchId); // route keyed by :id only
@@ -308,6 +309,141 @@ export class BillsService {
 
       this.logger.log(`Bill cancelled: id=${billId} by=${actorId} reason=${dto.reason}`);
       return updated;
+    });
+  }
+
+  // ─── List (admin Orders) ──────────────────────────────────────────────────────
+
+  /**
+   * Paginated bill list for the admin Orders screen. Branch-scoped: a chain-wide
+   * caller sees all; otherwise only their branches. An out-of-scope branchId
+   * filter simply yields no rows (never leaks another branch).
+   */
+  async listBills(query: BillListQuery, access: BranchAccess) {
+    const page = Math.max(1, Number.parseInt(query.page ?? "1", 10) || 1);
+    const pageSize = Math.min(100, Math.max(1, Number.parseInt(query.pageSize ?? "20", 10) || 20));
+
+    const businessDate: { gte?: Date; lte?: Date } = {};
+    if (query.from) businessDate.gte = new Date(`${query.from}T00:00:00Z`);
+    if (query.to) businessDate.lte = new Date(`${query.to}T00:00:00Z`);
+
+    const where = {
+      ...(access.chainWide ? {} : { branchId: { in: access.branchIds } }),
+      ...(query.branchId ? { branchId: query.branchId } : {}),
+      ...(query.status ? { status: query.status } : {}),
+      ...(query.quarantined === "true" ? { quarantined: true } : {}),
+      ...(businessDate.gte || businessDate.lte ? { businessDate } : {}),
+      ...(query.q
+        ? {
+            OR: [
+              { number: { contains: query.q, mode: "insensitive" as const } },
+              { tempNumber: { contains: query.q, mode: "insensitive" as const } },
+            ],
+          }
+        : {}),
+    };
+
+    const [data, total] = await Promise.all([
+      this.prisma.bill.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: { refunds: { select: { amountVnd: true } } },
+      }),
+      this.prisma.bill.count({ where }),
+    ]);
+
+    return { data, total, page, pageSize };
+  }
+
+  // ─── Refund ───────────────────────────────────────────────────────────────────
+
+  /**
+   * Refund (partial or full) against a paid bill. Manager PIN required. The sum of
+   * refunds may never exceed the bill total; a concurrent second refund is guarded
+   * by re-summing inside the transaction. Money stays integer VND.
+   */
+  async refundBill(
+    billId: string,
+    dto: RefundBillDto,
+    actorId: string,
+    role: string,
+    access: BranchAccess,
+  ) {
+    if (!Number.isInteger(dto.amountVnd) || dto.amountVnd <= 0) {
+      throw new BadRequestException("Số tiền hoàn phải là số nguyên dương");
+    }
+    if (!dto.reason?.trim()) {
+      throw new BadRequestException("Phải có lý do hoàn tiền");
+    }
+
+    const bill = await this.prisma.bill.findUnique({
+      where: { id: billId },
+      include: { refunds: { select: { amountVnd: true } } },
+    });
+    if (!bill) throw new NotFoundException(`Bill ${billId} not found`);
+    assertBranchAccess(access, bill.branchId);
+
+    if (bill.status !== "COMPLETED" || !bill.paidAt) {
+      throw new BadRequestException("Chỉ hoàn tiền được bill đã thanh toán");
+    }
+
+    return this.prisma.withTx(async (tx) => {
+      // Re-sum inside the tx so two concurrent refunds can't jointly exceed the total.
+      const existing = await tx.refund.findMany({
+        where: { billId },
+        select: { amountVnd: true },
+      });
+      const alreadyRefunded = sumVnd(existing.map((r) => r.amountVnd));
+      if (alreadyRefunded + dto.amountVnd > bill.totalVnd) {
+        throw new BadRequestException("Tổng hoàn tiền vượt quá số tiền đã thanh toán");
+      }
+
+      // Verify manager PIN in-tx (approval audit commits with the refund; the
+      // wrong-PIN counter still commits eagerly).
+      const pinResult = await this.discounts.verifyApprovalPin(
+        { managerId: dto.managerId, pin: dto.pin, branchId: bill.branchId, reason: dto.reason },
+        actorId,
+        role,
+        tx,
+      );
+      if (!pinResult.approved) {
+        throw new ForbiddenException("PIN quản lý không hợp lệ hoặc đã bị khoá");
+      }
+
+      const refund = await tx.refund.create({
+        data: {
+          billId,
+          amountVnd: dto.amountVnd,
+          method: dto.method as PaymentMethod,
+          reason: dto.reason,
+          refundedBy: actorId,
+          approvedBy: dto.managerId,
+        },
+      });
+
+      await this.audit.record(tx, {
+        action: "bill.refund",
+        objectType: "bill",
+        objectId: billId,
+        actorId,
+        actorRole: role,
+        branchId: bill.branchId,
+        deviceId: bill.deviceId,
+        after: {
+          refundId: refund.id,
+          amountVnd: refund.amountVnd,
+          method: refund.method,
+          totalRefunded: alreadyRefunded + dto.amountVnd,
+          billTotalVnd: bill.totalVnd,
+        },
+        reason: dto.reason,
+        approvedBy: dto.managerId,
+      });
+
+      this.logger.log(`Bill refunded: id=${billId} amount=${dto.amountVnd} by=${actorId}`);
+      return refund;
     });
   }
 }

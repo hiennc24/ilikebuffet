@@ -35,4 +35,10 @@ export const QUERY_KEYS = {
 
   /** Discount reasons list. */
   discountReasons: () => ["discount-reasons"] as const,
+
+  /** Orders (bills) list root — filters/page appended by usePagedList. */
+  orders: () => ["orders"] as const,
+
+  /** A single bill's detail (lines, payments, refunds). */
+  order: (id: string) => ["order", id] as const,
 } as const;

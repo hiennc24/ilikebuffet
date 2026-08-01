@@ -23,7 +23,10 @@ import {
 import { BillsService } from "./bills.service";
 import { Role } from "../../platform/rbac/role.enum";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
-import type { CreateBillDto, CancelBillDto } from "./bills.dto";
+import type { CreateBillDto, CancelBillDto, BillListQuery, RefundBillDto } from "./bills.dto";
+
+/** Roles allowed to initiate a refund (a manager PIN still authorises it). */
+const ORDER_MANAGER_ROLES = new Set<Role>([Role.QUAN_TRI_HQ, Role.CHU_CHUOI, Role.QUAN_LY_CN]);
 
 @Controller("sales/bills")
 export class BillsController {
@@ -43,11 +46,24 @@ export class BillsController {
   }
 
   @Get()
-  listByShift(@Query("shiftId") shiftId: string, @Request() req: ScopedRequest) {
-    if (!shiftId) {
-      return [];
+  list(@Query() query: BillListQuery & { shiftId?: string }, @Request() req: ScopedRequest) {
+    const access = { chainWide: req.user.chainWide, branchIds: req.user.branchIds };
+    // Back-compat: POS shift monitor lists a shift's bills as a bare array.
+    if (query.shiftId) {
+      return this.service.listByShift(query.shiftId, access);
     }
-    return this.service.listByShift(shiftId, {
+    // Admin Orders: paginated, filterable list ({ data, total } envelope).
+    return this.service.listBills(query, access);
+  }
+
+  @Post(":id/refund")
+  refund(@Param("id") id: string, @Body() dto: RefundBillDto, @Request() req: ScopedRequest) {
+    // Refund is a manager action — HQ or branch manager (branch enforced by the
+    // manager PIN branch-binding + assertBranchAccess in the service).
+    if (!ORDER_MANAGER_ROLES.has(req.user.role as Role)) {
+      throw new ForbiddenException("Không có quyền hoàn tiền");
+    }
+    return this.service.refundBill(id, dto, req.user.sub, req.user.role, {
       chainWide: req.user.chainWide,
       branchIds: req.user.branchIds,
     });

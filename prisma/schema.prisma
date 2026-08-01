@@ -626,12 +626,33 @@ model Bill {
   shift    Shift      @relation(fields: [shiftId], references: [id])
   lines    BillLine[]
   payments Payment[]
+  refunds  Refund[]
 
   @@unique([branchId, businessDate, seq])
   @@unique([deviceId, clientUuid])
   @@index([shiftId])
   @@index([branchId, businessDate])
   @@map("bill")
+}
+
+/// A refund against a paid bill. Partial refunds = several rows; the sum plus any
+/// new refund must not exceed the bill total (validated server-side, in-tx).
+model Refund {
+  id         String        @id @default(cuid())
+  billId     String
+  amountVnd  Int
+  method     PaymentMethod
+  reason     String
+  /// User who performed the refund.
+  refundedBy String
+  /// Manager whose approval PIN authorised it.
+  approvedBy String
+  createdAt  DateTime      @default(now()) @db.Timestamptz(3)
+
+  bill Bill @relation(fields: [billId], references: [id], onDelete: Cascade)
+
+  @@index([billId])
+  @@map("refund")
 }
 
 /// One line on a bill — fully snapshotted (no live FK to the price book).

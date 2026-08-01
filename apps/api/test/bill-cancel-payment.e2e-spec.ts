@@ -42,6 +42,7 @@ describe("Bill payments + cancellation (integration)", () => {
   let cashierId: string;
   let managerId: string;
   let cashierToken: string;
+  let managerToken: string;
 
   const MANAGER_PIN = "123456";
 
@@ -147,6 +148,12 @@ describe("Bill payments + cancellation (integration)", () => {
     });
     managerId = manager.id;
     await prisma.userBranch.create({ data: { userId: managerId, branchId } });
+
+    const mgrLogin = await request(app.getHttpServer())
+      .post("/auth/login")
+      .send({ username: "cancel-manager", password: "Password123" })
+      .expect(201);
+    managerToken = mgrLogin.body.accessToken as string;
 
     // ── Open shift ────────────────────────────────────────────────────────────
     const today = new Date();
@@ -432,5 +439,93 @@ describe("Bill payments + cancellation (integration)", () => {
       .set("Authorization", `Bearer ${cashierToken}`)
       .send({ reason: "Second cancel", managerId, pin: MANAGER_PIN, deviceId })
       .expect(400);
+  });
+
+  // ─── (c) Refund ──────────────────────────────────────────────────────────────
+
+  async function payBill(billId: string, amount: number) {
+    await request(app.getHttpServer())
+      .post(`/sales/bills/${billId}/payments`)
+      .set("Authorization", `Bearer ${cashierToken}`)
+      .send({ payments: [{ method: "CASH", amountVnd: amount }] })
+      .expect(201);
+  }
+
+  it("(c1) partial refund on a paid bill → 201 + refund row", async () => {
+    const bill = await createBill("refund-partial-uuid");
+    await payBill(bill.id, bill.totalVnd);
+
+    const res = await request(app.getHttpServer())
+      .post(`/sales/bills/${bill.id}/refund`)
+      .set("Authorization", `Bearer ${managerToken}`)
+      .send({ amountVnd: 50_000, method: "CASH", reason: "Khách trả vé", managerId, pin: MANAGER_PIN })
+      .expect(201);
+    expect((res.body as { amountVnd: number }).amountVnd).toBe(50_000);
+
+    await prisma.appUser.update({ where: { id: managerId }, data: { pinFailedCount: 0 } });
+    const refunds = await prisma.refund.findMany({ where: { billId: bill.id } });
+    expect(refunds).toHaveLength(1);
+  });
+
+  it("(c2) refund exceeding the paid total → 400", async () => {
+    const bill = await createBill("refund-exceed-uuid");
+    await payBill(bill.id, bill.totalVnd);
+
+    await request(app.getHttpServer())
+      .post(`/sales/bills/${bill.id}/refund`)
+      .set("Authorization", `Bearer ${managerToken}`)
+      .send({ amountVnd: bill.totalVnd + 1, method: "CASH", reason: "quá tay", managerId, pin: MANAGER_PIN })
+      .expect(400);
+  });
+
+  it("(c3) refund an unpaid bill → 400", async () => {
+    const bill = await createBill("refund-unpaid-uuid");
+    await request(app.getHttpServer())
+      .post(`/sales/bills/${bill.id}/refund`)
+      .set("Authorization", `Bearer ${managerToken}`)
+      .send({ amountVnd: 1000, method: "CASH", reason: "chưa trả", managerId, pin: MANAGER_PIN })
+      .expect(400);
+  });
+
+  it("(c4) cashier (THU_NGAN) cannot refund → 403", async () => {
+    const bill = await createBill("refund-role-uuid");
+    await payBill(bill.id, bill.totalVnd);
+    await request(app.getHttpServer())
+      .post(`/sales/bills/${bill.id}/refund`)
+      .set("Authorization", `Bearer ${cashierToken}`)
+      .send({ amountVnd: 1000, method: "CASH", reason: "x", managerId, pin: MANAGER_PIN })
+      .expect(403);
+  });
+
+  // ─── (d) Orders list ─────────────────────────────────────────────────────────
+
+  it("(d1) paginated list returns { data, total } scoped to the branch", async () => {
+    const res = await request(app.getHttpServer())
+      .get(`/sales/bills?page=1&pageSize=5`)
+      .set("Authorization", `Bearer ${managerToken}`)
+      .expect(200);
+    const body = res.body as { data: unknown[]; total: number };
+    expect(Array.isArray(body.data)).toBe(true);
+    expect(typeof body.total).toBe("number");
+    expect(body.data.length).toBeLessThanOrEqual(5);
+  });
+
+  it("(d2) status filter narrows the list", async () => {
+    const res = await request(app.getHttpServer())
+      .get(`/sales/bills?status=CANCELLED&pageSize=50`)
+      .set("Authorization", `Bearer ${managerToken}`)
+      .expect(200);
+    const body = res.body as { data: { status: string }[] };
+    expect(body.data.every((b) => b.status === "CANCELLED")).toBe(true);
+  });
+
+  it("(d3) q filter matches by bill number", async () => {
+    const bill = await createBill("orders-q-uuid");
+    const res = await request(app.getHttpServer())
+      .get(`/sales/bills?q=${encodeURIComponent(bill.number)}`)
+      .set("Authorization", `Bearer ${managerToken}`)
+      .expect(200);
+    const body = res.body as { data: { id: string }[] };
+    expect(body.data.some((b) => b.id === bill.id)).toBe(true);
   });
 });

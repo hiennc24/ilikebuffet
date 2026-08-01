@@ -32,6 +32,34 @@ export interface CancelBillDto {
   deviceId: string;
 }
 
+// ─── Bill list (admin Orders) ───────────────────────────────────────────────
+
+export interface BillListQuery {
+  branchId?: string;
+  /** Business-date range (inclusive), "YYYY-MM-DD". */
+  from?: string;
+  to?: string;
+  status?: "COMPLETED" | "CANCELLED";
+  /** Search by bill number or temp number (contains). */
+  q?: string;
+  /** "true" → only quarantined bills. */
+  quarantined?: string;
+  page?: string;
+  pageSize?: string;
+}
+
+// ─── Refund ───────────────────────────────────────────────────────────────────
+
+export interface RefundBillDto {
+  /** Integer VND to refund. sum(existing refunds) + this ≤ bill.totalVnd. */
+  amountVnd: number;
+  method: PaymentMethodDto;
+  reason: string;
+  /** Manager whose approval PIN authorises the refund. */
+  managerId: string;
+  pin: string;
+}
+
 // ─── Payments ─────────────────────────────────────────────────────────────────
 
 export type PaymentMethodDto = "CASH" | "VIETQR" | "CARD";

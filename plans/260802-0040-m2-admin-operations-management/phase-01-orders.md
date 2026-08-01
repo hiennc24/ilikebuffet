@@ -1,6 +1,20 @@
-# P1 — Đơn hàng (Orders)
+# P1 — Đơn hàng (Orders)  ✅ DONE (2026-08-02)
 
-**Goal:** admin xem/tra cứu mọi bill (không chỉ theo ca), xem chi tiết, in lại, huỷ.
+**Goal:** admin xem/tra cứu mọi bill (không chỉ theo ca), xem chi tiết, hoàn tiền.
+
+## Actual
+- BE: `GET /sales/bills` (branch/from/to/status/q/quarantined + phân trang, `{data,total}`,
+  branch-scoped; giữ nguyên đường `?shiftId=` cũ). `Refund` model + migration
+  `20260802020000_refund`. `POST /sales/bills/:id/refund` (role HQ/CHU_CHUOI/QL_CN +
+  PIN quản lý in-tx + re-sum chống double-refund + audit `bill.refund`). `getById` include refunds.
+- FE: `orders-page.tsx` — FilterBar (from/to/status/q) + DataTable + Pagination + DetailDrawer
+  (lines/payments/refunds + form hoàn tiền). Route `/orders` + nav đã có.
+- Bỏ **Cancel từ admin** (cần device gốc + ca OPEN — thuộc POS); admin = xem + hoàn tiền.
+  Branch filter cho HQ hoãn sang P6 (dùng branch selector chung); server đã auto-scope.
+- Tests: e2e c1–c4 (refund) + d1–d3 (list) trong bill-cancel-payment.e2e (19 pass);
+  admin orders-page.test (3). API 318 unit, admin 45.
+
+**Goal (gốc):** admin xem/tra cứu mọi bill (không chỉ theo ca), xem chi tiết, in lại, huỷ.
 
 ## Backend (gap)
 New `GET /sales/bills` list endpoint (bills.controller/service):
