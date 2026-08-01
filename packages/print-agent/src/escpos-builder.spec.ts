@@ -22,6 +22,18 @@ describe("formatVnd", () => {
     expect(formatVnd(598000)).toBe("598.000đ");
     expect(formatVnd(1234567)).toBe("1.234.567đ");
   });
+
+  it("throws on NaN (defense-in-depth HI-6)", () => {
+    expect(() => formatVnd(NaN)).toThrow(TypeError);
+  });
+
+  it("throws on Infinity (defense-in-depth HI-6)", () => {
+    expect(() => formatVnd(Infinity)).toThrow(TypeError);
+  });
+
+  it("throws on a float (defense-in-depth HI-6)", () => {
+    expect(() => formatVnd(99.5)).toThrow(TypeError);
+  });
 });
 
 describe("buildReceipt", () => {

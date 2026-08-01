@@ -19,7 +19,15 @@ import { PrintDriver, LoopbackPrintDriver } from "./print-driver";
 
 export interface PrintServerOptions {
   driver?: PrintDriver;
-  /** Allowed CORS origin for the POS PWA. Default "*" (loopback dev). */
+  /**
+   * Allowed CORS origin for the POS PWA.
+   * Default: "http://localhost:5174" (Vite POS dev server).
+   * Override with PRINT_AGENT_ORIGIN env var in production.
+   *
+   * /print is intentionally unauthenticated for M1: the agent is a
+   * local actuator bound to 127.0.0.1 with no money authority.
+   * Origin-locking is the first-line control (accepted risk Sprint-0 H6).
+   */
   allowOrigin?: string;
   /** Optional log sink (defaults to console). */
   log?: (msg: string) => void;
@@ -32,16 +40,37 @@ export interface PrintServerHandle {
 
 const MAX_BODY_BYTES = 256 * 1024;
 
-function validatePayload(body: unknown): body is PrintBillPayload {
-  if (!body || typeof body !== "object") return false;
+/** Returns undefined on success, or an error message naming the offending field. */
+function validatePayload(body: unknown): { error: string } | undefined {
+  if (!body || typeof body !== "object") return { error: "payload must be a JSON object" };
   const b = body as Record<string, unknown>;
-  return (
-    typeof b.branchName === "string" &&
-    typeof b.billNumber === "string" &&
-    typeof b.createdAt === "string" &&
-    Array.isArray(b.lines) &&
-    typeof b.totalVnd === "number"
-  );
+
+  if (typeof b.branchName !== "string") return { error: "branchName must be a string" };
+  if (typeof b.billNumber !== "string") return { error: "billNumber must be a string" };
+  if (typeof b.createdAt !== "string") return { error: "createdAt must be a string" };
+  if (!Array.isArray(b.lines)) return { error: "lines must be an array" };
+  if (!isVndInteger(b.totalVnd)) return { error: "totalVnd must be a finite integer >= 0" };
+
+  for (let i = 0; i < (b.lines as unknown[]).length; i++) {
+    const l = (b.lines as unknown[])[i];
+    if (!l || typeof l !== "object") return { error: `lines[${i}] must be an object` };
+    const lf = l as Record<string, unknown>;
+    if (!isPositiveInteger(lf.qty)) return { error: `lines[${i}].qty must be a positive integer (>= 1)` };
+    if (!isVndInteger(lf.unitPriceVnd)) return { error: `lines[${i}].unitPriceVnd must be a finite integer >= 0` };
+    if (!isVndInteger(lf.lineTotalVnd)) return { error: `lines[${i}].lineTotalVnd must be a finite integer >= 0` };
+  }
+
+  return undefined; // valid
+}
+
+/** True when x is a finite integer >= 0 (valid VND amount). */
+function isVndInteger(x: unknown): boolean {
+  return typeof x === "number" && Number.isInteger(x) && Number.isFinite(x) && x >= 0;
+}
+
+/** True when x is a finite integer >= 1 (valid ticket quantity). */
+function isPositiveInteger(x: unknown): boolean {
+  return typeof x === "number" && Number.isInteger(x) && x >= 1;
 }
 
 /**
@@ -50,7 +79,7 @@ function validatePayload(body: unknown): body is PrintBillPayload {
  */
 export function createPrintServer(opts: PrintServerOptions = {}): PrintServerHandle {
   const driver = opts.driver ?? new LoopbackPrintDriver();
-  const allowOrigin = opts.allowOrigin ?? "*";
+  const allowOrigin = opts.allowOrigin ?? "http://localhost:5174";
   const log = opts.log ?? ((m: string) => console.log(`[print-agent] ${m}`));
 
   const server = createServer((req, res) => handle(req, res, driver, allowOrigin, log));
@@ -112,20 +141,22 @@ async function handle(
         json(res, 400, { status: "error", error: "invalid JSON" });
         return;
       }
-      if (!validatePayload(payload)) {
-        json(res, 400, { status: "error", error: "invalid bill payload" });
+      const validationError = validatePayload(payload);
+      if (validationError) {
+        json(res, 400, { status: "error", error: validationError.error });
         return;
       }
-      const bytes = buildReceipt(payload);
+      const bill = payload as PrintBillPayload;
+      const bytes = buildReceipt(bill);
       try {
         await driver.print(bytes);
-        log(`printed bill ${payload.billNumber}${payload.isReprint ? " (BẢN SAO)" : ""} via ${driver.name}`);
-        json(res, 200, { status: "printed", billNumber: payload.billNumber, bytes: bytes.length });
+        log(`printed bill ${bill.billNumber}${bill.isReprint ? " (BẢN SAO)" : ""} via ${driver.name}`);
+        json(res, 200, { status: "printed", billNumber: bill.billNumber, bytes: bytes.length });
       } catch (err) {
         // BH-04.4: report failure; the POS does NOT treat this as fatal.
         const message = err instanceof Error ? err.message : String(err);
-        log(`print FAILED for bill ${payload.billNumber}: ${message}`);
-        json(res, 502, { status: "print_failed", billNumber: payload.billNumber, error: message });
+        log(`print FAILED for bill ${bill.billNumber}: ${message}`);
+        json(res, 502, { status: "print_failed", billNumber: bill.billNumber, error: message });
       }
     });
     return;

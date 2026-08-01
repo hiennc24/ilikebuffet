@@ -46,8 +46,13 @@ export interface PrintBillPayload {
 
 /** Integer VND with '.' thousands separators — locale-data independent. */
 export function formatVnd(amount: number): string {
+  if (!Number.isInteger(amount)) {
+    // Defense-in-depth: validatePayload already rejects non-integers at the HTTP boundary,
+    // but guard here so a programmatic misuse never renders "NaNđ" or "Infinityđ".
+    throw new TypeError(`formatVnd: expected a finite integer, got ${amount}`);
+  }
   const neg = amount < 0;
-  const digits = Math.abs(Math.trunc(amount)).toString();
+  const digits = Math.abs(amount).toString();
   let out = "";
   for (let i = 0; i < digits.length; i++) {
     if (i > 0 && (digits.length - i) % 3 === 0) out += ".";
