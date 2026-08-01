@@ -2,7 +2,19 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
+// Local dev API port. The API runs on 3001 by default.
+// Override with VITE_API_PORT when needed.
+const API_PORT = process.env.VITE_API_PORT ?? "3001";
+
 export default defineConfig({
+  server: {
+    proxy: Object.fromEntries(
+      ["/auth", "/branches", "/sales", "/health", "/devices"].map((p) => [
+        p,
+        { target: `http://localhost:${API_PORT}`, changeOrigin: true },
+      ]),
+    ),
+  },
   plugins: [
     react(),
     VitePWA({

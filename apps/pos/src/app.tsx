@@ -5,7 +5,9 @@
  *   unauthenticated  → /login
  *   locked           → /lock (PIN screen)
  *   choosing-branch  → /choose-branch (stub)
- *   authenticated    → /sell (main POS screen)
+ *   authenticated    → session gate:
+ *     no-shift       → /open-shift
+ *     ready          → /sell (main POS screen)
  */
 
 import * as React from "react";
@@ -21,6 +23,8 @@ import { PosLoginPage } from "./auth/pos-login-page";
 import { PinLockScreen } from "./auth/pin-lock-screen";
 import { PosShell } from "./layout/pos-shell";
 import { SellPage } from "./pages/sell-page";
+import { OpenShiftPage } from "./pages/open-shift-page";
+import { PosSessionProvider, usePosSession } from "./session/pos-session-context";
 import "@ilikebuffet/ui/tokens.css";
 
 const queryClient = new QueryClient({
@@ -33,6 +37,47 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   if (status === "locked") return <Navigate to="/lock" replace />;
   if (status === "choosing-branch") return <Navigate to="/choose-branch" replace />;
   return <>{children}</>;
+}
+
+function SessionGate() {
+  const { status } = usePosSession();
+
+  if (status === "loading") {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          fontFamily: "var(--font-sans)",
+          fontSize: "var(--text-sm)",
+          color: "var(--text-muted)",
+        }}
+      >
+        Đang kiểm tra ca làm việc…
+      </div>
+    );
+  }
+
+  if (status === "no-shift") {
+    return <OpenShiftPage />;
+  }
+
+  // status === "ready"
+  return (
+    <Routes>
+      <Route
+        path="/sell"
+        element={
+          <PosShell pageTitle="Bán hàng">
+            <SellPage />
+          </PosShell>
+        }
+      />
+      <Route path="*" element={<Navigate to="/sell" replace />} />
+    </Routes>
+  );
 }
 
 export function App() {
@@ -49,17 +94,9 @@ export function App() {
               path="/*"
               element={
                 <AuthGate>
-                  <Routes>
-                    <Route
-                      path="/"
-                      element={
-                        <PosShell pageTitle="Bán hàng">
-                          <SellPage />
-                        </PosShell>
-                      }
-                    />
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                  </Routes>
+                  <PosSessionProvider>
+                    <SessionGate />
+                  </PosSessionProvider>
                 </AuthGate>
               }
             />
