@@ -12,12 +12,17 @@
   (năm, tên) + editor entries (thêm/xoá ngày+tên, replace-on-save PUT). HQ-only (BE +
   RBAC FE). Route `/master-data/holidays` + nav "Lịch lễ". Tests (2). Admin 68.
 
-## Còn lại (P3c — form phức tạp/nested + file upload)
-- **Nguyên liệu** (+ nhóm + đơn vị + purchase-units ≤3 nested) — cần group+unit selects.
-- **Tài khoản** (+ nhóm tài khoản).
-- **Đơn vị** (units).
-- **Import Excel** (`POST /import/ingredients`) — multipart + endpoint stream error-workbook
-  khi có lỗi (cần xử lý blob ở FE).
+## Đã làm (P3c — Ingredients ecosystem) ✅ 2026-08-02
+- **`ingredients-page.tsx`**: quản lý **Đơn vị** + **Nhóm** (quick-add) + **Nguyên liệu**
+  CRUD (tên, nhóm/đơn vị select, đơn vị mua ≤3 nested factorToBase>0) + **Import Excel**.
+- Import: `ApiClient.upload()` mới (multipart, gửi `Accept: application/json` → nhận JSON
+  `{validCount,errorCount}`, không cần xử lý blob). Fix shared `api-client.doRequest`:
+  bỏ ép `Content-Type: application/json` khi body là FormData (browser tự set boundary).
+- HQ-only (BE requireHq + RBAC FE). Route `/inventory` (nav "Kho nguyên liệu"). Tests (3).
+  Admin 71, POS 66 (không regress do đổi shared client), shared 63.
+
+## Còn lại (P3d — nhỏ)
+- **Tài khoản** (+ nhóm tài khoản): CRUD đơn giản (`/master-data/accounts` + `/accounts/groups`).
 
 ## Backend (done — master-data.controller)
 - Ingredients: `GET`, `GET /groups`, `GET /:id`, `POST`, `PUT /:id`, `DELETE /:id`

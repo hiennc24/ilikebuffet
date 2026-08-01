@@ -1,0 +1,371 @@
+/**
+ * IngredientsPage — the ingredient ecosystem (P3c): units + groups + ingredients
+ * CRUD (with ≤3 purchase units) + Excel import.
+ *
+ * HQ-only (backend enforces). Units/groups are the selects an ingredient needs,
+ * so they're managed here too. Accounts remain a separate carry-over (P3d).
+ */
+import * as React from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button, Dialog, FormField } from "@ilikebuffet/ui";
+import { useAuth } from "../auth/auth-context";
+import { unwrapList } from "../lib/unwrap-list";
+import { usePagedList } from "../lib/use-paged-list";
+import { QUERY_KEYS } from "../lib/query-keys";
+import {
+  Card,
+  PageStack,
+  DataTable,
+  Column,
+  FilterBar,
+  Pagination,
+  Select,
+  InlineError,
+  Badge,
+  BadgeTone,
+  LoadingState,
+  ErrorState,
+  toErrorMessage,
+} from "./_shared/admin-ui";
+
+const PAGE_SIZE = 20;
+
+interface Unit {
+  id: string;
+  code: string;
+  name: string;
+}
+interface Group {
+  id: string;
+  name: string;
+}
+interface PurchaseUnit {
+  unitId: string;
+  factorToBase: number;
+  unit?: Unit;
+}
+interface Ingredient {
+  id: string;
+  code: string | null;
+  name: string;
+  groupId: string;
+  unitId: string;
+  status: "ACTIVE" | "INACTIVE";
+  group?: { name: string };
+  unit?: { code: string };
+  purchaseUnits: PurchaseUnit[];
+}
+
+export const IngredientsPage: React.FC = () => {
+  const { api } = useAuth();
+
+  const units = useQuery({ queryKey: QUERY_KEYS.units(), queryFn: () => api.get<Unit[] | { data: Unit[] }>("/master-data/units") });
+  const groups = useQuery({ queryKey: QUERY_KEYS.ingredientGroups(), queryFn: () => api.get<Group[] | { data: Group[] }>("/master-data/ingredient-groups") });
+  const unitList = unwrapList(units.data);
+  const groupList = unwrapList(groups.data);
+
+  return (
+    <PageStack>
+      <div style={{ display: "flex", gap: "var(--space-5)", flexWrap: "wrap" }}>
+        <div style={{ flex: 1, minWidth: "280px" }}>
+          <SimpleListCard title="Đơn vị" placeholder="Mã (VD KG)" secondaryPlaceholder="Tên (Kilogram)" rows={unitList.map((u) => `${u.code} — ${u.name}`)} onCreate={(code, name) => api.post("/master-data/units", { code, name })} invalidateKey={QUERY_KEYS.units()} api={api} />
+        </div>
+        <div style={{ flex: 1, minWidth: "280px" }}>
+          <SimpleListCard title="Nhóm nguyên liệu" placeholder="Tên nhóm" rows={groupList.map((g) => g.name)} onCreate={(name) => api.post("/master-data/ingredient-groups", { name })} invalidateKey={QUERY_KEYS.ingredientGroups()} api={api} />
+        </div>
+      </div>
+
+      <IngredientsCard units={unitList} groups={groupList} api={api} />
+    </PageStack>
+  );
+};
+
+// ── Units / groups quick-manage card ────────────────────────────────────────
+
+const SimpleListCard: React.FC<{
+  title: string;
+  placeholder: string;
+  secondaryPlaceholder?: string;
+  rows: string[];
+  onCreate: (a: string, b: string) => Promise<unknown>;
+  invalidateKey: readonly unknown[];
+  api: ReturnType<typeof useAuth>["api"];
+}> = ({ title, placeholder, secondaryPlaceholder, rows, onCreate, invalidateKey }) => {
+  const qc = useQueryClient();
+  const [a, setA] = React.useState("");
+  const [b, setB] = React.useState("");
+  const [error, setError] = React.useState<string | null>(null);
+  const mutation = useMutation({
+    mutationFn: () => onCreate(a, b),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: invalidateKey });
+      setA("");
+      setB("");
+      setError(null);
+    },
+    onError: (e) => setError(toErrorMessage(e)),
+  });
+  return (
+    <Card title={title}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+        <div style={{ display: "flex", gap: "var(--space-2)" }}>
+          <input aria-label={`${title} - trường 1`} placeholder={placeholder} value={a} onChange={(e) => setA(e.target.value)} style={inputStyle} />
+          {secondaryPlaceholder && <input aria-label={`${title} - trường 2`} placeholder={secondaryPlaceholder} value={b} onChange={(e) => setB(e.target.value)} style={inputStyle} />}
+          <Button variant="action" disabled={!a.trim() || mutation.isPending} onClick={() => mutation.mutate()}>
+            Thêm
+          </Button>
+        </div>
+        <InlineError message={error} />
+        <ul style={{ margin: 0, paddingLeft: "var(--space-4)", fontSize: "var(--text-sm)", color: "var(--text-secondary)" }}>
+          {rows.map((r, i) => (
+            <li key={i}>{r}</li>
+          ))}
+          {rows.length === 0 && <li style={{ listStyle: "none", color: "var(--text-muted)" }}>Chưa có.</li>}
+        </ul>
+      </div>
+    </Card>
+  );
+};
+
+// ── Ingredients table + create/edit + import ─────────────────────────────────
+
+const IngredientsCard: React.FC<{ units: Unit[]; groups: Group[]; api: ReturnType<typeof useAuth>["api"] }> = ({ units, groups, api }) => {
+  const qc = useQueryClient();
+  const [filters, setFilters] = React.useState({ search: "", status: "", groupId: "" });
+  const [page, setPage] = React.useState(1);
+  const [editing, setEditing] = React.useState<Ingredient | null>(null);
+  const [creating, setCreating] = React.useState(false);
+  const [importResult, setImportResult] = React.useState<string | null>(null);
+  const [importError, setImportError] = React.useState<string | null>(null);
+  const fileRef = React.useRef<HTMLInputElement>(null);
+
+  const { rows, total, pageCount, isLoading, isError, error } = usePagedList<Ingredient>({
+    queryKey: QUERY_KEYS.ingredients(),
+    path: "/master-data/ingredients",
+    page,
+    pageSize: PAGE_SIZE,
+    filters,
+  });
+
+  const patch = (p: Partial<typeof filters>) => {
+    setFilters((f) => ({ ...f, ...p }));
+    setPage(1);
+  };
+
+  const importMutation = useMutation({
+    mutationFn: (file: File) => {
+      const form = new FormData();
+      form.append("file", file);
+      return api.upload<{ validCount: number; errorCount: number }>("/import/ingredients", form);
+    },
+    onSuccess: (res) => {
+      setImportError(null);
+      setImportResult(`Nhập ${res.validCount} dòng hợp lệ, ${res.errorCount} lỗi.`);
+      void qc.invalidateQueries({ queryKey: QUERY_KEYS.ingredients() });
+    },
+    onError: (e) => {
+      setImportResult(null);
+      setImportError(toErrorMessage(e, "Nhập Excel thất bại"));
+    },
+  });
+
+  const columns: Column<Ingredient>[] = [
+    { key: "code", header: "Mã", render: (i) => i.code ?? "—" },
+    { key: "name", header: "Tên", render: (i) => i.name },
+    { key: "group", header: "Nhóm", render: (i) => i.group?.name ?? "—" },
+    { key: "unit", header: "ĐVT", render: (i) => i.unit?.code ?? "—" },
+    {
+      key: "status",
+      header: "Trạng thái",
+      render: (i) => {
+        const tone: BadgeTone = i.status === "ACTIVE" ? "active" : "muted";
+        return <Badge tone={tone}>{i.status === "ACTIVE" ? "Đang dùng" : "Ngưng"}</Badge>;
+      },
+    },
+  ];
+
+  return (
+    <Card
+      title="Nguyên liệu"
+      description="Quản lý nguyên liệu và đơn vị mua. Nhập nhiều từ Excel."
+      actions={
+        <div style={{ display: "flex", gap: "var(--space-2)" }}>
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".xlsx,.xls"
+            aria-label="Chọn file Excel"
+            style={{ display: "none" }}
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) importMutation.mutate(f);
+              e.target.value = "";
+            }}
+          />
+          <Button variant="ghost" disabled={importMutation.isPending} onClick={() => fileRef.current?.click()}>
+            {importMutation.isPending ? "Đang nhập…" : "Nhập Excel"}
+          </Button>
+          <Button variant="action" onClick={() => setCreating(true)}>
+            Nguyên liệu mới
+          </Button>
+        </div>
+      }
+    >
+      {(importResult || importError) && (
+        <div style={{ marginBottom: "var(--space-3)" }}>
+          {importResult && <Badge tone="active">{importResult}</Badge>}
+          <InlineError message={importError} />
+        </div>
+      )}
+
+      <FilterBar>
+        <input type="search" aria-label="Tìm nguyên liệu" placeholder="Tìm mã/tên…" value={filters.search} onChange={(e) => patch({ search: e.target.value })} style={inputStyle} />
+        <Select aria-label="Nhóm" value={filters.groupId} onChange={(e) => patch({ groupId: e.target.value })}>
+          <option value="">Tất cả nhóm</option>
+          {groups.map((g) => (
+            <option key={g.id} value={g.id}>
+              {g.name}
+            </option>
+          ))}
+        </Select>
+        <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
+          <option value="">Tất cả</option>
+          <option value="ACTIVE">Đang dùng</option>
+          <option value="INACTIVE">Ngưng</option>
+        </Select>
+      </FilterBar>
+
+      {isLoading ? (
+        <LoadingState />
+      ) : isError ? (
+        <ErrorState message={toErrorMessage(error, "Không tải được nguyên liệu")} />
+      ) : (
+        <>
+          <DataTable columns={columns} rows={rows} rowKey={(i) => i.id} onRowClick={(i) => setEditing(i)} emptyText="Chưa có nguyên liệu." />
+          <Pagination page={page} pageCount={pageCount} total={total} onPageChange={setPage} />
+        </>
+      )}
+
+      {(creating || editing) && (
+        <IngredientDialog ingredient={editing} units={units} groups={groups} api={api} onClose={() => { setCreating(false); setEditing(null); }} />
+      )}
+    </Card>
+  );
+};
+
+const IngredientDialog: React.FC<{ ingredient: Ingredient | null; units: Unit[]; groups: Group[]; api: ReturnType<typeof useAuth>["api"]; onClose: () => void }> = ({ ingredient, units, groups, api, onClose }) => {
+  const qc = useQueryClient();
+  const [name, setName] = React.useState(ingredient?.name ?? "");
+  const [groupId, setGroupId] = React.useState(ingredient?.groupId ?? groups[0]?.id ?? "");
+  const [unitId, setUnitId] = React.useState(ingredient?.unitId ?? units[0]?.id ?? "");
+  const [pus, setPus] = React.useState<{ unitId: string; factorToBase: string }[]>(
+    ingredient?.purchaseUnits.map((p) => ({ unitId: p.unitId, factorToBase: String(p.factorToBase) })) ?? [],
+  );
+  const [error, setError] = React.useState<string | null>(null);
+  const invalidate = () => void qc.invalidateQueries({ queryKey: QUERY_KEYS.ingredients() });
+
+  const body = () => ({
+    name,
+    groupId,
+    unitId,
+    purchaseUnits: pus.map((p) => ({ unitId: p.unitId, factorToBase: Number(p.factorToBase) })),
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: () =>
+      ingredient
+        ? api.request(`/master-data/ingredients/${ingredient.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body()) })
+        : api.post("/master-data/ingredients", body()),
+    onSuccess: () => {
+      invalidate();
+      onClose();
+    },
+    onError: (e) => setError(toErrorMessage(e)),
+  });
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) return setError("Nhập tên nguyên liệu");
+    if (!groupId || !unitId) return setError("Chọn nhóm và đơn vị cơ bản");
+    if (pus.length > 3) return setError("Tối đa 3 đơn vị mua");
+    if (pus.some((p) => !p.unitId || !(Number(p.factorToBase) > 0))) return setError("Đơn vị mua cần đơn vị + hệ số > 0");
+    setError(null);
+    saveMutation.mutate();
+  };
+
+  const addPu = () => setPus((cur) => (cur.length < 3 ? [...cur, { unitId: units[0]?.id ?? "", factorToBase: "" }] : cur));
+
+  return (
+    <Dialog open title={ingredient ? `Sửa ${ingredient.name}` : "Nguyên liệu mới"} onClose={onClose}>
+      <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+        <FormField name="name" label="Tên *" value={name} onChange={(e) => setName(e.target.value)} />
+        <label style={labelStyle}>
+          Nhóm *
+          <Select aria-label="Nhóm" value={groupId} onChange={(e) => setGroupId(e.target.value)}>
+            {groups.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.name}
+              </option>
+            ))}
+          </Select>
+        </label>
+        <label style={labelStyle}>
+          Đơn vị cơ bản *
+          <Select aria-label="Đơn vị cơ bản" value={unitId} onChange={(e) => setUnitId(e.target.value)}>
+            {units.map((u) => (
+              <option key={u.id} value={u.id}>
+                {u.code} — {u.name}
+              </option>
+            ))}
+          </Select>
+        </label>
+
+        <fieldset style={{ border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-md)", padding: "var(--space-3)" }}>
+          <legend style={{ fontSize: "var(--text-xs)", color: "var(--text-muted)" }}>Đơn vị mua (≤3)</legend>
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+            {pus.map((p, i) => (
+              <div key={i} style={{ display: "flex", gap: "var(--space-2)", alignItems: "center" }}>
+                <Select aria-label={`Đơn vị mua ${i + 1}`} value={p.unitId} onChange={(e) => setPus((cur) => cur.map((x, idx) => (idx === i ? { ...x, unitId: e.target.value } : x)))}>
+                  {units.map((u) => (
+                    <option key={u.id} value={u.id}>
+                      {u.code}
+                    </option>
+                  ))}
+                </Select>
+                <input aria-label={`Hệ số ${i + 1}`} type="number" step="any" placeholder="Hệ số → ĐV cơ bản" value={p.factorToBase} onChange={(e) => setPus((cur) => cur.map((x, idx) => (idx === i ? { ...x, factorToBase: e.target.value } : x)))} style={{ ...inputStyle, flex: 1 }} />
+                <Button type="button" variant="ghost" aria-label={`Xoá ĐV mua ${i + 1}`} onClick={() => setPus((cur) => cur.filter((_, idx) => idx !== i))}>
+                  ✕
+                </Button>
+              </div>
+            ))}
+            {pus.length < 3 && (
+              <Button type="button" variant="ghost" onClick={addPu}>
+                + Thêm đơn vị mua
+              </Button>
+            )}
+          </div>
+        </fieldset>
+
+        <InlineError message={error} />
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-2)" }}>
+          <Button type="button" variant="ghost" onClick={onClose}>
+            Đóng
+          </Button>
+          <Button type="submit" variant="action" disabled={saveMutation.isPending}>
+            {saveMutation.isPending ? "Đang lưu…" : "Lưu"}
+          </Button>
+        </div>
+      </form>
+    </Dialog>
+  );
+};
+
+const inputStyle: React.CSSProperties = {
+  height: "var(--input-height, 44px)",
+  padding: "0 var(--space-3)",
+  border: "1px solid var(--border-default)",
+  borderRadius: "var(--radius-md)",
+  fontFamily: "var(--font-sans)",
+  fontSize: "var(--text-sm)",
+};
+const labelStyle: React.CSSProperties = { display: "flex", flexDirection: "column", gap: "4px", fontSize: "var(--text-xs)", color: "var(--text-muted)" };

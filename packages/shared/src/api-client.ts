@@ -134,10 +134,11 @@ export class ApiClient {
   }
 
   private doRequest(path: string, init: RequestInit): Promise<Response> {
-    return fetch(`${this.baseUrl}${path}`, {
-      ...init,
-      headers: this.buildHeaders(init.headers as HeadersInit | undefined),
-    });
+    const headers = this.buildHeaders(init.headers as HeadersInit | undefined);
+    // For multipart uploads the browser must set Content-Type (with the boundary);
+    // a forced application/json would corrupt the request.
+    if (init.body instanceof FormData) delete headers["Content-Type"];
+    return fetch(`${this.baseUrl}${path}`, { ...init, headers });
   }
 
   private async silentRefresh(): Promise<TokenPair | null> {

@@ -31,4 +31,21 @@ export class ApiClient extends BaseApiClient {
     }
     return response.blob();
   }
+
+  /**
+   * Upload a multipart form (e.g. an Excel import) and parse the JSON result.
+   * Sends Accept: application/json so the server returns JSON (not an error
+   * workbook stream). Reuses the shared auth + 401-refresh path.
+   */
+  async upload<T>(path: string, form: FormData): Promise<T> {
+    const response = await this.fetchRaw(path, {
+      method: "POST",
+      body: form,
+      headers: { Accept: "application/json" },
+    });
+    if (!response.ok) {
+      throw new ApiError(response.status, await response.text());
+    }
+    return response.json() as Promise<T>;
+  }
 }

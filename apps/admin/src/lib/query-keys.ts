@@ -59,4 +59,11 @@ export const QUERY_KEYS = {
 
   /** Holiday calendars (with entries). */
   holidays: () => ["holiday-calendars"] as const,
+
+  /** Ingredient units (code/name). */
+  units: () => ["units"] as const,
+  /** Ingredient groups. */
+  ingredientGroups: () => ["ingredient-groups"] as const,
+  /** Ingredients list (filters + page appended by usePagedList). */
+  ingredients: () => ["ingredients"] as const,
 } as const;

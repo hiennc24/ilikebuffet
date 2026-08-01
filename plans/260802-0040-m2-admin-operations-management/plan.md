@@ -35,7 +35,7 @@ sự thật. Mọi màn tôn trọng RBAC (fail-closed) + branch-scoping. Tiền
 | P0 | [List-screen foundation](./phase-00-admin-foundation.md) | — | — | **done** |
 | P1 | [Đơn hàng (Orders) + Hoàn tiền](./phase-01-orders.md) | + list endpoint, + refund (schema/migration) | P0 | **done** |
 | P2 | [Chi nhánh (Branches)](./phase-02-branches.md) | done (UI only) | P0 | **done** |
-| P3 | [Master-data screens](./phase-03-master-data.md) | done (UI only) | P0 | **partial** (Suppliers + Holidays done; P3c: ingredients/accounts/units/import) |
+| P3 | [Master-data screens](./phase-03-master-data.md) | done (UI only) | P0 | **near-done** (Suppliers, Holidays, Ingredients+units+groups+import; P3d: accounts only) |
 | P4 | [Người dùng, vai trò & thiết bị](./phase-04-users-roles-devices.md) | + users module, device list | P0 | **done** (Users + Devices) |
 | P5 | [Nhật ký (Audit viewer)](./phase-05-audit-viewer.md) | + audit query | P0 | **done** |
 | P6 | [RBAC-per-screen + hardening + docs](./phase-06-hardening-docs.md) | — | P1–P5 | **done** (core) |
