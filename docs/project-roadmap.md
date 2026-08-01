@@ -23,7 +23,7 @@ Fills the admin UI over M1 backends + a few backend gaps. Plan:
 | P0 | List-screen foundation (usePagedList, Pagination, DetailDrawer, FilterBar) | ✅ done |
 | P1 | Đơn hàng (Orders) list + **Refund** (schema + PIN + audit) | ✅ done |
 | P2 | Chi nhánh (Branches) | ✅ done |
-| P3 | Master-data — **Suppliers** (approval) + **Holidays** (entries) | ◑ partial |
+| P3 | Master-data — Suppliers, Holidays, Ingredients(+import), Accounts | ✅ done |
 | P4 | **Users** (insider-resistant) + **Devices** (list/suspend) | ✅ done |
 | P5 | Nhật ký (Audit viewer, read-only, branch-scoped) | ✅ done |
 | P6 | RBAC per-screen (role-based nav/route hiding) + docs | ✅ done |
@@ -32,11 +32,8 @@ Server is always the authorization gate; the FE RBAC only hides screens a role
 can't use. New money flow (refund) keeps the M1 invariants (integer VND,
 sum(refunds) ≤ total, PIN + in-tx audit, concurrency-guarded).
 
-### M2 remaining (carry-over)
-- **P3c** — Master-data: ingredients (+ purchase units, needs group/unit selects),
-  accounts (+ groups), units, and the Excel import (multipart upload; the endpoint
-  streams an error-workbook on failures, so the FE needs blob handling). Heaviest
-  nested-form + file work — split out to its own focused pass.
+M2 is functionally complete. All phases (P0–P6) plus carry-overs (P3b/c/d, P4b)
+are delivered.
 
 ## M3+ — Backlog (not started)
 

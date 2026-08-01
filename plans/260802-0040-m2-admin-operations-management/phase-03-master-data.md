@@ -21,8 +21,12 @@
 - HQ-only (BE requireHq + RBAC FE). Route `/inventory` (nav "Kho nguyên liệu"). Tests (3).
   Admin 71, POS 66 (không regress do đổi shared client), shared 63.
 
-## Còn lại (P3d — nhỏ)
-- **Tài khoản** (+ nhóm tài khoản): CRUD đơn giản (`/master-data/accounts` + `/accounts/groups`).
+## Đã làm (P3d — Accounts) ✅ 2026-08-02 → P3 HOÀN TẤT
+- **`accounts-page.tsx`**: nhóm tài khoản (quick-add) + tài khoản kế toán (list lọc
+  flow/search + tạo/sửa: nhóm select, Thu/Chi, ngưỡng duyệt integer VND). HQ-only.
+  Route `/master-data/accounts` + nav. Tests (2). Admin 73.
+
+→ **P3 đã đủ:** Suppliers, Holidays, Ingredients(+units+groups+import), Accounts.
 
 ## Backend (done — master-data.controller)
 - Ingredients: `GET`, `GET /groups`, `GET /:id`, `POST`, `PUT /:id`, `DELETE /:id`

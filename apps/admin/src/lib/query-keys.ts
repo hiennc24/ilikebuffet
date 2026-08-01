@@ -66,4 +66,8 @@ export const QUERY_KEYS = {
   ingredientGroups: () => ["ingredient-groups"] as const,
   /** Ingredients list (filters + page appended by usePagedList). */
   ingredients: () => ["ingredients"] as const,
+
+  /** Accounting accounts + groups. */
+  accounts: () => ["accounts"] as const,
+  accountGroups: () => ["account-groups"] as const,
 } as const;

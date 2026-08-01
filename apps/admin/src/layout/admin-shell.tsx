@@ -111,6 +111,12 @@ const DEFAULT_GROUPS: NavGroup[] = [
         iconPath: "M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z",
       },
       {
+        id: "accounts",
+        label: "Tài khoản kế toán",
+        path: "/master-data/accounts",
+        iconPath: "M3 6h18M3 12h18M3 18h18",
+      },
+      {
         id: "staff",
         label: "Nhân sự",
         path: "/staff",
