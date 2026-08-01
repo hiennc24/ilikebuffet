@@ -54,6 +54,29 @@ const DEFAULT_GROUPS: NavGroup[] = [
     ],
   },
   {
+    label: "Vé & Giá",
+    items: [
+      {
+        id: "ticket-types",
+        label: "Loại vé",
+        path: "/settings/ticket-types",
+        iconPath: "M4 7a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 000 4v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2a2 2 0 000-4zM12 5v14",
+      },
+      {
+        id: "pricing",
+        label: "Bảng giá",
+        path: "/settings/pricing",
+        iconPath: "M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6",
+      },
+      {
+        id: "discounts",
+        label: "Giảm giá",
+        path: "/settings/discounts",
+        iconPath: "M9 9h.01M15 15h.01M16 8l-8 8M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+      },
+    ],
+  },
+  {
     label: "Quản lý",
     items: [
       {

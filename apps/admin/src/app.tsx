@@ -24,6 +24,9 @@ import { ChooseBranchPage } from "./auth/choose-branch-page";
 import { ChangePasswordPage } from "./auth/change-password-page";
 import { AdminShell } from "./layout/admin-shell";
 import { DashboardPage } from "./pages/dashboard-page";
+import { TicketTypesPage } from "./pages/ticket-types-page";
+import { PricingPage } from "./pages/pricing-page";
+import { DiscountsPage } from "./pages/discounts-page";
 import "@ilikebuffet/ui/tokens.css";
 
 const queryClient = new QueryClient({
@@ -84,6 +87,30 @@ export function App() {
                       element={
                         <ShellLayout pageTitle="Tổng quan">
                           <DashboardPage />
+                        </ShellLayout>
+                      }
+                    />
+                    <Route
+                      path="/settings/ticket-types"
+                      element={
+                        <ShellLayout pageTitle="Loại vé">
+                          <TicketTypesPage />
+                        </ShellLayout>
+                      }
+                    />
+                    <Route
+                      path="/settings/pricing"
+                      element={
+                        <ShellLayout pageTitle="Bảng giá">
+                          <PricingPage />
+                        </ShellLayout>
+                      }
+                    />
+                    <Route
+                      path="/settings/discounts"
+                      element={
+                        <ShellLayout pageTitle="Giảm giá">
+                          <DiscountsPage />
                         </ShellLayout>
                       }
                     />
