@@ -44,4 +44,7 @@ export const QUERY_KEYS = {
 
   /** Branches list (search/status appended by the page). */
   branches: () => ["branches"] as const,
+
+  /** Suppliers list (scope/status/search appended by the page). */
+  suppliers: () => ["suppliers"] as const,
 } as const;

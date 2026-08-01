@@ -30,6 +30,7 @@ import { DiscountsPage } from "./pages/discounts-page";
 import { ShiftMonitorPage } from "./pages/shift-monitor-page";
 import { OrdersPage } from "./pages/orders-page";
 import { BranchesPage } from "./pages/branches-page";
+import { SuppliersPage } from "./pages/suppliers-page";
 import "@ilikebuffet/ui/tokens.css";
 
 const queryClient = new QueryClient({
@@ -130,6 +131,14 @@ export function App() {
                       element={
                         <ShellLayout pageTitle="Chi nhánh">
                           <BranchesPage />
+                        </ShellLayout>
+                      }
+                    />
+                    <Route
+                      path="/master-data/suppliers"
+                      element={
+                        <ShellLayout pageTitle="Nhà cung cấp">
+                          <SuppliersPage />
                         </ShellLayout>
                       }
                     />

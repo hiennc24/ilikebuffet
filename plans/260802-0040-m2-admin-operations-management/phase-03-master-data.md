@@ -1,6 +1,20 @@
-# P3 — Master-data screens
+# P3 — Master-data screens  ◑ PARTIAL (2026-08-02)
 
 **Goal:** UI cho nguyên liệu, nhóm, nhà cung cấp, tài khoản, lịch lễ. Backend đủ.
+
+## Đã làm (P3)
+- **Nhà cung cấp** (`suppliers-page.tsx`): list (search + status) + tạo (scope
+  CHAIN_WIDE/BRANCH_SPECIFIC) + sửa + **duyệt HQ** (PENDING_HQ → approve). Route
+  `/master-data/suppliers` + nav "Nhà cung cấp". Tests (3). Admin 52.
+
+## Còn lại (P3b — mini-milestone riêng, form phức tạp/nested)
+- **Nguyên liệu** (+ nhóm + đơn vị + purchase-units ≤3 nested) — form nặng nhất.
+- **Tài khoản** (+ nhóm tài khoản) — CRUD đơn giản.
+- **Đơn vị** (units) — thường quản inline trong ingredient.
+- **Lịch lễ** (holiday calendars + entries editor) — ảnh hưởng day-type giá.
+- **Import Excel nguyên liệu** (`POST /import/ingredients`) — upload + preview + confirm.
+Lý do tách: mỗi cái là CRUD/nested đáng kể; gộp hết vào 1 phase sẽ quá lớn. Ưu tiên
+budget cho P4 (users, backend gap) + P5 (audit, backend gap).
 
 ## Backend (done — master-data.controller)
 - Ingredients: `GET`, `GET /groups`, `GET /:id`, `POST`, `PUT /:id`, `DELETE /:id`
