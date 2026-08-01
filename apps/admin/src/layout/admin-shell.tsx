@@ -105,6 +105,12 @@ const DEFAULT_GROUPS: NavGroup[] = [
         iconPath: "M4 4h16v12H4zM8 20h8M12 16v4",
       },
       {
+        id: "holidays",
+        label: "Lịch lễ",
+        path: "/master-data/holidays",
+        iconPath: "M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z",
+      },
+      {
         id: "staff",
         label: "Nhân sự",
         path: "/staff",

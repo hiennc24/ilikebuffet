@@ -56,4 +56,7 @@ export const QUERY_KEYS = {
 
   /** Devices list (branch filter appended by the page). */
   devices: () => ["devices"] as const,
+
+  /** Holiday calendars (with entries). */
+  holidays: () => ["holiday-calendars"] as const,
 } as const;

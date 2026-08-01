@@ -7,14 +7,17 @@
   CHAIN_WIDE/BRANCH_SPECIFIC) + sửa + **duyệt HQ** (PENDING_HQ → approve). Route
   `/master-data/suppliers` + nav "Nhà cung cấp". Tests (3). Admin 52.
 
-## Còn lại (P3b — mini-milestone riêng, form phức tạp/nested)
-- **Nguyên liệu** (+ nhóm + đơn vị + purchase-units ≤3 nested) — form nặng nhất.
-- **Tài khoản** (+ nhóm tài khoản) — CRUD đơn giản.
-- **Đơn vị** (units) — thường quản inline trong ingredient.
-- **Lịch lễ** (holiday calendars + entries editor) — ảnh hưởng day-type giá.
-- **Import Excel nguyên liệu** (`POST /import/ingredients`) — upload + preview + confirm.
-Lý do tách: mỗi cái là CRUD/nested đáng kể; gộp hết vào 1 phase sẽ quá lớn. Ưu tiên
-budget cho P4 (users, backend gap) + P5 (audit, backend gap).
+## Đã làm (P3b — Holidays) ✅ 2026-08-02
+- **Lịch lễ** (`holidays-page.tsx`): list calendar (năm/tên/phạm vi/số ngày) + tạo lịch
+  (năm, tên) + editor entries (thêm/xoá ngày+tên, replace-on-save PUT). HQ-only (BE +
+  RBAC FE). Route `/master-data/holidays` + nav "Lịch lễ". Tests (2). Admin 68.
+
+## Còn lại (P3c — form phức tạp/nested + file upload)
+- **Nguyên liệu** (+ nhóm + đơn vị + purchase-units ≤3 nested) — cần group+unit selects.
+- **Tài khoản** (+ nhóm tài khoản).
+- **Đơn vị** (units).
+- **Import Excel** (`POST /import/ingredients`) — multipart + endpoint stream error-workbook
+  khi có lỗi (cần xử lý blob ở FE).
 
 ## Backend (done — master-data.controller)
 - Ingredients: `GET`, `GET /groups`, `GET /:id`, `POST`, `PUT /:id`, `DELETE /:id`
