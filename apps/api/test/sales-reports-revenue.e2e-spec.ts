@@ -126,6 +126,13 @@ describe("Revenue report (integration)", () => {
     await request(app.getHttpServer()).get(`/sales/reports/revenue?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${cashierToken}`).expect(403);
   });
 
+  it("exports the revenue report as an xlsx attachment (role-gated)", async () => {
+    const res = await request(app.getHttpServer()).get(`/sales/reports/revenue/export?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${hqToken}`).expect(200);
+    expect(res.headers["content-type"]).toContain("spreadsheetml.sheet");
+    expect(res.headers["content-disposition"]).toContain(".xlsx");
+    await request(app.getHttpServer()).get(`/sales/reports/revenue/export?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${cashierToken}`).expect(403);
+  });
+
   // ─── shift-cash ──────────────────────────────────────────────────────────────
 
   it("shift-cash: variance + system cash per CLOSED shift", async () => {

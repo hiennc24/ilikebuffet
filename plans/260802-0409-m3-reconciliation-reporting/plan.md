@@ -42,7 +42,7 @@ integer VND — dùng `sumVnd`/helpers, không float. Không lộ hash/mã nội
 | R2 | [Đối soát tiền mặt theo ca](./phase-r2-shift-cash.md) | + shift-cash | R0 | **done** |
 | R3 | [Đối soát offline (quarantine + số bill)](./phase-r3-offline-recon.md) | + quarantine, number-gaps, resolve | R0 | **done** |
 | R4 | [Dashboard KPIs](./phase-r4-dashboard.md) | + dashboard | R1–R3 | **done** |
-| R5 | [RBAC + export + hardening + docs](./phase-r5-hardening.md) | — | R1–R4 | planned |
+| R5 | [RBAC + export + hardening + docs](./phase-r5-hardening.md) | — | R1–R4 | **done** (core) |
 
 ## Acceptance (toàn milestone)
 - Mọi báo cáo chạy trên endpoint THẬT, branch-scoped, phân trang nơi cần, có loading/

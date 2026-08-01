@@ -1,4 +1,22 @@
-# R5 — RBAC + export + hardening + docs
+# R5 — RBAC + export + hardening + docs  ✅ DONE (core, 2026-08-02)
+
+## Actual
+- **RBAC**: đã wire dần theo từng phase — mỗi màn report trong `RESTRICTED_SCREENS`
+  (revenue/shift-cash/offline = HQ/chủ/kế toán chuỗi/QL_CN; dashboard = mọi role admin)
+  + backend `REPORT_VIEW_ROLES` role-gate; e2e cashier-403 cho revenue/shift-cash/quarantine.
+- **Export**: `GET /sales/reports/revenue/export` → workbook xlsx (rows + dòng TỔNG),
+  role-gated; FE nút "Xuất Excel" trên báo cáo doanh thu (api.download → save-as). e2e xác
+  nhận content-type + attachment + cashier 403.
+- **Docs**: cập nhật `docs/project-roadmap.md` (M3 done).
+- **Verify**: full API unit + e2e, admin/pos/shared/ui build+test+lint.
+
+## Còn lại (nhỏ)
+- Export xlsx cho **shift-cash** (revenue export đã chứng minh pattern — thêm tương tự).
+- `docs/system-architecture.md` chi tiết module reports (tuỳ nhu cầu).
+
+---
+Original below.
+
 
 **Goal:** khoá quyền báo cáo, hoàn thiện export, verify cross-cutting, cập nhật docs.
 

@@ -35,11 +35,18 @@ sum(refunds) ≤ total, PIN + in-tx audit, concurrency-guarded).
 M2 is functionally complete. All phases (P0–P6) plus carry-overs (P3b/c/d, P4b)
 are delivered.
 
-## M3+ — Backlog (not started)
+## M3 — Đối soát & Báo cáo ✅ done
 
-- **Đối soát & Báo cáo (Reconciliation & reporting):** shift reconciliation
-  (cash vs system, offline high-water-mark holes, quarantine review), revenue
-  reports by shift/branch/date, net-of-refunds revenue, exports.
+Reporting module (`sales/reports`): net revenue (gross − refunds) by
+day/branch/shift + by-ticket-type, shift cash reconciliation (expected vs counted
+vs system cash), offline reconciliation (quarantine review + resolve, bill-number
+gap detection), and dashboard KPIs. All read-mostly, branch-scoped, role-gated
+(HQ/owner/chain-accountant + per-branch manager; dashboard open to any admin).
+xlsx export for revenue. Plan: `plans/260802-0409-m3-reconciliation-reporting/`.
+
+## M4+ — Backlog (not started)
+
 - **Kho & Nhập hàng (Inventory):** purchase orders, stock in/out, BOM consumption.
 - **Tự động hoá thanh toán:** VietQR auto-reconcile (webhook), replacing manual
   payment confirmation.
+- Small carry-overs: shift-cash xlsx export; system-architecture doc for reports.

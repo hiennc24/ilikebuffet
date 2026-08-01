@@ -5,7 +5,8 @@
  * managers; cashiers/warehouse have no access. Branch-scoping is applied in the
  * service via BranchAccess. No write routes here (except quarantine-resolve in R3).
  */
-import { Body, Controller, ForbiddenException, Get, Param, Post, Query, Request } from "@nestjs/common";
+import { Body, Controller, ForbiddenException, Get, Param, Post, Query, Request, Res } from "@nestjs/common";
+import type { Response } from "express";
 import { ReportsService } from "./reports.service";
 import { Role } from "../../platform/rbac/role.enum";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
@@ -38,6 +39,14 @@ export class ReportsController {
   @Get("revenue")
   revenue(@Query() query: RevenueQuery, @Request() req: ScopedRequest) {
     return this.reports.revenue(query, this.access(req));
+  }
+
+  @Get("revenue/export")
+  async exportRevenue(@Query() query: RevenueQuery, @Request() req: ScopedRequest, @Res() res: Response) {
+    const buffer = await this.reports.exportRevenue(query, this.access(req));
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.setHeader("Content-Disposition", `attachment; filename="doanh-thu-${query.from ?? ""}-${query.to ?? ""}.xlsx"`);
+    res.send(buffer);
   }
 
   @Get("shift-cash")

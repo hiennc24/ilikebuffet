@@ -7,6 +7,7 @@
  */
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
+import * as ExcelJS from "exceljs";
 import { sumVnd, toVnDateStr } from "@ilikebuffet/shared";
 import { PrismaService } from "../../prisma/prisma.service";
 import { AuditService } from "../../audit/audit.service";
@@ -108,6 +109,27 @@ export class ReportsService {
       rows,
       byTicketType: [...ttMap.values()].sort((a, b) => b.grossVnd - a.grossVnd),
     };
+  }
+
+  /** Revenue report as an .xlsx workbook (rows + a totals line). */
+  async exportRevenue(query: RevenueQuery, access: BranchAccess): Promise<Buffer> {
+    const report = await this.revenue(query, access);
+    const wb = new ExcelJS.Workbook();
+    const sheet = wb.addWorksheet("Doanh thu");
+    sheet.columns = [
+      { header: report.groupBy === "branch" ? "Chi nhánh" : report.groupBy === "shift" ? "Ca" : "Ngày", key: "key", width: 24 },
+      { header: "Doanh thu gộp", key: "gross", width: 16 },
+      { header: "Hoàn tiền", key: "refund", width: 14 },
+      { header: "Doanh thu thuần", key: "net", width: 16 },
+      { header: "Số bill", key: "bills", width: 10 },
+      { header: "Khách", key: "guests", width: 10 },
+    ];
+    for (const r of report.rows) {
+      sheet.addRow({ key: r.key, gross: r.grossVnd, refund: r.refundedVnd, net: r.netVnd, bills: r.billCount, guests: r.guestCount });
+    }
+    sheet.addRow({});
+    sheet.addRow({ key: "TỔNG", gross: report.totals.grossVnd, refund: report.totals.refundedVnd, net: report.totals.netVnd, bills: report.totals.billCount, guests: report.totals.guestCount });
+    return Buffer.from(await wb.xlsx.writeBuffer());
   }
 
   /** Cash reconciliation for CLOSED shifts: expected vs counted vs system cash. */

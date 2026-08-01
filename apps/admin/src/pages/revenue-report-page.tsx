@@ -5,9 +5,11 @@
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { formatVnd } from "@ilikebuffet/shared";
+import { Button } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
 import { useReport } from "../lib/use-report";
+import { buildQuery } from "../lib/use-paged-list";
 import { QUERY_KEYS } from "../lib/query-keys";
 import { Card, PageStack, DataTable, Column, Select, LoadingState, ErrorState, toErrorMessage } from "./_shared/admin-ui";
 import { KpiCard, KpiRow, DateRangeBar, TotalsBar, type Branch } from "./_shared/report-ui";
@@ -52,6 +54,22 @@ export const RevenueReportPage: React.FC = () => {
 
   const patch = (p: Partial<typeof filter>) => setFilter((f) => ({ ...f, ...p }));
 
+  const [exporting, setExporting] = React.useState(false);
+  const doExport = async () => {
+    setExporting(true);
+    try {
+      const blob = await api.download(`/sales/reports/revenue/export?${buildQuery({ ...filter, groupBy })}`);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `doanh-thu-${filter.from}-${filter.to}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   const keyLabel = (key: string) => (groupBy === "branch" ? branchName(key) : key);
   const columns: Column<RevRow>[] = [
     { key: "key", header: groupBy === "day" ? "Ngày" : groupBy === "branch" ? "Chi nhánh" : "Ca", render: (r) => keyLabel(r.key) },
@@ -70,11 +88,16 @@ export const RevenueReportPage: React.FC = () => {
           onChange={patch}
           branches={isChainWide ? branches : undefined}
           right={
-            <Select aria-label="Nhóm theo" value={groupBy} onChange={(e) => setGroupBy(e.target.value as typeof groupBy)}>
-              <option value="day">Theo ngày</option>
-              <option value="branch">Theo chi nhánh</option>
-              <option value="shift">Theo ca</option>
-            </Select>
+            <div style={{ display: "flex", gap: "var(--space-2)", alignItems: "center" }}>
+              <Select aria-label="Nhóm theo" value={groupBy} onChange={(e) => setGroupBy(e.target.value as typeof groupBy)}>
+                <option value="day">Theo ngày</option>
+                <option value="branch">Theo chi nhánh</option>
+                <option value="shift">Theo ca</option>
+              </Select>
+              <Button variant="ghost" disabled={exporting} onClick={doExport}>
+                {exporting ? "Đang xuất…" : "Xuất Excel"}
+              </Button>
+            </div>
           }
         />
 
