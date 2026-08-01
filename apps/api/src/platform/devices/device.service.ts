@@ -9,10 +9,11 @@
  * Device.status uses the DeviceStatus enum — no bare string comparisons.
  */
 import { ForbiddenException, Injectable } from "@nestjs/common";
-import { DeviceStatus } from "@prisma/client";
+import { DeviceStatus, Prisma } from "@prisma/client";
 import * as argon2 from "argon2";
 import { randomBytes, randomUUID } from "node:crypto";
 import { PrismaService } from "../../prisma/prisma.service";
+import type { BranchAccess } from "../rbac/branch-access";
 
 export interface RegisterDeviceDto {
   branchId: string;
@@ -57,6 +58,22 @@ export class DeviceService {
     });
 
     return { deviceId, secret, branchId: dto.branchId };
+  }
+
+  /**
+   * List devices for the admin screen. Branch-scoped (a non-chain-wide caller
+   * only sees their branches). Never returns the secret hash.
+   */
+  async list(branchId: string | undefined, access: BranchAccess) {
+    const where: Prisma.DeviceWhereInput = {
+      ...(access.chainWide ? {} : { branchId: { in: access.branchIds } }),
+      ...(branchId ? { branchId } : {}),
+    };
+    return this.prisma.device.findMany({
+      where,
+      select: { id: true, deviceId: true, branchId: true, label: true, status: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    });
   }
 
   /** Suspend a device (e.g. lost/stolen). PIN-login will be denied. */

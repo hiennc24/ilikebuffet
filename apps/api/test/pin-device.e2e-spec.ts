@@ -371,4 +371,33 @@ describe("PIN + Device registry", () => {
       .send({ pin: "654321" })
       .expect(403);
   });
+
+  // ─── device list (admin screen) ─────────────────────────────────────────────
+
+  it("HQ lists devices without leaking the secret hash", async () => {
+    const res = await request(app.getHttpServer())
+      .get("/platform/devices")
+      .set("Authorization", `Bearer ${hqToken}`)
+      .expect(200);
+    const devices = res.body as { deviceId: string }[];
+    expect(devices.some((d) => d.deviceId === registeredDeviceId)).toBe(true);
+    expect(JSON.stringify(res.body)).not.toMatch(/secretHash|secret/);
+  });
+
+  it("a branch manager sees their branch's devices", async () => {
+    const res = await request(app.getHttpServer())
+      .get("/platform/devices")
+      .set("Authorization", `Bearer ${managerToken}`)
+      .expect(200);
+    const devices = res.body as { branchId: string }[];
+    expect(devices.length).toBeGreaterThan(0);
+    expect(devices.every((d) => d.branchId === branchId)).toBe(true);
+  });
+
+  it("a cashier cannot list devices → 403", async () => {
+    await request(app.getHttpServer())
+      .get("/platform/devices")
+      .set("Authorization", `Bearer ${cashierToken}`)
+      .expect(403);
+  });
 });

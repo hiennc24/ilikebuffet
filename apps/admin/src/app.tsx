@@ -33,6 +33,7 @@ import { BranchesPage } from "./pages/branches-page";
 import { SuppliersPage } from "./pages/suppliers-page";
 import { UsersPage } from "./pages/users-page";
 import { AuditPage } from "./pages/audit-page";
+import { DevicesPage } from "./pages/devices-page";
 import { canAccessPath } from "./lib/rbac";
 import "@ilikebuffet/ui/tokens.css";
 
@@ -174,6 +175,16 @@ export function App() {
                         <RequireAccess path="/settings/log">
                           <ShellLayout pageTitle="Nhật ký">
                             <AuditPage />
+                          </ShellLayout>
+                        </RequireAccess>
+                      }
+                    />
+                    <Route
+                      path="/devices"
+                      element={
+                        <RequireAccess path="/devices">
+                          <ShellLayout pageTitle="Thiết bị">
+                            <DevicesPage />
                           </ShellLayout>
                         </RequireAccess>
                       }

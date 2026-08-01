@@ -13,9 +13,12 @@
   branch checkboxes, hiện temp password 1 lần) + drawer (reset mật khẩu/PIN, khoá/mở).
   Route `/settings/users`. Admin 55.
 
-## Còn lại (P4b)
-- **Devices**: `GET /devices?branchId=` (thêm vào device.controller — đang thiếu `@Get`) +
-  `devices-page` (list thiết bị + suspend + xem sync cuối).
+## P4b — Devices ✅ DONE (2026-08-02)
+- BE: `GET /platform/devices?branchId=` (device.controller + service.list) — HQ+QL_CN,
+  branch-scoped, KHÔNG trả secretHash. e2e trong `pin-device.e2e-spec` (+3: no-secret-leak,
+  branch scope, cashier 403).
+- FE: `devices-page.tsx` (list + drawer suspend). Route `/devices` + nav "Thiết bị" + RBAC.
+  Admin 66.
 
 ---
 Original plan below.

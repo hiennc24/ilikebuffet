@@ -53,4 +53,7 @@ export const QUERY_KEYS = {
 
   /** Audit log list (filters + page appended by usePagedList). */
   audit: () => ["audit"] as const,
+
+  /** Devices list (branch filter appended by the page). */
+  devices: () => ["devices"] as const,
 } as const;

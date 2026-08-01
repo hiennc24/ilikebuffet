@@ -8,13 +8,17 @@ import {
   Body,
   Controller,
   ForbiddenException,
+  Get,
   Param,
   Post,
+  Query,
   Request,
 } from "@nestjs/common";
 import { DeviceService, RegisterDeviceResponse } from "./device.service";
 import type { JwtPayload } from "../../auth/jwt.strategy";
 import { Role } from "../rbac/role.enum";
+
+const DEVICE_ADMIN_ROLES = new Set<Role>([Role.QUAN_TRI_HQ, Role.QUAN_LY_CN]);
 
 interface DeviceRequest {
   user: JwtPayload;
@@ -28,6 +32,21 @@ interface RegisterBody {
 @Controller("platform/devices")
 export class DeviceController {
   constructor(private readonly devices: DeviceService) {}
+
+  /**
+   * GET /platform/devices?branchId=  — list devices for the admin screen.
+   * HQ + branch managers only; branch-scoped in the service. No secret hash.
+   */
+  @Get()
+  list(@Query("branchId") branchId: string, @Request() req: DeviceRequest) {
+    if (!DEVICE_ADMIN_ROLES.has(req.user.role as Role)) {
+      throw new ForbiddenException("Không có quyền xem thiết bị");
+    }
+    return this.devices.list(branchId || undefined, {
+      chainWide: req.user.chainWide,
+      branchIds: req.user.branchIds,
+    });
+  }
 
   /**
    * POST /platform/devices/register
