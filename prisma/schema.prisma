@@ -6,6 +6,8 @@
 //          IngredientGroup, Ingredient, IngredientPurchaseUnit, Unit,
 //          AccountGroup, Account, Supplier, SupplierIngredient,
 //          HolidayCalendar, HolidayEntry.
+// P6 adds: TicketType, TimeWindow, PriceBookVersion, PriceCell,
+//          DiscountProgram, DiscountReason, BranchPriceFlag.
 
 generator client {
   provider = "prisma-client-js"
@@ -63,6 +65,25 @@ enum SupplierScope {
 enum SupplierStatus {
   ACTIVE
   PENDING_HQ   // Chờ HQ duyệt
+  INACTIVE
+}
+
+/// Ticket type lifecycle (VG-01): once billed, only deactivate — no hard delete.
+enum TicketTypeStatus {
+  ACTIVE
+  INACTIVE // "Ngừng bán" — deactivated after billing history exists (VG-01.3)
+}
+
+/// Discount kind (VG-03.1).
+enum DiscountKind {
+  PERCENT      // Giảm % trên tổng
+  FIXED_AMOUNT // Giảm số tiền cố định
+  VOUCHER      // Mã voucher nhập tại quầy
+}
+
+/// Discount program lifecycle.
+enum DiscountProgramStatus {
+  ACTIVE
   INACTIVE
 }
 
@@ -323,6 +344,130 @@ model HolidayEntry {
 
   @@unique([calendarId, date])
   @@map("holiday_entry")
+}
+
+// ─── P6: Sales — Ticket Types ────────────────────────────────────────────────
+
+/// Ticket type (Loại vé). HQ-managed, chain-wide catalog (VG-01).
+/// No hard delete once a bill exists — deactivate only (VG-01.3).
+/// Free flag: price always = 0 but COUNTS toward guest total (VG-01.2, M7).
+model TicketType {
+  id           String           @id @default(cuid())
+  name         String           // e.g. "Người lớn", "Trẻ em 1m–1m3"
+  description  String?          // Điều kiện áp dụng — printed on bill (VG-01.1)
+  displayOrder Int              @default(0) // POS button sort order (VG-01.1)
+  color        String           @db.VarChar(20) @default("#3B82F6") // hex or tailwind token
+  isFree       Boolean          @default(false) // Giá luôn = 0, vẫn đếm khách (VG-01.2)
+  status       TicketTypeStatus @default(ACTIVE)
+  createdAt    DateTime         @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime         @updatedAt @db.Timestamptz(3)
+
+  priceCells PriceCell[]
+
+  @@map("ticket_type")
+}
+
+// ─── P6: Sales — Time Windows ────────────────────────────────────────────────
+
+/// Time window (Khung giờ). HQ defines; no overlaps enforced in service (VG-02.1).
+/// startMinute/endMinute = minutes since midnight (0–1439).
+model TimeWindow {
+  id          String   @id @default(cuid())
+  name        String   // e.g. "Trưa", "Tối"
+  startMinute Int      // inclusive, 0–1439
+  endMinute   Int      // exclusive, 1–1440 (endMinute > startMinute)
+  displayOrder Int     @default(0)
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+
+  priceCells PriceCell[]
+
+  @@map("time_window")
+}
+
+// ─── P6: Sales — Price Book Versions & Cells ─────────────────────────────────
+
+/// A price book version. Immutable once effectiveFrom <= now (VG-02.3).
+/// branchId null = chain-wide. Branch-specific requires BranchPriceFlag.allowOwnPrice=true.
+model PriceBookVersion {
+  id            String    @id @default(cuid())
+  name          String    // e.g. "Bảng giá Q1/2026"
+  effectiveFrom DateTime  @db.Date // Date only; version is active from 0h that day (VN time)
+  branchId      String?   // null = chain-wide version
+  createdAt     DateTime  @default(now()) @db.Timestamptz(3)
+  createdBy     String?   // actorId
+
+  cells PriceCell[]
+
+  @@map("price_book_version")
+}
+
+/// One price cell: version × ticket-type × time-window × day-type → unit price VND.
+/// day-type: "REGULAR" | "WEEKEND" | "HOLIDAY" (priority: HOLIDAY>WEEKEND>REGULAR).
+/// branchId null = chain-wide cell; branch cell overrides chain cell (VG-02.4).
+model PriceCell {
+  id               String   @id @default(cuid())
+  versionId        String
+  ticketTypeId     String
+  timeWindowId     String
+  /// "REGULAR" | "WEEKEND" | "HOLIDAY"
+  dayType          String   @db.VarChar(20)
+  /// Unit price in integer VND. 0 for free-ticket cells.
+  priceVnd         Int
+  /// null = chain-wide cell; set = branch-specific override (VG-02.4)
+  branchId         String?
+
+  version    PriceBookVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  ticketType TicketType       @relation(fields: [ticketTypeId], references: [id])
+  timeWindow TimeWindow       @relation(fields: [timeWindowId], references: [id])
+
+  @@unique([versionId, ticketTypeId, timeWindowId, dayType, branchId])
+  @@map("price_cell")
+}
+
+/// Branch-level flag: allow own price book (VG-02.4).
+model BranchPriceFlag {
+  branchId      String  @id
+  allowOwnPrice Boolean @default(false)
+
+  @@map("branch_price_flag")
+}
+
+// ─── P6: Sales — Discounts & Vouchers ────────────────────────────────────────
+
+/// Discount / voucher program (VG-03.1). HQ creates; max 1 per bill (MVP).
+model DiscountProgram {
+  id          String               @id @default(cuid())
+  name        String
+  kind        DiscountKind
+  /// Percent (0–100) for PERCENT kind. Null for FIXED_AMOUNT/VOUCHER.
+  pct         Int?
+  /// Fixed amount VND for FIXED_AMOUNT kind. Null for PERCENT/VOUCHER.
+  amountVnd   Int?
+  /// Voucher code (case-insensitive). Required for VOUCHER kind.
+  voucherCode String?              @db.VarChar(100)
+  /// Voucher quota — max total redemptions. Null = unlimited.
+  quotaTotal  Int?
+  /// Remaining redemptions (decremented with FOR UPDATE lock, VG-03.4).
+  quotaRemaining Int?
+  /// Effective date range (inclusive). Null = open-ended.
+  validFrom   DateTime?            @db.Date
+  validUntil  DateTime?            @db.Date
+  /// JSON array of branchIds this program applies to. Null = all branches.
+  branchScope Json?                @db.JsonB
+  status      DiscountProgramStatus @default(ACTIVE)
+  createdAt   DateTime             @default(now()) @db.Timestamptz(3)
+
+  @@map("discount_program")
+}
+
+/// Predefined manual-discount reasons (VG-03.3). HQ-managed catalog.
+model DiscountReason {
+  id        String   @id @default(cuid())
+  name      String   @unique // e.g. "Khách phàn nàn", "Người quen chủ"
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  @@map("discount_reason")
 }
 
 // ─── Infra probe ─────────────────────────────────────────────────────────────

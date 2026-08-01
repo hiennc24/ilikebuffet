@@ -21,6 +21,7 @@ import { DeviceModule } from "./platform/devices/device.module";
 import { BranchModule } from "./platform/branches/branch.module";
 import { MasterDataModule } from "./platform/master-data/master-data.module";
 import { ExcelImportModule } from "./platform/import/excel-import.module";
+import { SalesModule } from "./sales/sales.module";
 import { JwtAuthGuard } from "./auth/jwt-auth.guard";
 import { BranchScopeGuard } from "./platform/rbac/branch-scope.guard";
 
@@ -36,6 +37,7 @@ import { BranchScopeGuard } from "./platform/rbac/branch-scope.guard";
     BranchModule,
     MasterDataModule,
     ExcelImportModule,
+    SalesModule,
   ],
   providers: [
     // Order matters: auth runs first, then scope check.
