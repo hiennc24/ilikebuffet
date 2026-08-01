@@ -7,8 +7,8 @@
  *
  * Design decisions:
  *
- *   #3 — The deciding timestamp (createdAt vs paidAt) is controlled by
- *   PRICE_TIMESTAMP_FIELD (default: "createdAt"). Reversing = 1 constant change.
+ *   The deciding timestamp (createdAt vs paidAt) is controlled by
+ *   PRICE_TIMESTAMP_FIELD (confirmed: "createdAt"). Reversing = 1 constant change.
  *   Tests lock the CONTRACT ("one timestamp decides price"), not the specific value.
  *
  *   Out-of-hours behaviour controlled by OUT_OF_HOURS_POLICY. Confirmed policy:
@@ -86,10 +86,9 @@ export interface PriceBookSnapshot {
 // ─── Config constants (build-defaults) ────────────────────────────────────────
 
 /**
- * Which timestamp field decides the price.
- * Default = "createdAt" (confirmed decision).
- * To use paidAt: change this constant — no other code changes needed.
- * Build-default; awaiting client signature before golive.
+ * Which timestamp field decides the price (confirmed): the price is fixed at the
+ * moment the bill is CREATED, not when it is paid.
+ * To use paidAt instead: change this constant — no other code changes needed.
  */
 export const PRICE_TIMESTAMP_FIELD: "createdAt" | "paidAt" = "createdAt";
 

@@ -123,13 +123,13 @@ Verification pass: **skip** (Red Team Review đã có evidence; greenfield, khô
 
 | # | Quyết định | Chọn | Ảnh hưởng |
 |---|---|---|---|
-| V1 | Mốc tính giá (needs-client-confirm #3) | **Thời điểm TẠO bill** (default để build, **chờ khách ký**) | P6 resolver default `createdAt`; P7 snapshot; P8 offline |
+| V1 | Mốc tính giá (#3) | **Thời điểm TẠO bill** (`createdAt` — đã chốt 2026-08-02) | P6 resolver `createdAt`; P7 snapshot; P8 offline |
 | V2 | Khóa tài khoản ≤30s (M4) | **Check revocation mỗi request + Redis** | P3: mọi request tra revocation list; Redis giữ ở M1 (bác bỏ đề xuất bỏ Redis của SC3) |
 | V3 | DR posture (C7) | **PITR-to-crash (WAL)**, RPO ~giây | P9 DR runbook; giảm rủi ro reset counter |
 | V4 | Vé miễn phí đứng một mình (#4) | **Cho phép bill toàn vé free** (`ALLOW_STANDALONE` — đã chốt 2026-08-02) | P6/P7 policy object (đảo được) |
 | — | Giờ ngoài khung (#2) | **Chặn — không tạo được bill** (`OUT_OF_HOURS_POLICY="BLOCK"` — đã chốt 2026-08-02) | P6 resolver `NO_PRICE` ngoài khung |
 
-**Còn chờ khách ký:** V1 (#3 mốc tính giá = createdAt) là default để build (resolver config-driven, đảo = đổi 1 config) — vẫn phải lấy chữ ký trước golive. #2 (giờ ngoài khung = chặn) và #4 (vé free đứng một mình = cho phép) **đã chốt 2026-08-02**. V2 xác nhận **Redis ở lại M1** (chỉ revocation).
+**Đã chốt 2026-08-02:** #2 (giờ ngoài khung = chặn), #3 (mốc tính giá = `createdAt`), #4 (vé free đứng một mình = cho phép). Không còn quyết định giá chờ khách ký. Resolver/policy vẫn config-driven (đảo = đổi 1 config). V2 xác nhận **Redis ở lại M1** (chỉ revocation).
 
 ### Whole-Plan Consistency Sweep (validation)
 Propagate: V1→P6 (default createdAt, giữ config paidAt); V2→P3 (per-request revocation, Redis stays — không mâu thuẫn H9 vì H9 chỉ bỏ BullMQ); V3→P9 (PITR); V4→P6/P7 (policy default). Không mâu thuẫn mới. Verification Failed: 0 → plan đủ điều kiện cook.
