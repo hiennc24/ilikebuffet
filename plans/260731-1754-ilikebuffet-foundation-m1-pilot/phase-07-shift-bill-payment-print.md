@@ -58,3 +58,14 @@ Lõi bán hàng **online trước**: mở ca, tạo bill (giá server, snapshot)
 
 <!-- Updated: Validation Session 1 — V4: bill-create validation default = phải có ≥1 vé giá>0 (dùng policy object từ P6, đảo được). V1: snapshot dùng đơn giá tại createdAt. Chờ khách ký #3/#4. -->
 - **V4/V1** — validation tạo bill dùng **policy object** (default ≥1 vé có phí) + snapshot đơn giá theo `createdAt`; đổi chiều = đổi config, không sửa code.
+
+## Progress
+
+**Backend sales core — DONE (46 test: 23 unit + 23 e2e real-Postgres).**
+- Schema + migration `20260801170000`: Shift (one OPEN/device partial unique), BillCounter, Bill (seq+number, snapshot fields, `(deviceId,clientUuid)` dedup), BillLine, Payment.
+- `BillNumberService` — gapless `SELECT … FOR UPDATE` (no SEQUENCE). **Concurrency test pass**: 50 song song → 1..N no dup/gap; rollback không đốt số; cancel giữ số (C4/C7 gate ✅).
+- `ShiftsService` — open/close (chênh lệch chỉ tính CASH, bắt ghi chú)/force-close (PIN QL); audit.
+- `BillsService` — giá server (resolver P6), snapshot bất biến (test đổi giá sau → bill cũ không đổi), số trong tx (lock counter→audit), idempotent theo clientUuid; cancel giữ số + PIN + **IDOR guard** (chỉ ca OPEN của chính thiết bị — cross/closed-shift → 403 + audit, M1 ✅).
+- `PaymentsService` — tổng thanh toán = tổng bill (chặn thiếu tiền), chặn thanh toán 2 lần.
+
+**Còn lại P7:** POS PWA screens (mở ca, bán, thanh toán, bill) + draft-bill survive refresh/lock (H8); `packages/print-agent` (HTTP local 80mm, lỗi in không chặn lưu — H6 transport spike; real-printer test **blocked** chờ Sprint-0 chọn 2 model). VietQR động (UI thanh toán).
