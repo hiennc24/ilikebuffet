@@ -148,9 +148,14 @@ export const SellPage: React.FC = () => {
     });
   }, []);
 
-  const clientUuid = effectiveBranchId
-    ? getOrCreateClientUuid(effectiveBranchId)
-    : "";
+  // getOrCreateClientUuid writes to localStorage on first call; calling it
+  // during render is a side-effect. useMemo defers to the memo phase which
+  // still runs synchronously but is the correct React slot for read-once
+  // storage access. The UUID is stable until clearClientUuid() is called.
+  const clientUuid = React.useMemo(
+    () => (effectiveBranchId ? getOrCreateClientUuid(effectiveBranchId) : ""),
+    [effectiveBranchId],
+  );
 
   const handlePaymentSuccess = React.useCallback(() => {
     if (effectiveBranchId) {

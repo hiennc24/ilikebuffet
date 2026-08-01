@@ -2,13 +2,17 @@
  * PayDialog — two-step bill creation + payment flow.
  *
  * Step 1 (on open): POST /sales/bills → show server total + bill number.
- * Step 2: choose payment method(s), enter amounts, POST /sales/bills/:id/payments.
+ * Step 2: choose payment method, confirm payment.
  *
  * Idempotency: billId is kept in state — re-opening after a partial failure
  * skips bill creation and goes straight to payment.
  *
  * VietQR: uses img.vietqr.io if branch.bankAccount is present.
- * Print: stub — console.log on success (real print agent is a separate task).
+ * Print: delegated to print-client (real print agent).
+ *
+ * Cash over-tender: when method=CASH, cashier may enter a tendered amount
+ * greater than the bill total. Change is shown in the UI; tenderedVnd is
+ * forwarded to the server (online) and stored in the outbox (offline).
  */
 
 import * as React from "react";
@@ -88,6 +92,8 @@ export const PayDialog: React.FC<PayDialogProps> = ({
 
   const [method, setMethod] = React.useState<PaymentMethod>("CASH");
   const [amountInput, setAmountInput] = React.useState("");
+  // Cash over-tender: how much the customer hands over (CASH only).
+  const [tenderedInput, setTenderedInput] = React.useState("");
 
   // Reset state when dialog is opened with fresh cart (clientUuid change = new sale).
   const prevClientUuidRef = React.useRef<string>("");
@@ -99,6 +105,7 @@ export const PayDialog: React.FC<PayDialogProps> = ({
       setStep("creating");
       setErrorMsg(null);
       setAmountInput("");
+      setTenderedInput("");
       setIsOfflineBill(false);
     }
   }, [open, clientUuid]);
@@ -126,11 +133,20 @@ export const PayDialog: React.FC<PayDialogProps> = ({
       // loaded while online, so the cart carries unit prices for a local estimate;
       // the server recomputes the authoritative total + gapless number on sync.
       if (!isOnline) {
-        // H5: a skewed clock corrupts createdAt (price/date/number) — block.
+        // Block when clock skew is confirmed exceeded.
         if (clockSkew?.exceeded) {
           setErrorMsg("Đồng hồ thiết bị lệch giờ — chỉnh lại giờ trước khi bán offline.");
           setStep("error");
           return;
+        }
+        // Warn (non-blocking) when skew has never been measured (e.g. device
+        // booted without network). The cashier can proceed, but is informed.
+        if (clockSkew === null) {
+          // A real warning overlay would be ideal; for now surface via errorMsg
+          // on a non-blocking notice — we let the flow continue rather than
+          // blocking, matching the product decision that a "never measured"
+          // skew is less risky than losing a sale.
+          console.warn("[POS] Clock skew not yet measured — proceeding offline with unverified clock.");
         }
         const nowIso = new Date().toISOString();
         const branchCode = localStorage.getItem(BRANCH_CODE_KEY) ?? "CN";
@@ -156,6 +172,7 @@ export const PayDialog: React.FC<PayDialogProps> = ({
         });
         setIsOfflineBill(true);
         setAmountInput(String(estTotal));
+        setTenderedInput(String(estTotal));
         setStep("choose-method");
         return;
       }
@@ -186,6 +203,7 @@ export const PayDialog: React.FC<PayDialogProps> = ({
         setBill(billResult);
         setBranch(branchResult);
         setAmountInput(String(billResult.totalVnd));
+        setTenderedInput(String(billResult.totalVnd));
         setStep("choose-method");
       } catch (err) {
         if (cancelled) return;
@@ -208,6 +226,13 @@ export const PayDialog: React.FC<PayDialogProps> = ({
     if (submittingRef.current || !billId || !bill) return;
     const amountVnd = parseInt(amountInput, 10);
     if (amountVnd !== bill.totalVnd) return; // Button should be disabled, guard anyway.
+
+    // For CASH, resolve the tendered amount (integer VND). Falls back to
+    // amountVnd if the cashier left the field blank or at the exact total.
+    const parsedTendered = parseInt(tenderedInput, 10);
+    const tenderedVnd = method === "CASH" && Number.isFinite(parsedTendered) && parsedTendered >= amountVnd
+      ? parsedTendered
+      : undefined;
 
     submittingRef.current = true;
     setStep("paying"); // disables the button once React re-renders
@@ -233,7 +258,7 @@ export const PayDialog: React.FC<PayDialogProps> = ({
             deviceClockAt: meta.createdAt,
             clockOffsetMs: meta.clockOffsetMs,
             lines: cartItems.map((i) => ({ ticketTypeId: i.id, qty: i.quantity })),
-            payments: [{ method, amountVnd }],
+            payments: [{ method, amountVnd, ...(tenderedVnd !== undefined ? { tenderedVnd } : {}) }],
           });
         } catch (err) {
           // A duplicate clientUuid (Dexie ConstraintError) means a prior tap
@@ -256,7 +281,7 @@ export const PayDialog: React.FC<PayDialogProps> = ({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            payments: [{ method, amountVnd, reference: undefined }],
+            payments: [{ method, amountVnd, reference: undefined, ...(tenderedVnd !== undefined ? { tenderedVnd } : {}) }],
           }),
         });
         setStep("success");
@@ -272,7 +297,7 @@ export const PayDialog: React.FC<PayDialogProps> = ({
     } finally {
       submittingRef.current = false;
     }
-  }, [api, bill, billId, amountInput, method, onPaymentSuccess, isOfflineBill, triggerSync, cartItems, selectedBranchId, shiftId, deviceId]);
+  }, [api, bill, billId, amountInput, tenderedInput, method, onPaymentSuccess, isOfflineBill, triggerSync, cartItems, selectedBranchId, shiftId, deviceId]);
 
   // Build the print-agent payload from the current bill (null until priced).
   const buildPrintPayload = React.useCallback(
@@ -306,7 +331,14 @@ export const PayDialog: React.FC<PayDialogProps> = ({
 
   const remaining = bill ? bill.totalVnd - (parseInt(amountInput, 10) || 0) : 0;
   const payDisabled =
-    step === "paying" || !bill || parseInt(amountInput, 10) !== bill.totalVnd;
+    step === "paying" || !bill || parseInt(amountInput, 10) !== bill.totalVnd
+    || (method === "CASH" && (parseInt(tenderedInput, 10) || 0) < bill.totalVnd);
+
+  // Computed change for cash over-tender display.
+  const parsedTendered = parseInt(tenderedInput, 10);
+  const changeVnd = bill && method === "CASH" && Number.isFinite(parsedTendered) && parsedTendered >= bill.totalVnd
+    ? parsedTendered - bill.totalVnd
+    : null;
 
   function renderContent() {
     if (step === "creating") {
@@ -365,6 +397,24 @@ export const PayDialog: React.FC<PayDialogProps> = ({
     // Payment step
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+        {/* Clock-not-verified warning (non-blocking, shown only offline + never measured) */}
+        {!isOnline && clockSkew === null && (
+          <p
+            role="status"
+            style={{
+              margin: 0,
+              padding: "var(--space-2) var(--space-3)",
+              background: "var(--color-warning-bg, #FFF8E1)",
+              borderLeft: "3px solid var(--color-warning, #F59E0B)",
+              fontSize: "var(--text-xs)",
+              color: "var(--text-secondary)",
+              borderRadius: "var(--radius-sm)",
+            }}
+          >
+            Chưa kiểm tra đồng hồ thiết bị — tiếp tục với canh báo.
+          </p>
+        )}
+
         {/* Server-authoritative total */}
         <div
           style={{
@@ -408,7 +458,10 @@ export const PayDialog: React.FC<PayDialogProps> = ({
               touch
               onClick={() => {
                 setMethod(m);
-                if (m !== "VIETQR") setAmountInput(String(bill.totalVnd));
+                if (m !== "VIETQR") {
+                  setAmountInput(String(bill.totalVnd));
+                  setTenderedInput(String(bill.totalVnd));
+                }
               }}
               style={{ flex: 1, fontSize: "var(--text-xs)" }}
               aria-pressed={method === m}
@@ -451,21 +504,59 @@ export const PayDialog: React.FC<PayDialogProps> = ({
           );
         })()}
 
-        {/* Amount input */}
-        <FormField
-          label="Số tiền nhận"
-          type="number"
-          touch
-          value={amountInput}
-          onChange={(e) => setAmountInput(e.target.value)}
-          name="payment-amount"
-          autoComplete="off"
-          error={
-            amountInput && parseInt(amountInput, 10) !== bill.totalVnd
-              ? `Còn thiếu: ${formatVnd(Math.abs(remaining))}`
-              : undefined
-          }
-        />
+        {/* Amount input (non-CASH: exact-match to total) */}
+        {method !== "CASH" && (
+          <FormField
+            label="Số tiền nhận"
+            type="number"
+            touch
+            value={amountInput}
+            onChange={(e) => setAmountInput(e.target.value)}
+            name="payment-amount"
+            autoComplete="off"
+            error={
+              amountInput && parseInt(amountInput, 10) !== bill.totalVnd
+                ? `Còn thiếu: ${formatVnd(Math.abs(remaining))}`
+                : undefined
+            }
+          />
+        )}
+
+        {/* Cash over-tender: tiền khách đưa + tiền thối */}
+        {method === "CASH" && (
+          <>
+            <FormField
+              label="Tiền khách đưa"
+              type="number"
+              touch
+              value={tenderedInput}
+              onChange={(e) => setTenderedInput(e.target.value)}
+              name="cash-tendered"
+              autoComplete="off"
+              error={
+                tenderedInput && (parseInt(tenderedInput, 10) || 0) < bill.totalVnd
+                  ? `Thiếu: ${formatVnd(bill.totalVnd - (parseInt(tenderedInput, 10) || 0))}`
+                  : undefined
+              }
+            />
+            {changeVnd !== null && changeVnd > 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: "var(--text-sm)",
+                  color: "var(--text-secondary)",
+                  padding: "var(--space-1) 0",
+                }}
+              >
+                <span>Tiền thối</span>
+                <span style={{ fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"], color: "var(--text-primary)" }}>
+                  {formatVnd(changeVnd)}
+                </span>
+              </div>
+            )}
+          </>
+        )}
 
         <Button
           variant="action"

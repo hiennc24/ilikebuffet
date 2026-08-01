@@ -24,7 +24,7 @@ function getOrCreateDeviceId(): string {
   return id;
 }
 
-export type PosSessionStatus = "loading" | "no-shift" | "ready";
+export type PosSessionStatus = "loading" | "no-shift" | "ready" | "error";
 
 export interface PosSessionContextValue {
   deviceId: string;
@@ -77,14 +77,16 @@ export const PosSessionProvider: React.FC<PosSessionProviderProps> = ({ children
         setStatus("no-shift");
       }
     } catch (err) {
-      // If the API returns 404 it means no open shift, not an error.
       if (err instanceof ApiError && err.status === 404) {
+        // Definitive "no open shift" from the server — clear any stale shiftId.
         setShiftId(null);
         setStatus("no-shift");
       } else {
-        // Network error or unexpected — stay no-shift so user can retry.
-        setShiftId(null);
-        setStatus("no-shift");
+        // Transient error: network failure or HTTP 5xx. Do NOT clear the
+        // previously known shiftId — clearing it risks the cashier opening a
+        // duplicate shift when they retry. Surface an error state so the UI
+        // can show a "retry" prompt instead of showing "no open shift".
+        setStatus("error");
       }
     }
   }, [api, deviceId, selectedBranchId, authStatus]);

@@ -145,4 +145,60 @@ describe("PosSessionContext — shift lifecycle", () => {
       expect(screen.getByTestId("status").textContent).toBe("no-shift");
     });
   });
+
+  it("network failure (5xx) surfaces 'error' status and keeps existing shiftId (HI-5)", async () => {
+    seedAuth();
+    // First call: shift found → ready.
+    // Second call (refresh): 503 transient error → must NOT clear shiftId.
+    let callCount = 0;
+    globalThis.fetch = vi.fn(async (url: string): Promise<Response> => {
+      const path = String(url).replace(/^https?:\/\/[^/]+/, "");
+      if (path.startsWith("/sales/shifts/open")) {
+        callCount++;
+        if (callCount === 1) {
+          return new Response(JSON.stringify({ id: "shift-xyz", branchId: "branch-01" }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+        // Second call: 503 transient error
+        return new Response(JSON.stringify({ error: "service unavailable" }), {
+          status: 503,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      return new Response(JSON.stringify({ error: "not found" }), { status: 404, headers: { "Content-Type": "application/json" } });
+    }) as typeof globalThis.fetch;
+
+    let refreshFn: (() => Promise<void>) | undefined;
+    function SessionProbeWithRefresh() {
+      const session = usePosSession();
+      React.useEffect(() => {
+        refreshFn = session.refresh;
+      }, [session.refresh]);
+      return (
+        <div>
+          <span data-testid="status">{session.status}</span>
+          <span data-testid="shift-id">{session.shiftId ?? "null"}</span>
+        </div>
+      );
+    }
+
+    render(<SessionProbeWithRefresh />, { wrapper: Wrapper });
+
+    // First load: shift found.
+    await waitFor(() => {
+      expect(screen.getByTestId("status").textContent).toBe("ready");
+    });
+    expect(screen.getByTestId("shift-id").textContent).toBe("shift-xyz");
+
+    // Trigger a refresh that hits 503.
+    await act(async () => {
+      await refreshFn!();
+    });
+
+    // Must surface "error" and preserve the existing shiftId — not "no-shift".
+    expect(screen.getByTestId("status").textContent).toBe("error");
+    expect(screen.getByTestId("shift-id").textContent).toBe("shift-xyz");
+  });
 });

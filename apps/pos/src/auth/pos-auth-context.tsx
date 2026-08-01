@@ -123,15 +123,20 @@ export const PosAuthProvider: React.FC<PosAuthProviderProps> = ({
     }),
   );
 
-  // Keep ApiClient deps current.
+  // Keep ApiClient deps current whenever the inputs that affect them change.
+  // getTokens/getBranchId are closures over state — rebuilding them when the
+  // state values change is sufficient. The ApiClient always calls getTokens()
+  // at request time, so it reads the latest token even when state hasn't
+  // flushed yet (the test "state-not-yet-updated" covers this invariant).
+  const { accessToken, refreshToken, selectedBranchId } = state;
   React.useEffect(() => {
     apiRef.current.updateDeps({
       baseUrl: apiBaseUrl ?? "",
       getTokens: () =>
-        state.accessToken && state.refreshToken
-          ? { accessToken: state.accessToken, refreshToken: state.refreshToken }
+        accessToken && refreshToken
+          ? { accessToken, refreshToken }
           : null,
-      getBranchId: () => state.selectedBranchId,
+      getBranchId: () => selectedBranchId,
       onRefreshed: (tokens) => {
         sessionStorage.setItem(STORAGE.accessToken, tokens.accessToken);
         if (tokens.refreshToken) {
@@ -145,7 +150,7 @@ export const PosAuthProvider: React.FC<PosAuthProviderProps> = ({
         window.location.replace("/login");
       }),
     });
-  });
+  }, [apiBaseUrl, accessToken, refreshToken, selectedBranchId, onAuthFailure]);
 
   const login = React.useCallback(async (username: string, password: string) => {
     setError(null);

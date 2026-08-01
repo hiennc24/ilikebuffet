@@ -74,7 +74,14 @@ export interface OutboxBill {
   clockOffsetMs?: number;
   lines: OutboxLine[];
   /** Payment(s) taken offline for this bill (BH-03). Synced with the bill. */
-  payments?: Array<{ method: "CASH" | "VIETQR" | "CARD"; amountVnd: number; reference?: string }>;
+  payments?: Array<{
+    method: "CASH" | "VIETQR" | "CARD";
+    amountVnd: number;
+    reference?: string;
+    /** Cash tendered by customer (CASH only). Must be >= amountVnd. Server
+     *  computes changeVnd = tenderedVnd - amountVnd; we do not send changeVnd. */
+    tenderedVnd?: number;
+  }>;
   status: OutboxStatus;
   /** Official gapless number assigned after successful sync. */
   officialNumber?: string;

@@ -20,7 +20,14 @@ function tempSeqKey(deviceId: string, branchId: string, dateStr: string): string
   return `${TEMP_SEQ_KEY_PREFIX}${deviceId}_${branchId}_${dateStr}`;
 }
 
-/** Increment and return the per-day temp sequence for this device+branch. */
+/**
+ * Increment and return the per-day temp sequence for this device+branch.
+ *
+ * Best-effort only: localStorage read-modify-write is not atomic, so two
+ * tabs or two bills in the same synchronous tick can produce the same value.
+ * This is acceptable because the server assigns the official gapless number
+ * on sync; the temp number is only used for local display and reconciliation.
+ */
 function nextTempSeq(deviceId: string, branchId: string, dateStr: string): number {
   const key = tempSeqKey(deviceId, branchId, dateStr);
   const current = parseInt(localStorage.getItem(key) ?? "0", 10);
