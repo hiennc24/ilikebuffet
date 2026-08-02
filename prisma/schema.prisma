@@ -109,6 +109,23 @@ enum PaymentMethod {
   CARD
 }
 
+/// Purchase-order lifecycle. DRAFT is editable; SENT is issued to the supplier;
+/// RECEIVED means goods were booked into stock; CANCELLED voids the order.
+enum PoStatus {
+  DRAFT
+  SENT
+  RECEIVED
+  CANCELLED
+}
+
+/// Kind of stock movement. RECEIPT adds stock (goods in), ISSUE removes it
+/// (wastage/consumption), ADJUST sets a counted quantity (stock-take delta).
+enum StockMovementType {
+  RECEIPT
+  ISSUE
+  ADJUST
+}
+
 // ─── Domain models ───────────────────────────────────────────────────────────
 
 /// A physical or logical branch (cửa hàng / chi nhánh). Extended in P4 (NT-01).
@@ -703,4 +720,89 @@ model Payment {
 
   @@index([billId])
   @@map("payment")
+}
+
+// ─── Inventory: Purchase Orders, Stock Movements, Balances ────────────────────
+
+/// Purchase order (đơn mua) to a supplier, scoped to one branch. Editable while
+/// DRAFT; SENT is issued; a receipt moves it to RECEIVED. Money is integer VND;
+/// line quantities are fractional (kg/lít) so line totals use roundVnd(price×qty).
+model PurchaseOrder {
+  id         String   @id @default(cuid())
+  /// Human-readable code, unique per branch (e.g. "PO-CN01-0001").
+  code       String   @unique
+  branchId   String
+  supplierId String
+  status     PoStatus @default(DRAFT)
+  note       String?
+  /// actorId of the creator (AppUser.id). Scalar, like shift.openedBy.
+  createdBy  String
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+
+  lines PurchaseOrderLine[]
+
+  @@index([branchId, status])
+  @@index([supplierId])
+  @@map("purchase_order")
+}
+
+/// One line of a purchase order: an ingredient bought in a chosen purchase unit.
+model PurchaseOrderLine {
+  id           String  @id @default(cuid())
+  poId         String
+  ingredientId String
+  /// Purchase unit chosen for this line (an ingredient_purchase_unit's unit).
+  unitId       String
+  /// Ordered quantity in the purchase unit (fractional allowed).
+  qty          Decimal @db.Decimal(12, 3)
+  /// Price of one purchase unit, integer VND.
+  unitPriceVnd Int
+  /// roundVnd(unitPriceVnd × qty), integer VND.
+  lineTotalVnd Int
+
+  po PurchaseOrder @relation(fields: [poId], references: [id], onDelete: Cascade)
+
+  @@index([poId])
+  @@map("purchase_order_line")
+}
+
+/// Append-only ledger of every stock change. qtyBase is signed and always in the
+/// ingredient's BASE unit; the running InventoryBalance is reconstructable from
+/// SUM(qtyBase) per (branch, ingredient).
+model StockMovement {
+  id           String            @id @default(cuid())
+  branchId     String
+  ingredientId String
+  type         StockMovementType
+  /// Signed quantity in the ingredient's base unit (+ in / − out).
+  qtyBase      Decimal           @db.Decimal(12, 3)
+  /// Cost of one base unit at movement time, integer VND. Null for a pure ADJUST.
+  unitCostVnd  Int?
+  /// What produced this movement, e.g. refType "PO" + refId = purchase_order.id.
+  refType      String?
+  refId        String?
+  note         String?
+  /// actorId (AppUser.id).
+  createdBy    String
+  createdAt    DateTime          @default(now()) @db.Timestamptz(3)
+
+  @@index([branchId, ingredientId, createdAt])
+  @@map("stock_movement")
+}
+
+/// Current on-hand quantity and moving-average cost per (branch, ingredient).
+/// Maintained inside the same transaction as each movement; reconstructable from
+/// stock_movement for disaster recovery.
+model InventoryBalance {
+  branchId     String
+  ingredientId String
+  /// On-hand quantity in the ingredient's base unit. Never negative (blocked).
+  qtyBase      Decimal  @db.Decimal(12, 3)
+  /// Moving-average cost of one base unit, integer VND.
+  avgCostVnd   Int      @default(0)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
+
+  @@id([branchId, ingredientId])
+  @@index([branchId])
+  @@map("inventory_balance")
 }
