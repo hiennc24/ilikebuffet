@@ -76,6 +76,11 @@ export const QUERY_KEYS = {
   /** A single purchase order with its lines. */
   purchaseOrder: (id: string) => ["purchase-order", id] as const,
 
+  /** Stock balances list (filters + page appended by usePagedList). */
+  stock: () => ["stock"] as const,
+  /** Movement history for one ingredient (branch + ingredient scoped). */
+  stockMovements: (ingredientId: string | null) => ["stock-movements", ingredientId] as const,
+
   /** Reports (params appended by useReport). */
   revenueReport: () => ["report-revenue"] as const,
   shiftCashReport: () => ["report-shift-cash"] as const,
