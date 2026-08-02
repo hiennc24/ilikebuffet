@@ -44,9 +44,22 @@ gap detection), and dashboard KPIs. All read-mostly, branch-scoped, role-gated
 (HQ/owner/chain-accountant + per-branch manager; dashboard open to any admin).
 xlsx export for revenue. Plan: `plans/260802-0409-m3-reconciliation-reporting/`.
 
-## M4+ — Backlog (not started)
+## M4 — Kho & Nhập hàng (Inventory) ✅ done
 
-- **Kho & Nhập hàng (Inventory):** purchase orders, stock in/out, BOM consumption.
+Inventory module (`inventory/`): purchase orders to suppliers (create/edit while
+DRAFT, DRAFT→SENT→RECEIVED/CANCELLED), goods receipt (purchase-unit → base
+conversion, moving-average cost), on-hand balances + movement ledger, manual
+issue (wastage) and stock-take adjust, and a stock valuation report (value by
+branch/group + low-stock count). Quantities are fractional base units; money is
+integer VND (cost = roundVnd(qty × price)). Balances are row-locked and never go
+negative; `balance == Σ movements` holds. Branch-scoped + role-gated (warehouse +
+branch manager + chain admins; chain accountant reads valuation). Plan:
+`plans/260802-0618-m4-inventory/`.
+
+## M5+ — Backlog (not started)
+
+- **Định lượng món (BOM) + tự trừ kho khi bán:** recipe consumption deducts stock
+  automatically on each sale (split from M4).
 - **Tự động hoá thanh toán:** VietQR auto-reconcile (webhook), replacing manual
   payment confirmation.
-- Small carry-overs: shift-cash xlsx export; system-architecture doc for reports.
+- Small carry-overs: shift-cash xlsx export; system-architecture doc.

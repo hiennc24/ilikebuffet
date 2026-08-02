@@ -12,11 +12,19 @@ import { PurchaseOrdersController } from "./purchase-orders/purchase-orders.cont
 import { GoodsReceiptService } from "./receipts/goods-receipt.service";
 import { StockService } from "./stock/stock.service";
 import { StockController } from "./stock/stock.controller";
+import { InventoryReportsService } from "./reports/inventory-reports.service";
+import { InventoryReportsController } from "./reports/inventory-reports.controller";
 
 @Module({
   imports: [PrismaModule, AuditModule],
-  controllers: [PurchaseOrdersController, StockController],
-  providers: [InventoryBalanceService, PurchaseOrdersService, GoodsReceiptService, StockService],
+  controllers: [PurchaseOrdersController, StockController, InventoryReportsController],
+  providers: [
+    InventoryBalanceService,
+    PurchaseOrdersService,
+    GoodsReceiptService,
+    StockService,
+    InventoryReportsService,
+  ],
   exports: [InventoryBalanceService],
 })
 export class InventoryModule {}

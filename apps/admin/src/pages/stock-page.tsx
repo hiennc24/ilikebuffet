@@ -27,6 +27,7 @@ import {
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import { KpiCard, KpiRow } from "./_shared/report-ui";
 
 const PAGE_SIZE = 20;
 
@@ -58,10 +59,22 @@ const MOVE_LABEL: Record<MovementRow["type"], string> = { RECEIPT: "Nhập", ISS
 const vnDateTime = (iso: string) => `${iso.slice(0, 10)} ${new Date(iso).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}`;
 const fmtQty = (n: number) => n.toLocaleString("vi-VN", { maximumFractionDigits: 3 });
 
+interface Valuation {
+  totalValueVnd: number;
+  itemCount: number;
+  lowStockCount: number;
+}
+
 export const StockPage: React.FC = () => {
+  const { api } = useAuth();
   const [filters, setFilters] = React.useState({ q: "", lowOnly: "" });
   const [page, setPage] = React.useState(1);
   const [selected, setSelected] = React.useState<StockRow | null>(null);
+
+  const valuation = useQuery({
+    queryKey: ["inventory-valuation"],
+    queryFn: () => api.get<Valuation>("/inventory/reports/valuation"),
+  });
 
   const { rows, total, pageCount, isLoading, isError, error } = usePagedList<StockRow>({
     queryKey: QUERY_KEYS.stock(),
@@ -90,6 +103,18 @@ export const StockPage: React.FC = () => {
 
   return (
     <PageStack>
+      {valuation.data && (
+        <KpiRow>
+          <KpiCard label="Giá trị tồn" value={formatVnd(valuation.data.totalValueVnd)} />
+          <KpiCard label="Số mặt hàng" value={String(valuation.data.itemCount)} />
+          <KpiCard
+            label="Tồn thấp"
+            value={String(valuation.data.lowStockCount)}
+            tone={valuation.data.lowStockCount > 0 ? "warn" : "default"}
+          />
+        </KpiRow>
+      )}
+
       <Card title="Tồn kho" description="Tồn hiện tại theo chi nhánh, giá vốn trung bình và cảnh báo tồn thấp.">
         <FilterBar>
           <input type="search" aria-label="Tìm nguyên liệu" placeholder="Tìm mã/tên…" value={filters.q} onChange={(e) => patch({ q: e.target.value })} style={inputStyle} />

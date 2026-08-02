@@ -2,9 +2,15 @@
 title: "M4 — Kho & Nhập hàng (Inventory)"
 slug: m4-inventory
 created: 2026-08-02
-status: planned
+status: done
 priority: P1
 mode: --tdd
+
+decisions:
+  - negative-stock: block (on-hand cannot go below 0)
+  - po-flow: simple DRAFT→SENT→RECEIVED (no approval threshold/PIN)
+  - receipt-price: by purchase unit, converted to base via factorToBase
+  - bom: deferred to M5
 ---
 
 # M4 — Kho & Nhập hàng
@@ -31,11 +37,11 @@ qty là số thực, chi phí = `roundVnd(qty × đơn giá)`. Audit mọi thao 
 
 | Phase | Tên | Backend | Phụ thuộc | Status |
 |-------|-----|---------|-----------|--------|
-| W0 | [Inventory foundation](./phase-w0-foundation.md) | + schema/migration + module | — | planned |
-| W1 | [Đơn mua (Purchase Order)](./phase-w1-purchase-order.md) | + PO CRUD | W0 | planned |
-| W2 | [Nhập kho (Goods receipt)](./phase-w2-goods-receipt.md) | + receipt → movement + balance | W1 | planned |
-| W3 | [Tồn kho + Xuất/Điều chỉnh](./phase-w3-stock.md) | + balance view, out/adjust | W2 | planned |
-| W4 | [Báo cáo kho + RBAC + docs](./phase-w4-reports-hardening.md) | + valuation/low-stock | W1–W3 | planned |
+| W0 | [Inventory foundation](./phase-w0-foundation.md) | + schema/migration + module | — | ✅ done |
+| W1 | [Đơn mua (Purchase Order)](./phase-w1-purchase-order.md) | + PO CRUD | W0 | ✅ done |
+| W2 | [Nhập kho (Goods receipt)](./phase-w2-goods-receipt.md) | + receipt → movement + balance | W1 | ✅ done |
+| W3 | [Tồn kho + Xuất/Điều chỉnh](./phase-w3-stock.md) | + balance view, out/adjust | W2 | ✅ done |
+| W4 | [Báo cáo kho + RBAC + docs](./phase-w4-reports-hardening.md) | + valuation/low-stock | W1–W3 | ✅ done |
 
 ## Acceptance (toàn milestone)
 - PO → nhập → tồn khớp: mọi StockMovement điều chỉnh `InventoryBalance` đúng dấu; balance

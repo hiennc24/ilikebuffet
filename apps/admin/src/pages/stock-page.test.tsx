@@ -37,6 +37,7 @@ function makeFetch() {
     const path = String(url).replace(/^https?:\/\/[^/]+/, "");
     const json = (status: number, body: unknown) =>
       new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
+    if (path.startsWith("/inventory/reports/valuation")) return json(200, { totalValueVnd: 1_302_000, itemCount: 2, lowStockCount: 1 });
     if (path.startsWith("/inventory/movements")) return json(200, MOVEMENTS);
     if (path.startsWith("/inventory/stock/issue")) return json(201, { qtyBase: 63, avgCostVnd: 20_000 });
     if (path.startsWith("/inventory/stock")) return json(200, STOCK_LIST);
@@ -70,10 +71,13 @@ describe("StockPage", () => {
     localStorage.clear();
   });
 
-  it("renders the stock list with value", async () => {
+  it("renders the valuation KPIs and the stock list with value", async () => {
     render(<StockPage />, { wrapper });
     await waitFor(() => expect(screen.getByText("Ba chỉ bò")).toBeTruthy());
     expect(screen.getByText(/1\.300\.000/)).toBeTruthy();
+    // Valuation KPI card total.
+    await waitFor(() => expect(screen.getByText(/1\.302\.000/)).toBeTruthy());
+    expect(screen.getByText("Tồn thấp")).toBeTruthy();
   });
 
   it("opens the drawer and issues stock with a reason", async () => {
