@@ -36,6 +36,7 @@ import { AuditPage } from "./pages/audit-page";
 import { DevicesPage } from "./pages/devices-page";
 import { HolidaysPage } from "./pages/holidays-page";
 import { IngredientsPage } from "./pages/ingredients-page";
+import { PurchaseOrdersPage } from "./pages/purchase-orders-page";
 import { AccountsPage } from "./pages/accounts-page";
 import { RevenueReportPage } from "./pages/revenue-report-page";
 import { ShiftCashReportPage } from "./pages/shift-cash-report-page";
@@ -211,6 +212,16 @@ export function App() {
                         <RequireAccess path="/inventory">
                           <ShellLayout pageTitle="Kho nguyên liệu">
                             <IngredientsPage />
+                          </ShellLayout>
+                        </RequireAccess>
+                      }
+                    />
+                    <Route
+                      path="/inventory/purchase-orders"
+                      element={
+                        <RequireAccess path="/inventory/purchase-orders">
+                          <ShellLayout pageTitle="Đơn mua">
+                            <PurchaseOrdersPage />
                           </ShellLayout>
                         </RequireAccess>
                       }

@@ -154,9 +154,12 @@ model Branch {
 
   createdAt DateTime @default(now()) @db.Timestamptz(3)
 
-  users     UserBranch[]
-  devices   Device[]
-  suppliers Supplier[]
+  users             UserBranch[]
+  devices           Device[]
+  suppliers         Supplier[]
+  purchaseOrders    PurchaseOrder[]
+  stockMovements    StockMovement[]
+  inventoryBalances InventoryBalance[]
 
   @@map("branch")
 }
@@ -228,8 +231,9 @@ model Unit {
   name      String // e.g. "Kilogram", "Lít", "Cái"
   createdAt DateTime @default(now()) @db.Timestamptz(3)
 
-  ingredients   Ingredient[]
-  purchaseUnits IngredientPurchaseUnit[]
+  ingredients        Ingredient[]
+  purchaseUnits      IngredientPurchaseUnit[]
+  purchaseOrderLines PurchaseOrderLine[]
 
   @@map("unit")
 }
@@ -264,10 +268,13 @@ model Ingredient {
   status          IngredientStatus @default(ACTIVE)
   createdAt       DateTime         @default(now()) @db.Timestamptz(3)
 
-  group         IngredientGroup          @relation(fields: [groupId], references: [id])
-  unit          Unit                     @relation(fields: [unitId], references: [id])
-  purchaseUnits IngredientPurchaseUnit[]
-  suppliers     SupplierIngredient[]
+  group              IngredientGroup          @relation(fields: [groupId], references: [id])
+  unit               Unit                     @relation(fields: [unitId], references: [id])
+  purchaseUnits      IngredientPurchaseUnit[]
+  suppliers          SupplierIngredient[]
+  purchaseOrderLines PurchaseOrderLine[]
+  stockMovements     StockMovement[]
+  inventoryBalances  InventoryBalance[]
 
   @@map("ingredient")
 }
@@ -332,8 +339,9 @@ model Supplier {
   branchId  String?
   createdAt DateTime       @default(now()) @db.Timestamptz(3)
 
-  branch      Branch?              @relation(fields: [branchId], references: [id])
-  ingredients SupplierIngredient[]
+  branch         Branch?              @relation(fields: [branchId], references: [id])
+  ingredients    SupplierIngredient[]
+  purchaseOrders PurchaseOrder[]
 
   @@map("supplier")
 }
@@ -739,7 +747,9 @@ model PurchaseOrder {
   createdBy  String
   createdAt  DateTime @default(now()) @db.Timestamptz(3)
 
-  lines PurchaseOrderLine[]
+  branch   Branch             @relation(fields: [branchId], references: [id])
+  supplier Supplier           @relation(fields: [supplierId], references: [id])
+  lines    PurchaseOrderLine[]
 
   @@index([branchId, status])
   @@index([supplierId])
@@ -760,7 +770,9 @@ model PurchaseOrderLine {
   /// roundVnd(unitPriceVnd × qty), integer VND.
   lineTotalVnd Int
 
-  po PurchaseOrder @relation(fields: [poId], references: [id], onDelete: Cascade)
+  po         PurchaseOrder @relation(fields: [poId], references: [id], onDelete: Cascade)
+  ingredient Ingredient    @relation(fields: [ingredientId], references: [id])
+  unit       Unit          @relation(fields: [unitId], references: [id])
 
   @@index([poId])
   @@map("purchase_order_line")
@@ -786,6 +798,9 @@ model StockMovement {
   createdBy    String
   createdAt    DateTime          @default(now()) @db.Timestamptz(3)
 
+  branch     Branch     @relation(fields: [branchId], references: [id])
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
   @@index([branchId, ingredientId, createdAt])
   @@map("stock_movement")
 }
@@ -801,6 +816,9 @@ model InventoryBalance {
   /// Moving-average cost of one base unit, integer VND.
   avgCostVnd   Int      @default(0)
   updatedAt    DateTime @updatedAt @db.Timestamptz(3)
+
+  branch     Branch     @relation(fields: [branchId], references: [id])
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
 
   @@id([branchId, ingredientId])
   @@index([branchId])

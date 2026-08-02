@@ -71,6 +71,11 @@ export const QUERY_KEYS = {
   accounts: () => ["accounts"] as const,
   accountGroups: () => ["account-groups"] as const,
 
+  /** Purchase orders list (filters + page appended by usePagedList). */
+  purchaseOrders: () => ["purchase-orders"] as const,
+  /** A single purchase order with its lines. */
+  purchaseOrder: (id: string) => ["purchase-order", id] as const,
+
   /** Reports (params appended by useReport). */
   revenueReport: () => ["report-revenue"] as const,
   shiftCashReport: () => ["report-shift-cash"] as const,

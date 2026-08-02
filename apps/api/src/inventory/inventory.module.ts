@@ -7,10 +7,13 @@ import { Module } from "@nestjs/common";
 import { PrismaModule } from "../prisma/prisma.module";
 import { AuditModule } from "../audit/audit.module";
 import { InventoryBalanceService } from "./inventory-balance.service";
+import { PurchaseOrdersService } from "./purchase-orders/purchase-orders.service";
+import { PurchaseOrdersController } from "./purchase-orders/purchase-orders.controller";
 
 @Module({
   imports: [PrismaModule, AuditModule],
-  providers: [InventoryBalanceService],
+  controllers: [PurchaseOrdersController],
+  providers: [InventoryBalanceService, PurchaseOrdersService],
   exports: [InventoryBalanceService],
 })
 export class InventoryModule {}
