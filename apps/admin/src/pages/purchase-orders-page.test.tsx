@@ -23,8 +23,20 @@ const PO_LIST = {
       totalVnd: 900_000,
       lines: [],
     },
+    {
+      id: "po-2",
+      code: "PO-CN01-0002",
+      branchId: "branch-1",
+      supplierId: "sup-1",
+      supplierName: "NCC Một",
+      status: "SENT",
+      note: null,
+      createdAt: "2026-08-02T10:00:00+07:00",
+      totalVnd: 500_000,
+      lines: [],
+    },
   ],
-  total: 1,
+  total: 2,
 };
 
 const PO_DETAIL = {
@@ -42,6 +54,13 @@ const PO_DETAIL = {
       lineTotalVnd: 750_000,
     },
   ],
+};
+
+const PO_SENT_DETAIL = {
+  ...PO_DETAIL,
+  id: "po-2",
+  code: "PO-CN01-0002",
+  status: "SENT",
 };
 
 const SUPPLIERS = [{ id: "sup-1", name: "NCC Một", status: "ACTIVE" }];
@@ -65,6 +84,8 @@ function makeFetch() {
       new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
     if (path.startsWith("/master-data/suppliers")) return json(200, SUPPLIERS);
     if (path.startsWith("/master-data/ingredients")) return json(200, INGREDIENTS);
+    if (path.includes("/inventory/purchase-orders/po-2/receive")) return json(201, { poId: "po-2", status: "RECEIVED", received: [] });
+    if (path.startsWith("/inventory/purchase-orders/po-2")) return json(200, PO_SENT_DETAIL);
     if (path.startsWith("/inventory/purchase-orders/po-1")) return json(200, PO_DETAIL);
     if (path.startsWith("/inventory/purchase-orders")) return json(200, PO_LIST);
     return json(404, { error: "not found" });
@@ -129,5 +150,30 @@ describe("PurchaseOrdersPage", () => {
     fireEvent.click(screen.getByText("PO-CN01-0001"));
     await waitFor(() => expect(screen.getByText("Gửi NCC")).toBeTruthy());
     expect(screen.getByText("Huỷ đơn")).toBeTruthy();
+  });
+
+  it("opens the receive dialog for a SENT order and submits actual quantities", async () => {
+    render(<PurchaseOrdersPage />, { wrapper });
+    await waitFor(() => expect(screen.getByText("PO-CN01-0002")).toBeTruthy());
+
+    fireEvent.click(screen.getByText("PO-CN01-0002"));
+    await waitFor(() => expect(screen.getByText("Nhập kho")).toBeTruthy());
+
+    fireEvent.click(screen.getByText("Nhập kho"));
+    // Receive dialog pre-fills the ordered line for editing.
+    await waitFor(() => expect(screen.getByLabelText("Số lượng nhận 1")).toBeTruthy());
+    // Ingredient name shows in both the drawer's line list and the receive dialog.
+    expect(screen.getAllByText(/Ba chỉ bò/).length).toBeGreaterThan(0);
+
+    fireEvent.change(screen.getByLabelText("Số lượng nhận 1"), { target: { value: "2" } });
+    fireEvent.click(screen.getByText("Xác nhận nhập"));
+
+    await waitFor(() =>
+      expect(
+        (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls.some((c) =>
+          String(c[0]).includes("/inventory/purchase-orders/po-2/receive"),
+        ),
+      ).toBe(true),
+    );
   });
 });

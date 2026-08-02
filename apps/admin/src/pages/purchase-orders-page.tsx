@@ -355,6 +355,7 @@ const PoDetailDrawer: React.FC<{ poId: string | null; onClose: () => void }> = (
   const { api } = useAuth();
   const qc = useQueryClient();
   const [actionError, setActionError] = React.useState<string | null>(null);
+  const [receiving, setReceiving] = React.useState(false);
 
   const detail = useQuery({
     queryKey: poId ? QUERY_KEYS.purchaseOrder(poId) : ["purchase-order", "none"],
@@ -400,15 +401,100 @@ const PoDetailDrawer: React.FC<{ poId: string | null; onClose: () => void }> = (
                 Gửi NCC
               </Button>
             )}
+            {po.status === "SENT" && (
+              <Button variant="action" disabled={act.isPending} onClick={() => setReceiving(true)}>
+                Nhập kho
+              </Button>
+            )}
             {(po.status === "DRAFT" || po.status === "SENT") && (
               <Button variant="ghost" disabled={act.isPending} onClick={() => act.mutate("cancel")}>
                 Huỷ đơn
               </Button>
             )}
           </div>
+
+          {receiving && <ReceiveDialog po={po} onClose={() => setReceiving(false)} />}
         </div>
       )}
     </DetailDrawer>
+  );
+};
+
+// ── Receive-goods dialog ────────────────────────────────────────────────────
+
+const ReceiveDialog: React.FC<{ po: PoRow; onClose: () => void }> = ({ po, onClose }) => {
+  const { api } = useAuth();
+  const qc = useQueryClient();
+  const [rows, setRows] = React.useState(
+    po.lines.map((l) => ({
+      ingredientId: l.ingredientId,
+      ingredientName: l.ingredientName,
+      unitId: l.unitId,
+      unitCode: l.unitCode,
+      qty: String(l.qty),
+      unitPriceVnd: String(l.unitPriceVnd),
+    })),
+  );
+  const [error, setError] = React.useState<string | null>(null);
+
+  const setRow = (i: number, p: Partial<(typeof rows)[number]>) =>
+    setRows((cur) => cur.map((x, idx) => (idx === i ? { ...x, ...p } : x)));
+
+  const mutation = useMutation({
+    mutationFn: () =>
+      api.post(`/inventory/purchase-orders/${po.id}/receive`, {
+        lines: rows.map((r) => ({
+          ingredientId: r.ingredientId,
+          unitId: r.unitId,
+          qty: Number(r.qty),
+          unitPriceVnd: Number.parseInt(r.unitPriceVnd, 10),
+        })),
+      }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: QUERY_KEYS.purchaseOrder(po.id) });
+      void qc.invalidateQueries({ queryKey: QUERY_KEYS.purchaseOrders() });
+      onClose();
+    },
+    onError: (e) => setError(toErrorMessage(e, "Nhập kho thất bại")),
+  });
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    for (const r of rows) {
+      if (!(Number(r.qty) > 0)) return setError("Số lượng nhận phải lớn hơn 0");
+      if (!Number.isInteger(Number(r.unitPriceVnd)) || Number(r.unitPriceVnd) < 0)
+        return setError("Đơn giá phải là số nguyên ≥ 0");
+    }
+    setError(null);
+    mutation.mutate();
+  };
+
+  return (
+    <Dialog open title={`Nhập kho — ${po.code}`} onClose={onClose}>
+      <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+        <p style={{ margin: 0, fontSize: "var(--text-xs)", color: "var(--text-muted)" }}>
+          Số lượng và đơn giá nhận thực tế (có thể khác đơn mua).
+        </p>
+        {rows.map((r, i) => (
+          <div key={r.ingredientId + r.unitId} style={{ display: "flex", gap: "var(--space-2)", alignItems: "center", flexWrap: "wrap" }}>
+            <span style={{ flex: 2, minWidth: "120px", fontSize: "var(--text-sm)" }}>
+              {r.ingredientName} <span style={{ color: "var(--text-muted)" }}>({r.unitCode})</span>
+            </span>
+            <input aria-label={`Số lượng nhận ${i + 1}`} type="number" step="any" placeholder="SL" value={r.qty} onChange={(e) => setRow(i, { qty: e.target.value })} style={{ ...inputStyle, width: "90px" }} />
+            <input aria-label={`Đơn giá nhận ${i + 1}`} type="number" placeholder="Đơn giá" value={r.unitPriceVnd} onChange={(e) => setRow(i, { unitPriceVnd: e.target.value })} style={{ ...inputStyle, width: "120px" }} />
+          </div>
+        ))}
+        <InlineError message={error} />
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-2)" }}>
+          <Button type="button" variant="ghost" onClick={onClose}>
+            Đóng
+          </Button>
+          <Button type="submit" variant="action" disabled={mutation.isPending}>
+            {mutation.isPending ? "Đang nhập…" : "Xác nhận nhập"}
+          </Button>
+        </div>
+      </form>
+    </Dialog>
   );
 };
 

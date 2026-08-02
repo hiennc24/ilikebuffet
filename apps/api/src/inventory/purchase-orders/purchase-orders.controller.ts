@@ -19,6 +19,7 @@ import {
   Request,
 } from "@nestjs/common";
 import { PurchaseOrdersService } from "./purchase-orders.service";
+import { GoodsReceiptService } from "../receipts/goods-receipt.service";
 import { INVENTORY_WRITE_ROLES } from "../inventory-roles";
 import { Role } from "../../platform/rbac/role.enum";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
@@ -27,10 +28,14 @@ import type {
   UpdatePurchaseOrderDto,
   PurchaseOrderListQuery,
 } from "./purchase-orders.dto";
+import type { ReceiveGoodsDto } from "../receipts/goods-receipt.dto";
 
 @Controller("inventory/purchase-orders")
 export class PurchaseOrdersController {
-  constructor(private readonly service: PurchaseOrdersService) {}
+  constructor(
+    private readonly service: PurchaseOrdersService,
+    private readonly receipts: GoodsReceiptService,
+  ) {}
 
   @Get()
   list(@Query() query: PurchaseOrderListQuery, @Request() req: ScopedRequest) {
@@ -68,6 +73,12 @@ export class PurchaseOrdersController {
   cancel(@Param("id") id: string, @Request() req: ScopedRequest) {
     assertWrite(req);
     return this.service.cancel(id, req.user.sub, req.user.role, access(req));
+  }
+
+  @Post(":id/receive")
+  receive(@Param("id") id: string, @Body() dto: ReceiveGoodsDto, @Request() req: ScopedRequest) {
+    assertWrite(req);
+    return this.receipts.receive(id, dto, req.user.sub, req.user.role, access(req));
   }
 }
 
