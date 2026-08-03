@@ -814,6 +814,42 @@ model StockMovement {
   @@map("stock_movement")
 }
 
+/// Inter-branch stock transfer (điều chuyển kho) — M10. Atomic: on create, each
+/// line issues from the source and receives into the destination in one tx,
+/// carrying the source's moving-average cost. The two legs are StockMovements
+/// tagged refType "TRANSFER" + refId = this transfer's id. Scalar branch FKs
+/// (resolved to codes in the service), like shift.branchId.
+model StockTransfer {
+  id           String   @id @default(cuid())
+  code         String   @unique
+  fromBranchId String
+  toBranchId   String
+  note         String?
+  createdBy    String
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+
+  lines StockTransferLine[]
+
+  @@index([fromBranchId])
+  @@index([toBranchId])
+  @@map("stock_transfer")
+}
+
+/// One moved ingredient: qty in base units + the source unit cost snapshotted.
+model StockTransferLine {
+  id           String  @id @default(cuid())
+  transferId   String
+  ingredientId String
+  qtyBase      Decimal @db.Decimal(12, 3)
+  /// Source moving-average cost at transfer time (carried to the destination).
+  unitCostVnd  Int
+
+  transfer StockTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+  @@index([transferId])
+  @@map("stock_transfer_line")
+}
+
 /// Current on-hand quantity and moving-average cost per (branch, ingredient).
 /// Maintained inside the same transaction as each movement; reconstructable from
 /// stock_movement for disaster recovery.

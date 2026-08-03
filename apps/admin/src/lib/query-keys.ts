@@ -84,6 +84,9 @@ export const QUERY_KEYS = {
   /** Ingredient recipe (định mức) for one ticket type + scope ("" = chain-wide). */
   ticketRecipe: (ticketTypeId: string | null, branchId: string) => ["ticket-recipe", ticketTypeId, branchId] as const,
 
+  /** Inter-branch stock transfers list (filters + page appended by usePagedList). */
+  stockTransfers: () => ["stock-transfers"] as const,
+
   /** Bank-transaction reconciliation list (filters + page appended by usePagedList). */
   bankTransactions: () => ["bank-transactions"] as const,
 

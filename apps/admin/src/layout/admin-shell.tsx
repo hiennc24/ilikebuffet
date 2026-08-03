@@ -146,6 +146,12 @@ const DEFAULT_GROUPS: NavGroup[] = [
         iconPath: "M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2zM3 9h18M9 21V13h6v8",
       },
       {
+        id: "stock-transfer",
+        label: "Điều chuyển kho",
+        path: "/inventory/transfers",
+        iconPath: "M4 7h13l-3-3M20 17H7l3 3",
+      },
+      {
         id: "recipes",
         label: "Định mức",
         path: "/inventory/recipes",
