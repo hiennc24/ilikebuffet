@@ -2,7 +2,7 @@
 title: "Dynamic RBAC — DB-backed roles CRUD + capability catalog (VN labels, grouped)"
 slug: dynamic-rbac-roles
 created: 2026-08-04
-status: in-progress
+status: done
 priority: P1
 
 context: |
@@ -28,12 +28,12 @@ decisions:
 
 | Phase | Tên | Nội dung | Phụ thuộc | Status |
 |-------|-----|----------|-----------|--------|
-| R0 | [Catalog + schema](./phase-r0-catalog-schema.md) | capability catalog (VN label+group) + Prisma role/role_capability + AppUser.role enum→String + migration seed | — | planned |
-| R1 | [Resolver + can()](./phase-r1-resolver.md) | PermissionService tra capabilities theo role từ DB + cache (invalidatable); can() đọc cache; wire vào guard/2 site hiện có | R0 | planned |
-| R2 | [Migrate 15 gates](./phase-r2-migrate-gates.md) | thay 15 Set<Role> → can(role, capability); thêm capability mới vào catalog + seed cho vai trò hệ thống; giữ nguyên hành vi (test cũ xanh) | R1 | planned |
-| R3 | [Role CRUD API](./phase-r3-role-api.md) | RbacController: GET catalog (nhóm+VN), GET/POST/PUT/DELETE roles, PUT roles/:code/capabilities; gate bằng role:manage; chặn xoá khi có user; e2e | R1 | planned |
-| R4 | [Admin UI](./phase-r4-admin-ui.md) | màn Vai trò & phân quyền: list + CRUD role + chọn quyền theo nhóm (checkbox, nhãn VN, phân cấp); users page dùng role từ DB; tests | R3 | planned |
-| R5 | [Docs + verify](./phase-r5-docs-verify.md) | docs (system-architecture RBAC động) + full verify (API --runInBand, admin) + report | R0-R4 | planned |
+| R0 | [Catalog + schema](./phase-r0-catalog-schema.md) | capability catalog (VN label+group) + Prisma role/role_capability + AppUser.role enum→String + migration seed | — | done |
+| R1 | [Resolver + can()](./phase-r1-resolver.md) | PermissionService tra capabilities theo role từ DB + cache (invalidatable); can() đọc cache; wire vào guard/2 site hiện có | R0 | done |
+| R2 | [Migrate 15 gates](./phase-r2-migrate-gates.md) | thay 15 Set<Role> → can(role, capability); thêm capability mới vào catalog + seed cho vai trò hệ thống; giữ nguyên hành vi (test cũ xanh) | R1 | done |
+| R3 | [Role CRUD API](./phase-r3-role-api.md) | RbacController: GET catalog (nhóm+VN), GET/POST/PUT/DELETE roles, PUT roles/:code/capabilities; gate bằng role:manage; chặn xoá khi có user; e2e | R1 | done |
+| R4 | [Admin UI](./phase-r4-admin-ui.md) | màn Vai trò & phân quyền: list + CRUD role + chọn quyền theo nhóm (checkbox, nhãn VN, phân cấp); users page dùng role từ DB; tests | R3 | done |
+| R5 | [Docs + verify](./phase-r5-docs-verify.md) | docs (system-architecture RBAC động) + full verify (API --runInBand, admin) + report | R0-R4 | done |
 
 ## Acceptance
 - Tạo/sửa/xoá vai trò (DB); gán tập capability; xoá bị chặn khi còn user tham chiếu.

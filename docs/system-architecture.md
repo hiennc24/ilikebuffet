@@ -28,8 +28,18 @@ These hold across every module and are the backbone of the design:
 - **Branch-scoping, fail-closed.** `BranchScopeGuard` enforces membership from the
   JWT (`chainWide` + `branchIds`); routes keyed only by an id re-check the
   resource's branch via `assertBranchAccess`. Out-of-scope access yields no rows.
-- **RBAC in three layers.** Backend role gates (Role sets) + FE `lib/rbac.ts`
-  (`RESTRICTED_SCREENS`, `canAccessPath`) + `RequireAccess` route guard.
+- **RBAC — DB-backed roles, code-enforced capabilities.** Roles live in the `role`
+  table (`role_capability` assignments) and are CRUD-able (the 6 built-ins are
+  seeded `isSystem=true`); `AppUser.role` is a role code. Endpoints gate on
+  **capabilities** via `await perms.can(role, capability)` (`PermissionService`
+  resolves a role's capabilities from the DB with a 30s cache + `invalidate()` for
+  immediate effect; fail-closed). Capabilities are a FIXED code catalog
+  (`capability-catalog.ts` — Vietnamese labels + feature groups); they are NOT
+  user-creatable, since only code gates enforce them. Roles are managed at
+  `/rbac/roles` (gated by `chain:user:manage`); the catalog is `GET /rbac/capabilities`.
+  Two safety nets: a role with users assigned can't be deleted, and the last role
+  holding `chain:user:manage` can't lose it. FE `lib/rbac.ts`
+  (`RESTRICTED_SCREENS`, `canAccessPath`) + `RequireAccess` still gate screen visibility.
 - **Audit is append-only.** `AuditService.record(tx, …)` writes inside the business
   transaction (change and log commit or roll back together). No update/delete
   audit routes; the DB role is REVOKE-guarded in production.
@@ -44,9 +54,10 @@ These hold across every module and are the backbone of the design:
 - **branches / users / audit** — branch CRUD + PO-approval threshold; user admin
   (roles, branch assignment, password/PIN reset, lock); append-only audit trail
   (Nhật ký) with a filtered **`GET /audit/export`** xlsx (HQ/branch-manager only).
-- **rbac** — read-only role→capability matrix at **`GET /rbac/capabilities`** (the
-  "Vai trò & phân quyền" screen), exposing the code-defined `ROLE_CAPABILITIES`;
-  no write route (capabilities are code-level config, not data).
+- **rbac** — role & permission management (the "Vai trò & phân quyền" screen):
+  `GET /rbac/capabilities` (grouped VN catalog) + full CRUD at `/rbac/roles`
+  (create/edit/delete roles, set capabilities). Roles are data; capabilities are a
+  fixed code catalog. See the RBAC invariant above.
 
 ### Platform (`apps/api/src/platform`, `auth`, `audit`)
 
