@@ -287,6 +287,13 @@ export const PayDialog: React.FC<PayDialogProps> = ({
         setStep("success");
         onPaymentSuccess();
       } catch (err) {
+        // 409 = the bill is already paid — VietQR auto-reconcile (or a prior tap)
+        // settled it server-side. Treat as success, not an error.
+        if (err instanceof ApiError && err.status === 409) {
+          setStep("success");
+          onPaymentSuccess();
+          return;
+        }
         setErrorMsg(
           err instanceof ApiError
             ? `Thanh toán thất bại: ${err.message}`
@@ -298,6 +305,32 @@ export const PayDialog: React.FC<PayDialogProps> = ({
       submittingRef.current = false;
     }
   }, [api, bill, billId, amountInput, tenderedInput, method, onPaymentSuccess, isOfflineBill, triggerSync, cartItems, selectedBranchId, shiftId, deviceId]);
+
+  // While the VietQR QR is on screen, poll for server-side auto-reconciliation:
+  // when the Sepay webhook confirms the transfer, the bill's paidAt is set and we
+  // auto-advance to success — the cashier doesn't have to tap confirm.
+  React.useEffect(() => {
+    if (step !== "choose-method" || method !== "VIETQR" || !billId || isOfflineBill) return;
+    let stopped = false;
+    const timer = setInterval(async () => {
+      if (stopped || submittingRef.current) return;
+      try {
+        const b = await api.get<{ paidAt: string | null }>(`/sales/bills/${billId}`);
+        if (b.paidAt && !stopped) {
+          stopped = true;
+          clearInterval(timer);
+          setStep("success");
+          onPaymentSuccess();
+        }
+      } catch {
+        // Transient (offline blip, etc.) — keep polling.
+      }
+    }, 4000);
+    return () => {
+      stopped = true;
+      clearInterval(timer);
+    };
+  }, [step, method, billId, isOfflineBill, api, onPaymentSuccess]);
 
   // Build the print-agent payload from the current bill (null until priced).
   const buildPrintPayload = React.useCallback(
@@ -484,6 +517,9 @@ export const PayDialog: React.FC<PayDialogProps> = ({
                   alt={`VietQR ${formatVnd(bill.totalVnd)}`}
                   style={{ maxWidth: "200px", borderRadius: "var(--radius-sm)" }}
                 />
+                <div style={{ marginTop: "var(--space-2)", fontSize: "var(--text-xs)", color: "var(--text-muted)" }}>
+                  Khách quét mã để chuyển khoản — tự động xác nhận khi nhận được tiền.
+                </div>
               </div>
             );
           }

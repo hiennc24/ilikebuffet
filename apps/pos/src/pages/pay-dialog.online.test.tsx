@@ -163,4 +163,31 @@ describe("PayDialog — online, cash over-tender", () => {
     const payments = (capturedPaymentBody as { payments: Array<{ tenderedVnd?: number }> }).payments;
     expect(payments[0].tenderedVnd).toBeUndefined();
   });
+
+  it("treats a 409 (VietQR auto-reconciled) as success, not an error", async () => {
+    // The bill was already paid server-side (Sepay webhook) before the cashier
+    // tapped confirm → the payments POST returns 409; the dialog should succeed.
+    globalThis.fetch = vi.fn(async (url: string, init?: RequestInit): Promise<Response> => {
+      const path = String(url).replace(/^https?:\/\/[^/]+/, "");
+      const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
+      if (path.startsWith("/sales/shifts/open")) return json(200, { id: "shift-1", branchId: "branch-01" });
+      if (path.includes("/payments") && init?.method === "POST") return json(409, { message: "Bill đã thanh toán" });
+      if (path.startsWith("/sales/bills")) return json(201, { id: "bill-server-1", number: "CN01-260801-0001", totalVnd: 400000, guestCount: 2, status: "OPEN", lines: [{ ticketTypeName: "Người lớn", unitPriceVnd: 200000, qty: 2, lineTotalVnd: 400000 }] });
+      if (path.startsWith("/branches")) return json(200, { data: [{ id: "branch-01", name: "CN", code: "CN01" }] });
+      if (path.startsWith("/health")) return json(200, { serverTime: new Date().toISOString() });
+      return json(404, {});
+    }) as typeof globalThis.fetch;
+
+    render(<Host clientUuid="online-409" />, { wrapper: Wrapper });
+    await waitFor(() => expect(screen.getByRole("button", { name: /xác nhận thanh toán/i })).toBeTruthy());
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /^VietQR$/i }));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /xác nhận thanh toán/i }));
+    });
+
+    await waitFor(() => expect(screen.getByText(/thanh toán thành công/i)).toBeTruthy());
+  });
 });
