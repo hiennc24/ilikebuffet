@@ -24,6 +24,7 @@ import { MasterDataModule } from "./platform/master-data/master-data.module";
 import { ExcelImportModule } from "./platform/import/excel-import.module";
 import { SalesModule } from "./sales/sales.module";
 import { InventoryModule } from "./inventory/inventory.module";
+import { BankReconcileModule } from "./sales/bank-reconcile/bank-reconcile.module";
 import { JwtAuthGuard } from "./auth/jwt-auth.guard";
 import { BranchScopeGuard } from "./platform/rbac/branch-scope.guard";
 
@@ -42,6 +43,7 @@ import { BranchScopeGuard } from "./platform/rbac/branch-scope.guard";
     ExcelImportModule,
     SalesModule,
     InventoryModule,
+    BankReconcileModule,
   ],
   providers: [
     // Order matters: auth runs first, then scope check.

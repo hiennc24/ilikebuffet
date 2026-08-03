@@ -126,6 +126,13 @@ enum StockMovementType {
   ADJUST
 }
 
+/// Reconciliation state of an inbound bank transfer (VietQR auto-reconcile).
+enum BankTxStatus {
+  UNMATCHED
+  MATCHED
+  IGNORED
+}
+
 // ─── Domain models ───────────────────────────────────────────────────────────
 
 /// A physical or logical branch (cửa hàng / chi nhánh). Extended in P4 (NT-01).
@@ -849,4 +856,33 @@ model TicketTypeRecipe {
   // branchId is a scalar FK (no Prisma relation), like shift.branchId.
   @@index([ticketTypeId, branchId])
   @@map("ticket_type_recipe")
+}
+
+/// An inbound bank transfer received via the Sepay webhook (VietQR auto-reconcile).
+/// Stored idempotently per (provider, providerTxId); matched to an unpaid bill by
+/// amount + bill-number-in-content, else left for manual review. rawPayload keeps
+/// the original webhook body for audit. branchId/matchedBillId are scalar FKs
+/// (SET NULL on delete) so the reconciliation record outlives the bill.
+model BankTransaction {
+  id            String       @id @default(cuid())
+  provider      String       @default("sepay")
+  /// The provider's own transaction id — the idempotency key.
+  providerTxId  String
+  gateway       String?
+  accountNumber String?
+  amountVnd     Int
+  /// Transfer memo (the customer's transfer content); matched against bill number.
+  content       String
+  referenceCode String?
+  transferredAt DateTime     @db.Timestamptz(3)
+  status        BankTxStatus @default(UNMATCHED)
+  matchedBillId String?
+  branchId      String?
+  note          String?
+  rawPayload    Json         @db.JsonB
+  receivedAt    DateTime     @default(now()) @db.Timestamptz(3)
+
+  @@unique([provider, providerTxId])
+  @@index([status, receivedAt])
+  @@map("bank_transaction")
 }
