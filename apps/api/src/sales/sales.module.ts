@@ -7,6 +7,7 @@ import { Module } from "@nestjs/common";
 import { PrismaModule } from "../prisma/prisma.module";
 import { AuditModule } from "../audit/audit.module";
 import { MasterDataModule } from "../platform/master-data/master-data.module";
+import { InventoryModule } from "../inventory/inventory.module";
 
 import { TicketTypesService } from "./ticket-types/ticket-types.service";
 import { TicketTypesController } from "./ticket-types/ticket-types.controller";
@@ -42,7 +43,7 @@ import { ReportsService } from "./reports/reports.service";
 import { ReportsController } from "./reports/reports.controller";
 
 @Module({
-  imports: [PrismaModule, AuditModule, MasterDataModule],
+  imports: [PrismaModule, AuditModule, MasterDataModule, InventoryModule],
   controllers: [
     TicketTypesController,
     TimeWindowController,

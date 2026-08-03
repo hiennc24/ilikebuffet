@@ -42,6 +42,11 @@ function makeBillNumber(seq = 1): jest.Mocked<BillNumberService> {
   } as unknown as jest.Mocked<BillNumberService>;
 }
 
+/** No-op consumption stub — stock deduction is exercised in inventory e2e tests. */
+function makeConsumption() {
+  return { consumeForBill: jest.fn(), reverseForBill: jest.fn() } as never;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function makePrisma(txOverrides: Record<string, any> = {}, existingBill: unknown = null) {
   const defaultTx = {
@@ -103,7 +108,7 @@ describe("SyncService — offline bill sync", () => {
   it("returns committed for a bill already in DB (idempotent re-sync)", async () => {
     const existing = { number: "CN01-260801-0001", tempNumber: "CN01-260801-T00010001" };
     const prisma = makePrisma({}, existing);
-    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber(), makeConsumption());
 
     const result = await svc.processBill(BASE_BILL, ACTOR, ALLOWED);
 
@@ -118,7 +123,7 @@ describe("SyncService — offline bill sync", () => {
   it("returns rejected when bill branchId is not in allowedBranchIds", async () => {
     const prisma = makePrisma();
     const audit = makeAudit();
-    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber(), makeConsumption());
 
     const result = await svc.processBill(
       { ...BASE_BILL, branchId: "branch-other" },
@@ -138,7 +143,7 @@ describe("SyncService — offline bill sync", () => {
   it("rejects a bill whose deviceId differs from a device-bound token", async () => {
     const prisma = makePrisma();
     const audit = makeAudit();
-    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber(), makeConsumption());
 
     const result = await svc.processBill(
       { ...BASE_BILL, deviceId: "dev-1" },
@@ -155,7 +160,7 @@ describe("SyncService — offline bill sync", () => {
 
   it("allows the bill when the device-bound token matches (or is absent)", async () => {
     const prisma = makePrisma();
-    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber(), makeConsumption());
     const matched = await svc.processBill({ ...BASE_BILL, deviceId: "dev-1" }, ACTOR, ALLOWED, { tokenDeviceId: "dev-1" });
     expect(matched.status).toBe("committed");
   });
@@ -164,7 +169,7 @@ describe("SyncService — offline bill sync", () => {
   it("recomputes price server-side via buildResolver (never trusts client prices)", async () => {
     const prisma = makePrisma();
     const pricing = makePricing();
-    const svc = new SyncService(prisma as never, makeAudit(), pricing, makeBillNumber());
+    const svc = new SyncService(prisma as never, makeAudit(), pricing, makeBillNumber(), makeConsumption());
 
     await svc.processBill(BASE_BILL, ACTOR, ALLOWED);
 
@@ -176,7 +181,7 @@ describe("SyncService — offline bill sync", () => {
   // ── 4. NO_PRICE → unitPriceVnd=0, still committed (never reject a printed sale) ──
   it("creates bill with 0 VND when pricing returns NO_PRICE (never reject printed sale)", async () => {
     const prisma = makePrisma();
-    const svc = new SyncService(prisma as never, makeAudit(), makePricing("NO_PRICE"), makeBillNumber());
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing("NO_PRICE"), makeBillNumber(), makeConsumption());
 
     const result = await svc.processBill(BASE_BILL, ACTOR, ALLOWED);
 
@@ -190,7 +195,7 @@ describe("SyncService — offline bill sync", () => {
   // ── 5. Shift not found → retry ────────────────────────────────────────────
   it("returns retry when shift is not found", async () => {
     const prisma = makePrisma({ shift: { findUnique: jest.fn().mockResolvedValue(null) } });
-    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber(), makeConsumption());
 
     const result = await svc.processBill(BASE_BILL, ACTOR, ALLOWED);
 
@@ -202,7 +207,7 @@ describe("SyncService — offline bill sync", () => {
   it("creates a new bill and returns committed with officialNumber", async () => {
     const prisma = makePrisma();
     const billNum = makeBillNumber(3);
-    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), billNum);
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), billNum, makeConsumption());
 
     const result = await svc.processBill(BASE_BILL, ACTOR, ALLOWED);
 
@@ -218,7 +223,7 @@ describe("SyncService — offline bill sync", () => {
     const existing = { number: "CN01-260801-0001", contentHash: "a-different-hash" };
     const prisma = makePrisma({}, existing);
     const audit = makeAudit();
-    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber(), makeConsumption());
 
     const result = await svc.processBill(BASE_BILL, ACTOR, ALLOWED);
 
@@ -232,7 +237,7 @@ describe("SyncService — offline bill sync", () => {
   // ── 7c. Clock-skew → accepted but quarantined ────────────────────────────
   it("commits but quarantines a bill whose device clock skew exceeds ±2 min", async () => {
     const prisma = makePrisma();
-    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber(), makeConsumption());
 
     const result = await svc.processBill({ ...BASE_BILL, clockOffsetMs: 5 * 60 * 1000 }, ACTOR, ALLOWED);
 
@@ -244,7 +249,7 @@ describe("SyncService — offline bill sync", () => {
 
   it("does NOT quarantine a bill within clock tolerance", async () => {
     const prisma = makePrisma();
-    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber(), makeConsumption());
 
     await svc.processBill({ ...BASE_BILL, clockOffsetMs: 30 * 1000 }, ACTOR, ALLOWED);
 
@@ -255,7 +260,7 @@ describe("SyncService — offline bill sync", () => {
   it("quarantines a bill whose createdAt is implausibly far from server time", async () => {
     const prisma = makePrisma();
     const billNum = makeBillNumber();
-    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), billNum);
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), billNum, makeConsumption());
 
     // A createdAt years off (with a truthful clockOffsetMs) is honored for the
     // counter/date (offline bills may sync late) but flagged for reconciliation.
@@ -280,7 +285,7 @@ describe("SyncService — offline bill sync", () => {
 
   it("rejects a bill with a non-positive/fractional qty (corruption, not a sale)", async () => {
     const prisma = makePrisma();
-    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber(), makeConsumption());
 
     const result = await svc.processBill(
       { ...BASE_BILL, lines: [{ ticketTypeId: "tt-1", qty: -3 }] },
@@ -295,7 +300,7 @@ describe("SyncService — offline bill sync", () => {
 
   it("rejects a bill with an unparseable createdAt (corruption)", async () => {
     const prisma = makePrisma();
-    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber(), makeConsumption());
 
     const result = await svc.processBill(
       { ...BASE_BILL, createdAt: "not-a-date" },
@@ -314,7 +319,7 @@ describe("SyncService — offline bill sync", () => {
     ["tendered below amount", [{ method: "CASH", amountVnd: 100, tenderedVnd: 90 }]],
   ])("rejects offline payment corruption: %s", async (_label, payments) => {
     const prisma = makePrisma();
-    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber(), makeConsumption());
 
     const result = await svc.processBill(
       { ...BASE_BILL, payments } as never,
@@ -331,7 +336,7 @@ describe("SyncService — offline bill sync", () => {
   it("force-close accepts a stuck bill as quarantined with the manager as approver", async () => {
     const prisma = makePrisma();
     const audit = makeAudit();
-    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber(), makeConsumption());
 
     const result = await svc.processBill(BASE_BILL, ACTOR, ALLOWED, {
       forceQuarantine: { reason: "force_close_stuck: device dead", approvedBy: "mgr-1" },
@@ -351,7 +356,7 @@ describe("SyncService — offline bill sync", () => {
   it("records a void-before-sync audit event for an allowed branch", async () => {
     const prisma = makePrisma();
     const audit = makeAudit();
-    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber(), makeConsumption());
 
     const ok = await svc.recordVoid(
       { tempNumber: "CN01-260801-TDEV009", branchId: "branch-1", deviceId: "dev-1", reason: "khách bỏ" },
@@ -369,7 +374,7 @@ describe("SyncService — offline bill sync", () => {
   it("rejects a void-before-sync for a branch not allowed by the token", async () => {
     const prisma = makePrisma();
     const audit = makeAudit();
-    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, audit, makePricing(), makeBillNumber(), makeConsumption());
 
     const ok = await svc.recordVoid(
       { tempNumber: "T1", branchId: "branch-other", deviceId: "dev-1" },
@@ -384,7 +389,7 @@ describe("SyncService — offline bill sync", () => {
   // ── 7f. Offline payments recorded on sync ────────────────────────────────
   it("records offline payments and sets paidAt when the total matches", async () => {
     const prisma = makePrisma();
-    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber(), makeConsumption());
 
     // Pricing 185000 × qty 2 = 370000 total.
     const result = await svc.processBill(
@@ -402,7 +407,7 @@ describe("SyncService — offline bill sync", () => {
 
   it("quarantines a bill whose offline payment total ≠ server-recomputed total", async () => {
     const prisma = makePrisma();
-    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber(), makeConsumption());
 
     const result = await svc.processBill(
       { ...BASE_BILL, payments: [{ method: "CASH", amountVnd: 300000 }] }, // ≠ 370000
@@ -419,7 +424,7 @@ describe("SyncService — offline bill sync", () => {
   // ── 8. tempNumber stored on bill ──────────────────────────────────────────
   it("passes tempNumber to bill.create for audit/high-water-mark", async () => {
     const prisma = makePrisma();
-    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber());
+    const svc = new SyncService(prisma as never, makeAudit(), makePricing(), makeBillNumber(), makeConsumption());
 
     await svc.processBill(BASE_BILL, ACTOR, ALLOWED);
 

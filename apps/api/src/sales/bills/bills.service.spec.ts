@@ -55,6 +55,11 @@ function makeDiscountsService(approved = true): jest.Mocked<DiscountsService> {
   } as unknown as jest.Mocked<DiscountsService>;
 }
 
+/** No-op consumption stub — stock deduction is exercised in inventory e2e tests. */
+function makeConsumption() {
+  return { consumeForBill: jest.fn(), reverseForBill: jest.fn() } as never;
+}
+
 // ─── Prisma mock builder ───────────────────────────────────────────────────────
 
 function makeShift(overrides: Record<string, unknown> = {}) {
@@ -167,6 +172,7 @@ describe("BillsService", () => {
       pricing,
       makeBillNumberService(),
       makeDiscountsService(),
+      makeConsumption(),
     );
 
     const result = await svc.createBill(BASE_DTO, ACTOR, ROLE);
@@ -188,6 +194,7 @@ describe("BillsService", () => {
       pricing,
       makeBillNumberService(),
       makeDiscountsService(),
+      makeConsumption(),
     );
 
     await expect(svc.createBill(BASE_DTO, ACTOR, ROLE)).rejects.toThrow(BadRequestException);
@@ -229,6 +236,7 @@ describe("BillsService", () => {
       pricing,
       makeBillNumberService(),
       makeDiscountsService(),
+      makeConsumption(),
     );
 
     const result = await svc.createBill(BASE_DTO, ACTOR, ROLE);
@@ -248,6 +256,7 @@ describe("BillsService", () => {
       makePricingService(),
       makeBillNumberService(),
       makeDiscountsService(),
+      makeConsumption(),
     );
 
     await expect(
@@ -273,6 +282,7 @@ describe("BillsService", () => {
       makePricingService(),
       makeBillNumberService(),
       makeDiscountsService(),
+      makeConsumption(),
     );
 
     // Caller uses a DIFFERENT deviceId
@@ -299,6 +309,7 @@ describe("BillsService", () => {
       makePricingService(),
       makeBillNumberService(),
       makeDiscountsService(),
+      makeConsumption(),
     );
 
     await expect(
@@ -359,6 +370,7 @@ describe("BillsService", () => {
       pricing,
       makeBillNumberService(),
       makeDiscountsService(),
+      makeConsumption(),
     );
 
     await svc.createBill(
@@ -402,6 +414,7 @@ describe("BillsService", () => {
       pricing,
       billNumber,
       makeDiscountsService(),
+      makeConsumption(),
     );
 
     const result = await svc.createBill(
@@ -433,6 +446,7 @@ describe("BillsService", () => {
       makePricingService(),
       makeBillNumberService(),
       discounts,
+      makeConsumption(),
     );
 
     await expect(
@@ -455,6 +469,7 @@ describe("BillsService", () => {
       makePricingService(),
       makeBillNumberService(),
       makeDiscountsService(),
+      makeConsumption(),
     );
 
     await expect(
@@ -478,6 +493,7 @@ describe("BillsService", () => {
       makePricingService(),
       makeBillNumberService(),
       makeDiscountsService(),
+      makeConsumption(),
     );
 
     await expect(svc.createBill(BASE_DTO, ACTOR, ROLE)).rejects.toThrow(ConflictException);

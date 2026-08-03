@@ -24,6 +24,7 @@ import { AuditService } from "../../audit/audit.service";
 import { PricingService } from "../pricing/pricing.service";
 import { BillNumberService } from "./bill-number.service";
 import { DiscountsService } from "../discounts/discounts.service";
+import { RecipeConsumptionService } from "../../inventory/consumption/recipe-consumption.service";
 import { sumVnd, toVnDateStr } from "@ilikebuffet/shared";
 import { checkFreeTicketPolicy } from "./bill-policy";
 import { buildResolvedLines } from "./resolved-lines";
@@ -40,6 +41,7 @@ export class BillsService {
     private readonly pricing: PricingService,
     private readonly billNumber: BillNumberService,
     private readonly discounts: DiscountsService,
+    private readonly consumption: RecipeConsumptionService,
   ) {}
 
   // ─── Create ──────────────────────────────────────────────────────────────────
@@ -172,6 +174,18 @@ export class BillsService {
           })),
         },
       });
+
+      // Step 8: deduct estimated ingredient stock (BOM). Never blocks the sale;
+      // no-op when no recipe is defined for the sold ticket types.
+      await this.consumption.consumeForBill(
+        tx,
+        {
+          billId: bill.id,
+          branchId: dto.branchId,
+          lines: bill.lines.map((l) => ({ ticketTypeId: l.ticketTypeId, qty: l.qty })),
+        },
+        actorId,
+      );
 
       this.logger.log(`Bill created: id=${bill.id} number=${bill.number} total=${bill.totalVnd}`);
       return bill;
@@ -306,6 +320,9 @@ export class BillsService {
         reason: dto.reason,
         approvedBy: dto.managerId,
       });
+
+      // Return the estimated ingredient stock this bill consumed (idempotent).
+      await this.consumption.reverseForBill(tx, billId, actorId);
 
       this.logger.log(`Bill cancelled: id=${billId} by=${actorId} reason=${dto.reason}`);
       return updated;

@@ -20,6 +20,7 @@ import { PricingService } from "../pricing/pricing.service";
 import { BillNumberService } from "./bill-number.service";
 import { checkFreeTicketPolicy } from "./bill-policy";
 import { buildResolvedLines } from "./resolved-lines";
+import { RecipeConsumptionService } from "../../inventory/consumption/recipe-consumption.service";
 import { sumVnd, toVnDateStr } from "@ilikebuffet/shared";
 import type { SyncBillDto, SyncBillResult, SyncPaymentDto, SyncVoidDto } from "./sync.dto";
 
@@ -44,6 +45,7 @@ export class SyncService {
     private readonly audit: AuditService,
     private readonly pricing: PricingService,
     private readonly billNumber: BillNumberService,
+    private readonly consumption: RecipeConsumptionService,
   ) {}
 
   /**
@@ -287,6 +289,17 @@ export class SyncService {
             quarantineReason,
           },
         });
+
+        // Deduct estimated ingredient stock (BOM) for the synced sale.
+        await this.consumption.consumeForBill(
+          tx,
+          {
+            billId: bill.id,
+            branchId: dto.branchId,
+            lines: resolvedLines.map((l) => ({ ticketTypeId: l.ticketTypeId, qty: l.qty })),
+          },
+          actorId,
+        );
 
         return number;
       });
