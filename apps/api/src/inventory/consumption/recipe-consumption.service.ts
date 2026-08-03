@@ -42,18 +42,33 @@ export class RecipeConsumptionService {
     const ticketTypeIds = [...qtyByTicket.keys()];
     if (ticketTypeIds.length === 0) return;
 
-    const recipes = await tx.ticketTypeRecipe.findMany({
-      where: { ticketTypeId: { in: ticketTypeIds } },
+    // Load this branch's overrides + the chain-wide defaults for these tickets.
+    const rows = await tx.ticketTypeRecipe.findMany({
+      where: { ticketTypeId: { in: ticketTypeIds }, OR: [{ branchId: null }, { branchId: input.branchId }] },
     });
-    if (recipes.length === 0) return; // no BOM defined → nothing to deduct
+    if (rows.length === 0) return; // no BOM defined → nothing to deduct
+
+    // Effective recipe per ticket type: the branch override REPLACES the
+    // chain-wide recipe wholesale when the branch has any row for that ticket.
+    const branchByTicket = new Map<string, typeof rows>();
+    const chainByTicket = new Map<string, typeof rows>();
+    for (const r of rows) {
+      const bucket = r.branchId ? branchByTicket : chainByTicket;
+      const list = bucket.get(r.ticketTypeId) ?? [];
+      list.push(r);
+      bucket.set(r.ticketTypeId, list);
+    }
 
     // Aggregate consumption per ingredient across all ticket lines.
     const totalByIngredient = new Map<string, number>();
-    for (const r of recipes) {
-      const tickets = qtyByTicket.get(r.ticketTypeId) ?? 0;
+    for (const ticketTypeId of ticketTypeIds) {
+      const effective = branchByTicket.get(ticketTypeId) ?? chainByTicket.get(ticketTypeId) ?? [];
+      const tickets = qtyByTicket.get(ticketTypeId) ?? 0;
       if (tickets === 0) continue;
-      const add = Number(r.qtyBase) * tickets;
-      totalByIngredient.set(r.ingredientId, (totalByIngredient.get(r.ingredientId) ?? 0) + add);
+      for (const r of effective) {
+        const add = Number(r.qtyBase) * tickets;
+        totalByIngredient.set(r.ingredientId, (totalByIngredient.get(r.ingredientId) ?? 0) + add);
+      }
     }
 
     for (const ingredientId of [...totalByIngredient.keys()].sort()) {

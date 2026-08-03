@@ -133,4 +133,55 @@ describe("recipe consumption (integration)", () => {
     const moves = await prisma.stockMovement.findMany({ where: { refId: "bill-3" } });
     expect(moves).toHaveLength(0);
   });
+
+  // ── M7: per-branch override ────────────────────────────────────────────────
+
+  describe("branch override", () => {
+    let vipId: string;
+    let shrimpId: string;
+    const BRANCH2 = "rc-branch-2";
+
+    const movementQty = async (billId: string, ingredientId: string) => {
+      const m = await prisma.stockMovement.findFirst({ where: { refId: billId, ingredientId } });
+      return m ? Number(m.qtyBase) : 0;
+    };
+
+    beforeAll(async () => {
+      await prisma.branch.create({ data: { id: BRANCH2, code: "RB2", name: "RB2", address: "x", phone: "0900000000" } });
+      const groupId = (await prisma.ingredientGroup.findFirst())!.id;
+      const unitId = (await prisma.unit.findFirst())!.id;
+      vipId = (await prisma.ticketType.create({ data: { name: "VIP" } })).id;
+      shrimpId = (await prisma.ingredient.create({ data: { code: "NL010", name: "Tôm", groupId, unitId } })).id;
+      // Chain-wide 0.2/ticket; BRANCH overrides to 0.5/ticket.
+      await prisma.ticketTypeRecipe.create({ data: { ticketTypeId: vipId, ingredientId: shrimpId, qtyBase: 0.2, branchId: null } });
+      await prisma.ticketTypeRecipe.create({ data: { ticketTypeId: vipId, ingredientId: shrimpId, qtyBase: 0.5, branchId: BRANCH } });
+    });
+
+    it("uses the branch override, replacing the chain-wide recipe", async () => {
+      await prisma.withTx((tx) =>
+        consumption.consumeForBill(tx, { billId: "ovr-1", branchId: BRANCH, lines: [{ ticketTypeId: vipId, qty: 2 }] }, "c"),
+      );
+      // 0.5 × 2 = 1.0 (override), not 0.2 × 2.
+      expect(await movementQty("ovr-1", shrimpId)).toBeCloseTo(-1.0, 3);
+    });
+
+    it("falls back to chain-wide for a branch without an override", async () => {
+      await prisma.withTx((tx) =>
+        consumption.consumeForBill(tx, { billId: "chn-1", branchId: BRANCH2, lines: [{ ticketTypeId: vipId, qty: 2 }] }, "c"),
+      );
+      // 0.2 × 2 = 0.4 (chain-wide default).
+      expect(await movementQty("chn-1", shrimpId)).toBeCloseTo(-0.4, 3);
+    });
+
+    it("partial unique blocks a duplicate chain-wide row but allows a coexisting override", async () => {
+      // Chain-wide (vip, shrimp, NULL) already exists → a second is rejected.
+      await expect(
+        prisma.ticketTypeRecipe.create({ data: { ticketTypeId: vipId, ingredientId: shrimpId, qtyBase: 0.3, branchId: null } }),
+      ).rejects.toBeTruthy();
+      // A duplicate override for the same branch is rejected too.
+      await expect(
+        prisma.ticketTypeRecipe.create({ data: { ticketTypeId: vipId, ingredientId: shrimpId, qtyBase: 0.9, branchId: BRANCH } }),
+      ).rejects.toBeTruthy();
+    });
+  });
 });
