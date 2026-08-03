@@ -14,6 +14,13 @@ export interface GrossMarginQuery {
   groupBy?: "day" | "branch";
 }
 
+export interface PnlQuery {
+  from?: string;
+  to?: string;
+  branchId?: string;
+  groupBy?: "day" | "branch";
+}
+
 export interface ChainOverviewQuery {
   from?: string;
   to?: string;

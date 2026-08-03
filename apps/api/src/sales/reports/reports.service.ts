@@ -12,7 +12,7 @@ import { roundVnd, sumVnd, toVnDateStr } from "@ilikebuffet/shared";
 import { PrismaService } from "../../prisma/prisma.service";
 import { AuditService } from "../../audit/audit.service";
 import { assertBranchAccess, type BranchAccess } from "../../platform/rbac/branch-access";
-import type { RevenueQuery, ShiftCashQuery, QuarantineQuery, GrossMarginQuery, ChainOverviewQuery } from "./reports.dto";
+import type { RevenueQuery, ShiftCashQuery, QuarantineQuery, GrossMarginQuery, PnlQuery, ChainOverviewQuery } from "./reports.dto";
 
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -223,6 +223,88 @@ export class ReportsService {
     }
     sheet.addRow({});
     sheet.addRow({ key: "TỔNG", net: report.totals.netRevenueVnd, cogs: report.totals.cogsVnd, profit: report.totals.grossProfitVnd, pct: report.totals.marginPct });
+    return Buffer.from(await wb.xlsx.writeBuffer());
+  }
+
+  /**
+   * P&L = net revenue − COGS − operating expenses, by day or branch.
+   *
+   * Net revenue and COGS are taken from {@link grossMargin} (COGS is the
+   * moving-average consumption of stock issued against sales). Operating expenses
+   * are the sum of EXPENSE financial transactions in the period, EXCLUDING those
+   * tied to a supplier: supplier payments settle payables for received goods whose
+   * cost is already captured as COGS via consumption, so counting them here too
+   * would double-count. Operating expenses are non-supplier costs (rent, salary,
+   * utilities…). grossProfit = net − COGS; netProfit = grossProfit − opex.
+   */
+  async pnl(query: PnlQuery, access: BranchAccess) {
+    const groupBy = query.groupBy ?? "day";
+    const gm = await this.grossMargin(query, access);
+
+    const occurredAt: { gte?: Date; lte?: Date } = {};
+    if (query.from) occurredAt.gte = new Date(`${query.from}T00:00:00Z`);
+    if (query.to) occurredAt.lte = new Date(`${query.to}T23:59:59.999Z`);
+    const txs = await this.prisma.financialTransaction.findMany({
+      where: {
+        flow: "EXPENSE",
+        supplierId: null,
+        ...(access.chainWide ? {} : { branchId: { in: access.branchIds } }),
+        ...(query.branchId ? { branchId: query.branchId } : {}),
+        ...(occurredAt.gte || occurredAt.lte ? { occurredAt } : {}),
+      },
+      select: { branchId: true, occurredAt: true, amountVnd: true },
+    });
+
+    const opexByKey = new Map<string, number>();
+    for (const t of txs) {
+      const key = groupBy === "branch" ? t.branchId : dayKey(t.occurredAt);
+      opexByKey.set(key, sumVnd([opexByKey.get(key) ?? 0, t.amountVnd]));
+    }
+
+    const gmByKey = new Map(gm.rows.map((r) => [r.key, r]));
+    const rows = [...new Set([...gmByKey.keys(), ...opexByKey.keys()])]
+      .map((key) => {
+        const g = gmByKey.get(key);
+        const netRevenueVnd = g?.netRevenueVnd ?? 0;
+        const cogsVnd = g?.cogsVnd ?? 0;
+        const grossProfitVnd = netRevenueVnd - cogsVnd;
+        const opexVnd = opexByKey.get(key) ?? 0;
+        const netProfitVnd = grossProfitVnd - opexVnd;
+        return { key, netRevenueVnd, cogsVnd, grossProfitVnd, opexVnd, netProfitVnd, marginPct: marginPct(netProfitVnd, netRevenueVnd) };
+      })
+      .sort((a, b) => (a.key < b.key ? 1 : -1));
+
+    const totNet = sumVnd(rows.map((r) => r.netRevenueVnd));
+    const totCogs = sumVnd(rows.map((r) => r.cogsVnd));
+    const totOpex = sumVnd(rows.map((r) => r.opexVnd));
+    const totGross = totNet - totCogs;
+    const totProfit = totGross - totOpex;
+    return {
+      groupBy,
+      totals: { netRevenueVnd: totNet, cogsVnd: totCogs, grossProfitVnd: totGross, opexVnd: totOpex, netProfitVnd: totProfit, marginPct: marginPct(totProfit, totNet) },
+      rows,
+    };
+  }
+
+  /** P&L report as an .xlsx workbook (rows + a totals line). */
+  async exportPnl(query: PnlQuery, access: BranchAccess): Promise<Buffer> {
+    const report = await this.pnl(query, access);
+    const wb = new ExcelJS.Workbook();
+    const sheet = wb.addWorksheet("Lãi lỗ");
+    sheet.columns = [
+      { header: report.groupBy === "branch" ? "Chi nhánh" : "Ngày", key: "key", width: 24 },
+      { header: "Doanh thu thuần", key: "net", width: 16 },
+      { header: "Giá vốn", key: "cogs", width: 14 },
+      { header: "Lãi gộp", key: "gross", width: 14 },
+      { header: "Chi phí vận hành", key: "opex", width: 16 },
+      { header: "Lãi ròng", key: "profit", width: 14 },
+      { header: "%Biên", key: "pct", width: 10 },
+    ];
+    for (const r of report.rows) {
+      sheet.addRow({ key: r.key, net: r.netRevenueVnd, cogs: r.cogsVnd, gross: r.grossProfitVnd, opex: r.opexVnd, profit: r.netProfitVnd, pct: r.marginPct });
+    }
+    sheet.addRow({});
+    sheet.addRow({ key: "TỔNG", net: report.totals.netRevenueVnd, cogs: report.totals.cogsVnd, gross: report.totals.grossProfitVnd, opex: report.totals.opexVnd, profit: report.totals.netProfitVnd, pct: report.totals.marginPct });
     return Buffer.from(await wb.xlsx.writeBuffer());
   }
 

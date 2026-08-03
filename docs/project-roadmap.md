@@ -114,6 +114,31 @@ chain-level roles only, new "Tổng quan chuỗi" screen. Inter-branch stock tra
 moving-average cost, block-below-zero at source, access to both ends; new "Điều
 chuyển kho" screen. Plan: `plans/260803-1433-m10-multibranch-chain-bi/`.
 
+## E3 — Tài chính (Thu-Chi, công nợ NCC, P&L) ✅ done
+
+Cash-book and finance module (`sales/finance`, `sales/reports/pnl`):
+
+- **Thu-Chi (`financial_transaction`):** income/expense vouchers against the chart
+  of accounts, branch-scoped, capability-gated (`cash:create-voucher` to write,
+  `cash:read` to read/report). Over-threshold vouchers (per-account
+  `approvalThresholdVnd`) require a manager PIN, reusing the discount approval
+  path. List + by-account summary. New "Thu - Chi" screen.
+- **Công nợ NCC (`supplier_payable`):** a payable opens automatically when goods
+  are received against a PO (value = received lines, due = receipt +
+  `supplier.debtTerms`). Payment books an EXPENSE finance entry linked to the
+  supplier and marks the payable PAID when settled; overpayment rejected. New
+  "Công nợ NCC" screen.
+- **P&L (`/sales/reports/pnl` + xlsx):** net revenue − COGS (moving-average
+  consumption, from the gross-margin engine) − operating expenses, by day or
+  branch. Opex = EXPENSE finance entries EXCLUDING supplier-linked ones (those
+  settle payables for received goods already counted as COGS — avoids
+  double-count). New "Lãi/lỗ" screen. Recommendation: do NOT book raw-material
+  purchases as thu-chi; they flow through COGS via consumption.
+
+Enforcement note: E3 is the first module to gate on the capability matrix
+(`platform/rbac/permissions.ts` `can()`) rather than hardcoded role sets. Plan:
+`plans/260803-1505-e3-thu-chi-finance/`.
+
 ## Carry-overs ✅ done
 
 - Shift-cash reconciliation xlsx export (`/sales/reports/shift-cash/export`).
@@ -121,4 +146,5 @@ chuyển kho" screen. Plan: `plans/260803-1433-m10-multibranch-chain-bi/`.
 
 ## Backlog (not started)
 
-- (None outstanding — propose the next milestone with the team.)
+- E4 — duyệt mua hàng (PO approval workflow) & công nợ nâng cao (aging, nhắc hạn).
+- (Otherwise propose the next milestone with the team.)

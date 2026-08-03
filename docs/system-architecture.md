@@ -58,7 +58,12 @@ These hold across every module and are the backbone of the design:
 - **payments** — record CASH/VIETQR/CARD; sum must equal bill total; sets `paidAt`.
 - **reports** — net revenue, shift-cash reconciliation, offline reconciliation
   (quarantine + number-gap detection), dashboard KPIs, **gross margin**
-  (revenue − estimated COGS). xlsx export on revenue / gross-margin / shift-cash.
+  (revenue − estimated COGS), **P&L** (net revenue − COGS − opex). xlsx export on
+  revenue / gross-margin / P&L / shift-cash.
+- **finance** — cash-book (`financial_transaction`): income/expense vouchers
+  against the chart of accounts and supplier payables (`supplier_payable`).
+  Capability-gated (`cash:create-voucher` / `cash:read`); over-threshold vouchers
+  need a manager PIN. See flow below.
 - **bank-reconcile** — Sepay webhook (VietQR auto-reconcile); see flow below.
 
 ### Inventory (`apps/api/src/inventory`)
@@ -102,6 +107,27 @@ both legs are StockMovements (refType "TRANSFER", shared refId), so
 `balance == Σ movements` holds on both branches. The chain-overview report rolls
 up per-branch net revenue / bills / cash-variance / low-stock (ranked), gated to
 chain-level roles — the same branch-scoping model, just aggregated.
+
+### Finance: cash-book, supplier debt & P&L
+
+```
+POST /sales/finance ──tx──▶ FinancialTransaction (INCOME/EXPENSE, account snapshot)
+      · over threshold → verifyApprovalPin(manager) · audit(finance.create)
+Goods receipt ──tx──▶ … RECEIVED · SupplierPayable(OPEN, due = receipt + debtTerms)
+POST /sales/finance/payables/:id/pay ──tx──▶ EXPENSE FinancialTransaction (supplier-linked)
+      · payable.paidVnd += amount · status PAID when settled (overpay rejected)
+```
+
+P&L (`/sales/reports/pnl`) = net revenue − COGS − opex, keyed by day/branch. COGS
+is moving-average consumption (shared with gross margin). **Opex excludes
+supplier-linked EXPENSE entries** — supplier payments settle payables for received
+goods already counted as COGS, so counting them again would double-count; opex is
+non-supplier operating cost (rent, salary, utilities). This is also why booking
+raw-material purchases as thu-chi is discouraged.
+
+Capability enforcement: the finance controller gates each route on
+`can(role, capability)` from the RBAC matrix — E3 is the first module to use the
+capability matrix rather than hardcoded role sets.
 
 ### VietQR auto-reconcile
 

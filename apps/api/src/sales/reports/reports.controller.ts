@@ -10,7 +10,7 @@ import type { Response } from "express";
 import { ReportsService } from "./reports.service";
 import { Role } from "../../platform/rbac/role.enum";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
-import type { RevenueQuery, ShiftCashQuery, QuarantineQuery, ResolveQuarantineDto, GrossMarginQuery, ChainOverviewQuery } from "./reports.dto";
+import type { RevenueQuery, ShiftCashQuery, QuarantineQuery, ResolveQuarantineDto, GrossMarginQuery, PnlQuery, ChainOverviewQuery } from "./reports.dto";
 
 export const REPORT_VIEW_ROLES = new Set<Role>([
   Role.QUAN_TRI_HQ,
@@ -82,6 +82,19 @@ export class ReportsController {
     const buffer = await this.reports.exportGrossMargin(query, this.access(req));
     res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     res.setHeader("Content-Disposition", `attachment; filename="lai-gop-${query.from ?? ""}-${query.to ?? ""}.xlsx"`);
+    res.send(buffer);
+  }
+
+  @Get("pnl")
+  pnl(@Query() query: PnlQuery, @Request() req: ScopedRequest) {
+    return this.reports.pnl(query, this.access(req));
+  }
+
+  @Get("pnl/export")
+  async exportPnl(@Query() query: PnlQuery, @Request() req: ScopedRequest, @Res() res: Response) {
+    const buffer = await this.reports.exportPnl(query, this.access(req));
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.setHeader("Content-Disposition", `attachment; filename="lai-lo-${query.from ?? ""}-${query.to ?? ""}.xlsx"`);
     res.send(buffer);
   }
 

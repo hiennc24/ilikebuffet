@@ -82,6 +82,12 @@ const DEFAULT_GROUPS: NavGroup[] = [
         iconPath: "M3 3v18h18M7 14l3 3 7-8M14 9h3v3",
       },
       {
+        id: "pnl-report",
+        label: "Lãi/lỗ",
+        path: "/reports/pnl",
+        iconPath: "M3 3v18h18M7 13l3 3 4-5 3 3",
+      },
+      {
         id: "shift-cash-report",
         label: "Đối soát tiền mặt",
         path: "/reports/shift-cash",

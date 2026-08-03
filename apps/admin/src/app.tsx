@@ -43,6 +43,7 @@ import { TicketRecipesPage } from "./pages/ticket-recipes-page";
 import { AccountsPage } from "./pages/accounts-page";
 import { RevenueReportPage } from "./pages/revenue-report-page";
 import { GrossMarginReportPage } from "./pages/gross-margin-report-page";
+import { PnlReportPage } from "./pages/pnl-report-page";
 import { BankReconcilePage } from "./pages/bank-reconcile-page";
 import { ChainDashboardPage } from "./pages/chain-dashboard-page";
 import { FinancePage } from "./pages/finance-page";
@@ -290,6 +291,16 @@ export function App() {
                         <RequireAccess path="/reports/gross-margin">
                           <ShellLayout pageTitle="Báo cáo lãi gộp">
                             <GrossMarginReportPage />
+                          </ShellLayout>
+                        </RequireAccess>
+                      }
+                    />
+                    <Route
+                      path="/reports/pnl"
+                      element={
+                        <RequireAccess path="/reports/pnl">
+                          <ShellLayout pageTitle="Báo cáo lãi/lỗ">
+                            <PnlReportPage />
                           </ShellLayout>
                         </RequireAccess>
                       }

@@ -2,7 +2,7 @@
 title: "E3 — Tài chính: Thu-Chi + Sổ quỹ + P&L"
 slug: e3-thu-chi-finance
 created: 2026-08-03
-status: in-progress
+status: done
 priority: P1
 mode: --tdd
 
@@ -46,10 +46,10 @@ giá vốn M9 nhưng CHƯA có chi phí).
 
 | Phase | Tên | Nội dung | Phụ thuộc | Status |
 |-------|-----|----------|-----------|--------|
-| F0 | [Thu-Chi core](./phase-f0-thu-chi-core.md) | schema `FinancialTransaction` + migration + capability gate (`can()`) + service (tạo/duyệt vượt ngưỡng, list+tổng) + e2e | — | planned |
-| F1 | [FE + báo cáo chi phí](./phase-f1-fe-report.md) | màn thu-chi (list + tạo + duyệt PIN) + báo cáo chi phí theo tài khoản/kỳ + nav/rbac | F0 | planned |
-| F2 | [Công nợ NCC](./phase-f2-supplier-debt.md) | payable tạo khi nhập kho + thanh toán NCC (finance EXPENSE + supplierId) + báo cáo công nợ + FE | F0 | planned |
-| F3 | [P&L + docs](./phase-f3-pnl-docs.md) | báo cáo lãi/lỗ (doanh thu − giá vốn − chi phí) + xuất Excel + docs + full verify | F0,F1,F2 | planned |
+| F0 | [Thu-Chi core](./phase-f0-thu-chi-core.md) | schema `FinancialTransaction` + migration + capability gate (`can()`) + service (tạo/duyệt vượt ngưỡng, list+tổng) + e2e | — | done |
+| F1 | [FE + báo cáo chi phí](./phase-f1-fe-report.md) | màn thu-chi (list + tạo + duyệt PIN) + báo cáo chi phí theo tài khoản/kỳ + nav/rbac | F0 | done |
+| F2 | [Công nợ NCC](./phase-f2-supplier-debt.md) | payable tạo khi nhập kho + thanh toán NCC (finance EXPENSE + supplierId) + báo cáo công nợ + FE | F0 | done |
+| F3 | [P&L + docs](./phase-f3-pnl-docs.md) | báo cáo lãi/lỗ (doanh thu − giá vốn − chi phí) + xuất Excel + docs + full verify | F0,F1,F2 | done |
 
 ## Acceptance
 - Tạo phiếu thu-chi theo account (flow snapshot); vượt `approvalThresholdVnd` →
