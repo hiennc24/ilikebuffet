@@ -398,13 +398,16 @@ export class MasterDataService implements OnModuleInit {
       ];
     }
 
+    // Prefer page/pageSize (admin usePagedList); fall back to limit/offset.
+    const take = query.pageSize ? Math.min(query.pageSize, 200) : Math.min(query.limit ?? 50, 200);
+    const skip = query.page ? (query.page - 1) * take : query.offset ?? 0;
     const [data, total] = await Promise.all([
       this.prisma.ingredient.findMany({
         where,
         include: { group: true, unit: true, purchaseUnits: { include: { unit: true } } },
         orderBy: { name: "asc" },
-        take: Math.min(query.limit ?? 50, 200),
-        skip: query.offset ?? 0,
+        take,
+        skip,
       }),
       this.prisma.ingredient.count({ where }),
     ]);

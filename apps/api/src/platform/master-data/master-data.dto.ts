@@ -179,6 +179,20 @@ export class IngredientListQuery {
   @IsInt()
   @Min(0)
   offset?: number;
+
+  // The admin list screen paginates via page/pageSize (usePagedList); limit/offset
+  // remain for other callers. listIngredients prefers page/pageSize when present.
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  pageSize?: number;
 }
 
 // ─── Chart of accounts ───────────────────────────────────────────────────────
