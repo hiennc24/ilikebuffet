@@ -105,6 +105,16 @@ export class PayableListQuery {
   pageSize?: number;
 }
 
+export class PayableAgingQuery {
+  @IsOptional()
+  @IsString()
+  branchId?: string;
+
+  @IsOptional()
+  @IsString()
+  supplierId?: string;
+}
+
 export class FinancialListQuery {
   @IsOptional()
   @IsString()

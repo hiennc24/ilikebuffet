@@ -7,12 +7,15 @@
  */
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { PaymentMethod, Prisma } from "@prisma/client";
+import * as ExcelJS from "exceljs";
 import { sumVnd } from "@ilikebuffet/shared";
 import { PrismaService, TxClient } from "../../prisma/prisma.service";
 import { AuditService } from "../../audit/audit.service";
 import { DiscountsService } from "../discounts/discounts.service";
 import { assertBranchAccess, type BranchAccess } from "../../platform/rbac/branch-access";
-import type { CreateFinancialDto, FinancialListQuery, PaySupplierDto, PayableListQuery } from "./finance.dto";
+import type { CreateFinancialDto, FinancialListQuery, PaySupplierDto, PayableListQuery, PayableAgingQuery } from "./finance.dto";
+
+const DAY_MS = 86_400_000;
 
 @Injectable()
 export class FinanceService {
@@ -179,6 +182,101 @@ export class FinanceService {
       })),
       total,
     };
+  }
+
+  /** OPEN payables (outstanding > 0) for aging/due-soon, branch-scoped, with a
+   *  supplier-name map. Today is the VN date at midnight (ms). */
+  private async openPayables(query: PayableAgingQuery, access: BranchAccess) {
+    const where: Prisma.SupplierPayableWhereInput = {
+      status: "OPEN",
+      ...(access.chainWide ? {} : { branchId: { in: access.branchIds } }),
+      ...(query.branchId ? { branchId: query.branchId } : {}),
+      ...(query.supplierId ? { supplierId: query.supplierId } : {}),
+    };
+    const rows = (await this.prisma.supplierPayable.findMany({ where })).filter((r) => r.amountVnd - r.paidVnd > 0);
+    const suppliers = await this.prisma.supplier.findMany({ where: { id: { in: [...new Set(rows.map((r) => r.supplierId))] } }, select: { id: true, name: true } });
+    const nameById = new Map(suppliers.map((s) => [s.id, s.name]));
+    const todayMs = new Date(new Date().toISOString().slice(0, 10)).getTime();
+    return { rows, nameById, todayMs };
+  }
+
+  /**
+   * Supplier-debt aging: outstanding of each OPEN payable bucketed by how many
+   * days its dueDate is past today — not yet due, 1–30, 31–60, and 60+ days
+   * overdue — grouped by supplier, with per-supplier and grand totals.
+   */
+  async payableAging(query: PayableAgingQuery, access: BranchAccess) {
+    const { rows, nameById, todayMs } = await this.openPayables(query, access);
+
+    type Bucket = { supplierId: string; supplierName: string; notDueVnd: number; d1_30Vnd: number; d31_60Vnd: number; d60plusVnd: number; totalOutstandingVnd: number };
+    const bySupplier = new Map<string, Bucket>();
+    for (const r of rows) {
+      const outstanding = r.amountVnd - r.paidVnd;
+      const b =
+        bySupplier.get(r.supplierId) ??
+        { supplierId: r.supplierId, supplierName: nameById.get(r.supplierId) ?? r.supplierId, notDueVnd: 0, d1_30Vnd: 0, d31_60Vnd: 0, d60plusVnd: 0, totalOutstandingVnd: 0 };
+      const days = r.dueDate ? Math.floor((todayMs - r.dueDate.getTime()) / DAY_MS) : -1;
+      if (days <= 0) b.notDueVnd = sumVnd([b.notDueVnd, outstanding]);
+      else if (days <= 30) b.d1_30Vnd = sumVnd([b.d1_30Vnd, outstanding]);
+      else if (days <= 60) b.d31_60Vnd = sumVnd([b.d31_60Vnd, outstanding]);
+      else b.d60plusVnd = sumVnd([b.d60plusVnd, outstanding]);
+      b.totalOutstandingVnd = sumVnd([b.totalOutstandingVnd, outstanding]);
+      bySupplier.set(r.supplierId, b);
+    }
+
+    const suppliers = [...bySupplier.values()].sort((a, b) => b.totalOutstandingVnd - a.totalOutstandingVnd);
+    const sum = (pick: (b: Bucket) => number) => sumVnd(suppliers.map(pick));
+    return {
+      totals: {
+        notDueVnd: sum((b) => b.notDueVnd),
+        d1_30Vnd: sum((b) => b.d1_30Vnd),
+        d31_60Vnd: sum((b) => b.d31_60Vnd),
+        d60plusVnd: sum((b) => b.d60plusVnd),
+        totalOutstandingVnd: sum((b) => b.totalOutstandingVnd),
+        supplierCount: suppliers.length,
+      },
+      suppliers,
+    };
+  }
+
+  /** OPEN payables due within 7 days or already overdue, soonest first.
+   *  daysOverdue > 0 = past due; ≤ 0 = days remaining (negated). */
+  async dueSoon(query: PayableAgingQuery, access: BranchAccess) {
+    const { rows, nameById, todayMs } = await this.openPayables(query, access);
+    const items = rows
+      .filter((r) => r.dueDate != null && Math.floor((r.dueDate.getTime() - todayMs) / DAY_MS) <= 7)
+      .map((r) => ({
+        id: r.id,
+        supplierId: r.supplierId,
+        supplierName: nameById.get(r.supplierId) ?? r.supplierId,
+        branchId: r.branchId,
+        outstandingVnd: r.amountVnd - r.paidVnd,
+        dueDate: r.dueDate,
+        daysOverdue: Math.floor((todayMs - r.dueDate!.getTime()) / DAY_MS),
+      }))
+      .sort((a, b) => (a.dueDate!.getTime() - b.dueDate!.getTime()));
+    return { items, total: items.length };
+  }
+
+  /** Aging report as an .xlsx workbook (supplier rows + a totals line). */
+  async exportPayableAging(query: PayableAgingQuery, access: BranchAccess): Promise<Buffer> {
+    const report = await this.payableAging(query, access);
+    const wb = new ExcelJS.Workbook();
+    const sheet = wb.addWorksheet("Tuổi nợ NCC");
+    sheet.columns = [
+      { header: "Nhà cung cấp", key: "supplier", width: 28 },
+      { header: "Chưa đến hạn", key: "notDue", width: 16 },
+      { header: "1-30 ngày", key: "d1_30", width: 14 },
+      { header: "31-60 ngày", key: "d31_60", width: 14 },
+      { header: "60+ ngày", key: "d60", width: 14 },
+      { header: "Tổng nợ", key: "total", width: 16 },
+    ];
+    for (const s of report.suppliers) {
+      sheet.addRow({ supplier: s.supplierName, notDue: s.notDueVnd, d1_30: s.d1_30Vnd, d31_60: s.d31_60Vnd, d60: s.d60plusVnd, total: s.totalOutstandingVnd });
+    }
+    sheet.addRow({});
+    sheet.addRow({ supplier: "TỔNG", notDue: report.totals.notDueVnd, d1_30: report.totals.d1_30Vnd, d31_60: report.totals.d31_60Vnd, d60: report.totals.d60plusVnd, total: report.totals.totalOutstandingVnd });
+    return Buffer.from(await wb.xlsx.writeBuffer());
   }
 
   /** Pay (fully or partially) a supplier payable: books an EXPENSE entry and
