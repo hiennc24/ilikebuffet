@@ -275,6 +275,7 @@ model Ingredient {
   purchaseOrderLines PurchaseOrderLine[]
   stockMovements     StockMovement[]
   inventoryBalances  InventoryBalance[]
+  ticketTypeRecipes  TicketTypeRecipe[]
 
   @@map("ingredient")
 }
@@ -410,6 +411,7 @@ model TicketType {
   updatedAt    DateTime         @updatedAt @db.Timestamptz(3)
 
   priceCells PriceCell[]
+  recipe     TicketTypeRecipe[]
 
   @@map("ticket_type")
 }
@@ -823,4 +825,23 @@ model InventoryBalance {
   @@id([branchId, ingredientId])
   @@index([branchId])
   @@map("inventory_balance")
+}
+
+/// Per-ticket-type ingredient recipe (định mức): estimated base-unit consumption
+/// of one ingredient per one ticket sold. Chain-wide (no branch). Selling a
+/// ticket deducts Σ(qtyBase × ticket qty) from the bill's branch stock.
+model TicketTypeRecipe {
+  id           String   @id @default(cuid())
+  ticketTypeId String
+  ingredientId String
+  /// Estimated consumption of one base unit of this ingredient per one ticket.
+  qtyBase      Decimal  @db.Decimal(12, 4)
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+
+  ticketType TicketType @relation(fields: [ticketTypeId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@unique([ticketTypeId, ingredientId])
+  @@index([ticketTypeId])
+  @@map("ticket_type_recipe")
 }

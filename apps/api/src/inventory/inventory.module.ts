@@ -14,6 +14,7 @@ import { StockService } from "./stock/stock.service";
 import { StockController } from "./stock/stock.controller";
 import { InventoryReportsService } from "./reports/inventory-reports.service";
 import { InventoryReportsController } from "./reports/inventory-reports.controller";
+import { RecipeConsumptionService } from "./consumption/recipe-consumption.service";
 
 @Module({
   imports: [PrismaModule, AuditModule],
@@ -24,7 +25,8 @@ import { InventoryReportsController } from "./reports/inventory-reports.controll
     GoodsReceiptService,
     StockService,
     InventoryReportsService,
+    RecipeConsumptionService,
   ],
-  exports: [InventoryBalanceService],
+  exports: [InventoryBalanceService, RecipeConsumptionService],
 })
 export class InventoryModule {}

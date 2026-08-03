@@ -46,6 +46,14 @@ export interface SetCountedInput extends MovementRef {
   createdBy: string;
 }
 
+export interface ConsumptionInput extends MovementRef {
+  branchId: string;
+  ingredientId: string;
+  /** Signed base-unit change: negative = consume (sale), positive = return (reverse). */
+  deltaQtyBase: number;
+  createdBy: string;
+}
+
 export interface BalanceView {
   branchId: string;
   ingredientId: string;
@@ -130,6 +138,35 @@ export class InventoryBalanceService {
     });
     await this.updateBalance(tx, branchId, ingredientId, counted, oldAvg);
     return { branchId, ingredientId, qtyBase: counted, avgCostVnd: oldAvg };
+  }
+
+  /**
+   * Apply a sale-driven consumption (negative delta) or its reversal (positive).
+   *
+   * Unlike applyDelta, this NEVER blocks on insufficient stock — a buffet sale
+   * can't be refused because the estimated recipe outran the counted balance —
+   * so on-hand may go negative. The moving-average cost is left unchanged; goods
+   * move at the current average (recorded on the movement).
+   */
+  async applyConsumption(tx: TxClient, input: ConsumptionInput): Promise<BalanceView> {
+    const { branchId, ingredientId } = input;
+    const delta = roundQty(input.deltaQtyBase);
+    const { qty: oldQty, avg: oldAvg } = await this.lockBalance(tx, branchId, ingredientId);
+    const newQty = roundQty(oldQty + delta);
+
+    await this.writeMovement(tx, {
+      branchId,
+      ingredientId,
+      type: delta < 0 ? "ISSUE" : "RECEIPT",
+      qtyBase: delta,
+      unitCostVnd: oldAvg,
+      refType: input.refType,
+      refId: input.refId,
+      note: input.note,
+      createdBy: input.createdBy,
+    });
+    await this.updateBalance(tx, branchId, ingredientId, newQty, oldAvg);
+    return { branchId, ingredientId, qtyBase: newQty, avgCostVnd: oldAvg };
   }
 
   /** Create the balance row if absent, then lock it and return current qty/avg. */

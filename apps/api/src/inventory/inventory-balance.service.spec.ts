@@ -97,4 +97,27 @@ describe("InventoryBalanceService", () => {
       service.setCounted(tx, { ...base, countedQtyBase: -1 }),
     ).rejects.toBeInstanceOf(BadRequestException);
   });
+
+  it("consumption reduces on-hand and leaves the average untouched", async () => {
+    const { tx, captured } = makeTx({ qty: 10, avg: 5000 });
+    const result = await service.applyConsumption(tx, { ...base, deltaQtyBase: -3, refType: "BILL", refId: "b1" });
+    expect(result.qtyBase).toBe(7);
+    expect(result.avgCostVnd).toBe(5000);
+    expect(captured.movement).toMatchObject({ type: "ISSUE", qtyBase: -3, unitCostVnd: 5000, refType: "BILL" });
+  });
+
+  it("consumption is allowed to drive on-hand negative (estimated recipe)", async () => {
+    const { tx, captured } = makeTx({ qty: 1, avg: 5000 });
+    const result = await service.applyConsumption(tx, { ...base, deltaQtyBase: -4, refType: "BILL", refId: "b1" });
+    expect(result.qtyBase).toBe(-3);
+    expect(captured.balance).toMatchObject({ qtyBase: -3, avgCostVnd: 5000 });
+  });
+
+  it("reversal adds stock back as a RECEIPT at the current average", async () => {
+    const { tx, captured } = makeTx({ qty: -3, avg: 5000 });
+    const result = await service.applyConsumption(tx, { ...base, deltaQtyBase: 4, refType: "BILL_REVERSAL", refId: "b1" });
+    expect(result.qtyBase).toBe(1);
+    expect(result.avgCostVnd).toBe(5000);
+    expect(captured.movement).toMatchObject({ type: "RECEIPT", qtyBase: 4, unitCostVnd: 5000, refType: "BILL_REVERSAL" });
+  });
 });
