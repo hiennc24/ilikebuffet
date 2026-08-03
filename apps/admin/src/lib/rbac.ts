@@ -41,6 +41,7 @@ export const RESTRICTED_SCREENS: Record<string, readonly string[]> = {
   "/reports/revenue": ["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI", "QUAN_LY_CN"],
   "/reports/gross-margin": ["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI", "QUAN_LY_CN"],
   "/reports/bank-reconcile": ["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI"],
+  "/reports/chain": ["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI"],
   "/reports/shift-cash": ["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI", "QUAN_LY_CN"],
   "/reports/offline": ["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI", "QUAN_LY_CN"],
 };

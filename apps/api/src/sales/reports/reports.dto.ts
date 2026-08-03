@@ -14,6 +14,11 @@ export interface GrossMarginQuery {
   groupBy?: "day" | "branch";
 }
 
+export interface ChainOverviewQuery {
+  from?: string;
+  to?: string;
+}
+
 export interface ShiftCashQuery {
   from?: string;
   to?: string;

@@ -64,6 +64,12 @@ const DEFAULT_GROUPS: NavGroup[] = [
     label: "Báo cáo & Đối soát",
     items: [
       {
+        id: "chain-overview",
+        label: "Tổng quan chuỗi",
+        path: "/reports/chain",
+        iconPath: "M3 21h18M6 21V9l6-4 6 4v12M9 21v-6h6v6",
+      },
+      {
         id: "revenue-report",
         label: "Doanh thu",
         path: "/reports/revenue",

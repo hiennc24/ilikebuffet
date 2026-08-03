@@ -10,7 +10,7 @@ import type { Response } from "express";
 import { ReportsService } from "./reports.service";
 import { Role } from "../../platform/rbac/role.enum";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
-import type { RevenueQuery, ShiftCashQuery, QuarantineQuery, ResolveQuarantineDto, GrossMarginQuery } from "./reports.dto";
+import type { RevenueQuery, ShiftCashQuery, QuarantineQuery, ResolveQuarantineDto, GrossMarginQuery, ChainOverviewQuery } from "./reports.dto";
 
 export const REPORT_VIEW_ROLES = new Set<Role>([
   Role.QUAN_TRI_HQ,
@@ -18,6 +18,9 @@ export const REPORT_VIEW_ROLES = new Set<Role>([
   Role.KE_TOAN_CHUOI,
   Role.QUAN_LY_CN,
 ]);
+
+/** Chain-level roles: the whole-chain overview is not a per-branch view. */
+export const CHAIN_REPORT_ROLES = new Set<Role>([Role.QUAN_TRI_HQ, Role.CHU_CHUOI, Role.KE_TOAN_CHUOI]);
 
 @Controller("sales/reports")
 export class ReportsController {
@@ -28,6 +31,18 @@ export class ReportsController {
       throw new ForbiddenException("Không có quyền xem báo cáo");
     }
     return { chainWide: req.user.chainWide, branchIds: req.user.branchIds };
+  }
+
+  private chainAccess(req: ScopedRequest) {
+    if (!CHAIN_REPORT_ROLES.has(req.user.role as Role)) {
+      throw new ForbiddenException("Chỉ vai trò cấp chuỗi mới xem được tổng quan chuỗi");
+    }
+    return { chainWide: req.user.chainWide, branchIds: req.user.branchIds };
+  }
+
+  @Get("chain-overview")
+  chainOverview(@Query() query: ChainOverviewQuery, @Request() req: ScopedRequest) {
+    return this.reports.chainOverview(query, this.chainAccess(req));
   }
 
   /** Dashboard KPIs — any authenticated admin user; branch-scoped by the token. */

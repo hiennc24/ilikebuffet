@@ -162,4 +162,24 @@ describe("Revenue report (integration)", () => {
     expect(res.headers["content-disposition"]).toContain(".xlsx");
     await request(app.getHttpServer()).get(`/sales/reports/shift-cash/export?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${cashierToken}`).expect(403);
   });
+
+  // ─── chain-overview (M10 X0) ─────────────────────────────────────────────────
+
+  it("chain-overview: per-branch net + ranking + chain totals", async () => {
+    const res = await request(app.getHttpServer()).get(`/sales/reports/chain-overview?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${hqToken}`).expect(200);
+    // Branch A net = 150k (200−50 refund) + 200k = 350k, 2 bills; Branch B = 300k, 1 bill.
+    expect(res.body.totals.netRevenueVnd).toBe(650_000);
+    expect(res.body.totals.billCount).toBe(3);
+    expect(res.body.totals.branchCount).toBe(2);
+    const rows = res.body.rows as Array<{ branchId: string; netRevenueVnd: number; rank: number; cashVarianceVnd: number }>;
+    expect(rows[0].rank).toBe(1);
+    expect(rows[0].branchId).toBe(branchAId); // 350k ranks above 300k
+    expect(rows[0].netRevenueVnd).toBe(350_000);
+    expect(rows.find((r) => r.branchId === branchAId)?.cashVarianceVnd).toBe(-10_000);
+  });
+
+  it("chain-overview: branch manager and cashier are forbidden (chain-level only)", async () => {
+    await request(app.getHttpServer()).get(`/sales/reports/chain-overview?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${managerAToken}`).expect(403);
+    await request(app.getHttpServer()).get(`/sales/reports/chain-overview?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${cashierToken}`).expect(403);
+  });
 });

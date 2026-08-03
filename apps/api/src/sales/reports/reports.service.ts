@@ -12,7 +12,7 @@ import { roundVnd, sumVnd, toVnDateStr } from "@ilikebuffet/shared";
 import { PrismaService } from "../../prisma/prisma.service";
 import { AuditService } from "../../audit/audit.service";
 import { assertBranchAccess, type BranchAccess } from "../../platform/rbac/branch-access";
-import type { RevenueQuery, ShiftCashQuery, QuarantineQuery, GrossMarginQuery } from "./reports.dto";
+import type { RevenueQuery, ShiftCashQuery, QuarantineQuery, GrossMarginQuery, ChainOverviewQuery } from "./reports.dto";
 
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -355,6 +355,76 @@ export class ReportsService {
       todayGuestCount: completed.reduce((s, b) => s + b.guestCount, 0),
       openShiftCount,
       quarantineOpenCount,
+    };
+  }
+
+  /**
+   * Chain overview — per-branch consolidation + ranking for chain-wide roles.
+   * Net revenue (Σ COMPLETED − refunds), bills, guests, CLOSED-shift cash
+   * variance, and low-stock count, one row per branch, ranked by net revenue,
+   * plus chain totals. Read-only; the controller gates this to chain-level roles.
+   */
+  async chainOverview(query: ChainOverviewQuery, access: BranchAccess) {
+    const businessDate: { gte?: Date; lte?: Date } = {};
+    if (query.from) businessDate.gte = new Date(`${query.from}T00:00:00Z`);
+    if (query.to) businessDate.lte = new Date(`${query.to}T00:00:00Z`);
+    const dateFilter = businessDate.gte || businessDate.lte ? { businessDate } : {};
+    const branchScope = access.chainWide ? {} : { branchId: { in: access.branchIds } };
+
+    const [branches, bills, shifts, balances] = await Promise.all([
+      this.prisma.branch.findMany({
+        where: access.chainWide ? {} : { id: { in: access.branchIds } },
+        select: { id: true, code: true, name: true },
+      }),
+      this.prisma.bill.findMany({
+        where: { ...branchScope, ...dateFilter },
+        select: { branchId: true, status: true, totalVnd: true, guestCount: true, refunds: { select: { amountVnd: true } } },
+      }),
+      this.prisma.shift.findMany({
+        where: { status: "CLOSED", ...branchScope, ...dateFilter },
+        select: { branchId: true, varianceVnd: true },
+      }),
+      this.prisma.inventoryBalance.findMany({
+        where: branchScope,
+        select: { branchId: true, qtyBase: true, ingredient: { select: { defaultMinStock: true } } },
+      }),
+    ]);
+
+    type Row = { branchId: string; code: string; name: string; netRevenueVnd: number; billCount: number; guestCount: number; cashVarianceVnd: number; lowStockCount: number };
+    const rows = new Map<string, Row>();
+    for (const b of branches) {
+      rows.set(b.id, { branchId: b.id, code: b.code, name: b.name, netRevenueVnd: 0, billCount: 0, guestCount: 0, cashVarianceVnd: 0, lowStockCount: 0 });
+    }
+    const ensure = (branchId: string): Row =>
+      rows.get(branchId) ?? rows.set(branchId, { branchId, code: branchId, name: branchId, netRevenueVnd: 0, billCount: 0, guestCount: 0, cashVarianceVnd: 0, lowStockCount: 0 }).get(branchId)!;
+
+    for (const b of bills) {
+      if (b.status !== "COMPLETED") continue;
+      const r = ensure(b.branchId);
+      const net = b.totalVnd - sumVnd(b.refunds.map((x) => x.amountVnd));
+      r.netRevenueVnd = sumVnd([r.netRevenueVnd, net]);
+      r.billCount += 1;
+      r.guestCount += b.guestCount;
+    }
+    for (const s of shifts) ensure(s.branchId).cashVarianceVnd += s.varianceVnd ?? 0;
+    for (const bal of balances) {
+      if (Number(bal.qtyBase) < Number(bal.ingredient.defaultMinStock)) ensure(bal.branchId).lowStockCount += 1;
+    }
+
+    const ranked = [...rows.values()]
+      .sort((a, b) => b.netRevenueVnd - a.netRevenueVnd)
+      .map((r, i) => ({ ...r, rank: i + 1 }));
+
+    return {
+      totals: {
+        netRevenueVnd: sumVnd(ranked.map((r) => r.netRevenueVnd)),
+        billCount: ranked.reduce((s, r) => s + r.billCount, 0),
+        guestCount: ranked.reduce((s, r) => s + r.guestCount, 0),
+        cashVarianceVnd: ranked.reduce((s, r) => s + r.cashVarianceVnd, 0),
+        lowStockCount: ranked.reduce((s, r) => s + r.lowStockCount, 0),
+        branchCount: ranked.length,
+      },
+      rows: ranked,
     };
   }
 

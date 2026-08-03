@@ -2,9 +2,15 @@
 title: "M10 — Multi-branch & BI chuỗi"
 slug: m10-multibranch-chain-bi
 created: 2026-08-03
-status: planned
+status: in-progress
 priority: P1
 mode: --tdd
+
+decisions:
+  - transfer: atomic immediate (ISSUE source + RECEIPT dest in one tx, no in-transit)
+  - transfer-roles: chain-wide OR branch manager with access to BOTH branches
+  - chain-dashboard: chain-wide roles only (QUAN_TRI_HQ/CHU_CHUOI/KE_TOAN_CHUOI)
+  - transfer-cost: carry source moving-average cost to destination (blend at dest)
 ---
 
 # M10 — Multi-branch & BI chuỗi
