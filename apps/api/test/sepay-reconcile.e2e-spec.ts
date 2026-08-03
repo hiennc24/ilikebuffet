@@ -153,11 +153,35 @@ describe("Sepay auto-reconcile (integration)", () => {
     await expect(service.matchToBill(tx!.id, bill.id, "mgr", HQ)).rejects.toBeInstanceOf(ConflictException);
   });
 
+  it("does not confirm two bills from one transfer under concurrent manual match (C1)", async () => {
+    // One unmatched transfer, two unpaid bills at the same total.
+    const a = await makeBill("CN01-260803-0100", 130_000);
+    const b = await makeBill("CN01-260803-0101", 130_000);
+    const pid = await webhook("khong ro", 130_000);
+    const tx = await txByProviderId(pid);
+
+    // Fire both matches concurrently; the FOR UPDATE lock must let only one win.
+    const results = await Promise.allSettled([
+      service.matchToBill(tx!.id, a.id, "m1", HQ),
+      service.matchToBill(tx!.id, b.id, "m2", HQ),
+    ]);
+    const fulfilled = results.filter((r) => r.status === "fulfilled").length;
+    expect(fulfilled).toBe(1);
+
+    // Exactly one bill is paid; the transfer is MATCHED to exactly that one.
+    const paidCount = [await billById(a.id), await billById(b.id)].filter((x) => x?.paidAt).length;
+    expect(paidCount).toBe(1);
+    const finalTx = await txByProviderId(pid);
+    expect(finalTx?.status).toBe("MATCHED");
+    const payments = (await billById(a.id))!.payments.length + (await billById(b.id))!.payments.length;
+    expect(payments).toBe(1);
+  });
+
   it("ignores a transfer", async () => {
     const pid = await webhook("tien chuyen nham", 12_000);
     const tx = await txByProviderId(pid);
     const updated = await service.ignore(tx!.id, "không phải thanh toán", "mgr");
-    expect(updated.status).toBe("IGNORED");
-    expect(updated.note).toBe("không phải thanh toán");
+    expect(updated?.status).toBe("IGNORED");
+    expect(updated?.note).toBe("không phải thanh toán");
   });
 });

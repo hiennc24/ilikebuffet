@@ -11,6 +11,7 @@ import { Body, Controller, ForbiddenException, Get, Param, Put, Query, Request }
 import { RecipesService } from "./recipes.service";
 import { Unscoped } from "../../platform/rbac/decorators";
 import { Role } from "../../platform/rbac/role.enum";
+import { assertBranchAccess } from "../../platform/rbac/branch-access";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
 import type { SetRecipeDto, RecipeListQuery } from "./recipes.dto";
 
@@ -25,7 +26,12 @@ export class RecipesController {
   constructor(private readonly service: RecipesService) {}
 
   @Get()
-  list(@Query() query: RecipeListQuery) {
+  list(@Query() query: RecipeListQuery, @Request() req: ScopedRequest) {
+    // @Unscoped skips the guard; a branch override read must still be in scope.
+    // The chain-wide default (no branchId) is readable config for any user.
+    if (query.branchId) {
+      assertBranchAccess({ chainWide: req.user.chainWide, branchIds: req.user.branchIds }, query.branchId);
+    }
     return this.service.list(query.ticketTypeId, query.branchId);
   }
 

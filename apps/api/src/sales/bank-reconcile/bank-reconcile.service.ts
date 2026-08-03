@@ -95,21 +95,30 @@ export class BankReconcileService {
     const matches = candidates.filter((b) => memo.includes(normalize(b.number)));
     if (matches.length !== 1) return; // none or ambiguous → manual review
 
-    await this.applyPayment(tx, matches[0].id, bankTx, SYSTEM_ACTOR, "sepay-auto");
+    await this.applyPayment(tx, matches[0].id, bankTx.id, SYSTEM_ACTOR, "sepay-auto");
   }
 
   /**
-   * Pay `billId` from `bankTx` and mark the transaction MATCHED, all in `tx`.
-   * Re-reads the bill to fail closed on a concurrent payment. Returns false if
-   * the bill can no longer be paid.
+   * Pay `billId` from bank transaction `bankTxId` and mark the transaction
+   * MATCHED, all in `tx`. Locks the bank-transaction row FOR UPDATE and re-checks
+   * its status INSIDE the transaction so two concurrent matches of the same
+   * transfer can't confirm two bills (C1); also re-reads the bill to fail closed
+   * on a concurrent payment. Returns false if it can no longer be applied.
    */
   private async applyPayment(
     tx: TxClient,
     billId: string,
-    bankTx: BankTx,
+    bankTxId: string,
     actorId: string,
     source: string,
   ): Promise<boolean> {
+    // Serialize on the bank-transaction row; only proceed if still UNMATCHED.
+    const locked = await tx.$queryRaw<
+      Array<{ status: string; amountVnd: number; referenceCode: string | null; providerTxId: string }>
+    >`SELECT "status", "amountVnd", "referenceCode", "providerTxId" FROM "bank_transaction" WHERE "id" = ${bankTxId} FOR UPDATE`;
+    const bankTx = locked[0];
+    if (!bankTx || bankTx.status !== "UNMATCHED") return false;
+
     const bill = await tx.bill.findUnique({ where: { id: billId } });
     if (!bill || bill.status !== "COMPLETED" || bill.paidAt) return false;
     if (bill.totalVnd !== bankTx.amountVnd) return false;
@@ -125,7 +134,7 @@ export class BankReconcileService {
     });
     await tx.bill.update({ where: { id: billId }, data: { paidAt } });
     await tx.bankTransaction.update({
-      where: { id: bankTx.id },
+      where: { id: bankTxId },
       data: { status: "MATCHED", matchedBillId: billId, branchId: bill.branchId },
     });
 
@@ -141,7 +150,7 @@ export class BankReconcileService {
     await this.audit.record(tx, {
       action: "bank.reconcile",
       objectType: "bank_transaction",
-      objectId: bankTx.id,
+      objectId: bankTxId,
       actorId,
       branchId: bill.branchId,
       after: { billId, source },
@@ -225,8 +234,10 @@ export class BankReconcileService {
     if (bill.totalVnd !== bankTx.amountVnd) throw new BadRequestException("Số tiền không khớp tổng bill");
 
     return this.prisma.withTx(async (tx) => {
-      const ok = await this.applyPayment(tx, billId, bankTx, actorId, "manual");
-      if (!ok) throw new ConflictException("Bill đã thanh toán");
+      // applyPayment locks + re-checks the bankTx status inside the tx (the outer
+      // checks above are best-effort UX; this is the authoritative guard).
+      const ok = await this.applyPayment(tx, billId, bankTxId, actorId, "manual");
+      if (!ok) throw new ConflictException("Giao dịch hoặc bill đã được xử lý");
       return tx.bankTransaction.findUnique({ where: { id: bankTxId } });
     });
   }
@@ -235,13 +246,15 @@ export class BankReconcileService {
   async ignore(bankTxId: string, note: string, actorId: string) {
     const bankTx = await this.prisma.bankTransaction.findUnique({ where: { id: bankTxId } });
     if (!bankTx) throw new NotFoundException("Không tìm thấy giao dịch");
-    if (bankTx.status === "MATCHED") throw new ConflictException("Giao dịch đã đối soát");
 
     return this.prisma.withTx(async (tx) => {
-      const updated = await tx.bankTransaction.update({
-        where: { id: bankTxId },
+      // Conditional update: only an UNMATCHED transfer can be ignored. A
+      // concurrent auto-match that already MATCHED it yields 0 rows → conflict.
+      const res = await tx.bankTransaction.updateMany({
+        where: { id: bankTxId, status: "UNMATCHED" },
         data: { status: "IGNORED", note: note || null },
       });
+      if (res.count === 0) throw new ConflictException("Giao dịch đã đối soát");
       await this.audit.record(tx, {
         action: "bank.reconcile.ignore",
         objectType: "bank_transaction",
@@ -249,7 +262,7 @@ export class BankReconcileService {
         actorId,
         reason: note || undefined,
       });
-      return updated;
+      return tx.bankTransaction.findUnique({ where: { id: bankTxId } });
     });
   }
 }
