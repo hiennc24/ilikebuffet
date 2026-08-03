@@ -32,6 +32,7 @@ import { OrdersPage } from "./pages/orders-page";
 import { BranchesPage } from "./pages/branches-page";
 import { SuppliersPage } from "./pages/suppliers-page";
 import { UsersPage } from "./pages/users-page";
+import { PermissionsPage } from "./pages/permissions-page";
 import { AuditPage } from "./pages/audit-page";
 import { DevicesPage } from "./pages/devices-page";
 import { HolidaysPage } from "./pages/holidays-page";
@@ -182,6 +183,16 @@ export function App() {
                         <RequireAccess path="/settings/users">
                           <ShellLayout pageTitle="Người dùng & vai trò">
                             <UsersPage />
+                          </ShellLayout>
+                        </RequireAccess>
+                      }
+                    />
+                    <Route
+                      path="/settings/permissions"
+                      element={
+                        <RequireAccess path="/settings/permissions">
+                          <ShellLayout pageTitle="Vai trò & phân quyền">
+                            <PermissionsPage />
                           </ShellLayout>
                         </RequireAccess>
                       }

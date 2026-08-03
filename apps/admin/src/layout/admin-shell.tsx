@@ -230,6 +230,12 @@ const SYSTEM_ITEMS: NavItem[] = [
       "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z",
   },
   {
+    id: "permissions",
+    label: "Vai trò & phân quyền",
+    path: "/settings/permissions",
+    iconPath: "M12 2l7 4v6c0 5-3 8-7 10-4-2-7-5-7-10V6zM9.5 12l1.8 1.8L15 10",
+  },
+  {
     id: "log",
     label: "Nhật ký",
     path: "/settings/log",

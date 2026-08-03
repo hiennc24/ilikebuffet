@@ -30,6 +30,7 @@ export const RESTRICTED_SCREENS: Record<string, readonly string[]> = {
   "/settings/branches": ["QUAN_TRI_HQ", "CHU_CHUOI"],
   "/master-data/suppliers": ["QUAN_TRI_HQ", "CHU_CHUOI", "QUAN_LY_CN"],
   "/settings/users": ["QUAN_TRI_HQ", "QUAN_LY_CN"],
+  "/settings/permissions": ["QUAN_TRI_HQ", "QUAN_LY_CN"],
   "/settings/log": ["QUAN_TRI_HQ", "QUAN_LY_CN"],
   "/devices": ["QUAN_TRI_HQ", "CHU_CHUOI", "QUAN_LY_CN"],
   "/master-data/holidays": ["QUAN_TRI_HQ"],

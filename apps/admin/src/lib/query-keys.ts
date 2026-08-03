@@ -107,4 +107,5 @@ export const QUERY_KEYS = {
   dashboardReport: () => ["report-dashboard"] as const,
   payableAging: () => ["report-payable-aging"] as const,
   payableDueSoon: () => ["report-payable-due-soon"] as const,
+  rbacCapabilities: () => ["rbac-capabilities"] as const,
 } as const;

@@ -33,6 +33,7 @@ export default defineConfig({
         "/inventory",
         "/users",
         "/platform",
+        "/rbac",
       ].map((p) => [
         p,
         {
