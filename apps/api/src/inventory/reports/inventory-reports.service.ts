@@ -10,6 +10,7 @@ import { Prisma } from "@prisma/client";
 import { roundVnd, sumVnd } from "@ilikebuffet/shared";
 import { PrismaService } from "../../prisma/prisma.service";
 import type { BranchAccess } from "../../platform/rbac/branch-access";
+import { fifoCogs, type FifoMovement } from "./fifo-cogs";
 
 export interface ValuationQuery {
   branchId?: string;
@@ -20,6 +21,10 @@ export interface ConsumptionQuery {
   from?: string;
   to?: string;
 }
+
+export type FifoCogsQuery = ConsumptionQuery;
+
+const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 
 @Injectable()
 export class InventoryReportsService {
@@ -118,5 +123,67 @@ export class InventoryReportsService {
       totalCogsVnd,
       byIngredient: [...byIngredient.values()].sort((a, b) => b.cogsVnd - a.cogsVnd),
     };
+  }
+
+  /**
+   * Actual per-lot (FIFO) cost of goods SOLD over a period — an alternative to
+   * the moving-average COGS above. The whole ledger is replayed per (branch,
+   * ingredient) so lot state is correct when the window is reached; only sales
+   * whose bill business-day falls in [from, to] are summed. Moving-average and
+   * on-hand balances are unaffected.
+   */
+  async fifoCogs(query: FifoCogsQuery, access: BranchAccess) {
+    const where: Prisma.StockMovementWhereInput = {
+      ...(access.chainWide ? {} : { branchId: { in: access.branchIds } }),
+      ...(query.branchId ? { branchId: query.branchId } : {}),
+    };
+
+    const moves = await this.prisma.stockMovement.findMany({
+      where,
+      orderBy: { createdAt: "asc" },
+      select: { branchId: true, ingredientId: true, type: true, qtyBase: true, unitCostVnd: true, refType: true, refId: true },
+    });
+
+    // Resolve the business day of every sale/reversal bill (for the COGS bucket).
+    const billIds = [
+      ...new Set(
+        moves.filter((m) => m.refId && (m.refType === "BILL" || m.refType === "BILL_REVERSAL")).map((m) => m.refId as string),
+      ),
+    ];
+    const dayByBill = new Map<string, string>();
+    if (billIds.length > 0) {
+      const bills = await this.prisma.bill.findMany({ where: { id: { in: billIds } }, select: { id: true, businessDate: true } });
+      for (const b of bills) dayByBill.set(b.id, dayKey(b.businessDate));
+    }
+
+    // Group by (branch, ingredient); movements keep their global createdAt order.
+    const groups = new Map<string, FifoMovement[]>();
+    for (const m of moves) {
+      const list = groups.get(`${m.branchId}:${m.ingredientId}`) ?? [];
+      list.push({
+        type: m.type,
+        qtyBase: Number(m.qtyBase),
+        unitCostVnd: m.unitCostVnd,
+        refType: m.refType,
+        dayKey: m.refType === "BILL" && m.refId ? dayByBill.get(m.refId) ?? null : null,
+      });
+      groups.set(`${m.branchId}:${m.ingredientId}`, list);
+    }
+
+    const byDay = new Map<string, number>();
+    for (const list of groups.values()) {
+      const r = fifoCogs(list);
+      for (const [day, cogs] of Object.entries(r.byDay)) {
+        byDay.set(day, sumVnd([byDay.get(day) ?? 0, cogs]));
+      }
+    }
+
+    const inRange = (d: string) => (!query.from || d >= query.from) && (!query.to || d <= query.to);
+    const rows = [...byDay.entries()]
+      .filter(([d]) => inRange(d))
+      .map(([day, cogsVnd]) => ({ day, cogsVnd }))
+      .sort((a, b) => (a.day < b.day ? 1 : -1));
+
+    return { totalCogsVnd: sumVnd(rows.map((r) => r.cogsVnd)), byDay: rows };
   }
 }

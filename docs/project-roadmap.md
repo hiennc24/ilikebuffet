@@ -96,7 +96,15 @@ memo; zero/ambiguous/already-paid go to a chain-level review screen
 (`/reports/bank-reconcile`) for manual match-by-number or ignore. Plan:
 `plans/260803-1147-m8-vietqr-reconcile/`.
 
-## M9+ — Backlog (not started)
+## M9 — Giá vốn thực tế theo lô (FIFO) ✅ done
 
-- **Giá vốn thực tế:** actual issue cost (per-lot) instead of estimated recipe COGS.
+Actual per-lot (FIFO) cost of goods sold, computed by replaying the StockMovement
+ledger (RECEIPT rows are the lots) — no new table, no outflow hooking, and the
+moving-average balance/on-hand valuation is untouched. Exposed at
+`GET /inventory/reports/fifo-cogs` (period + branch, view-gated) and shown on the
+gross-margin screen next to the moving-average estimate. Plan:
+`plans/260803-1215-m9-fifo-cogs/`.
+
+## M10+ — Backlog (not started)
+
 - Small carry-overs: shift-cash xlsx export; system-architecture doc.

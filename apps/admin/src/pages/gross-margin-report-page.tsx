@@ -51,6 +51,16 @@ export const GrossMarginReportPage: React.FC = () => {
     params: { ...filter, groupBy },
   });
 
+  // Actual per-lot (FIFO) cost of goods for the same window — shown next to the
+  // moving-average estimate for comparison.
+  const fifo = useQuery({
+    queryKey: ["inventory-fifo-cogs", filter.from, filter.to, filter.branchId],
+    queryFn: () =>
+      api.get<{ totalCogsVnd: number }>(
+        `/inventory/reports/fifo-cogs?from=${filter.from}&to=${filter.to}${filter.branchId ? `&branchId=${filter.branchId}` : ""}`,
+      ),
+  });
+
   const patch = (p: Partial<typeof filter>) => setFilter((f) => ({ ...f, ...p }));
 
   const [exporting, setExporting] = React.useState(false);
@@ -106,7 +116,8 @@ export const GrossMarginReportPage: React.FC = () => {
           <>
             <KpiRow>
               <KpiCard label="Doanh thu thuần" value={formatVnd(data.totals.netRevenueVnd)} />
-              <KpiCard label="Giá vốn (ước tính)" value={formatVnd(data.totals.cogsVnd)} />
+              <KpiCard label="Giá vốn (TB ước tính)" value={formatVnd(data.totals.cogsVnd)} />
+              <KpiCard label="Giá vốn (FIFO thực tế)" value={fifo.data ? formatVnd(fifo.data.totalCogsVnd) : "…"} />
               <KpiCard label="Lãi gộp" value={formatVnd(data.totals.grossProfitVnd)} />
               <KpiCard label="%Biên gộp" value={`${data.totals.marginPct.toFixed(1)}%`} />
             </KpiRow>

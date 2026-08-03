@@ -2,7 +2,7 @@
 title: "M9 — Giá vốn thực tế theo lô (FIFO, song song)"
 slug: m9-fifo-cogs
 created: 2026-08-03
-status: planned
+status: done
 priority: P1
 mode: --tdd
 
@@ -39,8 +39,8 @@ KHÔNG cần bảng lô riêng, KHÔNG hook outflow, KHÔNG đổi InventoryBala
 
 | Phase | Tên | Nội dung | Phụ thuộc | Status |
 |-------|-----|----------|-----------|--------|
-| L0 | [FIFO engine](./phase-l0-engine.md) | hàm FIFO thuần (replay movements → COGS bán theo lô) + unit tests | — | planned |
-| L1 | [Report + FE](./phase-l1-report-fe.md) | endpoint FIFO COGS theo kỳ/chi nhánh (so với moving-avg) + hiển thị ở lãi gộp + docs + verify | L0 | planned |
+| L0 | [FIFO engine](./phase-l0-engine.md) | hàm FIFO thuần (replay movements → COGS bán theo lô) + unit tests | — | ✅ done |
+| L1 | [Report + FE](./phase-l1-report-fe.md) | endpoint FIFO COGS theo kỳ/chi nhánh (so với moving-avg) + hiển thị ở lãi gộp + docs + verify | L0 | ✅ done |
 
 ## Acceptance
 - FIFO COGS đúng qua ví dụ nhiều lô (giá khác nhau) — khớp tay.

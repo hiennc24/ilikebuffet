@@ -20,6 +20,7 @@ function makeFetch(seen: string[] = []) {
     seen.push(path);
     const json = (b: unknown) => new Response(JSON.stringify(b), { status: 200, headers: { "Content-Type": "application/json" } });
     if (path.startsWith("/sales/reports/gross-margin")) return json(REPORT);
+    if (path.startsWith("/inventory/reports/fifo-cogs")) return json({ totalCogsVnd: 111_000, byDay: [] });
     if (path.startsWith("/branches")) return json({ data: [{ id: "b1", code: "CN01" }] });
     return json({});
   }) as typeof globalThis.fetch;
@@ -55,6 +56,9 @@ describe("GrossMarginReportPage", () => {
     expect(screen.getAllByText(/520\.000/).length).toBeGreaterThanOrEqual(1);
     // 80% margin appears in both the KPI and the row.
     expect(screen.getAllByText(/80\.0%/).length).toBeGreaterThanOrEqual(1);
+    // FIFO actual-cost KPI loads alongside the moving-average estimate.
+    await waitFor(() => expect(screen.getByText(/111\.000/)).toBeTruthy());
+    expect(screen.getByText("Giá vốn (FIFO thực tế)")).toBeTruthy();
   });
 
   it("passes groupBy to the request", async () => {
