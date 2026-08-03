@@ -41,6 +41,8 @@ import { ShiftsController } from "./shifts/shifts.controller";
 
 import { ReportsService } from "./reports/reports.service";
 import { ReportsController } from "./reports/reports.controller";
+import { FinanceService } from "./finance/finance.service";
+import { FinanceController } from "./finance/finance.controller";
 
 @Module({
   imports: [PrismaModule, AuditModule, MasterDataModule, InventoryModule],
@@ -59,6 +61,7 @@ import { ReportsController } from "./reports/reports.controller";
     SyncController,
     PaymentsController,
     ReportsController,
+    FinanceController,
   ],
   providers: [
     TicketTypesService,
@@ -70,6 +73,7 @@ import { ReportsController } from "./reports/reports.controller";
     SyncService,
     PaymentsService,
     ReportsService,
+    FinanceService,
   ],
   exports: [TicketTypesService, PricingService, DiscountsService, BillNumberService, BillsService, SyncService, PaymentsService],
 })

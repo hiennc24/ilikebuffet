@@ -41,6 +41,7 @@ const ROLE_CAPABILITIES: Record<Role, Set<Capability>> = {
     "chain:dashboard:read",
     "branch:dashboard:read",
     "cash:read",
+    "cash:create-voucher",
     "inventory:read",
   ]),
 
@@ -49,6 +50,7 @@ const ROLE_CAPABILITIES: Record<Role, Set<Capability>> = {
     "chain:dashboard:read",
     "branch:dashboard:read",
     "cash:read",
+    "cash:create-voucher",
     "inventory:read",
   ]),
 
@@ -58,6 +60,7 @@ const ROLE_CAPABILITIES: Record<Role, Set<Capability>> = {
     "cash:reconcile",
     "cash:close-book",
     "cash:read",
+    "cash:create-voucher",
     "inventory:read",
   ]),
 
@@ -66,6 +69,7 @@ const ROLE_CAPABILITIES: Record<Role, Set<Capability>> = {
     "shift:assist",
     "discount:approve",
     "bill:cancel",
+    "cash:read",
     "cash:create-voucher",
     "purchase-order:approve",
   ]),

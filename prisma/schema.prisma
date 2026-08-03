@@ -814,6 +814,30 @@ model StockMovement {
   @@map("stock_movement")
 }
 
+/// Income/expense entry (phiếu thu-chi) against the chart of accounts (E3). The
+/// account's flow is snapshotted; over account.approvalThresholdVnd needs a
+/// manager PIN (approvedBy set). supplierId links a supplier payment (F2). Scalar
+/// FKs (resolved to names in the service), like shift.branchId.
+model FinancialTransaction {
+  id         String        @id @default(cuid())
+  code       String        @unique
+  branchId   String
+  accountId  String
+  flow       AccountFlow
+  amountVnd  Int
+  method     PaymentMethod
+  occurredAt DateTime      @db.Timestamptz(3)
+  note       String?
+  supplierId String?
+  createdBy  String
+  approvedBy String?
+  createdAt  DateTime      @default(now()) @db.Timestamptz(3)
+
+  @@index([branchId, occurredAt])
+  @@index([accountId])
+  @@map("financial_transaction")
+}
+
 /// Inter-branch stock transfer (điều chuyển kho) — M10. Atomic: on create, each
 /// line issues from the source and receives into the destination in one tx,
 /// carrying the source's moving-average cost. The two legs are StockMovements
