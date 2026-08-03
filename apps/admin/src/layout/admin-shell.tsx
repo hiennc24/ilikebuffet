@@ -260,6 +260,13 @@ export const AdminShell: React.FC<AdminShellProps> = ({
           flexDirection: "column",
           background: "var(--sidebar-bg, #FFFFFF)",
           borderRight: "1px solid var(--border-subtle)",
+          // Pin to the viewport and cap height so the nav (flex:1, overflowY:auto)
+          // scrolls internally when the item list is taller than the screen,
+          // instead of the whole sidebar growing and pushing items off-screen.
+          height: "100vh",
+          position: "sticky",
+          top: 0,
+          alignSelf: "flex-start",
         }}
       >
         {/* Brand */}
