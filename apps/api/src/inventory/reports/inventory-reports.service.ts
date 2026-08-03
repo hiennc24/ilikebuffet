@@ -15,6 +15,12 @@ export interface ValuationQuery {
   branchId?: string;
 }
 
+export interface ConsumptionQuery {
+  branchId?: string;
+  from?: string;
+  to?: string;
+}
+
 @Injectable()
 export class InventoryReportsService {
   constructor(private readonly prisma: PrismaService) {}
@@ -64,6 +70,53 @@ export class InventoryReportsService {
       byGroup: [...byGroup.entries()]
         .map(([group, valueVnd]) => ({ group, valueVnd }))
         .sort((a, b) => b.valueVnd - a.valueVnd),
+    };
+  }
+
+  /**
+   * Estimated cost of goods sold over a period: net sale-driven movements
+   * (ISSUE refType "BILL" minus "BILL_REVERSAL"), valued at each movement's
+   * cost. Signed sums net out bills cancelled within the window.
+   */
+  async consumption(query: ConsumptionQuery, access: BranchAccess) {
+    const createdAt: { gte?: Date; lte?: Date } = {};
+    if (query.from) createdAt.gte = new Date(`${query.from}T00:00:00Z`);
+    if (query.to) createdAt.lte = new Date(`${query.to}T23:59:59Z`);
+
+    const where: Prisma.StockMovementWhereInput = {
+      refType: { in: ["BILL", "BILL_REVERSAL"] },
+      ...(access.chainWide ? {} : { branchId: { in: access.branchIds } }),
+      ...(query.branchId ? { branchId: query.branchId } : {}),
+      ...(createdAt.gte || createdAt.lte ? { createdAt } : {}),
+    };
+
+    const rows = await this.prisma.stockMovement.findMany({
+      where,
+      include: { ingredient: { select: { name: true, unit: { select: { code: true } } } } },
+    });
+
+    const byIngredient = new Map<
+      string,
+      { ingredientId: string; name: string; unitCode: string; consumedQtyBase: number; cogsVnd: number }
+    >();
+    let totalCogsVnd = 0;
+
+    for (const m of rows) {
+      const qty = Number(m.qtyBase); // negative = consumed, positive = returned
+      const cost = m.unitCostVnd ?? 0;
+      const value = roundVnd(qty * cost); // integer đồng; qty fractional, cost integer VND
+      const cur =
+        byIngredient.get(m.ingredientId) ??
+        { ingredientId: m.ingredientId, name: m.ingredient.name, unitCode: m.ingredient.unit.code, consumedQtyBase: 0, cogsVnd: 0 };
+      cur.consumedQtyBase = Math.round((cur.consumedQtyBase - qty) * 1000) / 1000; // net consumed (positive)
+      cur.cogsVnd = sumVnd([cur.cogsVnd, -value]);
+      byIngredient.set(m.ingredientId, cur);
+      totalCogsVnd = sumVnd([totalCogsVnd, -value]);
+    }
+
+    return {
+      totalCogsVnd,
+      byIngredient: [...byIngredient.values()].sort((a, b) => b.cogsVnd - a.cogsVnd),
     };
   }
 }

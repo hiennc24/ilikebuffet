@@ -56,10 +56,21 @@ negative; `balance == Σ movements` holds. Branch-scoped + role-gated (warehouse
 branch manager + chain admins; chain accountant reads valuation). Plan:
 `plans/260802-0618-m4-inventory/`.
 
-## M5+ — Backlog (not started)
+## M5 — Định mức (BOM) & tự trừ kho khi bán ✅ done
 
-- **Định lượng món (BOM) + tự trừ kho khi bán:** recipe consumption deducts stock
-  automatically on each sale (split from M4).
+Per-ticket-type ingredient recipe (`ticket_type_recipe`, chain-wide) managed under
+`inventory/recipes`. Selling a ticket auto-deducts Σ(recipe × ticket qty) from the
+bill's branch stock — hooked into both online create and offline sync — and
+cancelling a bill restores it (idempotent, driven by the movement ledger, not the
+recipe). Sale-consumption never blocks a sale (on-hand may go negative — recipes
+are estimates) and leaves moving-average cost unchanged; refunds don't touch stock.
+Adds an estimated-COGS consumption report (net of cancellations). Plan:
+`plans/260803-0926-m5-bom-consumption/`.
+
+## M6+ — Backlog (not started)
+
+- **Định mức theo chi nhánh (override):** per-branch recipe overrides.
+- **Lãi gộp:** ghép doanh thu (M3) với giá vốn tiêu hao (M5) → báo cáo lãi gộp.
 - **Tự động hoá thanh toán:** VietQR auto-reconcile (webhook), replacing manual
   payment confirmation.
 - Small carry-overs: shift-cash xlsx export; system-architecture doc.

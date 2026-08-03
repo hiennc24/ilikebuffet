@@ -136,8 +136,69 @@ export const StockPage: React.FC = () => {
         )}
       </Card>
 
+      <ConsumptionCard />
+
       <StockDrawer row={selected} onClose={() => setSelected(null)} />
     </PageStack>
+  );
+};
+
+// ── Consumption / COGS (period) ─────────────────────────────────────────────
+
+interface Consumption {
+  totalCogsVnd: number;
+  byIngredient: { ingredientId: string; name: string; unitCode: string; consumedQtyBase: number; cogsVnd: number }[];
+}
+
+const monthStart = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`;
+};
+const today = () => new Date().toISOString().slice(0, 10);
+
+const ConsumptionCard: React.FC = () => {
+  const { api } = useAuth();
+  const [from, setFrom] = React.useState(monthStart);
+  const [to, setTo] = React.useState(today);
+
+  const q = useQuery({
+    queryKey: ["inventory-consumption", from, to],
+    queryFn: () => api.get<Consumption>(`/inventory/reports/consumption?from=${from}&to=${to}`),
+  });
+
+  return (
+    <Card title="Tiêu hao & giá vốn (kỳ)" description="Giá vốn hàng bán ước tính theo định mức, đã trừ bill đã huỷ.">
+      <FilterBar>
+        <label style={{ display: "flex", flexDirection: "column", gap: "4px", fontSize: "var(--text-xs)", color: "var(--text-muted)" }}>
+          Từ ngày
+          <input type="date" aria-label="Từ ngày" value={from} onChange={(e) => setFrom(e.target.value)} />
+        </label>
+        <label style={{ display: "flex", flexDirection: "column", gap: "4px", fontSize: "var(--text-xs)", color: "var(--text-muted)" }}>
+          Đến ngày
+          <input type="date" aria-label="Đến ngày" value={to} onChange={(e) => setTo(e.target.value)} />
+        </label>
+      </FilterBar>
+
+      {q.isLoading ? (
+        <LoadingState />
+      ) : q.isError ? (
+        <ErrorState message={toErrorMessage(q.error, "Không tải được tiêu hao")} />
+      ) : (
+        <>
+          <KpiRow>
+            <KpiCard label="Giá vốn tiêu hao" value={formatVnd(q.data?.totalCogsVnd ?? 0)} />
+          </KpiRow>
+          <div style={{ marginTop: "var(--space-3)" }}>
+            {(q.data?.byIngredient ?? []).slice(0, 10).map((r) => (
+              <Row key={r.ingredientId} label={`${r.name} · ${fmtQty(r.consumedQtyBase)} ${r.unitCode}`} value={formatVnd(r.cogsVnd)} />
+            ))}
+            {(q.data?.byIngredient.length ?? 0) === 0 && (
+              <span style={{ color: "var(--text-muted)", fontSize: "var(--text-sm)" }}>Chưa có tiêu hao trong kỳ.</span>
+            )}
+          </div>
+        </>
+      )}
+    </Card>
   );
 };
 

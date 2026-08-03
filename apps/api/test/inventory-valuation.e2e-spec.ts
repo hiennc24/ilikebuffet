@@ -82,4 +82,24 @@ describe("inventory valuation (integration)", () => {
     expect(v.totalValueVnd).toBe(0);
     expect(v.itemCount).toBe(0);
   });
+
+  it("reports net COGS from sale movements and nets out reversals", async () => {
+    const beef = await prisma.ingredient.findFirst({ where: { name: "Ba chỉ bò" } });
+    const beefId = beef!.id;
+    // Two consumption ISSUEs (0.5 + 0.3 kg @ 20000) and one reversal (+0.3).
+    await prisma.stockMovement.createMany({
+      data: [
+        { branchId: BRANCH, ingredientId: beefId, type: "ISSUE", qtyBase: -0.5, unitCostVnd: 20_000, refType: "BILL", refId: "b1", createdBy: "c" },
+        { branchId: BRANCH, ingredientId: beefId, type: "ISSUE", qtyBase: -0.3, unitCostVnd: 20_000, refType: "BILL", refId: "b2", createdBy: "c" },
+        { branchId: BRANCH, ingredientId: beefId, type: "RECEIPT", qtyBase: 0.3, unitCostVnd: 20_000, refType: "BILL_REVERSAL", refId: "b2", createdBy: "c" },
+      ],
+    });
+
+    const r = await reports.consumption({}, HQ);
+    const beefRow = r.byIngredient.find((i) => i.ingredientId === beefId);
+    // Net consumed = 0.5 (b2 cancelled out); COGS = 0.5 × 20000 = 10000.
+    expect(beefRow?.consumedQtyBase).toBeCloseTo(0.5, 3);
+    expect(beefRow?.cogsVnd).toBe(10_000);
+    expect(r.totalCogsVnd).toBe(10_000);
+  });
 });

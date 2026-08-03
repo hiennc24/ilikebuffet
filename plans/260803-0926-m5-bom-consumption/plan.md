@@ -2,9 +2,15 @@
 title: "M5 — Định mức món (BOM) & tự trừ kho khi bán"
 slug: m5-bom-consumption
 created: 2026-08-03
-status: planned
+status: done
 priority: P1
 mode: --tdd
+
+decisions:
+  - recipe-scope: chain-wide per ticket type (branch override deferred to M6)
+  - insufficient-stock: allow negative on-hand + warn (never block a sale)
+  - reversal: cancel bill restores stock (idempotent); refund does not
+  - free-tickets: consume stock (guests still eat)
 ---
 
 # M5 — Định mức (BOM) & tự trừ kho khi bán
@@ -37,10 +43,10 @@ tính lại từ định mức, an toàn khi định mức đổi giữa lúc b�
 
 | Phase | Tên | Nội dung | Phụ thuộc | Status |
 |-------|-----|----------|-----------|--------|
-| B0 | [Foundation](./phase-b0-foundation.md) | schema `TicketTypeRecipe` + migration + `applyConsumption` (allow-negative, avg giữ nguyên) + `RecipeConsumptionService` + export | — | planned |
-| B1 | [Định mức CRUD](./phase-b1-recipe-crud.md) | recipe CRUD backend + màn "Định mức theo loại vé" | B0 | planned |
-| B2 | [Tự trừ/hoàn kho](./phase-b2-auto-consume.md) | hook consume vào create + sync; reverse khi hủy; e2e | B0 | planned |
-| B3 | [Báo cáo + docs](./phase-b3-report-hardening.md) | báo cáo tiêu hao/giá vốn theo kỳ + docs + full verify | B1,B2 | planned |
+| B0 | [Foundation](./phase-b0-foundation.md) | schema `TicketTypeRecipe` + migration + `applyConsumption` (allow-negative, avg giữ nguyên) + `RecipeConsumptionService` + export | — | ✅ done |
+| B1 | [Định mức CRUD](./phase-b1-recipe-crud.md) | recipe CRUD backend + màn "Định mức theo loại vé" | B0 | ✅ done |
+| B2 | [Tự trừ/hoàn kho](./phase-b2-auto-consume.md) | hook consume vào create + sync; reverse khi hủy; e2e | B0 | ✅ done |
+| B3 | [Báo cáo + docs](./phase-b3-report-hardening.md) | báo cáo tiêu hao/giá vốn theo kỳ + docs + full verify | B1,B2 | ✅ done |
 
 ## Acceptance (toàn milestone)
 - Tạo bill (online + sync) tự ghi ISSUE tiêu hao đúng `Σ định mức × qty`, gồm vé free.

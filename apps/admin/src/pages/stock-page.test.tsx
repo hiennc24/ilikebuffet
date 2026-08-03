@@ -38,6 +38,8 @@ function makeFetch() {
     const json = (status: number, body: unknown) =>
       new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
     if (path.startsWith("/inventory/reports/valuation")) return json(200, { totalValueVnd: 1_302_000, itemCount: 2, lowStockCount: 1 });
+    if (path.startsWith("/inventory/reports/consumption"))
+      return json(200, { totalCogsVnd: 480_000, byIngredient: [{ ingredientId: "ing-1", name: "Ba chỉ bò", unitCode: "KG", consumedQtyBase: 24, cogsVnd: 480_000 }] });
     if (path.startsWith("/inventory/movements")) return json(200, MOVEMENTS);
     if (path.startsWith("/inventory/stock/issue")) return json(201, { qtyBase: 63, avgCostVnd: 20_000 });
     if (path.startsWith("/inventory/stock")) return json(200, STOCK_LIST);
@@ -78,6 +80,8 @@ describe("StockPage", () => {
     // Valuation KPI card total.
     await waitFor(() => expect(screen.getByText(/1\.302\.000/)).toBeTruthy());
     expect(screen.getByText("Tồn thấp")).toBeTruthy();
+    // Consumption/COGS total appears in both the KPI and the ingredient row.
+    await waitFor(() => expect(screen.getAllByText(/480\.000/).length).toBeGreaterThan(0));
   });
 
   it("opens the drawer and issues stock with a reason", async () => {
