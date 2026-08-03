@@ -8,6 +8,7 @@ import { AuditModule } from "../../audit/audit.module";
 import { PrismaModule } from "../../prisma/prisma.module";
 import { BranchScopeGuard } from "./branch-scope.guard";
 import { PermissionService } from "./permission.service";
+import { RoleService } from "./role.service";
 import { RbacController } from "./rbac.controller";
 
 // Global: PermissionService is a cross-cutting capability check used by controllers
@@ -16,7 +17,7 @@ import { RbacController } from "./rbac.controller";
 @Module({
   imports: [AuditModule, PrismaModule],
   controllers: [RbacController],
-  providers: [BranchScopeGuard, PermissionService],
+  providers: [BranchScopeGuard, PermissionService, RoleService],
   exports: [BranchScopeGuard, PermissionService],
 })
 export class RbacModule {}
