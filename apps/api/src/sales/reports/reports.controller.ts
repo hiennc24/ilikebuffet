@@ -45,6 +45,14 @@ export class ReportsController {
     return this.reports.chainOverview(query, this.chainAccess(req));
   }
 
+  @Get("chain-overview/export")
+  async exportChainOverview(@Query() query: ChainOverviewQuery, @Request() req: ScopedRequest, @Res() res: Response) {
+    const buffer = await this.reports.exportChainOverview(query, this.chainAccess(req));
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.setHeader("Content-Disposition", `attachment; filename="tong-quan-chuoi-${query.from ?? ""}-${query.to ?? ""}.xlsx"`);
+    res.send(buffer);
+  }
+
   /** Dashboard KPIs — any authenticated admin user; branch-scoped by the token. */
   @Get("dashboard")
   dashboard(@Query("branchId") branchId: string, @Request() req: ScopedRequest) {

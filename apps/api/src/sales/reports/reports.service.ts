@@ -428,6 +428,28 @@ export class ReportsService {
     };
   }
 
+  /** Chain overview as an .xlsx workbook (per-branch rows + a totals line). */
+  async exportChainOverview(query: ChainOverviewQuery, access: BranchAccess): Promise<Buffer> {
+    const report = await this.chainOverview(query, access);
+    const wb = new ExcelJS.Workbook();
+    const sheet = wb.addWorksheet("Tổng quan chuỗi");
+    sheet.columns = [
+      { header: "#", key: "rank", width: 6 },
+      { header: "Chi nhánh", key: "branch", width: 22 },
+      { header: "Doanh thu thuần", key: "net", width: 16 },
+      { header: "Số bill", key: "bills", width: 10 },
+      { header: "Khách", key: "guests", width: 10 },
+      { header: "Chênh lệch tiền ca", key: "variance", width: 18 },
+      { header: "Tồn thấp", key: "low", width: 10 },
+    ];
+    for (const r of report.rows) {
+      sheet.addRow({ rank: r.rank, branch: `${r.code} — ${r.name}`, net: r.netRevenueVnd, bills: r.billCount, guests: r.guestCount, variance: r.cashVarianceVnd, low: r.lowStockCount });
+    }
+    sheet.addRow({});
+    sheet.addRow({ branch: "TỔNG", net: report.totals.netRevenueVnd, bills: report.totals.billCount, guests: report.totals.guestCount, variance: report.totals.cashVarianceVnd, low: report.totals.lowStockCount });
+    return Buffer.from(await wb.xlsx.writeBuffer());
+  }
+
   // ─── Offline reconciliation (GA-02) ─────────────────────────────────────────
 
   /** Paginated list of quarantined bills to review, filterable by resolved state. */

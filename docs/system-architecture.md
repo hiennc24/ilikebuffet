@@ -94,6 +94,15 @@ maintains the **moving average** for on-hand valuation and estimated COGS. The
 **FIFO** report replays the same `StockMovement` ledger (RECEIPT rows = lots) to
 value goods sold at real lot cost — additive, no schema change, average untouched.
 
+### Inter-branch stock transfer + chain BI
+
+An atomic transfer ISSUEs from the source branch (blocked below zero) and RECEIPTs
+into the destination at the source's moving-average cost, in one transaction —
+both legs are StockMovements (refType "TRANSFER", shared refId), so
+`balance == Σ movements` holds on both branches. The chain-overview report rolls
+up per-branch net revenue / bills / cash-variance / low-stock (ranked), gated to
+chain-level roles — the same branch-scoping model, just aggregated.
+
 ### VietQR auto-reconcile
 
 ```

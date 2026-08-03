@@ -5,7 +5,10 @@
  */
 import * as React from "react";
 import { formatVnd } from "@ilikebuffet/shared";
+import { Button } from "@ilikebuffet/ui";
+import { useAuth } from "../auth/auth-context";
 import { useReport } from "../lib/use-report";
+import { buildQuery } from "../lib/use-paged-list";
 import { QUERY_KEYS } from "../lib/query-keys";
 import { Card, PageStack, DataTable, Column, Badge, LoadingState, ErrorState, toErrorMessage } from "./_shared/admin-ui";
 import { KpiCard, KpiRow, DateRangeBar } from "./_shared/report-ui";
@@ -29,8 +32,25 @@ interface ChainOverview {
 }
 
 export const ChainDashboardPage: React.FC = () => {
+  const { api } = useAuth();
   const [filter, setFilter] = React.useState({ from: today(), to: today() });
   const patch = (p: Partial<typeof filter>) => setFilter((f) => ({ ...f, ...p }));
+
+  const [exporting, setExporting] = React.useState(false);
+  const doExport = async () => {
+    setExporting(true);
+    try {
+      const blob = await api.download(`/sales/reports/chain-overview/export?${buildQuery(filter)}`);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `tong-quan-chuoi-${filter.from}-${filter.to}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const { data, isLoading, isError, error } = useReport<ChainOverview>({
     queryKey: QUERY_KEYS.chainOverviewReport(),
@@ -56,7 +76,15 @@ export const ChainDashboardPage: React.FC = () => {
   return (
     <PageStack>
       <Card title="Tổng quan chuỗi" description="Hợp nhất toàn chuỗi theo chi nhánh, xếp hạng theo doanh thu thuần.">
-        <DateRangeBar value={{ ...filter, branchId: "" }} onChange={patch} />
+        <DateRangeBar
+          value={{ ...filter, branchId: "" }}
+          onChange={patch}
+          right={
+            <Button variant="ghost" disabled={exporting} onClick={doExport}>
+              {exporting ? "Đang xuất…" : "Xuất Excel"}
+            </Button>
+          }
+        />
 
         {isLoading ? (
           <LoadingState />

@@ -2,7 +2,7 @@
 title: "M10 — Multi-branch & BI chuỗi"
 slug: m10-multibranch-chain-bi
 created: 2026-08-03
-status: in-progress
+status: done
 priority: P1
 mode: --tdd
 
@@ -38,9 +38,9 @@ CN, và **điều chuyển kho giữa các chi nhánh**. Nhân rộng sau pilot 
 
 | Phase | Tên | Nội dung | Phụ thuộc | Status |
 |-------|-----|----------|-----------|--------|
-| X0 | [Chain overview](./phase-x0-chain-overview.md) | endpoint hợp nhất per-branch (doanh thu/khách/chênh lệch tiền ca/tồn thấp) + màn dashboard chuỗi (chain-wide) | — | planned |
-| X1 | [Điều chuyển kho liên CN](./phase-x1-stock-transfer.md) | schema StockTransfer + service (ISSUE nguồn/RECEIPT đích, mang avg cost, chặn âm, access 2 đầu) + màn + e2e | — | planned |
-| X2 | [So sánh CN + docs](./phase-x2-compare-docs.md) | báo cáo xếp hạng CN (doanh thu/lãi gộp/chênh lệch) + xuất Excel + docs + full verify | X0 | planned |
+| X0 | [Chain overview](./phase-x0-chain-overview.md) | endpoint hợp nhất per-branch (doanh thu/khách/chênh lệch tiền ca/tồn thấp) + màn dashboard chuỗi (chain-wide) | — | ✅ done |
+| X1 | [Điều chuyển kho liên CN](./phase-x1-stock-transfer.md) | schema StockTransfer + service (ISSUE nguồn/RECEIPT đích, mang avg cost, chặn âm, access 2 đầu) + màn + e2e | — | ✅ done |
+| X2 | [So sánh CN + docs](./phase-x2-compare-docs.md) | báo cáo xếp hạng CN (doanh thu/lãi gộp/chênh lệch) + xuất Excel + docs + full verify | X0 | ✅ done |
 
 ## Acceptance
 - Chain owner thấy dashboard **per-branch + tổng chuỗi + xếp hạng**; branch role chỉ

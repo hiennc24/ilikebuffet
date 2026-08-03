@@ -182,4 +182,11 @@ describe("Revenue report (integration)", () => {
     await request(app.getHttpServer()).get(`/sales/reports/chain-overview?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${managerAToken}`).expect(403);
     await request(app.getHttpServer()).get(`/sales/reports/chain-overview?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${cashierToken}`).expect(403);
   });
+
+  it("chain-overview: exports an xlsx attachment (chain-level only)", async () => {
+    const res = await request(app.getHttpServer()).get(`/sales/reports/chain-overview/export?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${hqToken}`).expect(200);
+    expect(res.headers["content-type"]).toContain("spreadsheetml.sheet");
+    expect(res.headers["content-disposition"]).toContain(".xlsx");
+    await request(app.getHttpServer()).get(`/sales/reports/chain-overview/export?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${managerAToken}`).expect(403);
+  });
 });

@@ -105,6 +105,15 @@ moving-average balance/on-hand valuation is untouched. Exposed at
 gross-margin screen next to the moving-average estimate. Plan:
 `plans/260803-1215-m9-fifo-cogs/`.
 
+## M10 — Multi-branch & BI chuỗi ✅ done
+
+Chain overview report (`/sales/reports/chain-overview` + xlsx): per-branch net
+revenue, bills, guests, cash variance, low-stock — ranked, with chain totals;
+chain-level roles only, new "Tổng quan chuỗi" screen. Inter-branch stock transfer
+(`stock_transfer`): atomic ISSUE-source / RECEIPT-dest carrying the source's
+moving-average cost, block-below-zero at source, access to both ends; new "Điều
+chuyển kho" screen. Plan: `plans/260803-1433-m10-multibranch-chain-bi/`.
+
 ## Carry-overs ✅ done
 
 - Shift-cash reconciliation xlsx export (`/sales/reports/shift-cash/export`).
