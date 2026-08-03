@@ -15,10 +15,12 @@ import { StockController } from "./stock/stock.controller";
 import { InventoryReportsService } from "./reports/inventory-reports.service";
 import { InventoryReportsController } from "./reports/inventory-reports.controller";
 import { RecipeConsumptionService } from "./consumption/recipe-consumption.service";
+import { RecipesService } from "./recipes/recipes.service";
+import { RecipesController } from "./recipes/recipes.controller";
 
 @Module({
   imports: [PrismaModule, AuditModule],
-  controllers: [PurchaseOrdersController, StockController, InventoryReportsController],
+  controllers: [PurchaseOrdersController, StockController, InventoryReportsController, RecipesController],
   providers: [
     InventoryBalanceService,
     PurchaseOrdersService,
@@ -26,6 +28,7 @@ import { RecipeConsumptionService } from "./consumption/recipe-consumption.servi
     StockService,
     InventoryReportsService,
     RecipeConsumptionService,
+    RecipesService,
   ],
   exports: [InventoryBalanceService, RecipeConsumptionService],
 })

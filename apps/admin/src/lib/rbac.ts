@@ -37,6 +37,7 @@ export const RESTRICTED_SCREENS: Record<string, readonly string[]> = {
   "/master-data/accounts": ["QUAN_TRI_HQ"],
   "/inventory/purchase-orders": ["QUAN_TRI_HQ", "CHU_CHUOI", "QUAN_LY_CN", "THU_KHO"],
   "/inventory/stock": ["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI", "QUAN_LY_CN", "THU_KHO"],
+  "/inventory/recipes": ["QUAN_TRI_HQ", "CHU_CHUOI"],
   "/reports/revenue": ["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI", "QUAN_LY_CN"],
   "/reports/shift-cash": ["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI", "QUAN_LY_CN"],
   "/reports/offline": ["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI", "QUAN_LY_CN"],

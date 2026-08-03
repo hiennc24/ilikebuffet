@@ -38,6 +38,7 @@ import { HolidaysPage } from "./pages/holidays-page";
 import { IngredientsPage } from "./pages/ingredients-page";
 import { PurchaseOrdersPage } from "./pages/purchase-orders-page";
 import { StockPage } from "./pages/stock-page";
+import { TicketRecipesPage } from "./pages/ticket-recipes-page";
 import { AccountsPage } from "./pages/accounts-page";
 import { RevenueReportPage } from "./pages/revenue-report-page";
 import { ShiftCashReportPage } from "./pages/shift-cash-report-page";
@@ -233,6 +234,16 @@ export function App() {
                         <RequireAccess path="/inventory/stock">
                           <ShellLayout pageTitle="Tồn kho">
                             <StockPage />
+                          </ShellLayout>
+                        </RequireAccess>
+                      }
+                    />
+                    <Route
+                      path="/inventory/recipes"
+                      element={
+                        <RequireAccess path="/inventory/recipes">
+                          <ShellLayout pageTitle="Định mức theo loại vé">
+                            <TicketRecipesPage />
                           </ShellLayout>
                         </RequireAccess>
                       }
