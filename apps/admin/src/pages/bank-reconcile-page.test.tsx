@@ -87,4 +87,11 @@ describe("BankReconcilePage", () => {
       ).toBe(true),
     );
   });
+
+  it("shows an error state when the list request fails", async () => {
+    // Empty error body → toErrorMessage falls back to the page's message.
+    globalThis.fetch = vi.fn(async () => new Response("", { status: 500 })) as typeof globalThis.fetch;
+    render(<BankReconcilePage />, { wrapper });
+    await waitFor(() => expect(screen.getByText(/Không tải được giao dịch/)).toBeTruthy());
+  });
 });
