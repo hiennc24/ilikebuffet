@@ -24,7 +24,7 @@ import { BranchService } from "./branch.service";
 import { Unscoped } from "../rbac/decorators";
 import { Role } from "../rbac/role.enum";
 import type { ScopedRequest } from "../rbac/branch-scope.guard";
-import type {
+import {
   ChangeBranchStatusDto,
   BranchListQuery,
   CreateBranchDto,

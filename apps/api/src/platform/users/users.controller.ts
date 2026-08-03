@@ -20,7 +20,7 @@ import {
 import { UsersService } from "./users.service";
 import { Role } from "../rbac/role.enum";
 import type { ScopedRequest } from "../rbac/branch-scope.guard";
-import type { CreateUserDto, UpdateUserDto, UserListQuery } from "./users.dto";
+import { CreateUserDto, UpdateUserDto, UserListQuery } from "./users.dto";
 
 const USER_ADMIN_ROLES = new Set<Role>([Role.QUAN_TRI_HQ, Role.QUAN_LY_CN]);
 

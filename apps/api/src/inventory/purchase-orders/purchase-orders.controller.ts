@@ -24,12 +24,12 @@ import { INVENTORY_WRITE_ROLES } from "../inventory-roles";
 import { Role } from "../../platform/rbac/role.enum";
 import { can, type Capability } from "../../platform/rbac/permissions";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
-import type {
+import {
   CreatePurchaseOrderDto,
   UpdatePurchaseOrderDto,
   PurchaseOrderListQuery,
 } from "./purchase-orders.dto";
-import type { ReceiveGoodsDto } from "../receipts/goods-receipt.dto";
+import { ReceiveGoodsDto } from "../receipts/goods-receipt.dto";
 
 @Controller("inventory/purchase-orders")
 export class PurchaseOrdersController {

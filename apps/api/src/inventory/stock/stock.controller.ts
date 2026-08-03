@@ -10,7 +10,7 @@ import { StockService } from "./stock.service";
 import { INVENTORY_VIEW_ROLES, INVENTORY_WRITE_ROLES } from "../inventory-roles";
 import { Role } from "../../platform/rbac/role.enum";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
-import type { StockListQuery, MovementListQuery, IssueStockDto, AdjustStockDto } from "./stock.dto";
+import { StockListQuery, MovementListQuery, IssueStockDto, AdjustStockDto } from "./stock.dto";
 
 @Controller("inventory")
 export class StockController {

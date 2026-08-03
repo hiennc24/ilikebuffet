@@ -13,7 +13,7 @@ import { Unscoped } from "../../platform/rbac/decorators";
 import { Role } from "../../platform/rbac/role.enum";
 import { assertBranchAccess } from "../../platform/rbac/branch-access";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
-import type { SetRecipeDto, RecipeListQuery } from "./recipes.dto";
+import { SetRecipeDto, RecipeListQuery } from "./recipes.dto";
 
 /** Chain-wide default recipe — chain config roles only. */
 const RECIPE_CHAIN_ROLES = new Set<Role>([Role.QUAN_TRI_HQ, Role.CHU_CHUOI]);

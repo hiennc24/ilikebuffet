@@ -10,7 +10,7 @@ import { Body, Controller, ForbiddenException, Get, Post, Query, Request } from 
 import { StockTransfersService } from "./stock-transfers.service";
 import { Role } from "../../platform/rbac/role.enum";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
-import type { CreateTransferDto, TransferListQuery } from "./stock-transfers.dto";
+import { CreateTransferDto, TransferListQuery } from "./stock-transfers.dto";
 
 const TRANSFER_ROLES = new Set<Role>([Role.QUAN_TRI_HQ, Role.CHU_CHUOI, Role.QUAN_LY_CN]);
 

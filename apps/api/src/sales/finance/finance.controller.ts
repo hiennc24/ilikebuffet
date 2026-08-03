@@ -12,7 +12,7 @@ import { FinanceService } from "./finance.service";
 import { can, type Capability } from "../../platform/rbac/permissions";
 import { Role } from "../../platform/rbac/role.enum";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
-import type { CreateFinancialDto, FinancialListQuery, PaySupplierDto, PayableListQuery, PayableAgingQuery } from "./finance.dto";
+import { CreateFinancialDto, FinancialListQuery, PaySupplierDto, PayableListQuery, PayableAgingQuery } from "./finance.dto";
 
 @Controller("sales/finance")
 export class FinanceController {

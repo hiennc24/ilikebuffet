@@ -9,7 +9,7 @@ import { Body, Controller, ForbiddenException, Get, Param, Post, Query, Request 
 import { BankReconcileService } from "./bank-reconcile.service";
 import { Role } from "../../platform/rbac/role.enum";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
-import type { BankTxListQuery, MatchBankTxDto, IgnoreBankTxDto } from "./bank-transactions.dto";
+import { BankTxListQuery, MatchBankTxDto, IgnoreBankTxDto } from "./bank-transactions.dto";
 
 const RECONCILE_ROLES = new Set<Role>([Role.QUAN_TRI_HQ, Role.CHU_CHUOI, Role.KE_TOAN_CHUOI]);
 
