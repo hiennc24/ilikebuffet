@@ -1,0 +1,54 @@
+---
+title: "E3 — Tài chính: Thu-Chi + Sổ quỹ + P&L"
+slug: e3-thu-chi-finance
+created: 2026-08-03
+status: planned
+priority: P1
+mode: --tdd
+---
+
+# E3 — Tài chính (Thu-Chi + Sổ quỹ + Lãi/Lỗ)
+
+Mục tiêu: ghi **phiếu thu-chi** theo tài khoản kế toán (đã có master-data), tổng
+hợp **sổ quỹ/chi phí** theo kỳ/chi nhánh, và **báo cáo lãi/lỗ (P&L)** = doanh thu
+thuần − giá vốn − chi phí vận hành. Khép vòng tài chính (hiện có doanh thu M3/M6 +
+giá vốn M9 nhưng CHƯA có chi phí).
+
+**Bối cảnh (đã scout):**
+- `Account`{flow INCOME/EXPENSE, approvalThresholdVnd} + `AccountGroup` đã có
+  (master-data), seed sẵn nhóm Thu/Chi. `approvalThresholdVnd` chú thích
+  "NT-03.4 — used by TC-01" ⇒ thiết kế cho phiếu tài chính. **Chưa có** model
+  giao dịch nào ghi vào account.
+- `DiscountsService.verifyApprovalPin({managerId,pin,branchId,reason}, ...)` tái
+  dùng được cho duyệt vượt ngưỡng (QUAN_LY_CN PIN). `PaymentMethod` (CASH/VIETQR/
+  CARD) tái dùng cho phương thức chi/thu.
+- Doanh thu thuần: `reports.revenue`. Giá vốn: `inventory consumption` (moving-avg,
+  mặc định gross-margin).
+
+## Phạm vi
+- **Trong E3:** phiếu thu-chi (tạo + list + duyệt vượt ngưỡng), báo cáo chi phí
+  theo tài khoản/kỳ, **P&L** (doanh thu − giá vốn − chi phí) theo kỳ/chi nhánh.
+- **Ngoài E3 (E4):** công nợ NCC + thanh toán NCC (chỉ để `supplierId?` làm móc nối).
+
+## Phases
+
+| Phase | Tên | Nội dung | Phụ thuộc | Status |
+|-------|-----|----------|-----------|--------|
+| F0 | [Thu-Chi core](./phase-f0-thu-chi-core.md) | schema `FinancialTransaction` + migration + service (tạo/duyệt vượt ngưỡng, list+tổng) + e2e | — | planned |
+| F1 | [FE + báo cáo chi phí](./phase-f1-fe-report.md) | màn thu-chi (list + tạo + duyệt PIN) + báo cáo chi phí theo tài khoản/kỳ + nav/rbac | F0 | planned |
+| F2 | [P&L + docs](./phase-f2-pnl-docs.md) | báo cáo lãi/lỗ (doanh thu − giá vốn − chi phí) + xuất Excel + docs + full verify | F0,F1 | planned |
+
+## Acceptance
+- Tạo phiếu thu-chi theo account (flow snapshot); vượt `approvalThresholdVnd` →
+  bắt buộc duyệt PIN quản lý; branch-scoped + audit.
+- Báo cáo chi phí theo tài khoản/kỳ; P&L = doanh thu thuần − giá vốn − chi phí,
+  theo kỳ/chi nhánh, xuất Excel.
+- Tiền integer VND; không phá luồng hiện có. Test API/admin/shared xanh.
+
+## Open questions (chốt trước khi code)
+1. **Ai tạo phiếu thu-chi?** KE_TOAN_CHUOI + HQ/chủ + QUAN_LY_CN (theo CN)? Thu ngân
+   có tạo chi quỹ nhỏ không?
+2. **Duyệt vượt ngưỡng:** dùng lại approval PIN của QUAN_LY_CN khi amount >
+   account.approvalThresholdVnd (>0) — xác nhận.
+3. **Công nợ NCC:** tách sang E4 (chỉ giữ `supplierId?` móc nối) — xác nhận.
+4. **P&L giá vốn:** dùng giá vốn TB (moving-avg, như gross-margin) hay FIFO?
