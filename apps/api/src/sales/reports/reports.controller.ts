@@ -10,7 +10,7 @@ import type { Response } from "express";
 import { ReportsService } from "./reports.service";
 import { Role } from "../../platform/rbac/role.enum";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
-import type { RevenueQuery, ShiftCashQuery, QuarantineQuery, ResolveQuarantineDto } from "./reports.dto";
+import type { RevenueQuery, ShiftCashQuery, QuarantineQuery, ResolveQuarantineDto, GrossMarginQuery } from "./reports.dto";
 
 export const REPORT_VIEW_ROLES = new Set<Role>([
   Role.QUAN_TRI_HQ,
@@ -46,6 +46,19 @@ export class ReportsController {
     const buffer = await this.reports.exportRevenue(query, this.access(req));
     res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     res.setHeader("Content-Disposition", `attachment; filename="doanh-thu-${query.from ?? ""}-${query.to ?? ""}.xlsx"`);
+    res.send(buffer);
+  }
+
+  @Get("gross-margin")
+  grossMargin(@Query() query: GrossMarginQuery, @Request() req: ScopedRequest) {
+    return this.reports.grossMargin(query, this.access(req));
+  }
+
+  @Get("gross-margin/export")
+  async exportGrossMargin(@Query() query: GrossMarginQuery, @Request() req: ScopedRequest, @Res() res: Response) {
+    const buffer = await this.reports.exportGrossMargin(query, this.access(req));
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.setHeader("Content-Disposition", `attachment; filename="lai-gop-${query.from ?? ""}-${query.to ?? ""}.xlsx"`);
     res.send(buffer);
   }
 

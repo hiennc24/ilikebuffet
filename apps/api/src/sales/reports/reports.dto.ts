@@ -7,6 +7,13 @@ export interface RevenueQuery {
   groupBy?: "day" | "branch" | "shift";
 }
 
+export interface GrossMarginQuery {
+  from?: string;
+  to?: string;
+  branchId?: string;
+  groupBy?: "day" | "branch";
+}
+
 export interface ShiftCashQuery {
   from?: string;
   to?: string;

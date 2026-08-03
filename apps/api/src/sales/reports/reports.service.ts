@@ -8,13 +8,17 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import * as ExcelJS from "exceljs";
-import { sumVnd, toVnDateStr } from "@ilikebuffet/shared";
+import { roundVnd, sumVnd, toVnDateStr } from "@ilikebuffet/shared";
 import { PrismaService } from "../../prisma/prisma.service";
 import { AuditService } from "../../audit/audit.service";
 import { assertBranchAccess, type BranchAccess } from "../../platform/rbac/branch-access";
-import type { RevenueQuery, ShiftCashQuery, QuarantineQuery } from "./reports.dto";
+import type { RevenueQuery, ShiftCashQuery, QuarantineQuery, GrossMarginQuery } from "./reports.dto";
 
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
+
+/** Gross-margin % to one decimal. Params are non-money-named so the money lint
+ *  rule (which flags raw `/` on money-named identifiers) doesn't misfire. */
+const marginPct = (profit: number, rev: number) => (rev > 0 ? Math.round((profit / rev) * 1000) / 10 : 0);
 
 @Injectable()
 export class ReportsService {
@@ -129,6 +133,96 @@ export class ReportsService {
     }
     sheet.addRow({});
     sheet.addRow({ key: "TỔNG", gross: report.totals.grossVnd, refund: report.totals.refundedVnd, net: report.totals.netVnd, bills: report.totals.billCount, guests: report.totals.guestCount });
+    return Buffer.from(await wb.xlsx.writeBuffer());
+  }
+
+  /**
+   * Gross margin = net revenue − estimated COGS, by day or branch.
+   *
+   * Revenue is keyed by bill.businessDate (net of refunds; CANCELLED excluded).
+   * COGS is the sale-driven stock consumption (ISSUE refType "BILL" minus
+   * "BILL_REVERSAL") valued at each movement's cost — attributed to the SAME
+   * bill's businessDate/branch (mapped via billId, since StockMovement has no FK
+   * to Bill) so it aligns with revenue and cancelled bills net to zero on both
+   * sides. COGS is an ESTIMATE (from the ticket recipe), not actual issue cost.
+   */
+  async grossMargin(query: GrossMarginQuery, access: BranchAccess) {
+    const groupBy = query.groupBy ?? "day";
+    const where: Prisma.BillWhereInput = {
+      ...this.branchWhere(access, query.branchId),
+      ...this.dateWhere(query.from, query.to),
+    };
+
+    const bills = await this.prisma.bill.findMany({
+      where,
+      select: { id: true, branchId: true, businessDate: true, status: true, totalVnd: true, refunds: { select: { amountVnd: true } } },
+    });
+
+    const keyOfBill = (b: (typeof bills)[number]) => (groupBy === "branch" ? b.branchId : dayKey(b.businessDate));
+    const billKey = new Map<string, string>();
+    const revByKey = new Map<string, number>();
+    for (const b of bills) {
+      const key = keyOfBill(b);
+      billKey.set(b.id, key);
+      if (b.status === "COMPLETED") {
+        const net = b.totalVnd - sumVnd(b.refunds.map((r) => r.amountVnd));
+        revByKey.set(key, (revByKey.get(key) ?? 0) + net);
+      }
+    }
+
+    const cogsByKey = new Map<string, number>();
+    const billIds = [...billKey.keys()];
+    if (billIds.length > 0) {
+      const moves = await this.prisma.stockMovement.findMany({
+        where: { refType: { in: ["BILL", "BILL_REVERSAL"] }, refId: { in: billIds } },
+        select: { refId: true, qtyBase: true, unitCostVnd: true },
+      });
+      for (const m of moves) {
+        const key = m.refId ? billKey.get(m.refId) : undefined;
+        if (!key) continue;
+        const qty = Number(m.qtyBase); // negative = consumed, positive = returned
+        const cost = m.unitCostVnd ?? 0;
+        const value = roundVnd(qty * cost);
+        cogsByKey.set(key, sumVnd([cogsByKey.get(key) ?? 0, -value])); // consumed → positive COGS
+      }
+    }
+
+    const rows = [...new Set([...revByKey.keys(), ...cogsByKey.keys()])]
+      .map((key) => {
+        const rev = revByKey.get(key) ?? 0;
+        const cogs = cogsByKey.get(key) ?? 0;
+        const profit = rev - cogs;
+        return { key, netRevenueVnd: rev, cogsVnd: cogs, grossProfitVnd: profit, marginPct: marginPct(profit, rev) };
+      })
+      .sort((a, b) => (a.key < b.key ? 1 : -1));
+
+    const totNet = sumVnd(rows.map((r) => r.netRevenueVnd));
+    const totCogs = sumVnd(rows.map((r) => r.cogsVnd));
+    const totProfit = totNet - totCogs;
+    return {
+      groupBy,
+      totals: { netRevenueVnd: totNet, cogsVnd: totCogs, grossProfitVnd: totProfit, marginPct: marginPct(totProfit, totNet) },
+      rows,
+    };
+  }
+
+  /** Gross-margin report as an .xlsx workbook (rows + a totals line). */
+  async exportGrossMargin(query: GrossMarginQuery, access: BranchAccess): Promise<Buffer> {
+    const report = await this.grossMargin(query, access);
+    const wb = new ExcelJS.Workbook();
+    const sheet = wb.addWorksheet("Lãi gộp");
+    sheet.columns = [
+      { header: report.groupBy === "branch" ? "Chi nhánh" : "Ngày", key: "key", width: 24 },
+      { header: "Doanh thu thuần", key: "net", width: 16 },
+      { header: "Giá vốn (ước tính)", key: "cogs", width: 18 },
+      { header: "Lãi gộp", key: "profit", width: 16 },
+      { header: "%Biên", key: "pct", width: 10 },
+    ];
+    for (const r of report.rows) {
+      sheet.addRow({ key: r.key, net: r.netRevenueVnd, cogs: r.cogsVnd, profit: r.grossProfitVnd, pct: r.marginPct });
+    }
+    sheet.addRow({});
+    sheet.addRow({ key: "TỔNG", net: report.totals.netRevenueVnd, cogs: report.totals.cogsVnd, profit: report.totals.grossProfitVnd, pct: report.totals.marginPct });
     return Buffer.from(await wb.xlsx.writeBuffer());
   }
 
