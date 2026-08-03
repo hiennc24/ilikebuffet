@@ -11,11 +11,23 @@ export default defineConfig({
   // No PWA plugin here — PWA is POS only.
   server: {
     // Same-origin proxy so the AuthProvider's empty baseUrl reaches the API
-    // without CORS. Covers the API route prefixes the admin app calls.
+    // without CORS. This MUST list every API @Controller root the admin fetches
+    // — anything missing falls through to the SPA index.html, so the client's
+    // response.json() chokes on "<!DOCTYPE html>". Keep in sync when adding a
+    // backend module. (Devices live under /platform/devices, not /devices.)
     proxy: Object.fromEntries(
-      ["/auth", "/branches", "/sales", "/audit", "/health", "/devices", "/master-data", "/import"].map(
-        (p) => [p, { target: `http://localhost:${API_PORT}`, changeOrigin: true }],
-      ),
+      [
+        "/auth",
+        "/branches",
+        "/sales",
+        "/audit",
+        "/health",
+        "/master-data",
+        "/import",
+        "/inventory",
+        "/users",
+        "/platform",
+      ].map((p) => [p, { target: `http://localhost:${API_PORT}`, changeOrigin: true }]),
     ),
   },
   build: {
