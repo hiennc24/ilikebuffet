@@ -2,7 +2,7 @@
 title: "M6 — Lãi gộp (doanh thu − giá vốn)"
 slug: m6-gross-margin
 created: 2026-08-03
-status: planned
+status: done
 priority: P1
 mode: --tdd
 ---
@@ -37,8 +37,8 @@ integer VND; COGS là **ước tính theo định mức** — ghi rõ nhãn. YAG
 
 | Phase | Tên | Nội dung | Phụ thuộc | Status |
 |-------|-----|----------|-----------|--------|
-| G0 | [Backend lãi gộp](./phase-g0-backend.md) | `grossMargin()` service (join billId→businessDate) + endpoint + Excel export + e2e | — | planned |
-| G1 | [FE + docs](./phase-g1-frontend-docs.md) | màn báo cáo lãi gộp (useReport + export) + nav/route/rbac + docs + full verify | G0 | planned |
+| G0 | [Backend lãi gộp](./phase-g0-backend.md) | `grossMargin()` service (join billId→businessDate) + endpoint + Excel export + e2e | — | ✅ done |
+| G1 | [FE + docs](./phase-g1-frontend-docs.md) | màn báo cáo lãi gộp (useReport + export) + nav/route/rbac + docs + full verify | G0 | ✅ done |
 
 ## Acceptance
 - Lãi gộp theo ngày/chi nhánh = doanh thu thuần − COGS ước tính, căn theo businessDate.

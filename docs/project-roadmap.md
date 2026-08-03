@@ -67,10 +67,19 @@ are estimates) and leaves moving-average cost unchanged; refunds don't touch sto
 Adds an estimated-COGS consumption report (net of cancellations). Plan:
 `plans/260803-0926-m5-bom-consumption/`.
 
-## M6+ — Backlog (not started)
+## M6 — Lãi gộp (doanh thu − giá vốn) ✅ done
+
+Gross-margin report under `sales/reports/gross-margin` (+ xlsx export): net revenue
+(M3) − estimated COGS (M5 sale-driven consumption) by day or branch, with totals
+and margin %. COGS attributes to the bill's businessDate (mapped via billId, since
+StockMovement has no FK to Bill) so it aligns with revenue; a bill cancelled
+in-window nets to zero on both sides, and offline-synced movements land on the
+right day. Branch-scoped + role-gated. Plan: `plans/260803-1001-m6-gross-margin/`.
+
+## M7+ — Backlog (not started)
 
 - **Định mức theo chi nhánh (override):** per-branch recipe overrides.
-- **Lãi gộp:** ghép doanh thu (M3) với giá vốn tiêu hao (M5) → báo cáo lãi gộp.
+- **Giá vốn thực tế:** actual issue cost (per-lot) instead of estimated recipe COGS.
 - **Tự động hoá thanh toán:** VietQR auto-reconcile (webhook), replacing manual
   payment confirmation.
 - Small carry-overs: shift-cash xlsx export; system-architecture doc.

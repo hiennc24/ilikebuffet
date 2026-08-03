@@ -86,6 +86,7 @@ export const QUERY_KEYS = {
 
   /** Reports (params appended by useReport). */
   revenueReport: () => ["report-revenue"] as const,
+  grossMarginReport: () => ["report-gross-margin"] as const,
   shiftCashReport: () => ["report-shift-cash"] as const,
   quarantineReport: () => ["report-quarantine"] as const,
   numberGapsReport: () => ["report-number-gaps"] as const,

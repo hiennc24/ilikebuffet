@@ -70,6 +70,12 @@ const DEFAULT_GROUPS: NavGroup[] = [
         iconPath: "M3 3v18h18M7 15l3-4 3 2 4-6",
       },
       {
+        id: "gross-margin-report",
+        label: "Lãi gộp",
+        path: "/reports/gross-margin",
+        iconPath: "M3 3v18h18M7 14l3 3 7-8M14 9h3v3",
+      },
+      {
         id: "shift-cash-report",
         label: "Đối soát tiền mặt",
         path: "/reports/shift-cash",

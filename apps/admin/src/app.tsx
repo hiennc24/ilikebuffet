@@ -41,6 +41,7 @@ import { StockPage } from "./pages/stock-page";
 import { TicketRecipesPage } from "./pages/ticket-recipes-page";
 import { AccountsPage } from "./pages/accounts-page";
 import { RevenueReportPage } from "./pages/revenue-report-page";
+import { GrossMarginReportPage } from "./pages/gross-margin-report-page";
 import { ShiftCashReportPage } from "./pages/shift-cash-report-page";
 import { OfflineReconPage } from "./pages/offline-recon-page";
 import { canAccessPath } from "./lib/rbac";
@@ -264,6 +265,16 @@ export function App() {
                         <RequireAccess path="/reports/revenue">
                           <ShellLayout pageTitle="Báo cáo doanh thu">
                             <RevenueReportPage />
+                          </ShellLayout>
+                        </RequireAccess>
+                      }
+                    />
+                    <Route
+                      path="/reports/gross-margin"
+                      element={
+                        <RequireAccess path="/reports/gross-margin">
+                          <ShellLayout pageTitle="Báo cáo lãi gộp">
+                            <GrossMarginReportPage />
                           </ShellLayout>
                         </RequireAccess>
                       }
