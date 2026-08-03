@@ -15,6 +15,12 @@ export default defineConfig({
     // — anything missing falls through to the SPA index.html, so the client's
     // response.json() chokes on "<!DOCTYPE html>". Keep in sync when adding a
     // backend module. (Devices live under /platform/devices, not /devices.)
+    //
+    // Some API roots (/inventory, /master-data) also exist as SPA route prefixes,
+    // so a hard reload / deep-link on e.g. /inventory would otherwise be proxied
+    // to the API ("Cannot GET /inventory"). `bypass` distinguishes by Accept:
+    // browser navigations send text/html → serve the SPA; XHR (fetch, Accept */*
+    // or application/json) → proxy to the API.
     proxy: Object.fromEntries(
       [
         "/auth",
@@ -27,7 +33,15 @@ export default defineConfig({
         "/inventory",
         "/users",
         "/platform",
-      ].map((p) => [p, { target: `http://localhost:${API_PORT}`, changeOrigin: true }]),
+      ].map((p) => [
+        p,
+        {
+          target: `http://localhost:${API_PORT}`,
+          changeOrigin: true,
+          bypass: (req: { headers: Record<string, string | string[] | undefined> }) =>
+            req.headers.accept?.includes("text/html") ? "/index.html" : undefined,
+        },
+      ]),
     ),
   },
   build: {
