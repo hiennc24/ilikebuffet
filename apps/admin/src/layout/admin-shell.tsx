@@ -200,6 +200,12 @@ const DEFAULT_GROUPS: NavGroup[] = [
         iconPath: "M3 10h18M7 15h4M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z",
       },
       {
+        id: "supplier-aging",
+        label: "Tuổi nợ NCC",
+        path: "/finance/aging",
+        iconPath: "M12 8v4l3 2M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+      },
+      {
         id: "staff",
         label: "Nhân sự",
         path: "/staff",

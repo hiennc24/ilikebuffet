@@ -68,7 +68,9 @@ These hold across every module and are the backbone of the design:
 
 ### Inventory (`apps/api/src/inventory`)
 
-- **purchase-orders** — PO CRUD, DRAFT→SENT→RECEIVED/CANCELLED.
+- **purchase-orders** — PO CRUD, DRAFT→(APPROVED)→SENT→RECEIVED/CANCELLED. A PO over
+  the branch approval threshold must be APPROVED before sending (capability-gated:
+  `purchase-order:create` vs `purchase-order:approve`); see flow below.
 - **receipts** — goods receipt: purchase-unit → base conversion, moving-average cost.
 - **inventory-balance** — the ledger core: `StockMovement` (append-only, signed
   base-unit qty) drives `InventoryBalance` (on-hand + moving-average cost),
@@ -128,6 +130,26 @@ raw-material purchases as thu-chi is discouraged.
 Capability enforcement: the finance controller gates each route on
 `can(role, capability)` from the RBAC matrix — E3 is the first module to use the
 capability matrix rather than hardcoded role sets.
+
+### PO approval & supplier-debt aging
+
+```
+DRAFT ──approve (purchase-order:approve)──▶ APPROVED ──send──▶ SENT ──▶ RECEIVED
+  │  total ≤ branch.poApprovalThresholdVnd (0 = every PO needs approval)
+  └──────────────────── send ─────────────────────────────────▶ SENT
+reject: APPROVED ──▶ DRAFT (clears approvedBy/approvedAt)
+```
+
+send() refuses an over-threshold PO that isn't APPROVED. PO writes moved onto the
+capability matrix (E4): `purchase-order:create` gates create/update/send/cancel,
+`purchase-order:approve` gates approve/reject — THU_KHO holds create only
+(warehouse creates, a manager approves). Goods-receipt still uses the
+inventory-write role set.
+
+Supplier-debt aging (`/sales/finance/payables/aging`) buckets each OPEN payable's
+outstanding by how many days its dueDate is past today (not-due / 1-30 / 31-60 /
+60+), grouped by supplier; due-soon lists payables due within 7 days or overdue.
+Derived purely from `SupplierPayable` (no schema change), gated on `cash:read`.
 
 ### VietQR auto-reconcile
 

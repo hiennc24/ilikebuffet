@@ -2,7 +2,7 @@
 title: "E4 — Duyệt mua hàng (PO approval) + Công nợ nâng cao (aging)"
 slug: e4-po-approval-debt-aging
 created: 2026-08-03
-status: in-progress
+status: done
 priority: P1
 mode: --tdd
 
@@ -42,10 +42,10 @@ khi gửi NCC), và **báo cáo tuổi nợ (aging)** cho công nợ NCC đã c�
 
 | Phase | Tên | Nội dung | Phụ thuộc | Status |
 |-------|-----|----------|-----------|--------|
-| P0 | [PO approval backend](./phase-p0-po-approval-backend.md) | schema (APPROVED, approvedBy/At, branch threshold) + migration + matrix (+spec) + service approve/reject + send-guard + capability gate + e2e | — | planned |
-| P1 | [PO approval frontend](./phase-p1-po-approval-frontend.md) | màn đơn mua: hiển thị APPROVED + nút duyệt/từ chối (theo cap) + cấu hình ngưỡng ở màn chi nhánh + tests | P0 | planned |
-| P2 | [Aging backend](./phase-p2-aging-backend.md) | FinanceService.payableAging (buckets theo tuổi nợ) + due-soon list + xlsx + controller (cash:read) + e2e | — | planned |
-| P3 | [Aging frontend + docs](./phase-p3-aging-frontend-docs.md) | màn tuổi nợ (buckets + sắp/quá hạn + Excel) + docs + full verify | P0,P1,P2 | planned |
+| P0 | [PO approval backend](./phase-p0-po-approval-backend.md) | schema (APPROVED, approvedBy/At, branch threshold) + migration + matrix (+spec) + service approve/reject + send-guard + capability gate + e2e | — | done |
+| P1 | [PO approval frontend](./phase-p1-po-approval-frontend.md) | màn đơn mua: hiển thị APPROVED + nút duyệt/từ chối (theo cap) + cấu hình ngưỡng ở màn chi nhánh + tests | P0 | done |
+| P2 | [Aging backend](./phase-p2-aging-backend.md) | FinanceService.payableAging (buckets theo tuổi nợ) + due-soon list + xlsx + controller (cash:read) + e2e | — | done |
+| P3 | [Aging frontend + docs](./phase-p3-aging-frontend-docs.md) | màn tuổi nợ (buckets + sắp/quá hạn + Excel) + docs + full verify | P0,P1,P2 | done |
 
 ## Acceptance
 - Đơn mua vượt `branch.poApprovalThresholdVnd` bắt buộc APPROVED trước khi SENT;

@@ -105,4 +105,6 @@ export const QUERY_KEYS = {
   quarantineReport: () => ["report-quarantine"] as const,
   numberGapsReport: () => ["report-number-gaps"] as const,
   dashboardReport: () => ["report-dashboard"] as const,
+  payableAging: () => ["report-payable-aging"] as const,
+  payableDueSoon: () => ["report-payable-due-soon"] as const,
 } as const;

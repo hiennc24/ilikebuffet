@@ -48,6 +48,7 @@ import { BankReconcilePage } from "./pages/bank-reconcile-page";
 import { ChainDashboardPage } from "./pages/chain-dashboard-page";
 import { FinancePage } from "./pages/finance-page";
 import { SupplierDebtPage } from "./pages/supplier-debt-page";
+import { SupplierAgingPage } from "./pages/supplier-aging-page";
 import { ShiftCashReportPage } from "./pages/shift-cash-report-page";
 import { OfflineReconPage } from "./pages/offline-recon-page";
 import { canAccessPath } from "./lib/rbac";
@@ -341,6 +342,16 @@ export function App() {
                         <RequireAccess path="/finance/payables">
                           <ShellLayout pageTitle="Công nợ nhà cung cấp">
                             <SupplierDebtPage />
+                          </ShellLayout>
+                        </RequireAccess>
+                      }
+                    />
+                    <Route
+                      path="/finance/aging"
+                      element={
+                        <RequireAccess path="/finance/aging">
+                          <ShellLayout pageTitle="Tuổi nợ NCC">
+                            <SupplierAgingPage />
                           </ShellLayout>
                         </RequireAccess>
                       }

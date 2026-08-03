@@ -139,6 +139,20 @@ Enforcement note: E3 is the first module to gate on the capability matrix
 (`platform/rbac/permissions.ts` `can()`) rather than hardcoded role sets. Plan:
 `plans/260803-1505-e3-thu-chi-finance/`.
 
+## E4 — Duyệt mua hàng (PO approval) + Công nợ nâng cao (aging) ✅ done
+
+- **PO approval:** new `APPROVED` status between DRAFT and SENT. A PO whose total
+  exceeds `branch.poApprovalThresholdVnd` (0 = every PO) must be approved before it
+  can be sent; `approve()` stamps `approvedBy/approvedAt`, `reject()` returns it to
+  DRAFT. PO writes now gate on the capability matrix (`purchase-order:create` for
+  create/update/send/cancel, `purchase-order:approve` for approve/reject) — THU_KHO
+  holds create only, so warehouse creates and a manager approves. Admin: approval
+  actions in the PO drawer + a `poApprovalThresholdVnd` field on branch settings.
+- **Công nợ nâng cao:** supplier-debt aging (`/sales/finance/payables/aging` + xlsx)
+  buckets each OPEN payable's outstanding by dueDate age (chưa đến hạn / 1-30 /
+  31-60 / 60+); due-soon (`/payables/due-soon`) lists payables due within 7 days or
+  overdue. New "Tuổi nợ NCC" screen. Plan: `plans/260803-1616-e4-po-approval-debt-aging/`.
+
 ## Carry-overs ✅ done
 
 - Shift-cash reconciliation xlsx export (`/sales/reports/shift-cash/export`).
@@ -146,5 +160,4 @@ Enforcement note: E3 is the first module to gate on the capability matrix
 
 ## Backlog (not started)
 
-- E4 — duyệt mua hàng (PO approval workflow) & công nợ nâng cao (aging, nhắc hạn).
-- (Otherwise propose the next milestone with the team.)
+- (None outstanding — propose the next milestone with the team.)
