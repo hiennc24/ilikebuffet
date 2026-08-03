@@ -295,6 +295,38 @@ export class ReportsService {
     };
   }
 
+  /** Shift-cash reconciliation as an .xlsx workbook (rows + a totals line). */
+  async exportShiftCash(query: ShiftCashQuery, access: BranchAccess): Promise<Buffer> {
+    const report = await this.shiftCash(query, access);
+    const wb = new ExcelJS.Workbook();
+    const sheet = wb.addWorksheet("Đối soát tiền ca");
+    sheet.columns = [
+      { header: "Ngày", key: "day", width: 12 },
+      { header: "Chi nhánh", key: "branch", width: 14 },
+      { header: "Tiền đầu ca", key: "opening", width: 14 },
+      { header: "DT tiền mặt", key: "cash", width: 14 },
+      { header: "Lý thuyết", key: "expected", width: 14 },
+      { header: "Đã đếm", key: "counted", width: 14 },
+      { header: "Chênh lệch", key: "variance", width: 14 },
+      { header: "Ghi chú", key: "note", width: 28 },
+    ];
+    for (const r of report.rows) {
+      sheet.addRow({
+        day: r.businessDate,
+        branch: r.branchId,
+        opening: r.openingCashVnd,
+        cash: r.cashRevenueVnd,
+        expected: r.expectedCashVnd,
+        counted: r.countedCashVnd,
+        variance: r.varianceVnd,
+        note: r.varianceNote ?? "",
+      });
+    }
+    sheet.addRow({});
+    sheet.addRow({ day: "TỔNG", variance: report.totals.varianceVnd, note: `Thiếu ${report.totals.shortCount} · Thừa ${report.totals.overCount} · ${report.totals.shiftCount} ca` });
+    return Buffer.from(await wb.xlsx.writeBuffer());
+  }
+
   // ─── Dashboard ──────────────────────────────────────────────────────────────
 
   /** Quick KPIs for the admin dashboard, branch-scoped, for today (VN date). */

@@ -5,9 +5,11 @@
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { formatVnd } from "@ilikebuffet/shared";
+import { Button } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
 import { useReport } from "../lib/use-report";
+import { buildQuery } from "../lib/use-paged-list";
 import { QUERY_KEYS } from "../lib/query-keys";
 import { Card, PageStack, DataTable, Column, Badge, LoadingState, ErrorState, toErrorMessage } from "./_shared/admin-ui";
 import { KpiCard, KpiRow, DateRangeBar, type Branch } from "./_shared/report-ui";
@@ -47,6 +49,22 @@ export const ShiftCashReportPage: React.FC = () => {
 
   const patch = (p: Partial<typeof filter>) => setFilter((f) => ({ ...f, ...p }));
 
+  const [exporting, setExporting] = React.useState(false);
+  const doExport = async () => {
+    setExporting(true);
+    try {
+      const blob = await api.download(`/sales/reports/shift-cash/export?${buildQuery(filter)}`);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `doi-soat-tien-ca-${filter.from}-${filter.to}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   const columns: Column<ShiftCashRow>[] = [
     { key: "date", header: "Ngày", render: (r) => r.businessDate },
     { key: "branch", header: "Chi nhánh", render: (r) => branchName(r.branchId) },
@@ -64,7 +82,16 @@ export const ShiftCashReportPage: React.FC = () => {
   return (
     <PageStack>
       <Card title="Đối soát tiền mặt theo ca" description="Chỉ ca đã đóng. Chênh lệch = đếm − dự kiến.">
-        <DateRangeBar value={filter} onChange={patch} branches={isChainWide ? branches : undefined} />
+        <DateRangeBar
+          value={filter}
+          onChange={patch}
+          branches={isChainWide ? branches : undefined}
+          right={
+            <Button variant="ghost" disabled={exporting} onClick={doExport}>
+              {exporting ? "Đang xuất…" : "Xuất Excel"}
+            </Button>
+          }
+        />
 
         {isLoading ? (
           <LoadingState />

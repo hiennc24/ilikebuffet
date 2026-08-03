@@ -67,6 +67,14 @@ export class ReportsController {
     return this.reports.shiftCash(query, this.access(req));
   }
 
+  @Get("shift-cash/export")
+  async exportShiftCash(@Query() query: ShiftCashQuery, @Request() req: ScopedRequest, @Res() res: Response) {
+    const buffer = await this.reports.exportShiftCash(query, this.access(req));
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.setHeader("Content-Disposition", `attachment; filename="doi-soat-tien-ca-${query.from ?? ""}-${query.to ?? ""}.xlsx"`);
+    res.send(buffer);
+  }
+
   @Get("quarantine")
   quarantine(@Query() query: QuarantineQuery, @Request() req: ScopedRequest) {
     return this.reports.quarantine(query, this.access(req));

@@ -155,4 +155,11 @@ describe("Revenue report (integration)", () => {
   it("shift-cash: cashier forbidden", async () => {
     await request(app.getHttpServer()).get(`/sales/reports/shift-cash?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${cashierToken}`).expect(403);
   });
+
+  it("shift-cash: exports an xlsx attachment (role-gated)", async () => {
+    const res = await request(app.getHttpServer()).get(`/sales/reports/shift-cash/export?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${hqToken}`).expect(200);
+    expect(res.headers["content-type"]).toContain("spreadsheetml.sheet");
+    expect(res.headers["content-disposition"]).toContain(".xlsx");
+    await request(app.getHttpServer()).get(`/sales/reports/shift-cash/export?from=${DAY}&to=${DAY}`).set("Authorization", `Bearer ${cashierToken}`).expect(403);
+  });
 });

@@ -105,6 +105,11 @@ moving-average balance/on-hand valuation is untouched. Exposed at
 gross-margin screen next to the moving-average estimate. Plan:
 `plans/260803-1215-m9-fifo-cogs/`.
 
-## M10+ — Backlog (not started)
+## Carry-overs ✅ done
 
-- Small carry-overs: shift-cash xlsx export; system-architecture doc.
+- Shift-cash reconciliation xlsx export (`/sales/reports/shift-cash/export`).
+- System architecture doc (`docs/system-architecture.md`).
+
+## Backlog (not started)
+
+- (None outstanding — propose the next milestone with the team.)
