@@ -22,7 +22,8 @@ import { PurchaseOrdersService } from "./purchase-orders.service";
 import { GoodsReceiptService } from "../receipts/goods-receipt.service";
 import { INVENTORY_WRITE_ROLES } from "../inventory-roles";
 import { Role } from "../../platform/rbac/role.enum";
-import { can, type Capability } from "../../platform/rbac/permissions";
+import { PermissionService } from "../../platform/rbac/permission.service";
+import type { Capability } from "../../platform/rbac/permissions";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
 import {
   CreatePurchaseOrderDto,
@@ -36,7 +37,14 @@ export class PurchaseOrdersController {
   constructor(
     private readonly service: PurchaseOrdersService,
     private readonly receipts: GoodsReceiptService,
+    private readonly perms: PermissionService,
   ) {}
+
+  private async requireCap(req: ScopedRequest, capability: Capability) {
+    if (!(await this.perms.can(req.user.role, capability))) {
+      throw new ForbiddenException("Không có quyền thao tác đơn mua");
+    }
+  }
 
   @Get()
   list(@Query() query: PurchaseOrderListQuery, @Request() req: ScopedRequest) {
@@ -49,42 +57,42 @@ export class PurchaseOrdersController {
   }
 
   @Post()
-  create(@Body() dto: CreatePurchaseOrderDto, @Request() req: ScopedRequest) {
-    requireCap(req, "purchase-order:create");
+  async create(@Body() dto: CreatePurchaseOrderDto, @Request() req: ScopedRequest) {
+    await this.requireCap(req, "purchase-order:create");
     return this.service.create(dto, req.user.sub, req.user.role, access(req));
   }
 
   @Put(":id")
-  update(
+  async update(
     @Param("id") id: string,
     @Body() dto: UpdatePurchaseOrderDto,
     @Request() req: ScopedRequest,
   ) {
-    requireCap(req, "purchase-order:create");
+    await this.requireCap(req, "purchase-order:create");
     return this.service.update(id, dto, req.user.sub, req.user.role, access(req));
   }
 
   @Post(":id/approve")
-  approve(@Param("id") id: string, @Request() req: ScopedRequest) {
-    requireCap(req, "purchase-order:approve");
+  async approve(@Param("id") id: string, @Request() req: ScopedRequest) {
+    await this.requireCap(req, "purchase-order:approve");
     return this.service.approve(id, req.user.sub, req.user.role, access(req));
   }
 
   @Post(":id/reject")
-  reject(@Param("id") id: string, @Request() req: ScopedRequest) {
-    requireCap(req, "purchase-order:approve");
+  async reject(@Param("id") id: string, @Request() req: ScopedRequest) {
+    await this.requireCap(req, "purchase-order:approve");
     return this.service.reject(id, req.user.sub, req.user.role, access(req));
   }
 
   @Post(":id/send")
-  send(@Param("id") id: string, @Request() req: ScopedRequest) {
-    requireCap(req, "purchase-order:create");
+  async send(@Param("id") id: string, @Request() req: ScopedRequest) {
+    await this.requireCap(req, "purchase-order:create");
     return this.service.send(id, req.user.sub, req.user.role, access(req));
   }
 
   @Post(":id/cancel")
-  cancel(@Param("id") id: string, @Request() req: ScopedRequest) {
-    requireCap(req, "purchase-order:create");
+  async cancel(@Param("id") id: string, @Request() req: ScopedRequest) {
+    await this.requireCap(req, "purchase-order:create");
     return this.service.cancel(id, req.user.sub, req.user.role, access(req));
   }
 
@@ -100,10 +108,4 @@ export class PurchaseOrdersController {
 
 function access(req: ScopedRequest) {
   return { chainWide: req.user.chainWide, branchIds: req.user.branchIds };
-}
-
-function requireCap(req: ScopedRequest, capability: Capability) {
-  if (!can(req.user.role as Role, capability)) {
-    throw new ForbiddenException("Không có quyền thao tác đơn mua");
-  }
 }

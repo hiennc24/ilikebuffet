@@ -9,55 +9,58 @@
 import { Body, Controller, ForbiddenException, Get, Param, Post, Query, Request, Res } from "@nestjs/common";
 import type { Response } from "express";
 import { FinanceService } from "./finance.service";
-import { can, type Capability } from "../../platform/rbac/permissions";
-import { Role } from "../../platform/rbac/role.enum";
+import { PermissionService } from "../../platform/rbac/permission.service";
+import type { Capability } from "../../platform/rbac/permissions";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
 import { CreateFinancialDto, FinancialListQuery, PaySupplierDto, PayableListQuery, PayableAgingQuery } from "./finance.dto";
 
 @Controller("sales/finance")
 export class FinanceController {
-  constructor(private readonly service: FinanceService) {}
+  constructor(
+    private readonly service: FinanceService,
+    private readonly perms: PermissionService,
+  ) {}
 
-  private require(req: ScopedRequest, capability: Capability) {
-    if (!can(req.user.role as Role, capability)) {
+  private async require(req: ScopedRequest, capability: Capability) {
+    if (!(await this.perms.can(req.user.role, capability))) {
       throw new ForbiddenException("Không có quyền thao tác thu-chi");
     }
     return { chainWide: req.user.chainWide, branchIds: req.user.branchIds };
   }
 
   @Get()
-  list(@Query() query: FinancialListQuery, @Request() req: ScopedRequest) {
-    const access = this.require(req, "cash:read");
+  async list(@Query() query: FinancialListQuery, @Request() req: ScopedRequest) {
+    const access = await this.require(req, "cash:read");
     return this.service.list(query, access);
   }
 
   @Get("summary")
-  summary(@Query() query: FinancialListQuery, @Request() req: ScopedRequest) {
-    const access = this.require(req, "cash:read");
+  async summary(@Query() query: FinancialListQuery, @Request() req: ScopedRequest) {
+    const access = await this.require(req, "cash:read");
     return this.service.summary(query, access);
   }
 
   @Post()
-  create(@Body() dto: CreateFinancialDto, @Request() req: ScopedRequest) {
-    const access = this.require(req, "cash:create-voucher");
+  async create(@Body() dto: CreateFinancialDto, @Request() req: ScopedRequest) {
+    const access = await this.require(req, "cash:create-voucher");
     return this.service.create(dto, req.user.sub, req.user.role, access);
   }
 
   @Get("payables")
-  payables(@Query() query: PayableListQuery, @Request() req: ScopedRequest) {
-    const access = this.require(req, "cash:read");
+  async payables(@Query() query: PayableListQuery, @Request() req: ScopedRequest) {
+    const access = await this.require(req, "cash:read");
     return this.service.listPayables(query, access);
   }
 
   @Get("payables/aging")
-  aging(@Query() query: PayableAgingQuery, @Request() req: ScopedRequest) {
-    const access = this.require(req, "cash:read");
+  async aging(@Query() query: PayableAgingQuery, @Request() req: ScopedRequest) {
+    const access = await this.require(req, "cash:read");
     return this.service.payableAging(query, access);
   }
 
   @Get("payables/aging/export")
   async exportAging(@Query() query: PayableAgingQuery, @Request() req: ScopedRequest, @Res() res: Response) {
-    const access = this.require(req, "cash:read");
+    const access = await this.require(req, "cash:read");
     const buffer = await this.service.exportPayableAging(query, access);
     res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     res.setHeader("Content-Disposition", `attachment; filename="tuoi-no-ncc.xlsx"`);
@@ -65,14 +68,14 @@ export class FinanceController {
   }
 
   @Get("payables/due-soon")
-  dueSoon(@Query() query: PayableAgingQuery, @Request() req: ScopedRequest) {
-    const access = this.require(req, "cash:read");
+  async dueSoon(@Query() query: PayableAgingQuery, @Request() req: ScopedRequest) {
+    const access = await this.require(req, "cash:read");
     return this.service.dueSoon(query, access);
   }
 
   @Post("payables/:id/pay")
-  paySupplier(@Param("id") id: string, @Body() dto: PaySupplierDto, @Request() req: ScopedRequest) {
-    const access = this.require(req, "cash:create-voucher");
+  async paySupplier(@Param("id") id: string, @Body() dto: PaySupplierDto, @Request() req: ScopedRequest) {
+    const access = await this.require(req, "cash:create-voucher");
     return this.service.paySupplier(id, dto, req.user.sub, req.user.role, access);
   }
 }
