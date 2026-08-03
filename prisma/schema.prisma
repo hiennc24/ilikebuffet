@@ -20,16 +20,6 @@ datasource db {
 
 // ─── Enums ───────────────────────────────────────────────────────────────────
 
-/// 6 fixed roles (NT-02). No custom roles in MVP.
-enum Role {
-  QUAN_TRI_HQ // Quản trị HQ — system administrator
-  CHU_CHUOI // Chủ chuỗi — chain owner
-  KE_TOAN_CHUOI // Kế toán chuỗi — chain accountant
-  QUAN_LY_CN // Quản lý CN — branch manager
-  THU_NGAN // Thu ngân — cashier
-  THU_KHO // Thủ kho — warehouse keeper
-}
-
 /// Branch operational status.
 enum BranchStatus {
   ACTIVE
@@ -188,7 +178,10 @@ model AppUser {
   id                 String    @id @default(cuid())
   username           String    @unique
   passwordHash       String
-  role               Role
+  /// Role code — soft reference to Role.code (DB-backed roles, RBAC-01). Kept as a
+  /// plain string (not an FK) so seeding/backfill ordering stays simple; the service
+  /// validates it and blocks deleting a role that still has users.
+  role               String
   /// true = Chủ chuỗi / Kế toán chuỗi / HQ — access all branches without UserBranch rows.
   chainWide          Boolean   @default(false)
   /// Force password change on first login (NT-02.5).
@@ -222,6 +215,36 @@ model UserBranch {
 
   @@id([userId, branchId])
   @@map("user_branch")
+}
+
+/// DB-backed role (RBAC-01). The 6 original roles are seeded as isSystem=true; new
+/// roles are fully CRUD-able. A role's capabilities are drawn from the fixed code
+/// catalog (capability-catalog.ts) — capabilities themselves are not user-creatable.
+model Role {
+  id           String           @id @default(cuid())
+  /// Stable code referenced by AppUser.role (e.g. "QUAN_TRI_HQ" or a custom code).
+  code         String           @unique
+  name         String
+  description  String?
+  /// Seeded built-in role. Editable, but a safety net blocks locking out admins.
+  isSystem     Boolean          @default(false)
+  createdAt    DateTime         @default(now()) @db.Timestamptz(3)
+
+  capabilities RoleCapability[]
+
+  @@map("role")
+}
+
+/// One capability granted to a role. `capability` must be a key in the code catalog.
+model RoleCapability {
+  roleId     String
+  capability String
+
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, capability])
+  @@index([capability])
+  @@map("role_capability")
 }
 
 /// Registered POS device. Server-issued deviceId + per-device secret (argon2-hashed).

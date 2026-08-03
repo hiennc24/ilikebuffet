@@ -1,6 +1,8 @@
 /**
- * 6 fixed roles matching the Prisma enum. No custom roles in MVP.
- * Mirrors prisma/schema.prisma Role enum — keep in sync.
+ * The 6 built-in role codes (RBAC-01). Roles are now DB-backed (the `role` table)
+ * and CRUD-able; these constants name the SYSTEM roles seeded isSystem=true and
+ * referenced in code (default capability matrix, chain-wide set). AppUser.role is a
+ * free string (a role.code) — custom roles use codes outside this enum.
  */
 export enum Role {
   QUAN_TRI_HQ = "QUAN_TRI_HQ",
