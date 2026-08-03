@@ -86,9 +86,17 @@ edits stay HQ/owner, per-branch overrides may also be set by the branch manager
 (access-checked). The recipe screen adds a scope selector. Plan:
 `plans/260803-1121-m7-branch-recipe/`.
 
-## M8+ — Backlog (not started)
+## M8 — VietQR tự đối soát (Sepay webhook) ✅ done
+
+Inbound bank transfers arrive via a public, Apikey-verified webhook
+(`POST /webhooks/sepay`, secret `SEPAY_API_KEY`, fail-closed) and are stored
+idempotently in `bank_transaction`. A transfer auto-confirms a VIETQR payment when
+exactly one unpaid bill matches its amount and its number appears in the transfer
+memo; zero/ambiguous/already-paid go to a chain-level review screen
+(`/reports/bank-reconcile`) for manual match-by-number or ignore. Plan:
+`plans/260803-1147-m8-vietqr-reconcile/`.
+
+## M9+ — Backlog (not started)
 
 - **Giá vốn thực tế:** actual issue cost (per-lot) instead of estimated recipe COGS.
-- **Tự động hoá thanh toán:** VietQR auto-reconcile (webhook), replacing manual
-  payment confirmation.
 - Small carry-overs: shift-cash xlsx export; system-architecture doc.

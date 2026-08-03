@@ -2,7 +2,7 @@
 title: "M8 — VietQR tự đối soát (Sepay webhook)"
 slug: m8-vietqr-reconcile
 created: 2026-08-03
-status: planned
+status: done
 priority: P1
 mode: --tdd
 
@@ -43,9 +43,9 @@ tự áp; 0 hoặc >1 → UNMATCHED.
 
 | Phase | Tên | Nội dung | Phụ thuộc | Status |
 |-------|-----|----------|-----------|--------|
-| V0 | [Ingest](./phase-v0-ingest.md) | schema BankTransaction + migration + webhook @Public (verify Apikey, dedupe, store "in") + e2e | — | planned |
-| V1 | [Match + auto-pay](./phase-v1-match.md) | khớp (amount+number) + tự tạo Payment VIETQR + paidAt in-tx + audit + e2e | V0 | planned |
-| V2 | [Admin + docs](./phase-v2-admin-docs.md) | màn đối soát ngân hàng (list + khớp/bỏ qua thủ công) + docs + full verify | V0,V1 | planned |
+| V0 | [Ingest](./phase-v0-ingest.md) | schema BankTransaction + migration + webhook @Public (verify Apikey, dedupe, store "in") + e2e | — | ✅ done |
+| V1 | [Match + auto-pay](./phase-v1-match.md) | khớp (amount+number) + tự tạo Payment VIETQR + paidAt in-tx + audit + e2e | V0 | ✅ done |
+| V2 | [Admin + docs](./phase-v2-admin-docs.md) | màn đối soát ngân hàng (list + khớp/bỏ qua thủ công) + docs + full verify | V0,V1 | ✅ done |
 
 ## Acceptance
 - Webhook sai/khuyết Apikey → 401; đúng → 200 {success}. Replay cùng txId không áp kép.

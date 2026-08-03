@@ -82,6 +82,12 @@ const DEFAULT_GROUPS: NavGroup[] = [
         iconPath: "M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6",
       },
       {
+        id: "bank-reconcile",
+        label: "Đối soát ngân hàng",
+        path: "/reports/bank-reconcile",
+        iconPath: "M3 21h18M4 10h16M5 10V7l7-4 7 4v3M6 10v8M10 10v8M14 10v8M18 10v8",
+      },
+      {
         id: "offline-recon",
         label: "Đối soát offline",
         path: "/reports/offline",

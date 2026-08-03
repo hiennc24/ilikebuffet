@@ -151,6 +151,66 @@ export class BankReconcileService {
 
   // ─── Manual review (V2 admin) ──────────────────────────────────────────────
 
+  /** Paginated transaction list (newest first); rawPayload is never exposed. */
+  async list(query: {
+    status?: string;
+    from?: string;
+    to?: string;
+    page?: number;
+    pageSize?: number;
+  }) {
+    const page = query.page ?? 1;
+    const pageSize = Math.min(query.pageSize ?? 20, 100);
+    const transferredAt: { gte?: Date; lte?: Date } = {};
+    if (query.from) transferredAt.gte = new Date(`${query.from}T00:00:00Z`);
+    if (query.to) transferredAt.lte = new Date(`${query.to}T23:59:59Z`);
+    const where: Prisma.BankTransactionWhereInput = {
+      ...(query.status ? { status: query.status as Prisma.EnumBankTxStatusFilter["equals"] } : {}),
+      ...(transferredAt.gte || transferredAt.lte ? { transferredAt } : {}),
+    };
+
+    const [rows, total] = await Promise.all([
+      this.prisma.bankTransaction.findMany({
+        where,
+        orderBy: { receivedAt: "desc" },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        select: {
+          id: true,
+          gateway: true,
+          amountVnd: true,
+          content: true,
+          referenceCode: true,
+          transferredAt: true,
+          status: true,
+          matchedBillId: true,
+          note: true,
+        },
+      }),
+      this.prisma.bankTransaction.count({ where }),
+    ]);
+
+    // Resolve matched bill numbers for display (small page; no FK relation).
+    const billIds = rows.map((r) => r.matchedBillId).filter((v): v is string => !!v);
+    const numberById = new Map<string, string>();
+    if (billIds.length > 0) {
+      const bills = await this.prisma.bill.findMany({ where: { id: { in: billIds } }, select: { id: true, number: true } });
+      for (const b of bills) numberById.set(b.id, b.number);
+    }
+
+    return {
+      data: rows.map((r) => ({ ...r, matchedBillNumber: r.matchedBillId ? numberById.get(r.matchedBillId) ?? null : null })),
+      total,
+    };
+  }
+
+  /** Manually match by the human bill number (resolves to the bill then applies). */
+  async matchByNumber(bankTxId: string, billNumber: string, actorId: string, access: BranchAccess) {
+    const bill = await this.prisma.bill.findUnique({ where: { number: billNumber } });
+    if (!bill) throw new NotFoundException("Không tìm thấy bill");
+    return this.matchToBill(bankTxId, bill.id, actorId, access);
+  }
+
   /** Manually attach a transaction to a bill (branch-access + amount checked). */
   async matchToBill(bankTxId: string, billId: string, actorId: string, access: BranchAccess) {
     const bankTx = await this.prisma.bankTransaction.findUnique({ where: { id: bankTxId } });
