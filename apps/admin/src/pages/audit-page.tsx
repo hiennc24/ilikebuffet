@@ -5,7 +5,9 @@
  * screen only reads. No mutations — the trail is append-only.
  */
 import * as React from "react";
-import { usePagedList } from "../lib/use-paged-list";
+import { Button } from "@ilikebuffet/ui";
+import { useAuth } from "../auth/auth-context";
+import { usePagedList, buildQuery } from "../lib/use-paged-list";
 import { QUERY_KEYS } from "../lib/query-keys";
 import {
   Card,
@@ -41,9 +43,27 @@ interface AuditRow {
 const fmt = (iso: string) => new Date(iso).toLocaleString("vi-VN", { dateStyle: "short", timeStyle: "medium" });
 
 export const AuditPage: React.FC = () => {
+  const { api } = useAuth();
   const [filters, setFilters] = React.useState({ action: "", objectType: "", actorId: "", from: "", to: "" });
   const [page, setPage] = React.useState(1);
   const [selected, setSelected] = React.useState<AuditRow | null>(null);
+  const [exporting, setExporting] = React.useState(false);
+
+  const doExport = async () => {
+    setExporting(true);
+    try {
+      const qs = buildQuery(filters);
+      const blob = await api.download(`/audit/export${qs ? `?${qs}` : ""}`);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `nhat-ky-${filters.from || ""}-${filters.to || ""}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const { rows, total, pageCount, isLoading, isError, error } = usePagedList<AuditRow>({
     queryKey: QUERY_KEYS.audit(),
@@ -68,7 +88,15 @@ export const AuditPage: React.FC = () => {
 
   return (
     <PageStack>
-      <Card title="Nhật ký" description="Lịch sử thao tác (chỉ đọc, không thể sửa/xoá).">
+      <Card
+        title="Nhật ký"
+        description="Lịch sử thao tác (chỉ đọc, không thể sửa/xoá)."
+        actions={
+          <Button variant="ghost" disabled={exporting} onClick={doExport}>
+            {exporting ? "Đang xuất…" : "Xuất Excel"}
+          </Button>
+        }
+      >
         <FilterBar>
           <input type="search" aria-label="Hành động" placeholder="Hành động (vd bill.cancel)…" value={filters.action} onChange={(e) => patch({ action: e.target.value })} style={inputStyle} />
           <input type="search" aria-label="Loại đối tượng" placeholder="Loại đối tượng…" value={filters.objectType} onChange={(e) => patch({ objectType: e.target.value })} style={inputStyle} />

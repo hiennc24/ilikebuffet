@@ -112,4 +112,25 @@ describe("Audit query (integration)", () => {
     expect(rows.length).toBeGreaterThan(0);
     expect(rows.every((r) => r.action === "bill.cancel")).toBe(true);
   });
+
+  it("exports a filtered .xlsx for HQ", async () => {
+    const res = await request(app.getHttpServer())
+      .get("/audit/export?action=bill.cancel")
+      .set("Authorization", `Bearer ${hqToken}`)
+      .buffer(true)
+      .parse((r, cb) => {
+        const chunks: Buffer[] = [];
+        r.on("data", (c: Buffer) => chunks.push(c));
+        r.on("end", () => cb(null, Buffer.concat(chunks)));
+      })
+      .expect(200);
+    expect(res.headers["content-type"]).toContain("spreadsheetml");
+    expect(res.headers["content-disposition"]).toContain(".xlsx");
+    // xlsx is a zip — the buffer starts with the "PK" magic bytes.
+    expect((res.body as Buffer).subarray(0, 2).toString()).toBe("PK");
+  });
+
+  it("export is forbidden for a cashier", async () => {
+    await request(app.getHttpServer()).get("/audit/export").set("Authorization", `Bearer ${cashierToken}`).expect(403);
+  });
 });

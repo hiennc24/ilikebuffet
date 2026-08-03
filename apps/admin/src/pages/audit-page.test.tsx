@@ -77,6 +77,22 @@ describe("AuditPage", () => {
     await waitFor(() => expect(seen.some((p) => p.includes("action=bill.refund"))).toBe(true));
   });
 
+  it("exports via /audit/export with the current filters", async () => {
+    const seen: string[] = [];
+    globalThis.fetch = makeFetch(seen);
+    const createObjURL = vi.fn(() => "blob:x");
+    vi.stubGlobal("URL", { ...URL, createObjectURL: createObjURL, revokeObjectURL: vi.fn() });
+
+    render(<AuditPage />, { wrapper });
+    await waitFor(() => expect(screen.getByText("bill.cancel")).toBeTruthy());
+
+    fireEvent.change(screen.getByLabelText("Hành động"), { target: { value: "bill.cancel" } });
+    fireEvent.click(screen.getByText("Xuất Excel"));
+
+    await waitFor(() => expect(seen.some((p) => p.startsWith("/audit/export") && p.includes("action=bill.cancel"))).toBe(true));
+    vi.unstubAllGlobals();
+  });
+
   it("opens a before/after detail drawer", async () => {
     globalThis.fetch = makeFetch();
     render(<AuditPage />, { wrapper });
