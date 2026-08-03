@@ -20,16 +20,18 @@ import type {
   PurchaseOrderListQuery,
 } from "./purchase-orders.dto";
 
-/** A PO with its lines and supplier, as loaded from the DB. */
+/** A PO with its lines, supplier, and branch approval threshold, from the DB. */
 type PoWithLines = Prisma.PurchaseOrderGetPayload<{
   include: {
     supplier: { select: { id: true; name: true } };
+    branch: { select: { poApprovalThresholdVnd: true } };
     lines: { include: { ingredient: { select: { name: true; code: true } }; unit: { select: { code: true; name: true } } } };
   };
 }>;
 
 const PO_INCLUDE = {
   supplier: { select: { id: true, name: true } },
+  branch: { select: { poApprovalThresholdVnd: true } },
   lines: {
     include: {
       ingredient: { select: { name: true, code: true } },
@@ -165,21 +167,94 @@ export class PurchaseOrdersService {
     });
   }
 
-  send(id: string, actorId: string, role: string, access: BranchAccess) {
-    return this.transition(id, actorId, role, access, {
-      from: ["DRAFT"],
-      to: "SENT",
-      action: "purchase_order.sent",
-      error: "Chỉ gửi được đơn mua ở trạng thái nháp",
+  /** Sign off a DRAFT order so it may be sent. */
+  async approve(id: string, actorId: string, role: string, access: BranchAccess) {
+    const po = await this.prisma.purchaseOrder.findUnique({ where: { id }, include: PO_INCLUDE });
+    if (!po) throw new NotFoundException("Không tìm thấy đơn mua");
+    assertBranchAccess(access, po.branchId);
+    if (po.status !== "DRAFT") throw new BadRequestException("Chỉ duyệt được đơn mua ở trạng thái nháp");
+
+    return this.prisma.withTx(async (tx) => {
+      const updated = await tx.purchaseOrder.update({
+        where: { id },
+        data: { status: "APPROVED", approvedBy: actorId, approvedAt: new Date() },
+        include: PO_INCLUDE,
+      });
+      await this.audit.record(tx, {
+        actorId,
+        actorRole: role,
+        action: "purchase_order.approved",
+        objectType: "purchase_order",
+        objectId: updated.id,
+        branchId: updated.branchId,
+        before: { status: po.status },
+        after: { status: updated.status, totalVnd: this.totalOf(updated) },
+      });
+      return this.toView(updated);
+    });
+  }
+
+  /** Send a DRAFT back for edits, clearing an approval it had received. */
+  async reject(id: string, actorId: string, role: string, access: BranchAccess) {
+    const po = await this.prisma.purchaseOrder.findUnique({ where: { id } });
+    if (!po) throw new NotFoundException("Không tìm thấy đơn mua");
+    assertBranchAccess(access, po.branchId);
+    if (po.status !== "APPROVED") throw new BadRequestException("Chỉ từ chối được đơn mua đã duyệt");
+
+    return this.prisma.withTx(async (tx) => {
+      const updated = await tx.purchaseOrder.update({
+        where: { id },
+        data: { status: "DRAFT", approvedBy: null, approvedAt: null },
+        include: PO_INCLUDE,
+      });
+      await this.audit.record(tx, {
+        actorId,
+        actorRole: role,
+        action: "purchase_order.rejected",
+        objectType: "purchase_order",
+        objectId: updated.id,
+        branchId: updated.branchId,
+        before: { status: po.status },
+        after: { status: updated.status },
+      });
+      return this.toView(updated);
+    });
+  }
+
+  /** Issue the order to the supplier. An over-threshold PO must be APPROVED first. */
+  async send(id: string, actorId: string, role: string, access: BranchAccess) {
+    const po = await this.prisma.purchaseOrder.findUnique({ where: { id }, include: PO_INCLUDE });
+    if (!po) throw new NotFoundException("Không tìm thấy đơn mua");
+    assertBranchAccess(access, po.branchId);
+    if (po.status !== "DRAFT" && po.status !== "APPROVED") {
+      throw new BadRequestException("Chỉ gửi được đơn mua ở trạng thái nháp hoặc đã duyệt");
+    }
+    if (this.needsApproval(this.totalOf(po), po) && po.status !== "APPROVED") {
+      throw new BadRequestException("Đơn cần được duyệt trước khi gửi");
+    }
+
+    return this.prisma.withTx(async (tx) => {
+      const updated = await tx.purchaseOrder.update({ where: { id }, data: { status: "SENT" }, include: PO_INCLUDE });
+      await this.audit.record(tx, {
+        actorId,
+        actorRole: role,
+        action: "purchase_order.sent",
+        objectType: "purchase_order",
+        objectId: updated.id,
+        branchId: updated.branchId,
+        before: { status: po.status },
+        after: { status: updated.status },
+      });
+      return this.toView(updated);
     });
   }
 
   cancel(id: string, actorId: string, role: string, access: BranchAccess) {
     return this.transition(id, actorId, role, access, {
-      from: ["DRAFT", "SENT"],
+      from: ["DRAFT", "APPROVED", "SENT"],
       to: "CANCELLED",
       action: "purchase_order.cancelled",
-      error: "Chỉ huỷ được đơn mua ở trạng thái nháp hoặc đã gửi",
+      error: "Chỉ huỷ được đơn mua chưa nhận hàng",
     });
   }
 
@@ -279,7 +354,14 @@ export class PurchaseOrdersService {
     return sumVnd(po.lines.map((l) => l.lineTotalVnd));
   }
 
+  /** A PO needs manager approval when its total exceeds the branch threshold
+   *  (threshold 0 → every PO with a positive total needs approval). */
+  private needsApproval(totalVnd: number, po: PoWithLines): boolean {
+    return totalVnd > po.branch.poApprovalThresholdVnd;
+  }
+
   private toView(po: PoWithLines) {
+    const totalVnd = this.totalOf(po);
     return {
       id: po.id,
       code: po.code,
@@ -289,8 +371,11 @@ export class PurchaseOrdersService {
       status: po.status,
       note: po.note,
       createdBy: po.createdBy,
+      approvedBy: po.approvedBy,
+      approvedAt: po.approvedAt,
+      needsApproval: this.needsApproval(totalVnd, po),
       createdAt: po.createdAt,
-      totalVnd: this.totalOf(po),
+      totalVnd,
       lines: po.lines.map((l) => ({
         id: l.id,
         ingredientId: l.ingredientId,

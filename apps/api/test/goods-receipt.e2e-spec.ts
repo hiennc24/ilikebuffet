@@ -62,7 +62,8 @@ describe("goods receipt (integration)", () => {
     orders = new PurchaseOrdersService(prisma, audit);
     receipts = new GoodsReceiptService(prisma, audit, balance);
 
-    await prisma.branch.create({ data: { id: BRANCH, code: "GRB", name: "GRB", address: "x", phone: "0900000000" } });
+    // High threshold: this suite sends POs directly (approval has its own spec).
+    await prisma.branch.create({ data: { id: BRANCH, code: "GRB", name: "GRB", address: "x", phone: "0900000000", poApprovalThresholdVnd: 100_000_000 } });
     const kg = await prisma.unit.create({ data: { code: "KG", name: "Kilogram" } });
     const thung = await prisma.unit.create({ data: { code: "THUNG", name: "Thùng" } });
     thungUnitId = thung.id;

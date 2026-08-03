@@ -43,6 +43,8 @@ const ROLE_CAPABILITIES: Record<Role, Set<Capability>> = {
     "cash:read",
     "cash:create-voucher",
     "inventory:read",
+    "purchase-order:create",
+    "purchase-order:approve",
   ]),
 
   [Role.CHU_CHUOI]: new Set<Capability>([
@@ -52,6 +54,8 @@ const ROLE_CAPABILITIES: Record<Role, Set<Capability>> = {
     "cash:read",
     "cash:create-voucher",
     "inventory:read",
+    "purchase-order:create",
+    "purchase-order:approve",
   ]),
 
   [Role.KE_TOAN_CHUOI]: new Set<Capability>([
@@ -71,6 +75,7 @@ const ROLE_CAPABILITIES: Record<Role, Set<Capability>> = {
     "bill:cancel",
     "cash:read",
     "cash:create-voucher",
+    "purchase-order:create",
     "purchase-order:approve",
   ]),
 

@@ -49,7 +49,9 @@ describe("purchase orders (integration)", () => {
       [BRANCH_B, "CNB"],
     ] as const) {
       await prisma.branch.create({
-        data: { id, code, name: code, address: "x", phone: "0900000000" },
+        // High threshold: these lifecycle tests send/cancel directly, without the
+        // approval step (which has its own spec).
+        data: { id, code, name: code, address: "x", phone: "0900000000", poApprovalThresholdVnd: 100_000_000 },
       });
     }
     const kg = await prisma.unit.create({ data: { code: "KG", name: "Kilogram" } });

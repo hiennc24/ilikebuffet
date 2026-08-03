@@ -86,15 +86,16 @@ const matrix: MatrixRow[] = [
     capability: "inventory:manage",
     expected: { [Role.QUAN_TRI_HQ]: false, [Role.CHU_CHUOI]: false, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: false, [Role.THU_NGAN]: false, [Role.THU_KHO]: true },
   },
-  // purchase-order approve
+  // purchase-order approve — branch manager + chain admins sign off orders (E4).
   {
     capability: "purchase-order:approve",
-    expected: { [Role.QUAN_TRI_HQ]: false, [Role.CHU_CHUOI]: false, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: true, [Role.THU_NGAN]: false, [Role.THU_KHO]: false },
+    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: true, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: true, [Role.THU_NGAN]: false, [Role.THU_KHO]: false },
   },
-  // purchase-order create
+  // purchase-order create — the PO-write role set (warehouse + branch manager +
+  // chain admins); gates create/update/send/cancel (E4).
   {
     capability: "purchase-order:create",
-    expected: { [Role.QUAN_TRI_HQ]: false, [Role.CHU_CHUOI]: false, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: false, [Role.THU_NGAN]: false, [Role.THU_KHO]: true },
+    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: true, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: true, [Role.THU_NGAN]: false, [Role.THU_KHO]: true },
   },
 ];
 

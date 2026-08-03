@@ -71,6 +71,12 @@ describe("inventory + reconcile RBAC (integration)", () => {
     await get("/sales/bank-transactions", "THU_KHO").expect(403);
   });
 
+  it("warehouse (THU_KHO) may create POs but not approve them (separation of duties)", async () => {
+    // Holds purchase-order:create but not purchase-order:approve → approve is 403
+    // (capability is checked before the order is even loaded).
+    await post("/inventory/purchase-orders/any-id/approve", "THU_KHO", {}).expect(403);
+  });
+
   it("chain accountant (KE_TOAN_CHUOI) can view inventory + reconcile, but not write stock", async () => {
     await get("/inventory/stock", "KE_TOAN_CHUOI").expect(200);
     await get("/sales/bank-transactions", "KE_TOAN_CHUOI").expect(200);

@@ -109,10 +109,13 @@ enum PaymentMethod {
   CARD
 }
 
-/// Purchase-order lifecycle. DRAFT is editable; SENT is issued to the supplier;
-/// RECEIVED means goods were booked into stock; CANCELLED voids the order.
+/// Purchase-order lifecycle. DRAFT is editable; APPROVED is signed off by a
+/// manager (required once the total exceeds the branch approval threshold); SENT
+/// is issued to the supplier; RECEIVED means goods were booked into stock;
+/// CANCELLED voids the order.
 enum PoStatus {
   DRAFT
+  APPROVED
   SENT
   RECEIVED
   CANCELLED
@@ -164,6 +167,9 @@ model Branch {
   billInfo    Json?   @db.JsonB
   /// Logo URL override — null = inherit chain default.
   logoUrl     String?
+  /// Purchase-order approval threshold in integer VND. A PO whose total exceeds
+  /// this must be APPROVED before it can be sent. 0 = every PO needs approval.
+  poApprovalThresholdVnd Int @default(0)
 
   createdAt DateTime @default(now()) @db.Timestamptz(3)
 
@@ -760,6 +766,9 @@ model PurchaseOrder {
   note       String?
   /// actorId of the creator (AppUser.id). Scalar, like shift.openedBy.
   createdBy  String
+  /// actorId + time of the approver when the order was signed off (null until approved).
+  approvedBy String?
+  approvedAt DateTime? @db.Timestamptz(3)
   createdAt  DateTime @default(now()) @db.Timestamptz(3)
 
   branch   Branch             @relation(fields: [branchId], references: [id])
