@@ -93,6 +93,13 @@ export class CreateBranchDto {
   @IsUrl({}, { message: "logoUrl must be a valid URL" })
   logoUrl?: string;
 
+  /** PO approval threshold in integer VND. A PO over this must be approved before
+   *  sending; 0 (default) = every PO needs approval. */
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  poApprovalThresholdVnd?: number;
+
   /** Copy configuration (not transaction data) from this branch. */
   @IsOptional()
   @IsString()
@@ -140,6 +147,11 @@ export class UpdateBranchDto {
 
   @IsOptional()
   logoUrl?: string | null;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  poApprovalThresholdVnd?: number;
 }
 
 export class ChangeBranchStatusDto {

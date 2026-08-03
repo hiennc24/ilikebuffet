@@ -92,10 +92,25 @@ function makeFetch() {
   }) as typeof globalThis.fetch;
 }
 
-function seedAuth() {
-  sessionStorage.setItem("ibb_admin_at", "at");
+function seedAuth(role?: string) {
+  // decodeRole reads the JWT payload (2nd segment) — craft one carrying `role`.
+  const at = role ? `h.${btoa(JSON.stringify({ role }))}.s` : "at";
+  sessionStorage.setItem("ibb_admin_at", at);
   sessionStorage.setItem("ibb_admin_rt", "rt");
   localStorage.setItem("ibb_admin_branch", "branch-1");
+}
+
+/** A fetch that returns the given DRAFT/APPROVED detail for po-1. */
+function makeApprovalFetch(detail: Record<string, unknown>) {
+  return vi.fn(async (url: string, init?: RequestInit): Promise<Response> => {
+    const path = String(url).replace(/^https?:\/\/[^/]+/, "");
+    const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
+    if (init?.method === "POST" && path.includes("/inventory/purchase-orders/po-1/")) return json(201, { ...detail, status: "APPROVED" });
+    if (path.startsWith("/master-data/suppliers")) return json(200, SUPPLIERS);
+    if (path.startsWith("/inventory/purchase-orders/po-1")) return json(200, detail);
+    if (path.startsWith("/inventory/purchase-orders")) return json(200, { data: [detail], total: 1 });
+    return json(404, { error: "not found" });
+  }) as typeof globalThis.fetch;
 }
 
 function wrapper({ children }: { children: React.ReactNode }) {
@@ -175,5 +190,55 @@ describe("PurchaseOrdersPage", () => {
         ),
       ).toBe(true),
     );
+  });
+
+  it("lets an approver approve an over-threshold DRAFT order", async () => {
+    seedAuth("QUAN_LY_CN");
+    const draft = { ...PO_DETAIL, needsApproval: true, status: "DRAFT" };
+    globalThis.fetch = makeApprovalFetch(draft);
+
+    render(<PurchaseOrdersPage />, { wrapper });
+    await waitFor(() => expect(screen.getByText("PO-CN01-0001")).toBeTruthy());
+    fireEvent.click(screen.getByText("PO-CN01-0001"));
+
+    await waitFor(() => expect(screen.getByText("Duyệt")).toBeTruthy());
+    // Over-threshold: no direct "Gửi NCC" until approved.
+    expect(screen.queryByText("Gửi NCC")).toBeNull();
+
+    fireEvent.click(screen.getByText("Duyệt"));
+    await waitFor(() =>
+      expect(
+        (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls.some(
+          (c) => (c[1] as RequestInit | undefined)?.method === "POST" && String(c[0]).includes("/po-1/approve"),
+        ),
+      ).toBe(true),
+    );
+  });
+
+  it("shows send + reject for an APPROVED order to an approver", async () => {
+    seedAuth("QUAN_LY_CN");
+    const approved = { ...PO_DETAIL, needsApproval: true, status: "APPROVED", approvedBy: "mgr-1" };
+    globalThis.fetch = makeApprovalFetch(approved);
+
+    render(<PurchaseOrdersPage />, { wrapper });
+    await waitFor(() => expect(screen.getByText("PO-CN01-0001")).toBeTruthy());
+    fireEvent.click(screen.getByText("PO-CN01-0001"));
+
+    await waitFor(() => expect(screen.getByText("Gửi NCC")).toBeTruthy());
+    expect(screen.getByText("Từ chối")).toBeTruthy();
+  });
+
+  it("hides approve/send from a non-approver on an over-threshold DRAFT", async () => {
+    seedAuth("THU_KHO");
+    const draft = { ...PO_DETAIL, needsApproval: true, status: "DRAFT" };
+    globalThis.fetch = makeApprovalFetch(draft);
+
+    render(<PurchaseOrdersPage />, { wrapper });
+    await waitFor(() => expect(screen.getByText("PO-CN01-0001")).toBeTruthy());
+    fireEvent.click(screen.getByText("PO-CN01-0001"));
+
+    await waitFor(() => expect(screen.getByText(/cần quản lý duyệt/i)).toBeTruthy());
+    expect(screen.queryByText("Duyệt")).toBeNull();
+    expect(screen.queryByText("Gửi NCC")).toBeNull();
   });
 });

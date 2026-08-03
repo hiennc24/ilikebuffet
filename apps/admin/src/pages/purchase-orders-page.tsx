@@ -13,6 +13,7 @@ import { Button, Dialog } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
 import { usePagedList } from "../lib/use-paged-list";
+import { canApprovePo } from "../lib/rbac";
 import { QUERY_KEYS } from "../lib/query-keys";
 import {
   Card,
@@ -66,21 +67,26 @@ interface PoRow {
   branchId: string;
   supplierId: string;
   supplierName: string;
-  status: "DRAFT" | "SENT" | "RECEIVED" | "CANCELLED";
+  status: "DRAFT" | "APPROVED" | "SENT" | "RECEIVED" | "CANCELLED";
   note: string | null;
   createdAt: string;
+  approvedBy?: string | null;
+  approvedAt?: string | null;
+  needsApproval?: boolean;
   totalVnd: number;
   lines: PoLineView[];
 }
 
 const STATUS_LABEL: Record<PoRow["status"], string> = {
   DRAFT: "Nháp",
+  APPROVED: "Đã duyệt",
   SENT: "Đã gửi",
   RECEIVED: "Đã nhập",
   CANCELLED: "Đã huỷ",
 };
 const STATUS_TONE: Record<PoRow["status"], BadgeTone> = {
   DRAFT: "muted",
+  APPROVED: "neutral",
   SENT: "active",
   RECEIVED: "active",
   CANCELLED: "warn",
@@ -141,6 +147,7 @@ export const PurchaseOrdersPage: React.FC = () => {
           <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
             <option value="">Tất cả trạng thái</option>
             <option value="DRAFT">Nháp</option>
+            <option value="APPROVED">Đã duyệt</option>
             <option value="SENT">Đã gửi</option>
             <option value="RECEIVED">Đã nhập</option>
             <option value="CANCELLED">Đã huỷ</option>
@@ -352,10 +359,11 @@ const PoCreateDialog: React.FC<{ suppliers: Supplier[]; onClose: () => void }> =
 // ── Detail drawer + lifecycle actions ───────────────────────────────────────
 
 const PoDetailDrawer: React.FC<{ poId: string | null; onClose: () => void }> = ({ poId, onClose }) => {
-  const { api } = useAuth();
+  const { api, role } = useAuth();
   const qc = useQueryClient();
   const [actionError, setActionError] = React.useState<string | null>(null);
   const [receiving, setReceiving] = React.useState(false);
+  const mayApprove = canApprovePo(role);
 
   const detail = useQuery({
     queryKey: poId ? QUERY_KEYS.purchaseOrder(poId) : ["purchase-order", "none"],
@@ -365,7 +373,7 @@ const PoDetailDrawer: React.FC<{ poId: string | null; onClose: () => void }> = (
   const po = detail.data;
 
   const act = useMutation({
-    mutationFn: (action: "send" | "cancel") => api.post(`/inventory/purchase-orders/${poId}/${action}`, {}),
+    mutationFn: (action: "approve" | "reject" | "send" | "cancel") => api.post(`/inventory/purchase-orders/${poId}/${action}`, {}),
     onSuccess: () => {
       if (poId) void qc.invalidateQueries({ queryKey: QUERY_KEYS.purchaseOrder(poId) });
       void qc.invalidateQueries({ queryKey: QUERY_KEYS.purchaseOrders() });
@@ -385,6 +393,7 @@ const PoDetailDrawer: React.FC<{ poId: string | null; onClose: () => void }> = (
             <Row label="Ngày tạo" value={vnDate(po.createdAt)} />
             <Row label="Trạng thái" value={STATUS_LABEL[po.status]} />
             <Row label="Tổng tiền" value={formatVnd(po.totalVnd)} />
+            {po.approvedBy && <Row label="Người duyệt" value={po.approvedBy} />}
             {po.note && <Row label="Ghi chú" value={po.note} />}
           </section>
 
@@ -395,18 +404,40 @@ const PoDetailDrawer: React.FC<{ poId: string | null; onClose: () => void }> = (
           </Section>
 
           <InlineError message={actionError} />
+          {po.status === "DRAFT" && po.needsApproval && !mayApprove && (
+            <p style={{ margin: 0, fontSize: "var(--text-xs)", color: "var(--text-muted)" }}>
+              Đơn vượt ngưỡng — cần quản lý duyệt trước khi gửi.
+            </p>
+          )}
           <div style={{ display: "flex", gap: "var(--space-2)", justifyContent: "flex-end" }}>
-            {po.status === "DRAFT" && (
+            {po.status === "DRAFT" && po.needsApproval && mayApprove && (
+              <Button variant="action" disabled={act.isPending} onClick={() => act.mutate("approve")}>
+                Duyệt
+              </Button>
+            )}
+            {po.status === "DRAFT" && !po.needsApproval && (
               <Button variant="action" disabled={act.isPending} onClick={() => act.mutate("send")}>
                 Gửi NCC
               </Button>
+            )}
+            {po.status === "APPROVED" && (
+              <>
+                {mayApprove && (
+                  <Button variant="ghost" disabled={act.isPending} onClick={() => act.mutate("reject")}>
+                    Từ chối
+                  </Button>
+                )}
+                <Button variant="action" disabled={act.isPending} onClick={() => act.mutate("send")}>
+                  Gửi NCC
+                </Button>
+              </>
             )}
             {po.status === "SENT" && (
               <Button variant="action" disabled={act.isPending} onClick={() => setReceiving(true)}>
                 Nhập kho
               </Button>
             )}
-            {(po.status === "DRAFT" || po.status === "SENT") && (
+            {(po.status === "DRAFT" || po.status === "APPROVED" || po.status === "SENT") && (
               <Button variant="ghost" disabled={act.isPending} onClick={() => act.mutate("cancel")}>
                 Huỷ đơn
               </Button>

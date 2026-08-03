@@ -35,6 +35,7 @@ interface Branch {
   address: string;
   phone: string;
   status: BranchStatus;
+  poApprovalThresholdVnd?: number;
 }
 
 const STATUS_LABEL: Record<BranchStatus, string> = {
@@ -148,6 +149,7 @@ const BranchDialog: React.FC<BranchDialogProps> = ({ mode, onClose, api }) => {
     name: editing?.name ?? "",
     address: editing?.address ?? "",
     phone: editing?.phone ?? "",
+    poApprovalThresholdVnd: String(editing?.poApprovalThresholdVnd ?? 0),
   });
   const [status, setStatus] = React.useState<BranchStatus>(editing?.status ?? "ACTIVE");
   const [statusReason, setStatusReason] = React.useState("");
@@ -158,15 +160,20 @@ const BranchDialog: React.FC<BranchDialogProps> = ({ mode, onClose, api }) => {
 
   const invalidate = () => void qc.invalidateQueries({ queryKey: QUERY_KEYS.branches() });
 
+  const payload = () => ({
+    ...form,
+    poApprovalThresholdVnd: Number.parseInt(form.poApprovalThresholdVnd, 10) || 0,
+  });
+
   const saveMutation = useMutation({
     mutationFn: () =>
       editing
         ? api.request<Branch>(`/branches/${editing.id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(form),
+            body: JSON.stringify(payload()),
           })
-        : api.post<Branch>("/branches", form),
+        : api.post<Branch>("/branches", payload()),
     onSuccess: () => {
       invalidate();
       onClose();
@@ -204,6 +211,14 @@ const BranchDialog: React.FC<BranchDialogProps> = ({ mode, onClose, api }) => {
         <FormField name="name" label="Tên *" value={form.name} onChange={set("name")} placeholder="VD: Chi nhánh Quận 1" />
         <FormField name="address" label="Địa chỉ *" value={form.address} onChange={set("address")} placeholder="Số nhà, đường…" />
         <FormField name="phone" label="SĐT *" value={form.phone} onChange={set("phone")} placeholder="0900…" />
+        <FormField
+          name="poApprovalThresholdVnd"
+          label="Ngưỡng duyệt đơn mua (VND)"
+          type="number"
+          value={form.poApprovalThresholdVnd}
+          onChange={set("poApprovalThresholdVnd")}
+          placeholder="0 = mọi đơn cần duyệt"
+        />
 
         <InlineError message={formError} />
 

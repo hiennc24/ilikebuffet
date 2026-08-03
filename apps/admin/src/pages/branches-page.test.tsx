@@ -70,10 +70,12 @@ describe("BranchesPage", () => {
     fireEvent.change(screen.getByLabelText("Tên *"), { target: { value: "CN Mới" } });
     fireEvent.change(screen.getByLabelText("Địa chỉ *"), { target: { value: "9 Test" } });
     fireEvent.change(screen.getByLabelText("SĐT *"), { target: { value: "0900000009" } });
+    fireEvent.change(screen.getByLabelText("Ngưỡng duyệt đơn mua (VND)"), { target: { value: "5000000" } });
     fireEvent.click(screen.getByText("Lưu"));
 
     await waitFor(() => expect(posted).toHaveLength(1));
-    expect(posted[0]).toMatchObject({ code: "CN09", name: "CN Mới" });
+    // Threshold posts as an integer (not the string from the input).
+    expect(posted[0]).toMatchObject({ code: "CN09", name: "CN Mới", poApprovalThresholdVnd: 5_000_000 });
   });
 
   it("validates required fields", async () => {

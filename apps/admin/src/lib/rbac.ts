@@ -56,3 +56,8 @@ export function canAccessPath(role: string | null, path: string): boolean {
   if (!allowed) return true;
   return role != null && allowed.includes(role);
 }
+
+/** Roles holding purchase-order:approve (mirrors the server matrix). Display-only —
+ *  the server is the real gate. Used to show/hide the PO approve/reject actions. */
+const PO_APPROVER_ROLES = new Set(["QUAN_TRI_HQ", "CHU_CHUOI", "QUAN_LY_CN"]);
+export const canApprovePo = (role: string | null): boolean => role != null && PO_APPROVER_ROLES.has(role);

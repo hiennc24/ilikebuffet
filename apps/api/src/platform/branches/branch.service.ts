@@ -112,6 +112,7 @@ export class BranchService {
           bankAccount: dto.bankAccount != null ? (dto.bankAccount as unknown as Prisma.InputJsonValue) : Prisma.DbNull,
           billInfo: dto.billInfo != null ? (dto.billInfo as unknown as Prisma.InputJsonValue) : Prisma.DbNull,
           logoUrl: dto.logoUrl ?? null,
+          poApprovalThresholdVnd: dto.poApprovalThresholdVnd ?? 0,
         },
       });
 
@@ -179,6 +180,7 @@ export class BranchService {
           : (dto.billInfo as unknown as Prisma.InputJsonValue);
       }
       if (dto.logoUrl !== undefined) updateData.logoUrl = dto.logoUrl;
+      if (dto.poApprovalThresholdVnd !== undefined) updateData.poApprovalThresholdVnd = dto.poApprovalThresholdVnd;
 
       const updated = await tx.branch.update({ where: { id: branchId }, data: updateData });
 
