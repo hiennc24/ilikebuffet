@@ -34,7 +34,8 @@ const PAGE_SIZE = 20;
 
 const ROLES = ["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI", "QUAN_LY_CN", "THU_NGAN", "THU_KHO"] as const;
 type UserRole = (typeof ROLES)[number];
-const ROLE_LABEL: Record<UserRole, string> = {
+/** Fallback labels for system roles — used in the table when the roles query is not yet resolved. */
+const ROLE_LABEL: Record<string, string> = {
   QUAN_TRI_HQ: "Quản trị HQ",
   CHU_CHUOI: "Chủ chuỗi",
   KE_TOAN_CHUOI: "Kế toán chuỗi",
@@ -43,6 +44,14 @@ const ROLE_LABEL: Record<UserRole, string> = {
   THU_KHO: "Thủ kho",
 };
 const CHAIN_WIDE_ROLES = new Set<UserRole>(["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI"]);
+
+interface DbRole {
+  code: string;
+  name: string;
+  isSystem: boolean;
+  capabilities: string[];
+  userCount: number;
+}
 
 interface AdminUser {
   id: string;
@@ -62,10 +71,23 @@ interface Branch {
 const isLocked = (u: AdminUser) => !!u.lockedUntil && new Date(u.lockedUntil) > new Date();
 
 export const UsersPage: React.FC = () => {
+  const { api } = useAuth();
   const [filters, setFilters] = React.useState({ role: "", status: "", search: "" });
   const [page, setPage] = React.useState(1);
   const [selected, setSelected] = React.useState<AdminUser | null>(null);
   const [creating, setCreating] = React.useState(false);
+
+  const rolesQuery = useQuery({
+    queryKey: QUERY_KEYS.roles(),
+    queryFn: () => api.get<{ data: DbRole[] }>("/rbac/roles"),
+  });
+  const dbRoles: DbRole[] = rolesQuery.data?.data ?? [];
+  /** Merged label map: DB names take priority, fallback for any code not yet in DB. */
+  const roleLabelMap = React.useMemo(() => {
+    const map: Record<string, string> = { ...ROLE_LABEL };
+    for (const r of dbRoles) map[r.code] = r.name;
+    return map;
+  }, [dbRoles]);
 
   const { rows, total, pageCount, isLoading, isError, error } = usePagedList<AdminUser>({
     queryKey: QUERY_KEYS.users(),
@@ -82,7 +104,7 @@ export const UsersPage: React.FC = () => {
 
   const columns: Column<AdminUser>[] = [
     { key: "username", header: "Tên đăng nhập", render: (u) => u.username },
-    { key: "role", header: "Vai trò", render: (u) => ROLE_LABEL[u.role] },
+    { key: "role", header: "Vai trò", render: (u) => roleLabelMap[u.role] ?? u.role },
     { key: "scope", header: "Phạm vi", render: (u) => (u.chainWide ? "Toàn chuỗi" : `${u.branches.length} CN`) },
     {
       key: "status",
@@ -109,11 +131,17 @@ export const UsersPage: React.FC = () => {
           <input type="search" aria-label="Tìm người dùng" placeholder="Tìm tên đăng nhập…" value={filters.search} onChange={(e) => patch({ search: e.target.value })} style={inputStyle} />
           <Select aria-label="Vai trò" value={filters.role} onChange={(e) => patch({ role: e.target.value })}>
             <option value="">Tất cả vai trò</option>
-            {ROLES.map((r) => (
-              <option key={r} value={r}>
-                {ROLE_LABEL[r]}
-              </option>
-            ))}
+            {dbRoles.length > 0
+              ? dbRoles.map((r) => (
+                  <option key={r.code} value={r.code}>
+                    {r.name}
+                  </option>
+                ))
+              : ROLES.map((r) => (
+                  <option key={r} value={r}>
+                    {ROLE_LABEL[r]}
+                  </option>
+                ))}
           </Select>
           <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
             <option value="">Tất cả</option>
@@ -134,7 +162,7 @@ export const UsersPage: React.FC = () => {
         )}
       </Card>
 
-      {creating && <CreateUserDialog onClose={() => setCreating(false)} />}
+      {creating && <CreateUserDialog onClose={() => setCreating(false)} dbRoles={dbRoles} />}
       <UserDetailDrawer user={selected} onClose={() => setSelected(null)} />
     </PageStack>
   );
@@ -142,11 +170,11 @@ export const UsersPage: React.FC = () => {
 
 // ── Create dialog ─────────────────────────────────────────────────────────────
 
-const CreateUserDialog: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+const CreateUserDialog: React.FC<{ onClose: () => void; dbRoles: DbRole[] }> = ({ onClose, dbRoles }) => {
   const { api } = useAuth();
   const qc = useQueryClient();
   const [username, setUsername] = React.useState("");
-  const [role, setRole] = React.useState<UserRole>("THU_NGAN");
+  const [role, setRole] = React.useState<string>("THU_NGAN");
   const [branchIds, setBranchIds] = React.useState<string[]>([]);
   const [formError, setFormError] = React.useState<string | null>(null);
   const [tempPassword, setTempPassword] = React.useState<string | null>(null);
@@ -156,7 +184,9 @@ const CreateUserDialog: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     queryFn: () => api.get<Branch[] | { data: Branch[] }>("/branches"),
   });
   const branches = unwrapList(branchesQuery.data);
-  const needsBranch = !CHAIN_WIDE_ROLES.has(role);
+  // A role needs branch assignment if it is NOT one of the known chain-wide codes.
+  // For custom roles from DB that are not in CHAIN_WIDE_ROLES, we default to requiring branch.
+  const needsBranch = !CHAIN_WIDE_ROLES.has(role as UserRole);
 
   const createMutation = useMutation({
     mutationFn: () =>
@@ -202,12 +232,18 @@ const CreateUserDialog: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           <FormField name="username" label="Tên đăng nhập *" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="vd: thungan.cn1" />
           <label style={{ display: "flex", flexDirection: "column", gap: "4px", fontSize: "var(--text-xs)", color: "var(--text-muted)" }}>
             Vai trò
-            <Select aria-label="Vai trò" value={role} onChange={(e) => setRole(e.target.value as UserRole)}>
-              {ROLES.map((r) => (
-                <option key={r} value={r}>
-                  {ROLE_LABEL[r]}
-                </option>
-              ))}
+            <Select aria-label="Vai trò" value={role} onChange={(e) => setRole(e.target.value)}>
+              {dbRoles.length > 0
+                ? dbRoles.map((r) => (
+                    <option key={r.code} value={r.code}>
+                      {r.name}
+                    </option>
+                  ))
+                : ROLES.map((r) => (
+                    <option key={r} value={r}>
+                      {ROLE_LABEL[r]}
+                    </option>
+                  ))}
             </Select>
           </label>
 

@@ -16,6 +16,16 @@ const USERS = {
   total: 2,
 };
 const BRANCHES = { data: [{ id: "b1", code: "CN01", name: "Quận 1" }] };
+const DB_ROLES = {
+  data: [
+    { code: "QUAN_TRI_HQ", name: "Quản trị HQ", isSystem: true, capabilities: [], userCount: 1 },
+    { code: "THU_NGAN", name: "Thu ngân", isSystem: true, capabilities: [], userCount: 1 },
+    { code: "THU_KHO", name: "Thủ kho", isSystem: true, capabilities: [], userCount: 0 },
+    { code: "CHU_CHUOI", name: "Chủ chuỗi", isSystem: true, capabilities: [], userCount: 0 },
+    { code: "KE_TOAN_CHUOI", name: "Kế toán chuỗi", isSystem: true, capabilities: [], userCount: 0 },
+    { code: "QUAN_LY_CN", name: "Quản lý CN", isSystem: true, capabilities: [], userCount: 0 },
+  ],
+};
 
 function makeFetch(calls: { method: string; path: string; body: unknown }[] = []) {
   return vi.fn(async (url: string, init?: RequestInit): Promise<Response> => {
@@ -24,6 +34,7 @@ function makeFetch(calls: { method: string; path: string; body: unknown }[] = []
     const json = (status: number, body: unknown) =>
       new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
     if (path.startsWith("/branches")) return json(200, BRANCHES);
+    if (path.startsWith("/rbac/roles")) return json(200, DB_ROLES);
     if (path.includes("/reset-password")) {
       calls.push({ method, path, body: null });
       return json(201, { tempPassword: "TMP-abc123" });

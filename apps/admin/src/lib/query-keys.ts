@@ -108,4 +108,7 @@ export const QUERY_KEYS = {
   payableAging: () => ["report-payable-aging"] as const,
   payableDueSoon: () => ["report-payable-due-soon"] as const,
   rbacCapabilities: () => ["rbac-capabilities"] as const,
+
+  /** RBAC roles list (custom + system). Mutated by permissions-page. */
+  roles: () => ["rbac-roles"] as const,
 } as const;
