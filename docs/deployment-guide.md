@@ -90,7 +90,14 @@ Set these on the API host (never commit real values — `.env` is gitignored; se
 | `APP_DATABASE_URL` | App runtime connection as the non-owner `ilikebuffet_app` role (keeps the audit REVOKE layer active). Provision via `scripts/provision-app-roles.sql` + `scripts/apply-audit-guards.sh`. |
 | `REDIS_URL` | JWT revocation list. |
 | `JWT_SECRET`, `JWT_REFRESH_SECRET` | Strong random (`openssl rand -hex 32`). |
+| `PORT` | API listen port. Local dev defaults to **3001** to match the admin/POS Vite dev proxy (`VITE_API_PORT`, default 3001) and avoid the common 3000 collision. |
 | `SEPAY_API_KEY` | Shared secret for the VietQR auto-reconcile webhook (§7). Unset = webhook rejects everything (fail-closed). |
+
+**Local run:** `pnpm dev` (API watch on `PORT`, default 3001) + the admin/POS Vite
+dev servers (same-origin proxy → API). Production start is `pnpm --filter
+@ilikebuffet/api start:prod` → `node dist/apps/api/src/main.js` (the nest build
+emits under `dist/apps/api/src/` because the monorepo rootDir spans `packages/`).
+A stale hand-run build serves old routes — rebuild (`build`) before `start:prod`.
 
 ## 7. VietQR auto-reconcile (Sepay webhook)
 

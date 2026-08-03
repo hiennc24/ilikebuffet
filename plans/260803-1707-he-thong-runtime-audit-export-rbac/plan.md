@@ -2,7 +2,7 @@
 title: "Hệ thống — sửa runtime API + xuất nhật ký + màn phân quyền"
 slug: he-thong-runtime-audit-export-rbac
 created: 2026-08-03
-status: in-progress
+status: done
 priority: P1
 
 context: |
@@ -32,10 +32,10 @@ decisions:
 
 | Phase | Tên | Nội dung | Phụ thuộc | Status |
 |-------|-----|----------|-----------|--------|
-| P0 | [Fix runtime API](./phase-p0-fix-runtime.md) | start:prod path + PORT=3001 (.env/.env.example) + rebuild + restart; verify /sales/finance 401 | — | planned |
-| P1 | [Xuất nhật ký](./phase-p1-audit-export.md) | GET /audit/export (xlsx) + nút Xuất trên màn Nhật ký + e2e + FE test | — | planned |
-| P2 | [Màn Vai trò & phân quyền](./phase-p2-rbac-matrix.md) | GET /rbac/capabilities + màn read-only ma trận + route/nav/rbac + tests | — | planned |
-| P3 | [Rà soát + verify](./phase-p3-review-verify.md) | review 3 màn + full verify + docs + report | P0,P1,P2 | planned |
+| P0 | [Fix runtime API](./phase-p0-fix-runtime.md) | start:prod path + PORT=3001 (.env/.env.example) + rebuild + restart; verify /sales/finance 401 | — | done |
+| P1 | [Xuất nhật ký](./phase-p1-audit-export.md) | GET /audit/export (xlsx) + nút Xuất trên màn Nhật ký + e2e + FE test | — | done |
+| P2 | [Màn Vai trò & phân quyền](./phase-p2-rbac-matrix.md) | GET /rbac/capabilities + màn read-only ma trận + route/nav/rbac + tests | — | done |
+| P3 | [Rà soát + verify](./phase-p3-review-verify.md) | review 3 màn + full verify + docs + report | P0,P1,P2 | done |
 
 ## Acceptance
 - Sau P0: chạy `pnpm dev` (hoặc restart) → admin gọi API không còn 404 ở các màn

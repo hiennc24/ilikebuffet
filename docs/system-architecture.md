@@ -39,6 +39,15 @@ These hold across every module and are the backbone of the design:
 
 ## Modules
 
+### System (Hệ thống)
+
+- **branches / users / audit** — branch CRUD + PO-approval threshold; user admin
+  (roles, branch assignment, password/PIN reset, lock); append-only audit trail
+  (Nhật ký) with a filtered **`GET /audit/export`** xlsx (HQ/branch-manager only).
+- **rbac** — read-only role→capability matrix at **`GET /rbac/capabilities`** (the
+  "Vai trò & phân quyền" screen), exposing the code-defined `ROLE_CAPABILITIES`;
+  no write route (capabilities are code-level config, not data).
+
 ### Platform (`apps/api/src/platform`, `auth`, `audit`)
 
 - **auth** — JWT access/refresh, 6-role RBAC, device PINs; Redis revocation.
