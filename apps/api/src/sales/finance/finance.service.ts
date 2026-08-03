@@ -7,6 +7,7 @@
  */
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { PaymentMethod, Prisma } from "@prisma/client";
+import { sumVnd } from "@ilikebuffet/shared";
 import { PrismaService, TxClient } from "../../prisma/prisma.service";
 import { AuditService } from "../../audit/audit.service";
 import { DiscountsService } from "../discounts/discounts.service";
@@ -118,6 +119,31 @@ export class FinanceService {
       total,
       totals: { incomeVnd, expenseVnd, netVnd: incomeVnd - expenseVnd },
     };
+  }
+
+  /** Expense/income totals grouped by account over a period (thu-chi summary). */
+  async summary(query: FinancialListQuery, access: BranchAccess) {
+    const occurredAt: { gte?: Date; lte?: Date } = {};
+    if (query.from) occurredAt.gte = new Date(`${query.from}T00:00:00Z`);
+    if (query.to) occurredAt.lte = new Date(`${query.to}T23:59:59Z`);
+    const where: Prisma.FinancialTransactionWhereInput = {
+      ...(access.chainWide ? {} : { branchId: { in: access.branchIds } }),
+      ...(query.branchId ? { branchId: query.branchId } : {}),
+      ...(occurredAt.gte || occurredAt.lte ? { occurredAt } : {}),
+    };
+
+    const grouped = await this.prisma.financialTransaction.groupBy({
+      by: ["accountId", "flow"],
+      where,
+      _sum: { amountVnd: true },
+    });
+    const nameById = await this.accountNames(grouped.map((g) => g.accountId));
+    const rows = grouped
+      .map((g) => ({ accountId: g.accountId, accountName: nameById.get(g.accountId) ?? g.accountId, flow: g.flow, amountVnd: g._sum.amountVnd ?? 0 }))
+      .sort((a, b) => b.amountVnd - a.amountVnd);
+    const incomeVnd = sumVnd(rows.filter((r) => r.flow === "INCOME").map((r) => r.amountVnd));
+    const expenseVnd = sumVnd(rows.filter((r) => r.flow === "EXPENSE").map((r) => r.amountVnd));
+    return { rows, totals: { incomeVnd, expenseVnd, netVnd: incomeVnd - expenseVnd } };
   }
 
   // ─── internals ─────────────────────────────────────────────────────────────

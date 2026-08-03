@@ -182,6 +182,12 @@ const DEFAULT_GROUPS: NavGroup[] = [
         iconPath: "M3 6h18M3 12h18M3 18h18",
       },
       {
+        id: "finance",
+        label: "Thu - Chi",
+        path: "/finance",
+        iconPath: "M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6",
+      },
+      {
         id: "staff",
         label: "Nhân sự",
         path: "/staff",

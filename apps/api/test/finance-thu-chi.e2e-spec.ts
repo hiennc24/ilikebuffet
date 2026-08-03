@@ -102,4 +102,14 @@ describe("finance thu-chi (integration)", () => {
     // Manager belongs to branch A only; entry for branch B → 403.
     await post("QUAN_LY_CN", { branchId: branchBId, accountId: incomeAccId, amountVnd: 1000, method: "CASH" }).expect(403);
   });
+
+  it("summarises thu-chi grouped by account with totals", async () => {
+    await post("KE_TOAN_CHUOI", { branchId: branchAId, accountId: incomeAccId, amountVnd: 300_000, method: "CASH" }).expect(201);
+    const res = await request(app.getHttpServer()).get("/sales/finance/summary").set("Authorization", `Bearer ${token.KE_TOAN_CHUOI}`).expect(200);
+    const expenseRow = (res.body.rows as Array<{ accountId: string; flow: string; amountVnd: number }>).find((r) => r.accountId === expenseAccId);
+    expect(expenseRow?.amountVnd).toBe(2_500_000); // 500k + 2M
+    expect(res.body.totals.incomeVnd).toBe(300_000);
+    expect(res.body.totals.expenseVnd).toBe(2_500_000);
+    expect(res.body.totals.netVnd).toBe(-2_200_000);
+  });
 });

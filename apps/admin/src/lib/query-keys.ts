@@ -87,6 +87,10 @@ export const QUERY_KEYS = {
   /** Inter-branch stock transfers list (filters + page appended by usePagedList). */
   stockTransfers: () => ["stock-transfers"] as const,
 
+  /** Finance (thu-chi) list + summary (filters/page appended by consumers). */
+  finance: () => ["finance"] as const,
+  financeSummary: () => ["finance-summary"] as const,
+
   /** Bank-transaction reconciliation list (filters + page appended by usePagedList). */
   bankTransactions: () => ["bank-transactions"] as const,
 

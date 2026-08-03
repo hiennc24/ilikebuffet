@@ -30,6 +30,12 @@ export class FinanceController {
     return this.service.list(query, access);
   }
 
+  @Get("summary")
+  summary(@Query() query: FinancialListQuery, @Request() req: ScopedRequest) {
+    const access = this.require(req, "cash:read");
+    return this.service.summary(query, access);
+  }
+
   @Post()
   create(@Body() dto: CreateFinancialDto, @Request() req: ScopedRequest) {
     const access = this.require(req, "cash:create-voucher");
