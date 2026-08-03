@@ -1,22 +1,12 @@
 import "reflect-metadata";
 import { NestFactory } from "@nestjs/core";
-import { Logger, ValidationPipe } from "@nestjs/common";
+import { Logger } from "@nestjs/common";
 import { AppModule } from "./app.module";
 
 async function bootstrap(): Promise<void> {
+  // Global input validation is registered as an APP_PIPE in AppModule (see
+  // app-validation.ts) so it applies to the server and the e2e suite alike.
   const app = await NestFactory.create(AppModule);
-
-  // Global input validation at the HTTP boundary.
-  // whitelist: strips unknown properties so only declared DTO fields pass through.
-  // transform: coerces primitive types (query string "50" → number 50).
-  // forbidNonWhitelisted: rejects extra properties with 400 instead of silently stripping.
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
 
   const port = process.env.PORT ? Number(process.env.PORT) : 3000;
   await app.listen(port);

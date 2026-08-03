@@ -10,7 +10,8 @@
  *   @Unscoped() — auth required, branch scope skipped (HQ chain-wide config).
  */
 import { Module } from "@nestjs/common";
-import { APP_GUARD } from "@nestjs/core";
+import { APP_GUARD, APP_PIPE } from "@nestjs/core";
+import { buildValidationPipe } from "./app-validation";
 import { ConfigModule } from "@nestjs/config";
 import { PrismaModule } from "./prisma/prisma.module";
 import { HealthModule } from "./health/health.module";
@@ -46,6 +47,9 @@ import { BranchScopeGuard } from "./platform/rbac/branch-scope.guard";
     BankReconcileModule,
   ],
   providers: [
+    // Global validation at the HTTP boundary — active in prod AND every e2e (which
+    // bootstrap AppModule), so validation-config regressions can't hide from tests.
+    { provide: APP_PIPE, useFactory: buildValidationPipe },
     // Order matters: auth runs first, then scope check.
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: BranchScopeGuard },
