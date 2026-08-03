@@ -81,8 +81,8 @@ export const QUERY_KEYS = {
   /** Movement history for one ingredient (branch + ingredient scoped). */
   stockMovements: (ingredientId: string | null) => ["stock-movements", ingredientId] as const,
 
-  /** Ingredient recipe (định mức) for one ticket type. */
-  ticketRecipe: (ticketTypeId: string | null) => ["ticket-recipe", ticketTypeId] as const,
+  /** Ingredient recipe (định mức) for one ticket type + scope ("" = chain-wide). */
+  ticketRecipe: (ticketTypeId: string | null, branchId: string) => ["ticket-recipe", ticketTypeId, branchId] as const,
 
   /** Reports (params appended by useReport). */
   revenueReport: () => ["report-revenue"] as const,

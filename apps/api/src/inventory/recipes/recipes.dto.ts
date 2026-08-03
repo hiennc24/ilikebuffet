@@ -27,4 +27,9 @@ export class RecipeListQuery {
   @IsOptional()
   @IsString()
   ticketTypeId?: string;
+
+  /** null/omitted = chain-wide default; a branch id = that branch's override. */
+  @IsOptional()
+  @IsString()
+  branchId?: string;
 }

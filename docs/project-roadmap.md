@@ -76,9 +76,18 @@ StockMovement has no FK to Bill) so it aligns with revenue; a bill cancelled
 in-window nets to zero on both sides, and offline-synced movements land on the
 right day. Branch-scoped + role-gated. Plan: `plans/260803-1001-m6-gross-margin/`.
 
-## M7+ — Backlog (not started)
+## M7 — Định mức theo chi nhánh (override) ✅ done
 
-- **Định mức theo chi nhánh (override):** per-branch recipe overrides.
+Per-branch recipe overrides on `ticket_type_recipe` via a nullable branchId (null
+= chain-wide default) with two partial unique indexes (chain-wide + per-branch).
+On sale, consumption uses a branch's override wholesale when present, else falls
+back to the chain-wide recipe. Recipe CRUD is scope-aware (`?branchId=`): chain-wide
+edits stay HQ/owner, per-branch overrides may also be set by the branch manager
+(access-checked). The recipe screen adds a scope selector. Plan:
+`plans/260803-1121-m7-branch-recipe/`.
+
+## M8+ — Backlog (not started)
+
 - **Giá vốn thực tế:** actual issue cost (per-lot) instead of estimated recipe COGS.
 - **Tự động hoá thanh toán:** VietQR auto-reconcile (webhook), replacing manual
   payment confirmation.

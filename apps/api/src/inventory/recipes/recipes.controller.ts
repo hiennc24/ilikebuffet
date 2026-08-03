@@ -1,7 +1,11 @@
 /**
  * RecipesController — ticket-type recipe (định mức) endpoints under
- * /inventory/recipes. Chain-wide config (@Unscoped, no branch); write gated to
- * HQ + chain owner. Read open to any authenticated user (config visibility).
+ * /inventory/recipes.
+ *
+ * @Unscoped: BranchScopeGuard doesn't auto-check, so the service re-checks branch
+ * access when a branchId scope is given (like keyless :id routes). The chain-wide
+ * default (no branchId) is HQ/owner only; a per-branch override may also be set by
+ * a branch manager for their own branch. Read is open to any authenticated user.
  */
 import { Body, Controller, ForbiddenException, Get, Param, Put, Query, Request } from "@nestjs/common";
 import { RecipesService } from "./recipes.service";
@@ -10,7 +14,10 @@ import { Role } from "../../platform/rbac/role.enum";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
 import type { SetRecipeDto, RecipeListQuery } from "./recipes.dto";
 
-const RECIPE_WRITE_ROLES = new Set<Role>([Role.QUAN_TRI_HQ, Role.CHU_CHUOI]);
+/** Chain-wide default recipe — chain config roles only. */
+const RECIPE_CHAIN_ROLES = new Set<Role>([Role.QUAN_TRI_HQ, Role.CHU_CHUOI]);
+/** Per-branch override — chain config roles plus the branch manager. */
+const RECIPE_BRANCH_ROLES = new Set<Role>([Role.QUAN_TRI_HQ, Role.CHU_CHUOI, Role.QUAN_LY_CN]);
 
 @Unscoped()
 @Controller("inventory/recipes")
@@ -19,14 +26,27 @@ export class RecipesController {
 
   @Get()
   list(@Query() query: RecipeListQuery) {
-    return this.service.list(query.ticketTypeId);
+    return this.service.list(query.ticketTypeId, query.branchId);
   }
 
   @Put(":ticketTypeId")
-  setRecipe(@Param("ticketTypeId") ticketTypeId: string, @Body() dto: SetRecipeDto, @Request() req: ScopedRequest) {
-    if (!RECIPE_WRITE_ROLES.has(req.user.role as Role)) {
-      throw new ForbiddenException("Không có quyền sửa định mức");
-    }
-    return this.service.setRecipe(ticketTypeId, dto, req.user.sub, req.user.role);
+  setRecipe(
+    @Param("ticketTypeId") ticketTypeId: string,
+    @Query("branchId") branchId: string | undefined,
+    @Body() dto: SetRecipeDto,
+    @Request() req: ScopedRequest,
+  ) {
+    const role = req.user.role as Role;
+    const scoped = branchId || undefined;
+    const allowed = scoped ? RECIPE_BRANCH_ROLES.has(role) : RECIPE_CHAIN_ROLES.has(role);
+    if (!allowed) throw new ForbiddenException("Không có quyền sửa định mức");
+    return this.service.setRecipe(
+      ticketTypeId,
+      dto,
+      req.user.sub,
+      req.user.role,
+      { chainWide: req.user.chainWide, branchIds: req.user.branchIds },
+      scoped,
+    );
   }
 }

@@ -21,9 +21,13 @@ function makeFetch() {
     if (path.startsWith("/inventory/recipes")) return json(200, RECIPE);
     if (path.startsWith("/sales/ticket-types")) return json(200, TICKET_TYPES);
     if (path.startsWith("/master-data/ingredients")) return json(200, INGREDIENTS);
+    if (path.startsWith("/branches")) return json(200, [{ id: "branch-9", code: "CN9", name: "Chi nhánh 9" }]);
     return json(404, { error: "not found" });
   }) as typeof globalThis.fetch;
 }
+
+/** A token whose middle segment decodes to a role, so decodeRole() works. */
+const roleToken = (role: string) => `h.${btoa(JSON.stringify({ role })).replace(/\+/g, "-").replace(/\//g, "_")}.s`;
 
 function seedAuth() {
   sessionStorage.setItem("ibb_admin_at", "at");
@@ -70,6 +74,47 @@ describe("TicketRecipesPage", () => {
       expect(
         (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls.some(
           (c) => c[1]?.method === "PUT" && String(c[0]).includes("/inventory/recipes/tt-1"),
+        ),
+      ).toBe(true),
+    );
+  });
+});
+
+// Isolated block: a chain-wide user gets a per-branch scope selector (M7). Its
+// own setup avoids the shared beforeEach so the QueryClient stays stable across
+// re-renders (needed for the branches query to persist).
+describe("TicketRecipesPage — branch scope", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    sessionStorage.clear();
+    localStorage.clear();
+  });
+
+  it("lets a chain-wide user switch scope to a branch override", async () => {
+    sessionStorage.setItem("ibb_admin_at", roleToken("QUAN_TRI_HQ"));
+    sessionStorage.setItem("ibb_admin_rt", "rt");
+    localStorage.setItem("ibb_admin_branch", "branch-1");
+    globalThis.fetch = makeFetch();
+
+    const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    render(
+      <QueryClientProvider client={qc}>
+        <AuthProvider apiBaseUrl="">
+          <TicketRecipesPage />
+        </AuthProvider>
+      </QueryClientProvider>,
+    );
+
+    // Chain-wide users get the scope dropdown; wait for the branch option to load.
+    await waitFor(() =>
+      expect(screen.getAllByRole("option").some((o) => o.textContent?.includes("Chi nhánh 9"))).toBe(true),
+    );
+
+    fireEvent.change(screen.getByLabelText("Phạm vi"), { target: { value: "branch-9" } });
+    await waitFor(() =>
+      expect(
+        (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls.some(
+          (c) => c[1]?.method !== "PUT" && String(c[0]).includes("/inventory/recipes?ticketTypeId=tt-1&branchId=branch-9"),
         ),
       ).toBe(true),
     );

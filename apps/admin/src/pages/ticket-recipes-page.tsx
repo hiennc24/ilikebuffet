@@ -29,9 +29,20 @@ interface RecipeLine {
   qtyBase: number;
 }
 
+interface Branch {
+  id: string;
+  code?: string;
+  name: string;
+}
+
+const CHAIN_WIDE = new Set(["QUAN_TRI_HQ", "CHU_CHUOI"]);
+
 export const TicketRecipesPage: React.FC = () => {
-  const { api } = useAuth();
+  const { api, role, selectedBranchId } = useAuth();
+  const isChainWide = !!role && CHAIN_WIDE.has(role);
   const [ticketTypeId, setTicketTypeId] = React.useState("");
+  // "" = chain-wide default; a branch id = that branch's override.
+  const [scope, setScope] = React.useState("");
 
   const ticketTypes = useQuery({
     queryKey: QUERY_KEYS.ticketTypes(),
@@ -41,45 +52,76 @@ export const TicketRecipesPage: React.FC = () => {
     queryKey: QUERY_KEYS.ingredients(),
     queryFn: () => api.get<IngredientOption[] | { data: IngredientOption[] }>("/master-data/ingredients?pageSize=500"),
   });
+  const branchesQuery = useQuery({
+    queryKey: QUERY_KEYS.branches(),
+    enabled: isChainWide,
+    queryFn: () => api.get<Branch[] | { data: Branch[] }>("/branches"),
+  });
   const ttList = unwrapList(ticketTypes.data);
   const ingredientList = unwrapList(ingredients.data);
+  const branches = unwrapList(branchesQuery.data);
 
   React.useEffect(() => {
     if (!ticketTypeId && ttList.length > 0) setTicketTypeId(ttList[0].id);
   }, [ttList, ticketTypeId]);
 
+  // A branch manager can only edit their own branch's override.
+  React.useEffect(() => {
+    if (!isChainWide && selectedBranchId) setScope(selectedBranchId);
+  }, [isChainWide, selectedBranchId]);
+
   return (
     <PageStack>
       <Card title="Định mức theo loại vé" description="Ước tính nguyên liệu tiêu hao cho 1 vé — dùng để tự trừ kho khi bán.">
-        <label style={{ display: "flex", flexDirection: "column", gap: "4px", fontSize: "var(--text-xs)", color: "var(--text-muted)", maxWidth: "320px" }}>
-          Loại vé
-          <Select aria-label="Loại vé" value={ticketTypeId} onChange={(e) => setTicketTypeId(e.target.value)}>
-            <option value="">— Chọn loại vé —</option>
-            {ttList.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-              </option>
-            ))}
-          </Select>
-        </label>
+        <div style={{ display: "flex", gap: "var(--space-4)", flexWrap: "wrap" }}>
+          <label style={labelCol}>
+            Loại vé
+            <Select aria-label="Loại vé" value={ticketTypeId} onChange={(e) => setTicketTypeId(e.target.value)}>
+              <option value="">— Chọn loại vé —</option>
+              {ttList.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </Select>
+          </label>
 
-        {ticketTypeId && <RecipeEditor ticketTypeId={ticketTypeId} ingredients={ingredientList} />}
+          <label style={labelCol}>
+            Phạm vi
+            {isChainWide ? (
+              <Select aria-label="Phạm vi" value={scope} onChange={(e) => setScope(e.target.value)}>
+                <option value="">Chung (mọi chi nhánh)</option>
+                {branches.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.code ? `${b.code} — ${b.name}` : b.name}
+                  </option>
+                ))}
+              </Select>
+            ) : (
+              <span style={{ fontSize: "var(--text-sm)", color: "var(--text-secondary)", paddingTop: "6px" }}>Chi nhánh của bạn</span>
+            )}
+          </label>
+        </div>
+
+        {ticketTypeId && <RecipeEditor ticketTypeId={ticketTypeId} branchId={scope} ingredients={ingredientList} />}
       </Card>
     </PageStack>
   );
 };
 
-const RecipeEditor: React.FC<{ ticketTypeId: string; ingredients: IngredientOption[] }> = ({ ticketTypeId, ingredients }) => {
+const RecipeEditor: React.FC<{ ticketTypeId: string; branchId: string; ingredients: IngredientOption[] }> = ({ ticketTypeId, branchId, ingredients }) => {
   const { api } = useAuth();
   const qc = useQueryClient();
   const [lines, setLines] = React.useState<{ ingredientId: string; qtyBase: string }[]>([]);
   const [error, setError] = React.useState<string | null>(null);
   const [saved, setSaved] = React.useState(false);
+  const branchParam = branchId ? `&branchId=${branchId}` : "";
 
   const recipe = useQuery({
-    queryKey: QUERY_KEYS.ticketRecipe(ticketTypeId),
-    queryFn: () => api.get<{ data: RecipeLine[] }>(`/inventory/recipes?ticketTypeId=${ticketTypeId}`),
+    queryKey: QUERY_KEYS.ticketRecipe(ticketTypeId, branchId),
+    queryFn: () => api.get<{ data: RecipeLine[] }>(`/inventory/recipes?ticketTypeId=${ticketTypeId}${branchParam}`),
   });
+  const isEmptyOverride = !!branchId && (recipe.data?.data.length ?? 0) === 0;
 
   React.useEffect(() => {
     if (recipe.data) {
@@ -93,13 +135,13 @@ const RecipeEditor: React.FC<{ ticketTypeId: string; ingredients: IngredientOpti
 
   const save = useMutation({
     mutationFn: () =>
-      api.request(`/inventory/recipes/${ticketTypeId}`, {
+      api.request(`/inventory/recipes/${ticketTypeId}${branchId ? `?branchId=${branchId}` : ""}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ lines: lines.map((l) => ({ ingredientId: l.ingredientId, qtyBase: Number(l.qtyBase) })) }),
       }),
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: QUERY_KEYS.ticketRecipe(ticketTypeId) });
+      void qc.invalidateQueries({ queryKey: QUERY_KEYS.ticketRecipe(ticketTypeId, branchId) });
       setSaved(true);
       setError(null);
     },
@@ -120,6 +162,11 @@ const RecipeEditor: React.FC<{ ticketTypeId: string; ingredients: IngredientOpti
 
   return (
     <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)", marginTop: "var(--space-4)" }}>
+      {isEmptyOverride && (
+        <p style={{ margin: 0, fontSize: "var(--text-sm)", color: "var(--text-muted)" }}>
+          Chi nhánh này chưa có định mức riêng — đang dùng định mức chung. Thêm dòng để tạo định mức riêng.
+        </p>
+      )}
       {lines.map((l, i) => {
         const unit = ingredients.find((ing) => ing.id === l.ingredientId)?.unit?.code ?? "";
         return (
@@ -159,6 +206,15 @@ const RecipeEditor: React.FC<{ ticketTypeId: string; ingredients: IngredientOpti
       </div>
     </form>
   );
+};
+
+const labelCol: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "4px",
+  fontSize: "var(--text-xs)",
+  color: "var(--text-muted)",
+  minWidth: "240px",
 };
 
 const inputStyle: React.CSSProperties = {

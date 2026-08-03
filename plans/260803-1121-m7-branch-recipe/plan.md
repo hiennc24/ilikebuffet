@@ -2,7 +2,7 @@
 title: "M7 — Định mức theo chi nhánh (override)"
 slug: m7-branch-recipe
 created: 2026-08-03
-status: planned
+status: done
 priority: P1
 mode: --tdd
 ---
@@ -37,8 +37,8 @@ dùng trọn bộ dòng chung. (KISS, không merge từng nguyên liệu.)
 
 | Phase | Tên | Nội dung | Phụ thuộc | Status |
 |-------|-----|----------|-----------|--------|
-| R0 | [Schema + resolve](./phase-r0-schema-resolve.md) | migration (nullable branchId + partial unique + FK) + consumption resolve (override→fallback) + e2e | — | planned |
-| R1 | [CRUD + FE + docs](./phase-r1-crud-fe.md) | recipe CRUD branch-aware (list/set + access) + FE chọn phạm vi (Chung/CN) + docs + full verify | R0 | planned |
+| R0 | [Schema + resolve](./phase-r0-schema-resolve.md) | migration (nullable branchId + partial unique + FK) + consumption resolve (override→fallback) + e2e | — | ✅ done |
+| R1 | [CRUD + FE + docs](./phase-r1-crud-fe.md) | recipe CRUD branch-aware (list/set + access) + FE chọn phạm vi (Chung/CN) + docs + full verify | R0 | ✅ done |
 
 ## Acceptance
 - CN có override → bán trừ theo override; CN chưa đặt → dùng định mức chung (fallback).
