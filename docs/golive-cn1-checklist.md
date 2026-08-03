@@ -7,6 +7,10 @@ each section. Do not go live with any **blocking** item open.
 
 - [ ] Branch created with the correct **immutable code** (used in bill numbers).
 - [ ] Operating hours + bank account (VietQR) + bill header configured.
+- [ ] **Sepay webhook** configured → `POST /webhooks/sepay` with the `Apikey`
+      header = `SEPAY_API_KEY`; smoke-tested (a test transfer creates a
+      `bank_transaction` row); auto-reconcile confirmed on a scan-and-pay
+      (deploy guide §7).
 - [ ] **Price book signed off by the client** (Excel export approved) and its
       version is effective from the go-live date. Future-dated versions, if any,
       are correct.

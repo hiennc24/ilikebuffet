@@ -78,3 +78,34 @@ A DR drill passes only when **all** hold after restore:
 
 Run the new system alongside the current process for 2 weeks at CN1. Reconcile
 daily totals between the two before switching over.
+
+## 6. Environment configuration (secrets)
+
+Set these on the API host (never commit real values — `.env` is gitignored; see
+`.env.example` for the full list). Rotate on staff turnover.
+
+| Variable | Purpose |
+|----------|---------|
+| `DATABASE_URL` | Postgres connection (migrations / owner tasks). |
+| `APP_DATABASE_URL` | App runtime connection as the non-owner `ilikebuffet_app` role (keeps the audit REVOKE layer active). Provision via `scripts/provision-app-roles.sql` + `scripts/apply-audit-guards.sh`. |
+| `REDIS_URL` | JWT revocation list. |
+| `JWT_SECRET`, `JWT_REFRESH_SECRET` | Strong random (`openssl rand -hex 32`). |
+| `SEPAY_API_KEY` | Shared secret for the VietQR auto-reconcile webhook (§7). Unset = webhook rejects everything (fail-closed). |
+
+## 7. VietQR auto-reconcile (Sepay webhook)
+
+1. In the Sepay dashboard, add a webhook pointing at
+   `POST https://<api-host>/webhooks/sepay` for the branch's bank account, with an
+   `Authorization: Apikey <value>` header whose value equals `SEPAY_API_KEY`.
+2. The endpoint is public (no user session) and fail-closed: a missing/wrong key
+   returns 401; only inbound (`transferType: "in"`) transfers are stored; replays
+   are idempotent per Sepay transaction id.
+3. Matching is automatic when exactly one unpaid bill has the same total and its
+   number appears in the transfer memo — the POS VietQR QR embeds the bill number
+   (`addInfo`) and amount, so a customer scan-and-pay reconciles hands-free.
+4. Zero/ambiguous/mismatched transfers land UNMATCHED in
+   **Báo cáo → Đối soát ngân hàng** for a chain-level user to match-by-number or
+   ignore. Nothing is auto-paid twice (the bill's `paidAt` is the guard).
+
+Smoke test after deploy: send a Sepay test webhook (or `curl` with the Apikey
+header + a sample `in` payload) and confirm a `bank_transaction` row appears.
