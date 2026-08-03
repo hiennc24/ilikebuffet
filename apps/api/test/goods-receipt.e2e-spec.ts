@@ -104,6 +104,11 @@ describe("goods receipt (integration)", () => {
 
     const reloaded = await prisma.purchaseOrder.findUnique({ where: { id: po.id } });
     expect(reloaded?.status).toBe("RECEIVED");
+
+    // A supplier payable (công nợ NCC) is opened for the received value (E3/F2).
+    const payable = await prisma.supplierPayable.findFirst({ where: { poId: po.id } });
+    expect(payable?.amountVnd).toBe(900_000); // 3 thùng × 300k
+    expect(payable?.status).toBe("OPEN");
   });
 
   it("blends the moving-average cost across a second receipt", async () => {

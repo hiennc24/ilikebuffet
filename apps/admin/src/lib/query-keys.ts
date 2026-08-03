@@ -90,6 +90,8 @@ export const QUERY_KEYS = {
   /** Finance (thu-chi) list + summary (filters/page appended by consumers). */
   finance: () => ["finance"] as const,
   financeSummary: () => ["finance-summary"] as const,
+  /** Supplier payables (công nợ NCC). */
+  payables: () => ["payables"] as const,
 
   /** Bank-transaction reconciliation list (filters + page appended by usePagedList). */
   bankTransactions: () => ["bank-transactions"] as const,

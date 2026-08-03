@@ -49,6 +49,62 @@ export class CreateFinancialDto {
   pin?: string;
 }
 
+export class PaySupplierDto {
+  /** EXPENSE account to book the payment against. */
+  @IsString()
+  @IsNotEmpty()
+  accountId!: string;
+
+  @IsInt()
+  @Min(1)
+  amountVnd!: number;
+
+  @IsIn(METHODS)
+  method!: (typeof METHODS)[number];
+
+  @IsOptional()
+  @IsString()
+  occurredAt?: string;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
+
+  @IsOptional()
+  @IsString()
+  managerId?: string;
+
+  @IsOptional()
+  @IsString()
+  pin?: string;
+}
+
+export class PayableListQuery {
+  @IsOptional()
+  @IsString()
+  branchId?: string;
+
+  @IsOptional()
+  @IsString()
+  supplierId?: string;
+
+  @IsOptional()
+  @IsIn(["OPEN", "PAID"])
+  status?: "OPEN" | "PAID";
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  pageSize?: number;
+}
+
 export class FinancialListQuery {
   @IsOptional()
   @IsString()

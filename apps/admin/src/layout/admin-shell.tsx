@@ -188,6 +188,12 @@ const DEFAULT_GROUPS: NavGroup[] = [
         iconPath: "M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6",
       },
       {
+        id: "supplier-debt",
+        label: "Công nợ NCC",
+        path: "/finance/payables",
+        iconPath: "M3 10h18M7 15h4M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z",
+      },
+      {
         id: "staff",
         label: "Nhân sự",
         path: "/staff",

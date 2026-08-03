@@ -9,7 +9,7 @@
  * price may differ. Money is integer VND; quantities are fractional base units.
  */
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { roundVnd } from "@ilikebuffet/shared";
+import { roundVnd, sumVnd } from "@ilikebuffet/shared";
 import { PrismaService } from "../../prisma/prisma.service";
 import { AuditService } from "../../audit/audit.service";
 import { assertBranchAccess, type BranchAccess } from "../../platform/rbac/branch-access";
@@ -107,6 +107,17 @@ export class GoodsReceiptService {
       }
 
       await tx.purchaseOrder.update({ where: { id: po.id }, data: { status: "RECEIVED" } });
+
+      // A supplier payable (công nợ NCC) for the received value, due after the
+      // supplier's debt terms. Supplier payments settle it (E3/F2).
+      const supplier = await tx.supplier.findUnique({ where: { id: po.supplierId }, select: { debtTerms: true } });
+      const payableVnd = sumVnd(prepared.map((p) => p.lineTotalVnd));
+      const dueDate = new Date();
+      dueDate.setDate(dueDate.getDate() + (supplier?.debtTerms ?? 0));
+      await tx.supplierPayable.create({
+        data: { supplierId: po.supplierId, branchId: po.branchId, poId: po.id, amountVnd: payableVnd, dueDate },
+      });
+
       await this.audit.record(tx, {
         actorId,
         actorRole: role,
@@ -114,7 +125,7 @@ export class GoodsReceiptService {
         objectType: "purchase_order",
         objectId: po.id,
         branchId: po.branchId,
-        after: { lineCount: results.length },
+        after: { lineCount: results.length, payableVnd },
       });
 
       return { poId: po.id, status: "RECEIVED", received: results };

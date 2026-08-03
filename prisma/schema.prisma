@@ -133,6 +133,12 @@ enum BankTxStatus {
   IGNORED
 }
 
+/// Settlement state of a supplier payable (công nợ NCC).
+enum PayableStatus {
+  OPEN
+  PAID
+}
+
 // ─── Domain models ───────────────────────────────────────────────────────────
 
 /// A physical or logical branch (cửa hàng / chi nhánh). Extended in P4 (NT-01).
@@ -812,6 +818,26 @@ model StockMovement {
 
   @@index([branchId, ingredientId, createdAt])
   @@map("stock_movement")
+}
+
+/// A supplier payable (công nợ NCC) — E3. Created when goods are received against
+/// a PO (amount = received value, due = receipt + supplier.debtTerms). Supplier
+/// payments (finance EXPENSE) increase paidVnd; PAID when paidVnd >= amountVnd.
+/// Scalar FKs, resolved to names in the service.
+model SupplierPayable {
+  id         String        @id @default(cuid())
+  supplierId String
+  branchId   String
+  poId       String?
+  amountVnd  Int
+  paidVnd    Int           @default(0)
+  status     PayableStatus @default(OPEN)
+  dueDate    DateTime?     @db.Date
+  createdAt  DateTime      @default(now()) @db.Timestamptz(3)
+
+  @@index([supplierId, status])
+  @@index([branchId])
+  @@map("supplier_payable")
 }
 
 /// Income/expense entry (phiếu thu-chi) against the chart of accounts (E3). The

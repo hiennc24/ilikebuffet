@@ -12,7 +12,7 @@ import { PrismaService, TxClient } from "../../prisma/prisma.service";
 import { AuditService } from "../../audit/audit.service";
 import { DiscountsService } from "../discounts/discounts.service";
 import { assertBranchAccess, type BranchAccess } from "../../platform/rbac/branch-access";
-import type { CreateFinancialDto, FinancialListQuery } from "./finance.dto";
+import type { CreateFinancialDto, FinancialListQuery, PaySupplierDto, PayableListQuery } from "./finance.dto";
 
 @Injectable()
 export class FinanceService {
@@ -144,6 +144,79 @@ export class FinanceService {
     const incomeVnd = sumVnd(rows.filter((r) => r.flow === "INCOME").map((r) => r.amountVnd));
     const expenseVnd = sumVnd(rows.filter((r) => r.flow === "EXPENSE").map((r) => r.amountVnd));
     return { rows, totals: { incomeVnd, expenseVnd, netVnd: incomeVnd - expenseVnd } };
+  }
+
+  /** List supplier payables (công nợ NCC) with outstanding + overdue flags. */
+  async listPayables(query: PayableListQuery, access: BranchAccess) {
+    const page = query.page ?? 1;
+    const pageSize = Math.min(query.pageSize ?? 20, 100);
+    const where: Prisma.SupplierPayableWhereInput = {
+      ...(access.chainWide ? {} : { branchId: { in: access.branchIds } }),
+      ...(query.branchId ? { branchId: query.branchId } : {}),
+      ...(query.supplierId ? { supplierId: query.supplierId } : {}),
+      ...(query.status ? { status: query.status } : {}),
+    };
+    const [rows, total] = await Promise.all([
+      this.prisma.supplierPayable.findMany({ where, orderBy: { createdAt: "desc" }, skip: (page - 1) * pageSize, take: pageSize }),
+      this.prisma.supplierPayable.count({ where }),
+    ]);
+    const suppliers = await this.prisma.supplier.findMany({ where: { id: { in: [...new Set(rows.map((r) => r.supplierId))] } }, select: { id: true, name: true } });
+    const nameById = new Map(suppliers.map((s) => [s.id, s.name]));
+    const todayMs = new Date(new Date().toISOString().slice(0, 10)).getTime();
+    return {
+      data: rows.map((r) => ({
+        id: r.id,
+        supplierId: r.supplierId,
+        supplierName: nameById.get(r.supplierId) ?? r.supplierId,
+        branchId: r.branchId,
+        poId: r.poId,
+        amountVnd: r.amountVnd,
+        paidVnd: r.paidVnd,
+        outstandingVnd: r.amountVnd - r.paidVnd,
+        status: r.status,
+        dueDate: r.dueDate,
+        overdue: r.status === "OPEN" && !!r.dueDate && r.dueDate.getTime() < todayMs,
+      })),
+      total,
+    };
+  }
+
+  /** Pay (fully or partially) a supplier payable: books an EXPENSE entry and
+   *  increments paidVnd, marking PAID when settled. */
+  async paySupplier(payableId: string, dto: PaySupplierDto, actorId: string, role: string, access: BranchAccess) {
+    const payable = await this.prisma.supplierPayable.findUnique({ where: { id: payableId } });
+    if (!payable) throw new NotFoundException("Không tìm thấy công nợ");
+    assertBranchAccess(access, payable.branchId);
+    if (payable.status === "PAID") throw new BadRequestException("Công nợ đã thanh toán đủ");
+    const remaining = payable.amountVnd - payable.paidVnd;
+    if (dto.amountVnd > remaining) throw new BadRequestException("Số tiền vượt quá công nợ còn lại");
+
+    const account = await this.prisma.account.findUnique({ where: { id: dto.accountId } });
+    if (!account || account.flow !== "EXPENSE") throw new BadRequestException("Tài khoản chi không hợp lệ");
+    const needsApproval = account.approvalThresholdVnd > 0 && dto.amountVnd > account.approvalThresholdVnd;
+    if (needsApproval && (!dto.managerId || !dto.pin)) throw new ForbiddenException("Vượt ngưỡng — cần quản lý duyệt PIN");
+    const occurredAt = dto.occurredAt ? new Date(dto.occurredAt) : new Date();
+    const branch = await this.prisma.branch.findUnique({ where: { id: payable.branchId }, select: { code: true } });
+
+    return this.prisma.withTx(async (tx) => {
+      let approvedBy: string | null = null;
+      if (needsApproval) {
+        const r = await this.discounts.verifyApprovalPin({ managerId: dto.managerId!, pin: dto.pin!, branchId: payable.branchId, reason: "supplier-pay" }, actorId, role, tx);
+        if (!r.approved) throw new ForbiddenException("PIN quản lý không hợp lệ hoặc đã bị khoá");
+        approvedBy = r.approvedBy ?? null;
+      }
+      const code = await this.nextCode(tx, branch?.code ?? "TC", payable.branchId);
+      const entry = await tx.financialTransaction.create({
+        data: { code, branchId: payable.branchId, accountId: dto.accountId, flow: "EXPENSE", amountVnd: dto.amountVnd, method: dto.method as PaymentMethod, occurredAt, note: dto.note ?? null, supplierId: payable.supplierId, createdBy: actorId, approvedBy },
+      });
+      const paidVnd = payable.paidVnd + dto.amountVnd;
+      const updated = await tx.supplierPayable.update({
+        where: { id: payableId },
+        data: { paidVnd, status: paidVnd >= payable.amountVnd ? "PAID" : "OPEN" },
+      });
+      await this.audit.record(tx, { actorId, actorRole: role, action: "finance.supplier-pay", objectType: "supplier_payable", objectId: payableId, branchId: payable.branchId, approvedBy: approvedBy ?? undefined, after: { entryId: entry.id, amountVnd: dto.amountVnd, paidVnd, status: updated.status } });
+      return { id: updated.id, paidVnd: updated.paidVnd, outstandingVnd: updated.amountVnd - updated.paidVnd, status: updated.status };
+    });
   }
 
   // ─── internals ─────────────────────────────────────────────────────────────

@@ -46,6 +46,7 @@ import { GrossMarginReportPage } from "./pages/gross-margin-report-page";
 import { BankReconcilePage } from "./pages/bank-reconcile-page";
 import { ChainDashboardPage } from "./pages/chain-dashboard-page";
 import { FinancePage } from "./pages/finance-page";
+import { SupplierDebtPage } from "./pages/supplier-debt-page";
 import { ShiftCashReportPage } from "./pages/shift-cash-report-page";
 import { OfflineReconPage } from "./pages/offline-recon-page";
 import { canAccessPath } from "./lib/rbac";
@@ -319,6 +320,16 @@ export function App() {
                         <RequireAccess path="/finance">
                           <ShellLayout pageTitle="Thu - Chi">
                             <FinancePage />
+                          </ShellLayout>
+                        </RequireAccess>
+                      }
+                    />
+                    <Route
+                      path="/finance/payables"
+                      element={
+                        <RequireAccess path="/finance/payables">
+                          <ShellLayout pageTitle="Công nợ nhà cung cấp">
+                            <SupplierDebtPage />
                           </ShellLayout>
                         </RequireAccess>
                       }
