@@ -9,21 +9,19 @@
  */
 import { Body, Controller, ForbiddenException, Get, Param, Put, Query, Request } from "@nestjs/common";
 import { RecipesService } from "./recipes.service";
+import { PermissionService } from "../../platform/rbac/permission.service";
 import { Unscoped } from "../../platform/rbac/decorators";
-import { Role } from "../../platform/rbac/role.enum";
 import { assertBranchAccess } from "../../platform/rbac/branch-access";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
 import { SetRecipeDto, RecipeListQuery } from "./recipes.dto";
 
-/** Chain-wide default recipe — chain config roles only. */
-const RECIPE_CHAIN_ROLES = new Set<Role>([Role.QUAN_TRI_HQ, Role.CHU_CHUOI]);
-/** Per-branch override — chain config roles plus the branch manager. */
-const RECIPE_BRANCH_ROLES = new Set<Role>([Role.QUAN_TRI_HQ, Role.CHU_CHUOI, Role.QUAN_LY_CN]);
-
 @Unscoped()
 @Controller("inventory/recipes")
 export class RecipesController {
-  constructor(private readonly service: RecipesService) {}
+  constructor(
+    private readonly service: RecipesService,
+    private readonly perms: PermissionService,
+  ) {}
 
   @Get()
   list(@Query() query: RecipeListQuery, @Request() req: ScopedRequest) {
@@ -36,16 +34,17 @@ export class RecipesController {
   }
 
   @Put(":ticketTypeId")
-  setRecipe(
+  async setRecipe(
     @Param("ticketTypeId") ticketTypeId: string,
     @Query("branchId") branchId: string | undefined,
     @Body() dto: SetRecipeDto,
     @Request() req: ScopedRequest,
   ) {
-    const role = req.user.role as Role;
     const scoped = branchId || undefined;
-    const allowed = scoped ? RECIPE_BRANCH_ROLES.has(role) : RECIPE_CHAIN_ROLES.has(role);
-    if (!allowed) throw new ForbiddenException("Không có quyền sửa định mức");
+    const capability = scoped ? "recipe:manage-branch" : "recipe:manage-chain";
+    if (!(await this.perms.can(req.user.role, capability))) {
+      throw new ForbiddenException("Không có quyền sửa định mức");
+    }
     return this.service.setRecipe(
       ticketTypeId,
       dto,

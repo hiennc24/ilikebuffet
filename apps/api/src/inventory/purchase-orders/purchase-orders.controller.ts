@@ -4,7 +4,7 @@
  * enforces membership when a branchId travels in the body/query; :id routes are
  * re-checked against the order's branch in the service.
  *
- * Write role gate: INVENTORY_WRITE_ROLES. Read: any authenticated branch member
+ * Write role gate: inventory:manage capability. Read: any authenticated branch member
  * (scope still filters rows to their branches).
  */
 import {
@@ -20,8 +20,6 @@ import {
 } from "@nestjs/common";
 import { PurchaseOrdersService } from "./purchase-orders.service";
 import { GoodsReceiptService } from "../receipts/goods-receipt.service";
-import { INVENTORY_WRITE_ROLES } from "../inventory-roles";
-import { Role } from "../../platform/rbac/role.enum";
 import { PermissionService } from "../../platform/rbac/permission.service";
 import type { Capability } from "../../platform/rbac/permissions";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
@@ -97,9 +95,9 @@ export class PurchaseOrdersController {
   }
 
   @Post(":id/receive")
-  receive(@Param("id") id: string, @Body() dto: ReceiveGoodsDto, @Request() req: ScopedRequest) {
-    // Goods receipt is a warehouse action — kept on the inventory-write role set.
-    if (!INVENTORY_WRITE_ROLES.has(req.user.role as Role)) {
+  async receive(@Param("id") id: string, @Body() dto: ReceiveGoodsDto, @Request() req: ScopedRequest) {
+    // Goods receipt is a warehouse action — gated to inventory:manage.
+    if (!(await this.perms.can(req.user.role, "inventory:manage"))) {
       throw new ForbiddenException("Không có quyền thao tác kho");
     }
     return this.receipts.receive(id, dto, req.user.sub, req.user.role, access(req));

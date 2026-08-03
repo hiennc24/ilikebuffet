@@ -11,10 +11,9 @@ import { Controller, ForbiddenException, Get, Query, Request, Res } from "@nestj
 import type { Response } from "express";
 import * as ExcelJS from "exceljs";
 import { AuditService, type AuditQuery, type AuditRecordView } from "./audit.service";
-import { Role } from "../platform/rbac/role.enum";
+import { PermissionService } from "../platform/rbac/permission.service";
 import type { ScopedRequest } from "../platform/rbac/branch-scope.guard";
 
-const AUDIT_VIEW_ROLES = new Set<Role>([Role.QUAN_TRI_HQ, Role.QUAN_LY_CN]);
 /** Upper bound for a single export so an unfiltered pull can't be unbounded. */
 const EXPORT_LIMIT = 10_000;
 
@@ -32,10 +31,13 @@ interface AuditQueryParams {
 
 @Controller("audit")
 export class AuditController {
-  constructor(private readonly audit: AuditService) {}
+  constructor(
+    private readonly audit: AuditService,
+    private readonly perms: PermissionService,
+  ) {}
 
-  private assertAccess(req: ScopedRequest) {
-    if (!AUDIT_VIEW_ROLES.has(req.user.role as Role)) {
+  private async assertAccess(req: ScopedRequest) {
+    if (!(await this.perms.can(req.user.role, "audit:view"))) {
       throw new ForbiddenException("Không có quyền xem nhật ký");
     }
   }
@@ -57,7 +59,7 @@ export class AuditController {
 
   @Get()
   async list(@Query() q: AuditQueryParams, @Request() req: ScopedRequest) {
-    this.assertAccess(req);
+    await this.assertAccess(req);
     const page = Math.max(1, Number.parseInt(q.page ?? "1", 10) || 1);
     const pageSize = Math.min(100, Math.max(1, Number.parseInt(q.pageSize ?? "20", 10) || 20));
 
@@ -72,7 +74,7 @@ export class AuditController {
 
   @Get("export")
   async export(@Query() q: AuditQueryParams, @Request() req: ScopedRequest, @Res() res: Response) {
-    this.assertAccess(req);
+    await this.assertAccess(req);
     const { data } = await this.audit.query({ ...this.filterFrom(q, req), limit: EXPORT_LIMIT, offset: 0 });
 
     const wb = new ExcelJS.Workbook();

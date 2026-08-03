@@ -1,38 +1,40 @@
 /**
  * InventoryReportsController — read-only stock valuation under
- * /inventory/reports. Branch-scoped; gated to INVENTORY_VIEW_ROLES (warehouse,
- * branch manager, chain admins, and chain accountant).
+ * /inventory/reports. Branch-scoped; gated to the inventory:read capability
+ * (warehouse, branch manager, chain admins, and chain accountant).
  */
 import { Controller, ForbiddenException, Get, Query, Request } from "@nestjs/common";
 import { InventoryReportsService, type ValuationQuery, type ConsumptionQuery, type FifoCogsQuery } from "./inventory-reports.service";
-import { INVENTORY_VIEW_ROLES } from "../inventory-roles";
-import { Role } from "../../platform/rbac/role.enum";
+import { PermissionService } from "../../platform/rbac/permission.service";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
 
 @Controller("inventory/reports")
 export class InventoryReportsController {
-  constructor(private readonly service: InventoryReportsService) {}
+  constructor(
+    private readonly service: InventoryReportsService,
+    private readonly perms: PermissionService,
+  ) {}
 
   @Get("valuation")
-  valuation(@Query() query: ValuationQuery, @Request() req: ScopedRequest) {
-    this.assertView(req);
+  async valuation(@Query() query: ValuationQuery, @Request() req: ScopedRequest) {
+    await this.assertView(req);
     return this.service.valuation(query, { chainWide: req.user.chainWide, branchIds: req.user.branchIds });
   }
 
   @Get("consumption")
-  consumption(@Query() query: ConsumptionQuery, @Request() req: ScopedRequest) {
-    this.assertView(req);
+  async consumption(@Query() query: ConsumptionQuery, @Request() req: ScopedRequest) {
+    await this.assertView(req);
     return this.service.consumption(query, { chainWide: req.user.chainWide, branchIds: req.user.branchIds });
   }
 
   @Get("fifo-cogs")
-  fifoCogs(@Query() query: FifoCogsQuery, @Request() req: ScopedRequest) {
-    this.assertView(req);
+  async fifoCogs(@Query() query: FifoCogsQuery, @Request() req: ScopedRequest) {
+    await this.assertView(req);
     return this.service.fifoCogs(query, { chainWide: req.user.chainWide, branchIds: req.user.branchIds });
   }
 
-  private assertView(req: ScopedRequest) {
-    if (!INVENTORY_VIEW_ROLES.has(req.user.role as Role)) {
+  private async assertView(req: ScopedRequest) {
+    if (!(await this.perms.can(req.user.role, "inventory:read"))) {
       throw new ForbiddenException("Không có quyền xem báo cáo kho");
     }
   }

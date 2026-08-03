@@ -15,20 +15,31 @@ export type Capability =
   // chain dashboard & reports
   | "chain:dashboard:read"
   | "branch:dashboard:read" // own-branch only for QUAN_LY_CN
+  // reporting
+  | "report:view" // any report page (branch-scoped)
+  | "report:chain-view" // chain-level overview (chain roles only)
+  // system / audit
+  | "audit:view" // read audit log
+  | "device:manage" // register / suspend POS devices
   // sales / shift
   | "shift:open-close"
   | "shift:assist" // QUAN_LY_CN can assist cashier
   // discount / cancel bill
   | "discount:approve" // requires approval PIN
   | "bill:cancel" // requires approval PIN
+  | "bill:manage" // order management (refund, override)
   // cash / reconcile
   | "cash:read"
   | "cash:create-voucher"
   | "cash:reconcile"
   | "cash:close-book"
+  | "bank:reconcile" // bank-statement reconciliation (chain accounting)
   // purchase / inventory
   | "inventory:read"
-  | "inventory:manage" // full inventory ops (THU_KHO)
+  | "inventory:manage" // full inventory ops
+  | "inventory:transfer" // inter-branch stock transfers
+  | "recipe:manage-chain" // chain-wide recipe (định mức) default
+  | "recipe:manage-branch" // per-branch recipe override
   | "purchase-order:approve"
   | "purchase-order:create";
 
@@ -40,9 +51,19 @@ const ROLE_CAPABILITIES: Record<Role, Set<Capability>> = {
     "chain:user:manage",
     "chain:dashboard:read",
     "branch:dashboard:read",
+    "report:view",
+    "report:chain-view",
+    "audit:view",
+    "device:manage",
     "cash:read",
     "cash:create-voucher",
+    "bank:reconcile",
+    "bill:manage",
     "inventory:read",
+    "inventory:manage",
+    "inventory:transfer",
+    "recipe:manage-chain",
+    "recipe:manage-branch",
     "purchase-order:create",
     "purchase-order:approve",
   ]),
@@ -51,9 +72,17 @@ const ROLE_CAPABILITIES: Record<Role, Set<Capability>> = {
     "chain:config:read",
     "chain:dashboard:read",
     "branch:dashboard:read",
+    "report:view",
+    "report:chain-view",
     "cash:read",
     "cash:create-voucher",
+    "bank:reconcile",
+    "bill:manage",
     "inventory:read",
+    "inventory:manage",
+    "inventory:transfer",
+    "recipe:manage-chain",
+    "recipe:manage-branch",
     "purchase-order:create",
     "purchase-order:approve",
   ]),
@@ -61,20 +90,32 @@ const ROLE_CAPABILITIES: Record<Role, Set<Capability>> = {
   [Role.KE_TOAN_CHUOI]: new Set<Capability>([
     "chain:dashboard:read",
     "branch:dashboard:read",
+    "report:view",
+    "report:chain-view",
     "cash:reconcile",
     "cash:close-book",
     "cash:read",
     "cash:create-voucher",
+    "bank:reconcile",
     "inventory:read",
   ]),
 
   [Role.QUAN_LY_CN]: new Set<Capability>([
+    "chain:user:manage",
     "branch:dashboard:read",
+    "report:view",
+    "audit:view",
+    "device:manage",
     "shift:assist",
     "discount:approve",
     "bill:cancel",
+    "bill:manage",
     "cash:read",
     "cash:create-voucher",
+    "inventory:read",
+    "inventory:manage",
+    "inventory:transfer",
+    "recipe:manage-branch",
     "purchase-order:create",
     "purchase-order:approve",
   ]),

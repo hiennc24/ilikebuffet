@@ -23,7 +23,7 @@ const matrix: MatrixRow[] = [
   },
   {
     capability: "chain:user:manage",
-    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: false, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: false, [Role.THU_NGAN]: false, [Role.THU_KHO]: false },
+    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: false, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: true, [Role.THU_NGAN]: false, [Role.THU_KHO]: false },
   },
   // chain dashboard
   {
@@ -79,12 +79,12 @@ const matrix: MatrixRow[] = [
   // inventory read
   {
     capability: "inventory:read",
-    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: true, [Role.KE_TOAN_CHUOI]: true, [Role.QUAN_LY_CN]: false, [Role.THU_NGAN]: false, [Role.THU_KHO]: true },
+    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: true, [Role.KE_TOAN_CHUOI]: true, [Role.QUAN_LY_CN]: true, [Role.THU_NGAN]: false, [Role.THU_KHO]: true },
   },
-  // inventory manage (full — THU_KHO)
+  // inventory manage (full — THU_KHO + chain admins + branch manager)
   {
     capability: "inventory:manage",
-    expected: { [Role.QUAN_TRI_HQ]: false, [Role.CHU_CHUOI]: false, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: false, [Role.THU_NGAN]: false, [Role.THU_KHO]: true },
+    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: true, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: true, [Role.THU_NGAN]: false, [Role.THU_KHO]: true },
   },
   // purchase-order approve — branch manager + chain admins sign off orders (E4).
   {
@@ -96,6 +96,52 @@ const matrix: MatrixRow[] = [
   {
     capability: "purchase-order:create",
     expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: true, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: true, [Role.THU_NGAN]: false, [Role.THU_KHO]: true },
+  },
+  // ── new capabilities (R2) ─────────────────────────────────────────────────
+  // report:view — any report page (branch-scoped for QUAN_LY_CN)
+  {
+    capability: "report:view",
+    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: true, [Role.KE_TOAN_CHUOI]: true, [Role.QUAN_LY_CN]: true, [Role.THU_NGAN]: false, [Role.THU_KHO]: false },
+  },
+  // report:chain-view — chain-level overview only (no branch managers)
+  {
+    capability: "report:chain-view",
+    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: true, [Role.KE_TOAN_CHUOI]: true, [Role.QUAN_LY_CN]: false, [Role.THU_NGAN]: false, [Role.THU_KHO]: false },
+  },
+  // audit:view — HQ + branch managers read audit trail
+  {
+    capability: "audit:view",
+    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: false, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: true, [Role.THU_NGAN]: false, [Role.THU_KHO]: false },
+  },
+  // device:manage — register / suspend POS devices
+  {
+    capability: "device:manage",
+    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: false, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: true, [Role.THU_NGAN]: false, [Role.THU_KHO]: false },
+  },
+  // bank:reconcile — bank-statement reconciliation (chain accounting)
+  {
+    capability: "bank:reconcile",
+    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: true, [Role.KE_TOAN_CHUOI]: true, [Role.QUAN_LY_CN]: false, [Role.THU_NGAN]: false, [Role.THU_KHO]: false },
+  },
+  // bill:manage — order management (refund etc.)
+  {
+    capability: "bill:manage",
+    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: true, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: true, [Role.THU_NGAN]: false, [Role.THU_KHO]: false },
+  },
+  // inventory:transfer — inter-branch stock transfers
+  {
+    capability: "inventory:transfer",
+    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: true, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: true, [Role.THU_NGAN]: false, [Role.THU_KHO]: false },
+  },
+  // recipe:manage-chain — chain-wide recipe (định mức) default
+  {
+    capability: "recipe:manage-chain",
+    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: true, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: false, [Role.THU_NGAN]: false, [Role.THU_KHO]: false },
+  },
+  // recipe:manage-branch — per-branch recipe override
+  {
+    capability: "recipe:manage-branch",
+    expected: { [Role.QUAN_TRI_HQ]: true, [Role.CHU_CHUOI]: true, [Role.KE_TOAN_CHUOI]: false, [Role.QUAN_LY_CN]: true, [Role.THU_NGAN]: false, [Role.THU_KHO]: false },
   },
 ];
 

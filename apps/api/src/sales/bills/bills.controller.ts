@@ -22,15 +22,16 @@ import {
 } from "@nestjs/common";
 import { BillsService } from "./bills.service";
 import { Role } from "../../platform/rbac/role.enum";
+import { PermissionService } from "../../platform/rbac/permission.service";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
 import type { CreateBillDto, CancelBillDto, BillListQuery, RefundBillDto } from "./bills.dto";
 
-/** Roles allowed to initiate a refund (a manager PIN still authorises it). */
-const ORDER_MANAGER_ROLES = new Set<Role>([Role.QUAN_TRI_HQ, Role.CHU_CHUOI, Role.QUAN_LY_CN]);
-
 @Controller("sales/bills")
 export class BillsController {
-  constructor(private readonly service: BillsService) {}
+  constructor(
+    private readonly service: BillsService,
+    private readonly perms: PermissionService,
+  ) {}
 
   @Post()
   create(@Body() dto: CreateBillDto, @Request() req: ScopedRequest) {
@@ -57,10 +58,10 @@ export class BillsController {
   }
 
   @Post(":id/refund")
-  refund(@Param("id") id: string, @Body() dto: RefundBillDto, @Request() req: ScopedRequest) {
+  async refund(@Param("id") id: string, @Body() dto: RefundBillDto, @Request() req: ScopedRequest) {
     // Refund is a manager action — HQ or branch manager (branch enforced by the
     // manager PIN branch-binding + assertBranchAccess in the service).
-    if (!ORDER_MANAGER_ROLES.has(req.user.role as Role)) {
+    if (!(await this.perms.can(req.user.role, "bill:manage"))) {
       throw new ForbiddenException("Không có quyền hoàn tiền");
     }
     return this.service.refundBill(id, dto, req.user.sub, req.user.role, {

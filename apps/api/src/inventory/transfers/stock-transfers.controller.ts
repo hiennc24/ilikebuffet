@@ -8,15 +8,16 @@
  */
 import { Body, Controller, ForbiddenException, Get, Post, Query, Request } from "@nestjs/common";
 import { StockTransfersService } from "./stock-transfers.service";
-import { Role } from "../../platform/rbac/role.enum";
+import { PermissionService } from "../../platform/rbac/permission.service";
 import type { ScopedRequest } from "../../platform/rbac/branch-scope.guard";
 import { CreateTransferDto, TransferListQuery } from "./stock-transfers.dto";
 
-const TRANSFER_ROLES = new Set<Role>([Role.QUAN_TRI_HQ, Role.CHU_CHUOI, Role.QUAN_LY_CN]);
-
 @Controller("inventory/transfers")
 export class StockTransfersController {
-  constructor(private readonly service: StockTransfersService) {}
+  constructor(
+    private readonly service: StockTransfersService,
+    private readonly perms: PermissionService,
+  ) {}
 
   private access(req: ScopedRequest) {
     return { chainWide: req.user.chainWide, branchIds: req.user.branchIds };
@@ -28,8 +29,8 @@ export class StockTransfersController {
   }
 
   @Post()
-  create(@Body() dto: CreateTransferDto, @Request() req: ScopedRequest) {
-    if (!TRANSFER_ROLES.has(req.user.role as Role)) {
+  async create(@Body() dto: CreateTransferDto, @Request() req: ScopedRequest) {
+    if (!(await this.perms.can(req.user.role, "inventory:transfer"))) {
       throw new ForbiddenException("Không có quyền điều chuyển kho");
     }
     return this.service.create(dto, req.user.sub, req.user.role, this.access(req));

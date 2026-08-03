@@ -34,6 +34,8 @@ export const CAPABILITY_CATALOG: CapabilityGroup[] = [
       { key: "chain:config:read", label: "Xem cấu hình chuỗi" },
       { key: "chain:config:write", label: "Sửa cấu hình chuỗi" },
       { key: "chain:user:manage", label: "Quản lý người dùng & vai trò" },
+      { key: "audit:view", label: "Xem nhật ký" },
+      { key: "device:manage", label: "Quản lý thiết bị" },
     ],
   },
   {
@@ -42,6 +44,8 @@ export const CAPABILITY_CATALOG: CapabilityGroup[] = [
     actions: [
       { key: "chain:dashboard:read", label: "Xem tổng quan chuỗi" },
       { key: "branch:dashboard:read", label: "Xem tổng quan chi nhánh" },
+      { key: "report:view", label: "Xem báo cáo" },
+      { key: "report:chain-view", label: "Xem báo cáo cấp chuỗi" },
     ],
   },
   {
@@ -52,6 +56,7 @@ export const CAPABILITY_CATALOG: CapabilityGroup[] = [
       { key: "shift:assist", label: "Hỗ trợ thu ngân" },
       { key: "discount:approve", label: "Duyệt giảm giá" },
       { key: "bill:cancel", label: "Huỷ hoá đơn" },
+      { key: "bill:manage", label: "Quản lý đơn/hoá đơn" },
     ],
   },
   {
@@ -62,6 +67,7 @@ export const CAPABILITY_CATALOG: CapabilityGroup[] = [
       { key: "cash:create-voucher", label: "Tạo phiếu thu-chi" },
       { key: "cash:reconcile", label: "Đối soát" },
       { key: "cash:close-book", label: "Chốt sổ" },
+      { key: "bank:reconcile", label: "Đối soát ngân hàng" },
     ],
   },
   {
@@ -70,6 +76,9 @@ export const CAPABILITY_CATALOG: CapabilityGroup[] = [
     actions: [
       { key: "inventory:read", label: "Xem kho" },
       { key: "inventory:manage", label: "Quản lý kho (nhập/xuất/kiểm)" },
+      { key: "inventory:transfer", label: "Điều chuyển kho" },
+      { key: "recipe:manage-chain", label: "Quản lý định mức (chuỗi)" },
+      { key: "recipe:manage-branch", label: "Quản lý định mức (chi nhánh)" },
       { key: "purchase-order:create", label: "Tạo / gửi đơn mua" },
       { key: "purchase-order:approve", label: "Duyệt đơn mua" },
     ],
