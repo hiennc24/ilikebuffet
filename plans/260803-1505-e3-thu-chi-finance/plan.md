@@ -2,9 +2,21 @@
 title: "E3 — Tài chính: Thu-Chi + Sổ quỹ + P&L"
 slug: e3-thu-chi-finance
 created: 2026-08-03
-status: planned
+status: in-progress
 priority: P1
 mode: --tdd
+
+decisions:
+  - access: gate finance by the CAPABILITY matrix (permissions.ts `can(role, cap)`)
+    — not a hardcoded role set — so permissions are centralized ("màn hình phân
+    quyền"). E3 is the first module to actually enforce `can()`. Caps used:
+    cash:create-voucher (create), cash:read (read/report), cash:close-book (P&L).
+    Adjust the matrix (+spec) so the intended roles hold them.
+  - approval: over account.approvalThresholdVnd (>0) requires QUAN_LY_CN PIN
+    (reuse DiscountsService.verifyApprovalPin).
+  - supplier-debt: INCLUDED in E3 — payable created on goods receipt; supplier
+    payment (finance EXPENSE + supplierId) applies against it; công nợ report.
+  - pnl-cost: moving-average COGS (consistent with gross-margin M6).
 ---
 
 # E3 — Tài chính (Thu-Chi + Sổ quỹ + Lãi/Lỗ)
@@ -34,9 +46,10 @@ giá vốn M9 nhưng CHƯA có chi phí).
 
 | Phase | Tên | Nội dung | Phụ thuộc | Status |
 |-------|-----|----------|-----------|--------|
-| F0 | [Thu-Chi core](./phase-f0-thu-chi-core.md) | schema `FinancialTransaction` + migration + service (tạo/duyệt vượt ngưỡng, list+tổng) + e2e | — | planned |
+| F0 | [Thu-Chi core](./phase-f0-thu-chi-core.md) | schema `FinancialTransaction` + migration + capability gate (`can()`) + service (tạo/duyệt vượt ngưỡng, list+tổng) + e2e | — | planned |
 | F1 | [FE + báo cáo chi phí](./phase-f1-fe-report.md) | màn thu-chi (list + tạo + duyệt PIN) + báo cáo chi phí theo tài khoản/kỳ + nav/rbac | F0 | planned |
-| F2 | [P&L + docs](./phase-f2-pnl-docs.md) | báo cáo lãi/lỗ (doanh thu − giá vốn − chi phí) + xuất Excel + docs + full verify | F0,F1 | planned |
+| F2 | [Công nợ NCC](./phase-f2-supplier-debt.md) | payable tạo khi nhập kho + thanh toán NCC (finance EXPENSE + supplierId) + báo cáo công nợ + FE | F0 | planned |
+| F3 | [P&L + docs](./phase-f3-pnl-docs.md) | báo cáo lãi/lỗ (doanh thu − giá vốn − chi phí) + xuất Excel + docs + full verify | F0,F1,F2 | planned |
 
 ## Acceptance
 - Tạo phiếu thu-chi theo account (flow snapshot); vượt `approvalThresholdVnd` →
