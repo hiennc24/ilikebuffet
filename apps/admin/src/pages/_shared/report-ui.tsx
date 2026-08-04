@@ -64,11 +64,11 @@ export const DateRangeBar: React.FC<{
   <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", gap: "var(--space-3)", marginBottom: "var(--space-4)" }}>
     <label style={labelStyle}>
       Từ ngày
-      <input type="date" aria-label="Từ ngày" value={value.from} onChange={(e) => onChange({ from: e.target.value })} />
+      <input type="date" aria-label="Từ ngày" value={value.from} onChange={(e) => onChange({ from: e.target.value })} style={dateInputStyle} />
     </label>
     <label style={labelStyle}>
       Đến ngày
-      <input type="date" aria-label="Đến ngày" value={value.to} onChange={(e) => onChange({ to: e.target.value })} />
+      <input type="date" aria-label="Đến ngày" value={value.to} onChange={(e) => onChange({ to: e.target.value })} style={dateInputStyle} />
     </label>
     {branches && (
       <Select aria-label="Chi nhánh" value={value.branchId} onChange={(e) => onChange({ branchId: e.target.value })}>
@@ -99,3 +99,16 @@ export const TotalsBar: React.FC<{ items: { label: string; value: string; tone?:
 );
 
 const labelStyle: React.CSSProperties = { display: "flex", flexDirection: "column", gap: "4px", fontSize: "var(--text-xs)", color: "var(--text-muted)", fontFamily: "var(--font-sans)" };
+// Match the shared Select so date pickers and dropdowns look uniform in the filter bar.
+const dateInputStyle: React.CSSProperties = {
+  height: "var(--input-height, 44px)",
+  padding: "0 var(--space-3)",
+  border: "1px solid var(--border-default)",
+  borderRadius: "var(--radius-md)",
+  background: "var(--bg-raised, #FFFFFF)",
+  fontFamily: "var(--font-sans)",
+  fontSize: "var(--text-sm)",
+  color: "var(--text-primary)",
+  colorScheme: "light",
+  accentColor: "var(--action-bg, #235B54)",
+};

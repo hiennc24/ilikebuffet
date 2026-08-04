@@ -98,16 +98,25 @@ export const AuditPage: React.FC = () => {
         }
       >
         <FilterBar>
-          <input type="search" aria-label="Hành động" placeholder="Hành động (vd bill.cancel)…" value={filters.action} onChange={(e) => patch({ action: e.target.value })} style={inputStyle} />
-          <input type="search" aria-label="Loại đối tượng" placeholder="Loại đối tượng…" value={filters.objectType} onChange={(e) => patch({ objectType: e.target.value })} style={inputStyle} />
-          <input type="search" aria-label="Người thực hiện" placeholder="ID người thực hiện…" value={filters.actorId} onChange={(e) => patch({ actorId: e.target.value })} style={inputStyle} />
-          <label style={labelStyle}>
-            Từ
-            <input type="date" aria-label="Từ ngày" value={filters.from} onChange={(e) => patch({ from: e.target.value })} />
+          <label style={fieldStyle}>
+            Hành động
+            <input type="search" aria-label="Hành động" placeholder="vd. bill.cancel" value={filters.action} onChange={(e) => patch({ action: e.target.value })} style={inputStyle} />
           </label>
-          <label style={labelStyle}>
-            Đến
-            <input type="date" aria-label="Đến ngày" value={filters.to} onChange={(e) => patch({ to: e.target.value })} />
+          <label style={fieldStyle}>
+            Loại đối tượng
+            <input type="search" aria-label="Loại đối tượng" placeholder="vd. bill" value={filters.objectType} onChange={(e) => patch({ objectType: e.target.value })} style={inputStyle} />
+          </label>
+          <label style={fieldStyle}>
+            Người thực hiện
+            <input type="search" aria-label="Người thực hiện" placeholder="ID người thực hiện" value={filters.actorId} onChange={(e) => patch({ actorId: e.target.value })} style={inputStyle} />
+          </label>
+          <label style={fieldStyle}>
+            Từ ngày
+            <input type="date" aria-label="Từ ngày" value={filters.from} onChange={(e) => patch({ from: e.target.value })} style={inputStyle} />
+          </label>
+          <label style={fieldStyle}>
+            Đến ngày
+            <input type="date" aria-label="Đến ngày" value={filters.to} onChange={(e) => patch({ to: e.target.value })} style={inputStyle} />
           </label>
         </FilterBar>
 
@@ -151,11 +160,28 @@ const JsonBlock: React.FC<{ title: string; value: unknown }> = ({ title, value }
 );
 
 const inputStyle: React.CSSProperties = {
+  width: "100%",
   height: "var(--input-height, 44px)",
   padding: "0 var(--space-3)",
   border: "1px solid var(--border-default)",
   borderRadius: "var(--radius-md)",
   fontFamily: "var(--font-sans)",
   fontSize: "var(--text-sm)",
+  color: "var(--text-primary)",
+  background: "var(--bg-raised, #FFFFFF)",
+  // Native date pickers pick up the theme accent instead of the OS blue.
+  colorScheme: "light",
+  accentColor: "var(--action-bg, #235B54)",
 };
-const labelStyle: React.CSSProperties = { display: "flex", flexDirection: "column", gap: "4px", fontSize: "var(--text-xs)", color: "var(--text-muted)" };
+// A labelled filter field: muted label above a full-width control. `flex: 1 1 200px`
+// lets fields share rows on desktop and stack full-width on mobile — keeping the
+// search and date inputs visually uniform.
+const fieldStyle: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "6px",
+  flex: "1 1 200px",
+  minWidth: 0,
+  fontSize: "var(--text-xs)",
+  color: "var(--text-muted)",
+};
