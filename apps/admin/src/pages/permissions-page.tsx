@@ -15,20 +15,19 @@
  */
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Button, Dialog, FormField } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { QUERY_KEYS } from "../lib/query-keys";
 import {
   Card,
   PageStack,
-  DataTable,
-  Column,
-  Badge,
   InlineError,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import { DataTable, useDataTable, Badge } from "./_shared/table";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -72,22 +71,66 @@ export const PermissionsPage: React.FC = () => {
 
   const roles: Role[] = rolesQuery.data?.data ?? [];
 
-  const columns: Column<Role>[] = [
-    { key: "name", header: "Tên", render: (r) => r.name },
-    { key: "code", header: "Mã", render: (r) => <code style={{ fontSize: "var(--text-xs)" }}>{r.code}</code> },
-    {
-      key: "type",
-      header: "Loại",
-      render: (r) =>
-        r.isSystem ? (
-          <Badge tone="active">Hệ thống</Badge>
-        ) : (
-          <Badge tone="neutral">Tuỳ chỉnh</Badge>
+  const columns = React.useMemo<ColumnDef<Role>[]>(
+    () => [
+      {
+        id: "name",
+        enableSorting: false,
+        meta: { headerLabel: "Tên" },
+        header: "Tên",
+        cell: ({ row }) => row.original.name,
+      },
+      {
+        id: "code",
+        enableSorting: false,
+        meta: { headerLabel: "Mã" },
+        header: "Mã",
+        cell: ({ row }) => (
+          <code style={{ fontSize: "var(--text-xs)" }}>{row.original.code}</code>
         ),
-    },
-    { key: "userCount", header: "Số người dùng", align: "right", render: (r) => String(r.userCount) },
-    { key: "capCount", header: "Số quyền", align: "right", render: (r) => String(r.capabilities.length) },
-  ];
+      },
+      {
+        id: "type",
+        enableSorting: false,
+        meta: { headerLabel: "Loại" },
+        header: "Loại",
+        cell: ({ row }) =>
+          row.original.isSystem ? (
+            <Badge tone="info">Hệ thống</Badge>
+          ) : (
+            <Badge tone="neutral">Tuỳ chỉnh</Badge>
+          ),
+      },
+      {
+        id: "userCount",
+        enableSorting: false,
+        meta: { headerLabel: "Số người dùng", align: "right" },
+        header: "Số người dùng",
+        cell: ({ row }) => String(row.original.userCount),
+      },
+      {
+        id: "capCount",
+        enableSorting: false,
+        meta: { headerLabel: "Số quyền", align: "right" },
+        header: "Số quyền",
+        cell: ({ row }) => String(row.original.capabilities.length),
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<Role>({
+    data: roles,
+    columns,
+    total: roles.length,
+    page: 1,
+    limit: 200,
+    sort: null,
+    setPage: () => {},
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (r) => r.code,
+  });
 
   return (
     <PageStack>
@@ -106,11 +149,11 @@ export const PermissionsPage: React.FC = () => {
           <ErrorState message={toErrorMessage(rolesQuery.error, "Không tải được danh sách vai trò")} />
         ) : (
           <DataTable
-            columns={columns}
-            rows={roles}
-            rowKey={(r) => r.code}
+            table={table}
+            isLoading={false}
+            isError={false}
             onRowClick={(r) => setMode({ kind: "edit", role: r })}
-            emptyText="Chưa có vai trò nào."
+            empty="Chưa có vai trò nào."
           />
         )}
       </Card>

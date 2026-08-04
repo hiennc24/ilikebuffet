@@ -11,6 +11,7 @@
  */
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Button, Dialog, FormField } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
@@ -18,17 +19,15 @@ import { QUERY_KEYS } from "../lib/query-keys";
 import {
   Card,
   PageStack,
-  DataTable,
-  Column,
   FilterBar,
   Select,
   InlineError,
-  Badge,
-  BadgeTone,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import { DataTable, useDataTable, Badge } from "./_shared/table";
+import type { BadgeTone } from "./_shared/table";
 
 type SupplierStatus = "ACTIVE" | "PENDING_HQ" | "INACTIVE";
 type SupplierScope = "CHAIN_WIDE" | "BRANCH_SPECIFIC";
@@ -48,7 +47,11 @@ const STATUS_LABEL: Record<SupplierStatus, string> = {
   PENDING_HQ: "Chờ HQ duyệt",
   INACTIVE: "Ngưng",
 };
-const STATUS_TONE: Record<SupplierStatus, BadgeTone> = { ACTIVE: "active", PENDING_HQ: "warn", INACTIVE: "muted" };
+const STATUS_TONE: Record<SupplierStatus, BadgeTone> = {
+  ACTIVE: "success",
+  PENDING_HQ: "warn",
+  INACTIVE: "neutral",
+};
 const SCOPE_LABEL: Record<SupplierScope, string> = { CHAIN_WIDE: "Toàn chuỗi", BRANCH_SPECIFIC: "Chi nhánh" };
 
 type Mode = { kind: "closed" } | { kind: "create" } | { kind: "edit"; supplier: Supplier };
@@ -72,13 +75,62 @@ export const SuppliersPage: React.FC = () => {
 
   const rows = unwrapList(listQuery.data);
 
-  const columns: Column<Supplier>[] = [
-    { key: "name", header: "Tên", render: (s) => s.name },
-    { key: "tax", header: "MST", render: (s) => s.taxCode ?? "—" },
-    { key: "contact", header: "Liên hệ", render: (s) => s.contact ?? "—" },
-    { key: "scope", header: "Phạm vi", render: (s) => <Badge tone="neutral">{SCOPE_LABEL[s.scope]}</Badge> },
-    { key: "status", header: "Trạng thái", render: (s) => <Badge tone={STATUS_TONE[s.status]}>{STATUS_LABEL[s.status]}</Badge> },
-  ];
+  const columns = React.useMemo<ColumnDef<Supplier>[]>(
+    () => [
+      {
+        id: "name",
+        enableSorting: false,
+        meta: { headerLabel: "Tên" },
+        header: "Tên",
+        cell: ({ row }) => row.original.name,
+      },
+      {
+        id: "tax",
+        enableSorting: false,
+        meta: { headerLabel: "MST" },
+        header: "MST",
+        cell: ({ row }) => row.original.taxCode ?? "—",
+      },
+      {
+        id: "contact",
+        enableSorting: false,
+        meta: { headerLabel: "Liên hệ" },
+        header: "Liên hệ",
+        cell: ({ row }) => row.original.contact ?? "—",
+      },
+      {
+        id: "scope",
+        enableSorting: false,
+        meta: { headerLabel: "Phạm vi" },
+        header: "Phạm vi",
+        cell: ({ row }) => <Badge tone="neutral">{SCOPE_LABEL[row.original.scope]}</Badge>,
+      },
+      {
+        id: "status",
+        enableSorting: false,
+        meta: { headerLabel: "Trạng thái" },
+        header: "Trạng thái",
+        cell: ({ row }) => {
+          const s = row.original;
+          return <Badge tone={STATUS_TONE[s.status]}>{STATUS_LABEL[s.status]}</Badge>;
+        },
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<Supplier>({
+    data: rows,
+    columns,
+    total: rows.length,
+    page: 1,
+    limit: rows.length || 50,
+    sort: null,
+    setPage: () => {},
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (s) => s.id,
+  });
 
   return (
     <PageStack>
@@ -106,7 +158,13 @@ export const SuppliersPage: React.FC = () => {
         ) : listQuery.isError ? (
           <ErrorState message={toErrorMessage(listQuery.error, "Không tải được danh sách NCC")} />
         ) : (
-          <DataTable columns={columns} rows={rows} rowKey={(s) => s.id} onRowClick={(s) => setMode({ kind: "edit", supplier: s })} emptyText="Chưa có nhà cung cấp." />
+          <DataTable
+            table={table}
+            isLoading={false}
+            isError={false}
+            onRowClick={(s) => setMode({ kind: "edit", supplier: s })}
+            empty="Chưa có nhà cung cấp."
+          />
         )}
       </Card>
 

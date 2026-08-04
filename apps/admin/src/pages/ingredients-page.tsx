@@ -7,6 +7,7 @@
  */
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Button, Dialog, FormField } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
@@ -15,18 +16,19 @@ import { QUERY_KEYS } from "../lib/query-keys";
 import {
   Card,
   PageStack,
-  DataTable,
-  Column,
   FilterBar,
-  Pagination,
   Select,
   InlineError,
-  Badge,
-  BadgeTone,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import {
+  DataTable,
+  DataTablePagination,
+  useDataTable,
+  Badge,
+} from "./_shared/table";
 
 const PAGE_SIZE = 20;
 
@@ -139,7 +141,7 @@ const IngredientsCard: React.FC<{ units: Unit[]; groups: Group[]; api: ReturnTyp
   const [importError, setImportError] = React.useState<string | null>(null);
   const fileRef = React.useRef<HTMLInputElement>(null);
 
-  const { rows, total, pageCount, isLoading, isError, error } = usePagedList<Ingredient>({
+  const { rows, total, isLoading, isError, error } = usePagedList<Ingredient>({
     queryKey: QUERY_KEYS.ingredients(),
     path: "/master-data/ingredients",
     page,
@@ -169,20 +171,66 @@ const IngredientsCard: React.FC<{ units: Unit[]; groups: Group[]; api: ReturnTyp
     },
   });
 
-  const columns: Column<Ingredient>[] = [
-    { key: "code", header: "Mã", render: (i) => i.code ?? "—" },
-    { key: "name", header: "Tên", render: (i) => i.name },
-    { key: "group", header: "Nhóm", render: (i) => i.group?.name ?? "—" },
-    { key: "unit", header: "ĐVT", render: (i) => i.unit?.code ?? "—" },
-    {
-      key: "status",
-      header: "Trạng thái",
-      render: (i) => {
-        const tone: BadgeTone = i.status === "ACTIVE" ? "active" : "muted";
-        return <Badge tone={tone}>{i.status === "ACTIVE" ? "Đang dùng" : "Ngưng"}</Badge>;
+  const columns = React.useMemo<ColumnDef<Ingredient>[]>(
+    () => [
+      {
+        id: "code",
+        enableSorting: false,
+        meta: { headerLabel: "Mã" },
+        header: "Mã",
+        cell: ({ row }) => row.original.code ?? "—",
       },
-    },
-  ];
+      {
+        id: "name",
+        enableSorting: false,
+        meta: { headerLabel: "Tên" },
+        header: "Tên",
+        cell: ({ row }) => row.original.name,
+      },
+      {
+        id: "group",
+        enableSorting: false,
+        meta: { headerLabel: "Nhóm" },
+        header: "Nhóm",
+        cell: ({ row }) => row.original.group?.name ?? "—",
+      },
+      {
+        id: "unit",
+        enableSorting: false,
+        meta: { headerLabel: "ĐVT" },
+        header: "ĐVT",
+        cell: ({ row }) => row.original.unit?.code ?? "—",
+      },
+      {
+        id: "status",
+        enableSorting: false,
+        meta: { headerLabel: "Trạng thái" },
+        header: "Trạng thái",
+        cell: ({ row }) => {
+          const active = row.original.status === "ACTIVE";
+          return (
+            <Badge tone={active ? "success" : "neutral"}>
+              {active ? "Đang dùng" : "Ngưng"}
+            </Badge>
+          );
+        },
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<Ingredient>({
+    data: rows,
+    columns,
+    total,
+    page,
+    limit: PAGE_SIZE,
+    sort: null,
+    setPage,
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (i) => i.id,
+  });
 
   return (
     <Card
@@ -213,7 +261,7 @@ const IngredientsCard: React.FC<{ units: Unit[]; groups: Group[]; api: ReturnTyp
     >
       {(importResult || importError) && (
         <div style={{ marginBottom: "var(--space-3)" }}>
-          {importResult && <Badge tone="active">{importResult}</Badge>}
+          {importResult && <Badge tone="success">{importResult}</Badge>}
           <InlineError message={importError} />
         </div>
       )}
@@ -241,8 +289,14 @@ const IngredientsCard: React.FC<{ units: Unit[]; groups: Group[]; api: ReturnTyp
         <ErrorState message={toErrorMessage(error, "Không tải được nguyên liệu")} />
       ) : (
         <>
-          <DataTable columns={columns} rows={rows} rowKey={(i) => i.id} onRowClick={(i) => setEditing(i)} emptyText="Chưa có nguyên liệu." />
-          <Pagination page={page} pageCount={pageCount} total={total} onPageChange={setPage} />
+          <DataTable
+            table={table}
+            isLoading={false}
+            isError={false}
+            onRowClick={(i) => setEditing(i)}
+            empty="Chưa có nguyên liệu."
+          />
+          <DataTablePagination table={table} total={total} />
         </>
       )}
 
