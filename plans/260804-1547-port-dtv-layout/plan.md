@@ -5,7 +5,14 @@ created: 2026-08-04
 status: in-progress
 priority: P1
 decisions: cool DTV surfaces + keep green brand; global tokens (admin+POS); pilot users-roles first
-progress: D0 tokens done; D1/D2/D3 core + D4 users-roles pilot done (paused for review); D4 rollout + D5 pending
+progress: |
+  D0 tokens (cool surfaces + Be Vietnam Pro) done. D1/D2/D3 core (react-table layer,
+  PageHeader/PageToolbar/PageTabs, ListPageShell, sidebar rail) done. D4 pilot users-roles
+  + iterated to match DTV (centered 1200/1440 container, 2-level breadcrumb, floating
+  panel, full-row hover, portaled row-actions menu, drawer z-index, right-aligned
+  pagination). D4 rollout applied to permissions/suppliers/ingredients/devices/branches.
+  Remaining (D5, follow-up): reports + orders/stock/pricing/finance/accounts/ticket-types/
+  audit/holidays still on legacy Card+DataTable; optional accent green→teal.
 ---
 
 context: |
