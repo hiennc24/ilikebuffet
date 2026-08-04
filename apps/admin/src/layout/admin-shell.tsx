@@ -12,6 +12,7 @@
 import * as React from "react";
 import { useAuth } from "../auth/auth-context";
 import { canAccessPath } from "../lib/rbac";
+import { useIsCompact } from "../lib/use-media-query";
 
 export interface NavItem {
   id: string;
@@ -275,6 +276,19 @@ export const AdminShell: React.FC<AdminShellProps> = ({
   // Branch switcher state — show native select on click.
   const [switcherOpen, setSwitcherOpen] = React.useState(false);
 
+  // Below the desktop breakpoint the sidebar becomes an off-canvas drawer.
+  const compact = useIsCompact();
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  // Close the drawer whenever we grow back to desktop so it can't get stuck open.
+  React.useEffect(() => {
+    if (!compact) setDrawerOpen(false);
+  }, [compact]);
+  // Navigating from the drawer should close it.
+  const navigate = (path: string) => {
+    onNavigate?.(path);
+    if (compact) setDrawerOpen(false);
+  };
+
   const navItemStyle = (isActive: boolean): React.CSSProperties => ({
     position: "relative",
     height: "var(--nav-item-height, 36px)",
@@ -296,31 +310,52 @@ export const AdminShell: React.FC<AdminShellProps> = ({
   });
 
   return (
-    /* widthTier=office: 1440px non-responsive (DECISION #8) */
+    /* Responsive: fixed sidebar ≥1024px; off-canvas drawer below. */
     <div
       style={{
         display: "flex",
-        minWidth: "1440px",
-        minHeight: "100vh",
+        minHeight: "100dvh",
         background: "var(--shell-bg, #FAF8F6)",
       }}
     >
-      {/* ── Sidebar ── */}
+      {/* Scrim behind the drawer on compact widths. */}
+      {compact && drawerOpen && (
+        <div
+          onClick={() => setDrawerOpen(false)}
+          aria-hidden="true"
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 900 }}
+        />
+      )}
+
+      {/* ── Sidebar / drawer ── */}
       <aside
+        aria-hidden={compact && !drawerOpen ? true : undefined}
         style={{
           width: "var(--sidebar-width, 248px)",
-          flex: "0 0 var(--sidebar-width, 248px)",
           display: "flex",
           flexDirection: "column",
           background: "var(--sidebar-bg, #FFFFFF)",
           borderRight: "1px solid var(--border-subtle)",
-          // Pin to the viewport and cap height so the nav (flex:1, overflowY:auto)
-          // scrolls internally when the item list is taller than the screen,
-          // instead of the whole sidebar growing and pushing items off-screen.
-          height: "100vh",
-          position: "sticky",
-          top: 0,
-          alignSelf: "flex-start",
+          // The nav (flex:1, overflowY:auto) scrolls internally; the shell height is capped.
+          height: "100dvh",
+          ...(compact
+            ? {
+                // Off-canvas: fixed, slides in from the left, above the scrim.
+                position: "fixed",
+                top: 0,
+                left: 0,
+                zIndex: 1000,
+                transform: drawerOpen ? "translateX(0)" : "translateX(-100%)",
+                transition: "transform var(--dur-med, 220ms) ease",
+                boxShadow: drawerOpen ? "var(--shadow-lg, 0 10px 40px rgba(0,0,0,0.2))" : "none",
+              }
+            : {
+                // Desktop: sticky column.
+                flex: "0 0 var(--sidebar-width, 248px)",
+                position: "sticky",
+                top: 0,
+                alignSelf: "flex-start",
+              }),
         }}
       >
         {/* Brand */}
@@ -496,7 +531,7 @@ export const AdminShell: React.FC<AdminShellProps> = ({
                 return (
                   <button
                     key={item.id}
-                    onClick={() => onNavigate?.(item.path)}
+                    onClick={() => navigate(item.path)}
                     style={navItemStyle(isActive)}
                     aria-current={isActive ? "page" : undefined}
                   >
@@ -555,7 +590,7 @@ export const AdminShell: React.FC<AdminShellProps> = ({
           {SYSTEM_ITEMS.filter((item) => canAccessPath(role, item.path)).map((item) => (
             <button
               key={item.id}
-              onClick={() => onNavigate?.(item.path)}
+              onClick={() => navigate(item.path)}
               style={navItemStyle(activePath === item.path)}
             >
               <NavIcon d={item.iconPath} />
@@ -596,12 +631,41 @@ export const AdminShell: React.FC<AdminShellProps> = ({
             flex: "0 0 var(--topbar-height, 56px)",
             display: "flex",
             alignItems: "center",
-            padding: "0 var(--space-5)",
+            padding: compact ? "0 var(--space-3)" : "0 var(--space-5)",
+            paddingLeft: compact ? "max(var(--space-3), env(safe-area-inset-left))" : undefined,
             background: "var(--topbar-bg, #FFFFFF)",
             borderBottom: "1px solid var(--border-subtle)",
-            gap: "var(--space-4)",
+            gap: compact ? "var(--space-2)" : "var(--space-4)",
+            position: "sticky",
+            top: 0,
+            zIndex: 100,
           }}
         >
+          {compact && (
+            <button
+              type="button"
+              onClick={() => setDrawerOpen((v) => !v)}
+              aria-label="Mở menu điều hướng"
+              aria-expanded={drawerOpen}
+              style={{
+                width: "44px",
+                height: "44px",
+                margin: "0 -6px 0 -8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "transparent",
+                border: "none",
+                borderRadius: "var(--radius-md)",
+                cursor: "pointer",
+                color: "var(--text-primary)",
+              }}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
+                <path d="M3 6h18M3 12h18M3 18h18" />
+              </svg>
+            </button>
+          )}
           <h1
             style={{
               flex: 1,
@@ -629,7 +693,9 @@ export const AdminShell: React.FC<AdminShellProps> = ({
           style={{
             flex: 1,
             overflowY: "auto",
-            padding: "var(--space-5)",
+            padding: compact ? "var(--space-3)" : "var(--space-5)",
+            // Keep content clear of the notch / home indicator on mobile.
+            paddingBottom: compact ? "max(var(--space-3), env(safe-area-inset-bottom))" : undefined,
           }}
         >
           {children}
