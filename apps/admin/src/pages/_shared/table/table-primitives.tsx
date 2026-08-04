@@ -107,7 +107,7 @@ export const TR: React.FC<TRProps> = ({
   const bgColor = selected
     ? "var(--nav-active-bg)"
     : hovered && clickable
-      ? "var(--bg-page)"
+      ? "var(--bg-surface)"
       : "transparent";
 
   return (
@@ -160,13 +160,16 @@ export const TH: React.FC<THProps> = ({
     style={{
       textAlign: align,
       padding: "var(--space-2) var(--space-3)",
-      height: "40px",
+      height: "48px",
       color: "var(--text-secondary)",
       fontFamily: "var(--font-sans)",
       fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"],
-      fontSize: "var(--text-2xs)",
-      textTransform: "uppercase",
-      letterSpacing: "0.03em",
+      fontSize: "var(--text-sm)",
+      textTransform: "none",
+      letterSpacing: "normal",
+      // Readable normal-case header row on the cool surface, separated from the
+      // body by a slightly stronger bottom rule (matches the DTV reference).
+      borderBottom: "1px solid var(--border-default)",
       whiteSpace: "nowrap",
       verticalAlign: "middle",
       width,
@@ -215,7 +218,8 @@ export const TD: React.FC<TDProps> = ({
   <td
     style={{
       textAlign: align,
-      padding: "var(--space-3)",
+      // ≈56px row height for a comfortable, un-cramped density (DTV default).
+      padding: "14px var(--space-3)",
       verticalAlign: "middle",
       color: "var(--text-primary)",
       fontSize: "var(--text-sm)",

@@ -1513,6 +1513,8 @@ export const AdminShell: React.FC<AdminShellProps> = ({
           style={{
             flex: 1,
             overflowY: "auto",
+            // Explicit page colour so raised white panels visibly float on it.
+            background: "var(--bg-page)",
             padding: compact ? "var(--space-3)" : "var(--space-5)",
             // Keep content clear of the notch / home indicator on mobile.
             paddingBottom: compact ? "max(var(--space-3), env(safe-area-inset-bottom))" : undefined,

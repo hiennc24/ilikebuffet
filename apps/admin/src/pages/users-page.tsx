@@ -140,7 +140,7 @@ export const UsersPage: React.FC = () => {
           const u = row.original;
           return (
             <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-2)" }}>
-              <Avatar name={u.username} />
+              <Avatar name={u.username} size={32} />
               <span style={{ fontFamily: "var(--font-sans)", fontSize: "var(--text-sm)", color: "var(--text-primary)" }}>
                 {u.username}
               </span>
@@ -151,14 +151,14 @@ export const UsersPage: React.FC = () => {
       {
         id: "role",
         enableSorting: false,
-        meta: { headerLabel: "Vai trò" },
+        meta: { headerLabel: "Vai trò", width: "160px" },
         header: "Vai trò",
         cell: ({ row }) => roleLabelMap[row.original.role] ?? row.original.role,
       },
       {
         id: "scope",
         enableSorting: false,
-        meta: { headerLabel: "Phạm vi" },
+        meta: { headerLabel: "Phạm vi", width: "120px" },
         header: "Phạm vi",
         cell: ({ row }) => {
           const u = row.original;
@@ -168,7 +168,7 @@ export const UsersPage: React.FC = () => {
       {
         id: "status",
         enableSorting: false,
-        meta: { headerLabel: "Trạng thái" },
+        meta: { headerLabel: "Trạng thái", width: "140px" },
         header: "Trạng thái",
         cell: ({ row }) => {
           const u = row.original;
@@ -229,7 +229,10 @@ export const UsersPage: React.FC = () => {
         pathGroups={USERS_PATH_GROUPS}
         actions={
           <Button variant="action" onClick={() => setCreating(true)}>
-            Người dùng mới
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-2)" }}>
+              <PlusIcon />
+              Người dùng mới
+            </span>
           </Button>
         }
         toolbar={
@@ -242,15 +245,29 @@ export const UsersPage: React.FC = () => {
               />
             }
           >
-            <input
-              type="search"
-              aria-label="Tìm người dùng"
-              placeholder="Tìm tên đăng nhập…"
-              value={filters.search}
-              onChange={(e) => patch({ search: e.target.value })}
-              style={inputStyle}
-            />
-            <Select aria-label="Vai trò" value={filters.role} onChange={(e) => patch({ role: e.target.value })}>
+            <span style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
+              <span
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  left: "var(--space-3)",
+                  display: "inline-flex",
+                  pointerEvents: "none",
+                  color: "var(--text-muted)",
+                }}
+              >
+                <SearchIcon />
+              </span>
+              <input
+                type="search"
+                aria-label="Tìm người dùng"
+                placeholder="Tìm tên đăng nhập…"
+                value={filters.search}
+                onChange={(e) => patch({ search: e.target.value })}
+                style={inputStyle}
+              />
+            </span>
+            <Select aria-label="Vai trò" value={filters.role} onChange={(e) => patch({ role: e.target.value })} height="40px" borderColor="var(--border-subtle)">
               <option value="">Tất cả vai trò</option>
               {dbRoles.length > 0
                 ? dbRoles.map((r) => (
@@ -264,7 +281,7 @@ export const UsersPage: React.FC = () => {
                     </option>
                   ))}
             </Select>
-            <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
+            <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })} height="40px" borderColor="var(--border-subtle)">
               <option value="">Tất cả</option>
               <option value="active">Hoạt động</option>
               <option value="locked">Đã khoá</option>
@@ -482,8 +499,11 @@ const UserDetailDrawer: React.FC<{ user: AdminUser | null; onClose: () => void }
 
 const inputStyle: React.CSSProperties = {
   height: "40px",
-  padding: "0 var(--space-3)",
-  border: "1px solid var(--border-default)",
+  minWidth: "240px",
+  // Left padding leaves room for the leading magnifier icon (space-3 gutter +
+  // 16px glyph + small gap).
+  padding: "0 var(--space-3) 0 36px",
+  border: "1px solid var(--border-subtle)",
   borderRadius: "var(--radius-md)",
   fontFamily: "var(--font-sans)",
   fontSize: "var(--text-sm)",
@@ -491,3 +511,22 @@ const inputStyle: React.CSSProperties = {
   color: "var(--text-primary)",
   outline: "none",
 };
+
+/** Leading magnifier icon for the toolbar search field. */
+function SearchIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="8" />
+      <path d="M21 21l-4.35-4.35" />
+    </svg>
+  );
+}
+
+/** Leading plus icon for the primary "Người dùng mới" action. */
+function PlusIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}

@@ -286,7 +286,7 @@ export function createActionsColumn<T>({
     enableSorting: false,
     meta: {
       pinnedRight: true,
-      width: "48px",
+      width: "56px",
       headerLabel: "",
       align: "right",
     },

@@ -240,6 +240,8 @@ export interface SelectProps {
   minWidth?: string;
   /** Height. Defaults to touch-friendly "44px" (--input-height token). */
   height?: string;
+  /** Border colour token. Defaults to `--border-default`. */
+  borderColor?: string;
 }
 
 /**
@@ -254,6 +256,7 @@ export const Select: React.FC<SelectProps> = ({
   "aria-label": ariaLabel,
   minWidth = "auto",
   height = "var(--input-height, 44px)",
+  borderColor = "var(--border-default)",
 }) => (
   <select
     id={id}
@@ -263,7 +266,7 @@ export const Select: React.FC<SelectProps> = ({
     style={{
       height,
       padding: "0 var(--space-3)",
-      border: "1px solid var(--border-default)",
+      border: `1px solid ${borderColor}`,
       borderRadius: "var(--radius-md)",
       background: "var(--bg-raised, #FFFFFF)",
       fontFamily: "var(--font-sans)",
