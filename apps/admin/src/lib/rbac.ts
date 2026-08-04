@@ -7,19 +7,23 @@
  * here are restricted; everything else stays visible as before.
  */
 
-/** Decode the `role` claim from a JWT access token (no verification — display only). */
-export function decodeRole(token: string | null | undefined): string | null {
+/** Decode a JWT access-token payload (no verification — display only). */
+function decodePayload(token: string | null | undefined): { role?: string; username?: string } | null {
   if (!token) return null;
   const part = token.split(".")[1];
   if (!part) return null;
   try {
-    const json = atob(part.replace(/-/g, "+").replace(/_/g, "/"));
-    const payload = JSON.parse(json) as { role?: string };
-    return payload.role ?? null;
+    return JSON.parse(atob(part.replace(/-/g, "+").replace(/_/g, "/"))) as { role?: string; username?: string };
   } catch {
     return null;
   }
 }
+
+/** Decode the `role` claim (for screen visibility; server is the gate). */
+export const decodeRole = (token: string | null | undefined): string | null => decodePayload(token)?.role ?? null;
+
+/** Decode the `username` claim (for the login-info chip). */
+export const decodeUsername = (token: string | null | undefined): string | null => decodePayload(token)?.username ?? null;
 
 /**
  * Screens whose visibility is restricted, keyed by route path. A path not listed

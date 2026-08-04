@@ -14,7 +14,7 @@
 import * as React from "react";
 import { ApiClient, ApiError } from "../lib/api-client";
 import { unwrapList } from "../lib/unwrap-list";
-import { decodeRole } from "../lib/rbac";
+import { decodeRole, decodeUsername } from "../lib/rbac";
 // ApiClient is the admin-local subclass (adds download()); ApiError is re-exported from shared.
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -43,6 +43,8 @@ export interface AuthContextValue extends AuthState {
   api: ApiClient;
   /** Role decoded from the access token (for screen visibility; server is the gate). */
   role: string | null;
+  /** Username decoded from the access token (display only). */
+  username: string | null;
   error: string | null;
   loading: boolean;
 }
@@ -320,6 +322,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     logout,
     api: apiRef.current,
     role: decodeRole(state.accessToken),
+    username: decodeUsername(state.accessToken),
     error,
     loading,
   };

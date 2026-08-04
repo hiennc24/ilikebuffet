@@ -149,7 +149,7 @@
   --sidebar-bg:       #FFFFFF;
   --topbar-height:    56px;
   --topbar-bg:        #FFFFFF;
-  --shell-bg:         #FAF8F6;
+  --shell-bg:         var(--plaster-50);
   --nav-item-height:  36px;
   --nav-active-bg:    #EFF6F5;
   --nav-active-color: #1C4842;
@@ -165,6 +165,41 @@
 
   /* Touch target minimum for ops/POS (DECISION #8) */
   --touch-min: 48px;
+
+  color-scheme: light;
+}
+
+/* ── Dark mode palette (warm dark browns, brand-consistent) ── */
+[data-theme="dark"] {
+  --bg-page:    #17130F;
+  --bg-surface: #1F1A15;
+  --bg-raised:  #26201A;
+  --bg-sunken:  #120E0B;
+  --bg-inverse: #F3ECE0;
+
+  --shell-bg:    #17130F;
+  --sidebar-bg:  #1F1A15;
+  --topbar-bg:   #1F1A15;
+
+  --text-primary:   #F3ECE0;
+  --text-secondary: #C3B7A5;
+  --text-muted:     #8A7E6E;
+  --text-accent:    #A9BAB4;
+
+  --border-subtle:  #332C24;
+  --border-default: #453C31;
+  --border-strong:  #6A5A45;
+
+  --accent:      #8FA39D;
+  --accent-strong: #A9BAB4;
+  --accent-warm:   #C08A5B;
+
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.45);
+  --shadow-md: 0 8px 24px rgba(0,0,0,0.5);
+  --shadow-lg: 0 18px 48px rgba(0,0,0,0.55);
+
+  color-scheme: dark;
 }
 
 /* ── Base reset (from tokens/base.css) ── */

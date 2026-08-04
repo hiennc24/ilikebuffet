@@ -22,12 +22,12 @@ decisions:
 
 | Phase | Tên | Nội dung | Status |
 |-------|-----|----------|--------|
-| P1 | Topbar right cluster + username | thêm username vào auth-context (decode JWT); topbar phải chứa cụm action (search/noti/theme/user) responsive | planned |
-| P2 | User menu (login info) | nút avatar/tên → menu: username + vai trò + chi nhánh hiện tại + Đăng xuất | planned |
-| P3 | Command palette search | nút Search + Cmd+K → palette lọc nav (rbac-filtered) + Enter/click điều hướng | planned |
-| P4 | Notifications shell | chuông + dropdown empty state ("Chưa có thông báo"); badge count (0) | planned |
-| P5 | Dark mode | dark token set trong tokens.css ([data-theme=dark]); theme context/hook (persist + prefers-color-scheme); toggle topbar; set data-theme trên <html> | planned |
-| P6 | Verify + docs | tests (menu/palette/theme toggle), full admin suite, build; docs design-guidelines | planned |
+| P1 | Topbar right cluster + username | thêm username vào auth-context (decode JWT); topbar phải chứa cụm action (search/noti/theme/user) responsive | done |
+| P2 | User menu (login info) | nút avatar/tên → menu: username + vai trò + chi nhánh hiện tại + Đăng xuất | done |
+| P3 | Command palette search | nút Search + Cmd+K → palette lọc nav (rbac-filtered) + Enter/click điều hướng | done |
+| P4 | Notifications shell | chuông + dropdown empty state ("Chưa có thông báo"); badge count (0) | done |
+| P5 | Dark mode | dark token set trong tokens.css ([data-theme=dark]); theme context/hook (persist + prefers-color-scheme); toggle topbar; set data-theme trên <html> | done |
+| P6 | Verify + docs | tests (menu/palette/theme toggle), full admin suite, build; docs design-guidelines | done |
 
 ## Acceptance
 - Topbar phải: search, chuông, toggle sáng/tối, menu người dùng — gọn trên desktop,

@@ -53,6 +53,7 @@ import { SupplierAgingPage } from "./pages/supplier-aging-page";
 import { ShiftCashReportPage } from "./pages/shift-cash-report-page";
 import { OfflineReconPage } from "./pages/offline-recon-page";
 import { canAccessPath } from "./lib/rbac";
+import { ThemeProvider } from "./lib/theme";
 import "@ilikebuffet/ui/tokens.css";
 
 const queryClient = new QueryClient({
@@ -101,6 +102,7 @@ function ShellLayout({ children, pageTitle }: { children: React.ReactNode; pageT
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
       <BrowserRouter>
         <AuthProvider>
           <Routes>
@@ -403,6 +405,7 @@ export function App() {
           </Routes>
         </AuthProvider>
       </BrowserRouter>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

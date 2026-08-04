@@ -7,12 +7,15 @@
  *   - Content: flex-1, bg-page (#FAF8F6)
  *
  * widthTier=office: min-width 1440px, non-responsive (DECISION #8).
+ *
+ * Topbar right cluster (left-to-right): Search · Notifications · Dark-mode · User menu
  */
 
 import * as React from "react";
 import { useAuth } from "../auth/auth-context";
 import { canAccessPath } from "../lib/rbac";
 import { useIsCompact } from "../lib/use-media-query";
+import { useTheme } from "../lib/theme";
 
 export interface NavItem {
   id: string;
@@ -244,6 +247,16 @@ const SYSTEM_ITEMS: NavItem[] = [
   },
 ];
 
+/** Vietnamese display labels for each role code. */
+const ROLE_LABELS: Record<string, string> = {
+  QUAN_TRI_HQ:  "Quản trị HQ",
+  CHU_CHUOI:    "Chủ chuỗi",
+  KE_TOAN_CHUOI: "Kế toán chuỗi",
+  QUAN_LY_CN:   "Quản lý CN",
+  THU_NGAN:     "Thu ngân",
+  THU_KHO:      "Thủ kho",
+};
+
 function NavIcon({ d }: { d: string }) {
   return (
     <svg
@@ -262,6 +275,622 @@ function NavIcon({ d }: { d: string }) {
   );
 }
 
+/** Shared icon button style for the topbar cluster. */
+function topbarIconBtnStyle(extraStyle?: React.CSSProperties): React.CSSProperties {
+  return {
+    width: "40px",
+    height: "40px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "transparent",
+    border: "none",
+    borderRadius: "var(--radius-md)",
+    cursor: "pointer",
+    color: "var(--text-secondary)",
+    flexShrink: 0,
+    transition: "background var(--dur-fast)",
+    ...extraStyle,
+  };
+}
+
+/** Shared dropdown container style. */
+function dropdownStyle(extraStyle?: React.CSSProperties): React.CSSProperties {
+  return {
+    position: "absolute",
+    top: "calc(100% + 6px)",
+    right: 0,
+    minWidth: "220px",
+    background: "var(--bg-raised)",
+    border: "1px solid var(--border-subtle)",
+    borderRadius: "var(--radius-lg)",
+    boxShadow: "var(--shadow-md)",
+    zIndex: 200,
+    overflow: "hidden",
+    ...extraStyle,
+  };
+}
+
+/** Normalise a Vietnamese string for accent-insensitive search. */
+function normalise(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "d");
+}
+
+// ── Notifications bell ────────────────────────────────────────────────────────
+
+interface NotificationsBellProps {
+  count?: number;
+}
+
+function NotificationsBell({ count = 0 }: NotificationsBellProps) {
+  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  // Close on outside click.
+  React.useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  // Close on Esc.
+  React.useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [open]);
+
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <button
+        type="button"
+        aria-label="Thông báo"
+        aria-expanded={open}
+        aria-haspopup="true"
+        onClick={() => setOpen((v) => !v)}
+        style={topbarIconBtnStyle()}
+      >
+        {/* Bell icon */}
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
+        </svg>
+        {count > 0 && (
+          <span
+            aria-label={`${count} thông báo`}
+            style={{
+              position: "absolute",
+              top: "6px",
+              right: "6px",
+              width: "8px",
+              height: "8px",
+              borderRadius: "var(--radius-full)",
+              background: "#C0392B",
+              border: "2px solid var(--topbar-bg, #FFFFFF)",
+            }}
+          />
+        )}
+      </button>
+
+      {open && (
+        <div role="dialog" aria-label="Thông báo" style={dropdownStyle({ minWidth: "280px" })}>
+          <div
+            style={{
+              padding: "12px 16px",
+              borderBottom: "1px solid var(--border-subtle)",
+              fontSize: "var(--text-sm)",
+              fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"],
+              color: "var(--text-primary)",
+              fontFamily: "var(--font-sans)",
+            }}
+          >
+            Thông báo
+          </div>
+          <div
+            style={{
+              padding: "24px 16px",
+              textAlign: "center",
+              fontSize: "var(--text-sm)",
+              color: "var(--text-muted)",
+              fontFamily: "var(--font-sans)",
+            }}
+          >
+            Chưa có thông báo
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Dark-mode toggle ──────────────────────────────────────────────────────────
+
+function DarkModeToggle() {
+  const { theme, toggle } = useTheme();
+  const isDark = theme === "dark";
+
+  return (
+    <button
+      type="button"
+      aria-label={isDark ? "Chuyển sang chế độ sáng" : "Chuyển sang chế độ tối"}
+      onClick={toggle}
+      style={topbarIconBtnStyle()}
+    >
+      {isDark ? (
+        /* Sun icon */
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+      ) : (
+        /* Moon icon */
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+        </svg>
+      )}
+    </button>
+  );
+}
+
+// ── User menu ─────────────────────────────────────────────────────────────────
+
+interface UserMenuProps {
+  username: string | null;
+  role: string | null;
+  branchName: string | undefined;
+  onLogout: () => void;
+  compact: boolean;
+}
+
+function UserMenu({ username, role, branchName, onLogout, compact }: UserMenuProps) {
+  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [open]);
+
+  // Initials: first letters of the two parts split on @ or space.
+  const initials = React.useMemo(() => {
+    if (!username) return "?";
+    const name = username.split("@")[0];
+    const parts = name.split(/[\s._-]+/).filter(Boolean);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }, [username]);
+
+  const roleLabel = role ? (ROLE_LABELS[role] ?? role) : "";
+
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <button
+        type="button"
+        aria-label="Menu tài khoản"
+        aria-expanded={open}
+        aria-haspopup="true"
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          height: "40px",
+          padding: compact ? "0 4px" : "0 8px",
+          background: "transparent",
+          border: "none",
+          borderRadius: "var(--radius-md)",
+          cursor: "pointer",
+          color: "var(--text-primary)",
+          fontFamily: "var(--font-sans)",
+        }}
+      >
+        {/* Avatar circle */}
+        <span
+          aria-hidden="true"
+          style={{
+            width: "30px",
+            height: "30px",
+            borderRadius: "var(--radius-full)",
+            background: "var(--nav-active-bg, #EFF6F5)",
+            color: "var(--nav-active-color, #1C4842)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "12px",
+            fontWeight: "var(--fw-semi)" as React.CSSProperties["fontWeight"],
+            flexShrink: 0,
+          }}
+        >
+          {initials}
+        </span>
+        {!compact && username && (
+          <span
+            style={{
+              fontSize: "var(--text-sm)",
+              fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"],
+              color: "var(--text-primary)",
+              maxWidth: "120px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {username}
+          </span>
+        )}
+      </button>
+
+      {open && (
+        <div role="dialog" aria-label="Menu tài khoản" style={dropdownStyle()}>
+          {/* User info header */}
+          <div
+            style={{
+              padding: "14px 16px 12px",
+              borderBottom: "1px solid var(--border-subtle)",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "var(--text-sm)",
+                fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"],
+                color: "var(--text-primary)",
+                fontFamily: "var(--font-sans)",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {username ?? "–"}
+            </div>
+            {roleLabel && (
+              <div
+                style={{
+                  fontSize: "var(--text-xs)",
+                  color: "var(--text-muted)",
+                  fontFamily: "var(--font-sans)",
+                  marginTop: "2px",
+                }}
+              >
+                {roleLabel}
+              </div>
+            )}
+            {branchName && (
+              <div
+                style={{
+                  fontSize: "var(--text-xs)",
+                  color: "var(--text-muted)",
+                  fontFamily: "var(--font-sans)",
+                  marginTop: "2px",
+                }}
+              >
+                {branchName}
+              </div>
+            )}
+          </div>
+          {/* Logout */}
+          <div style={{ padding: "6px" }}>
+            <button
+              type="button"
+              onClick={() => { setOpen(false); onLogout(); }}
+              style={{
+                width: "100%",
+                height: "36px",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                padding: "0 10px",
+                background: "transparent",
+                border: "none",
+                borderRadius: "var(--radius-md)",
+                cursor: "pointer",
+                color: "#C0392B",
+                fontSize: "var(--text-sm)",
+                fontFamily: "var(--font-sans)",
+                textAlign: "left",
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+              </svg>
+              Đăng xuất
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Command palette search ────────────────────────────────────────────────────
+
+interface CommandPaletteProps {
+  role: string | null;
+  onNavigate: (path: string) => void;
+  compact: boolean;
+}
+
+function CommandPalette({ role, onNavigate, compact }: CommandPaletteProps) {
+  const [open, setOpen] = React.useState(false);
+  const [query, setQuery] = React.useState("");
+  const [highlighted, setHighlighted] = React.useState(0);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const listRef = React.useRef<HTMLUListElement>(null);
+
+  // Global Cmd/Ctrl+K shortcut.
+  React.useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
+  // Focus input when opened.
+  React.useEffect(() => {
+    if (open) {
+      setQuery("");
+      setHighlighted(0);
+      // Next tick so the element is mounted.
+      setTimeout(() => inputRef.current?.focus(), 0);
+    }
+  }, [open]);
+
+  // All accessible nav items (flat).
+  const allItems = React.useMemo<NavItem[]>(() => {
+    const items: NavItem[] = [];
+    for (const group of DEFAULT_GROUPS) {
+      for (const item of group.items) {
+        if (canAccessPath(role, item.path)) items.push(item);
+      }
+    }
+    for (const item of SYSTEM_ITEMS) {
+      if (canAccessPath(role, item.path)) items.push(item);
+    }
+    return items;
+  }, [role]);
+
+  // Filtered results.
+  const results = React.useMemo<NavItem[]>(() => {
+    if (!query.trim()) return allItems;
+    const q = normalise(query.trim());
+    return allItems.filter((item) => normalise(item.label).includes(q));
+  }, [query, allItems]);
+
+  // Clamp highlight index when results change.
+  React.useEffect(() => {
+    setHighlighted((h) => Math.min(h, Math.max(results.length - 1, 0)));
+  }, [results]);
+
+  // Keyboard navigation inside palette.
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") { setOpen(false); return; }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlighted((h) => Math.min(h + 1, results.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlighted((h) => Math.max(h - 1, 0));
+    } else if (e.key === "Enter") {
+      if (results[highlighted]) {
+        onNavigate(results[highlighted].path);
+        setOpen(false);
+      }
+    }
+  };
+
+  return (
+    <>
+      {/* Trigger button */}
+      <button
+        type="button"
+        aria-label="Tìm kiếm"
+        onClick={() => setOpen(true)}
+        style={
+          compact
+            ? topbarIconBtnStyle()
+            : {
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                height: "36px",
+                padding: "0 12px",
+                background: "var(--bg-page)",
+                border: "1px solid var(--border-subtle)",
+                borderRadius: "var(--radius-md)",
+                cursor: "pointer",
+                color: "var(--text-muted)",
+                fontSize: "var(--text-sm)",
+                fontFamily: "var(--font-sans)",
+                flexShrink: 0,
+              }
+        }
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8" />
+          <path d="M21 21l-4.35-4.35" />
+        </svg>
+        {!compact && <span>Tìm kiếm…</span>}
+        {!compact && (
+          <span
+            style={{
+              marginLeft: "auto",
+              fontSize: "11px",
+              color: "var(--text-muted)",
+              background: "var(--bg-raised)",
+              border: "1px solid var(--border-subtle)",
+              borderRadius: "var(--radius-sm)",
+              padding: "1px 5px",
+            }}
+          >
+            ⌘K
+          </span>
+        )}
+      </button>
+
+      {/* Modal overlay */}
+      {open && (
+        <div
+          aria-modal="true"
+          role="dialog"
+          aria-label="Tìm kiếm và điều hướng"
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.45)",
+            zIndex: 1100,
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "center",
+            paddingTop: "80px",
+          }}
+          onMouseDown={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
+        >
+          <div
+            style={{
+              width: "min(600px, calc(100vw - 32px))",
+              background: "var(--bg-raised)",
+              borderRadius: "var(--radius-lg)",
+              boxShadow: "var(--shadow-lg)",
+              overflow: "hidden",
+            }}
+            onKeyDown={handleKeyDown}
+          >
+            {/* Search input */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                padding: "0 16px",
+                borderBottom: "1px solid var(--border-subtle)",
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
+              <input
+                ref={inputRef}
+                type="text"
+                placeholder="Tìm kiếm…"
+                value={query}
+                onChange={(e) => { setQuery(e.target.value); setHighlighted(0); }}
+                style={{
+                  flex: 1,
+                  height: "52px",
+                  border: "none",
+                  outline: "none",
+                  background: "transparent",
+                  fontSize: "var(--text-base)",
+                  fontFamily: "var(--font-sans)",
+                  color: "var(--text-primary)",
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Đóng"
+                style={{
+                  background: "transparent",
+                  border: "1px solid var(--border-subtle)",
+                  borderRadius: "var(--radius-sm)",
+                  padding: "2px 6px",
+                  fontSize: "11px",
+                  color: "var(--text-muted)",
+                  cursor: "pointer",
+                  fontFamily: "var(--font-sans)",
+                }}
+              >
+                Esc
+              </button>
+            </div>
+
+            {/* Results list */}
+            <ul
+              ref={listRef}
+              role="listbox"
+              aria-label="Kết quả tìm kiếm"
+              style={{
+                listStyle: "none",
+                margin: 0,
+                padding: "6px",
+                maxHeight: "360px",
+                overflowY: "auto",
+              }}
+            >
+              {results.length === 0 && (
+                <li
+                  style={{
+                    padding: "20px 16px",
+                    textAlign: "center",
+                    color: "var(--text-muted)",
+                    fontSize: "var(--text-sm)",
+                    fontFamily: "var(--font-sans)",
+                  }}
+                >
+                  Không tìm thấy kết quả
+                </li>
+              )}
+              {results.map((item, idx) => (
+                <li
+                  key={item.id}
+                  role="option"
+                  aria-selected={idx === highlighted}
+                  onClick={() => { onNavigate(item.path); setOpen(false); }}
+                  onMouseEnter={() => setHighlighted(idx)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    padding: "0 12px",
+                    height: "44px",
+                    borderRadius: "var(--radius-md)",
+                    cursor: "pointer",
+                    background: idx === highlighted ? "var(--nav-active-bg, #EFF6F5)" : "transparent",
+                    color: idx === highlighted ? "var(--nav-active-color, #1C4842)" : "var(--text-primary)",
+                    fontSize: "var(--text-sm)",
+                    fontFamily: "var(--font-sans)",
+                  }}
+                >
+                  <NavIcon d={item.iconPath} />
+                  <span>{item.label}</span>
+                  <span style={{ marginLeft: "auto", fontSize: "var(--text-xs)", color: "var(--text-muted)" }}>
+                    {item.path}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// ── AdminShell ────────────────────────────────────────────────────────────────
+
 export const AdminShell: React.FC<AdminShellProps> = ({
   children,
   activePath,
@@ -269,7 +898,7 @@ export const AdminShell: React.FC<AdminShellProps> = ({
   pageTitle,
   topbarActions,
 }) => {
-  const { selectedBranchId, availableBranches, selectBranch, logout, role } = useAuth();
+  const { selectedBranchId, availableBranches, selectBranch, logout, role, username } = useAuth();
 
   const selectedBranch = availableBranches.find((b) => b.id === selectedBranchId);
 
@@ -681,11 +1310,43 @@ export const AdminShell: React.FC<AdminShellProps> = ({
           >
             {pageTitle ?? ""}
           </h1>
-          {topbarActions && (
-            <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
-              {topbarActions}
-            </div>
-          )}
+
+          {/* ── Right-side topbar cluster ── */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--space-1)",
+              flexShrink: 0,
+            }}
+          >
+            <CommandPalette role={role} onNavigate={navigate} compact={compact} />
+            <NotificationsBell count={0} />
+            <DarkModeToggle />
+            <UserMenu
+              username={username}
+              role={role}
+              branchName={selectedBranch?.name}
+              onLogout={logout}
+              compact={compact}
+            />
+
+            {/* Slot for page-level actions (e.g. "Tạo mới" button) */}
+            {topbarActions && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "var(--space-2)",
+                  marginLeft: "var(--space-2)",
+                  paddingLeft: "var(--space-2)",
+                  borderLeft: "1px solid var(--border-subtle)",
+                }}
+              >
+                {topbarActions}
+              </div>
+            )}
+          </div>
         </header>
 
         {/* Page content */}
