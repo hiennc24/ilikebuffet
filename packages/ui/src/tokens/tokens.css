@@ -10,7 +10,7 @@
  */
 
 /* ── Google Fonts (Vietnamese diacritic support) ── */
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap");
 
 :root {
   /* ── Colors (from tokens/colors.css) ── */
@@ -51,22 +51,34 @@
   --line:        #E0D5C4;
   --line-strong: #C9BBA4;
 
-  /* Semantic aliases */
-  --bg-page:        var(--plaster-50);
-  --bg-surface:     var(--plaster-100);
+  /* Cool neutral surfaces (DTV-aligned) — used by the semantic surface/border/text
+     tokens below so the app reads as clean near-white rather than warm cream, while
+     the green brand accents (action/nav) stay warm-green. */
+  --cool-50:  #FAFAF8;
+  --cool-100: #F1F0EF;
+  --cool-200: #ECEBE9;
+  --cool-300: #E6E5E2;
+  --cool-400: #D6D5D2;
+  --cool-500: #8B8F95;
+  --cool-700: #595D63;
+  --cool-900: #2C2F33;
+
+  /* Semantic aliases — surfaces/borders/text use the COOL neutrals (DTV look). */
+  --bg-page:        var(--cool-50);
+  --bg-surface:     var(--cool-100);
   --bg-raised:      #FFFFFF;
-  --bg-sunken:      var(--plaster-200);
+  --bg-sunken:      var(--cool-200);
   --bg-inverse:     var(--ink-900);
 
-  --text-primary:   var(--ink-900);
-  --text-secondary: var(--ink-500);
-  --text-muted:     var(--ink-300);
-  --text-on-dark:   var(--plaster-50);
+  --text-primary:   var(--cool-900);
+  --text-secondary: var(--cool-700);
+  --text-muted:     var(--cool-500);
+  --text-on-dark:   var(--cool-50);
   --text-accent:    var(--lam-700);
 
-  --border-subtle:  var(--line);
-  --border-default: var(--line-strong);
-  --border-strong:  var(--oak-500);
+  --border-subtle:  var(--cool-300);
+  --border-default: var(--cool-400);
+  --border-strong:  var(--cool-700);
 
   --accent:         var(--lam-500);
   --accent-strong:  var(--lam-700);
@@ -161,7 +173,7 @@
   --sidebar-bg:       #FFFFFF;
   --topbar-height:    56px;
   --topbar-bg:        #FFFFFF;
-  --shell-bg:         var(--plaster-50);
+  --shell-bg:         var(--cool-50);
   --nav-item-height:  36px;
   --nav-active-bg:    #EFF6F5;
   --nav-active-color: #1C4842;
