@@ -63,7 +63,8 @@ export const THead: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       top: 0,
       // Must sit above pinned body cells (z-index 1) so header stays on top.
       zIndex: 2,
-      background: "var(--bg-page)",
+      // Mint/teal tint matching the reference header row.
+      background: "var(--nav-active-bg)",
     }}
   >
     {children}
@@ -160,7 +161,7 @@ export const TH: React.FC<THProps> = ({
       textAlign: align,
       padding: "var(--space-2) var(--space-3)",
       height: "40px",
-      color: "var(--text-muted)",
+      color: "var(--text-secondary)",
       fontFamily: "var(--font-sans)",
       fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"],
       fontSize: "var(--text-2xs)",
@@ -169,19 +170,19 @@ export const TH: React.FC<THProps> = ({
       whiteSpace: "nowrap",
       verticalAlign: "middle",
       width,
-      // Pinned column — must share the same bg as the thead so content
-      // scrolling beneath does not bleed through.
+      // Pinned header column — must share the thead's mint tint so content
+      // scrolling beneath does not bleed through (no seam).
       ...(pinnedLeft && {
         position: "sticky",
         left: 0,
         zIndex: 1,
-        background: "var(--bg-page)",
+        background: "var(--nav-active-bg)",
       }),
       ...(pinnedRight && {
         position: "sticky",
         right: 0,
         zIndex: 1,
-        background: "var(--bg-page)",
+        background: "var(--nav-active-bg)",
       }),
       ...style,
     }}

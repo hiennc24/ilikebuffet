@@ -106,7 +106,7 @@ export const BranchesPage: React.FC = () => {
         header: "Trạng thái",
         cell: ({ row }) => {
           const b = row.original;
-          return <Badge tone={STATUS_TONE[b.status]}>{STATUS_LABEL[b.status]}</Badge>;
+          return <Badge dot tone={STATUS_TONE[b.status]}>{STATUS_LABEL[b.status]}</Badge>;
         },
       },
     ],

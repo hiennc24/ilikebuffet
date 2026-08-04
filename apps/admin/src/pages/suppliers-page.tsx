@@ -112,7 +112,7 @@ export const SuppliersPage: React.FC = () => {
         header: "Trạng thái",
         cell: ({ row }) => {
           const s = row.original;
-          return <Badge tone={STATUS_TONE[s.status]}>{STATUS_LABEL[s.status]}</Badge>;
+          return <Badge dot tone={STATUS_TONE[s.status]}>{STATUS_LABEL[s.status]}</Badge>;
         },
       },
     ],

@@ -158,7 +158,8 @@ function ActionsCell<T>({
           alignItems: "center",
           justifyContent: "center",
           background: "transparent",
-          border: "1px solid transparent",
+          // Always-visible outlined rounded-square control (matches reference).
+          border: "1px solid var(--border-subtle)",
           borderRadius: "var(--radius-md)",
           cursor: "pointer",
           color: "var(--text-muted)",
@@ -168,12 +169,10 @@ function ActionsCell<T>({
           transition: "background var(--dur-fast), border-color var(--dur-fast)",
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.background = "var(--bg-surface)";
-          e.currentTarget.style.borderColor = "var(--border-subtle)";
+          e.currentTarget.style.background = "var(--bg-page)";
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.background = "transparent";
-          e.currentTarget.style.borderColor = "transparent";
         }}
       >
         {/* Three-dots (ellipsis) icon */}

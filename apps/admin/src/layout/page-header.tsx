@@ -163,6 +163,52 @@ export function PageTabs({ items, value, onChange }: PageTabsProps) {
   );
 }
 
+// ── PageToolbar ─────────────────────────────────────────────────────────────
+
+export interface PageToolbarProps {
+  /** Left cluster — typically <PageTabs /> or other left-aligned content. */
+  left?: React.ReactNode;
+  /** Right cluster — search + filter controls. Alias of `children`. */
+  actions?: React.ReactNode;
+  children?: React.ReactNode;
+}
+
+/**
+ * Presentational toolbar row: left cluster (tabs) + right cluster (search /
+ * filters) on one line, wrapping on narrow screens. Token-styled to match the
+ * reference toolbar. Purely layout — owns no state.
+ */
+export function PageToolbar({ left, actions, children }: PageToolbarProps) {
+  const right = actions ?? children;
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "var(--space-3)",
+        fontFamily: "var(--font-sans)",
+      }}
+    >
+      {left && <div style={{ minWidth: 0 }}>{left}</div>}
+      {right && (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            gap: "var(--space-2)",
+            marginLeft: "auto",
+          }}
+        >
+          {right}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── PageHeader ────────────────────────────────────────────────────────────────
 
 export interface PageHeaderProps {
@@ -275,11 +321,15 @@ export function PageHeader({
                     …
                   </span>
                 ) : c.path ? (
-                  /* Clickable parent crumb */
+                  /* Clickable parent crumb. The home crumb (path "/") renders
+                     as a home icon but keeps its accessible name via aria-label. */
                   <button
                     type="button"
                     onClick={() => onNavigate(c.path as string)}
+                    aria-label={c.path === "/" ? c.label : undefined}
                     style={{
+                      display: "inline-flex",
+                      alignItems: "center",
                       background: "none",
                       border: "none",
                       padding: 0,
@@ -289,7 +339,24 @@ export function PageHeader({
                       fontSize: "var(--text-sm)",
                     }}
                   >
-                    {c.label}
+                    {c.path === "/" ? (
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.75"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M3 10.5 12 3l9 7.5" />
+                        <path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5" />
+                      </svg>
+                    ) : (
+                      c.label
+                    )}
                   </button>
                 ) : (
                   /* Non-clickable parent (group label) */

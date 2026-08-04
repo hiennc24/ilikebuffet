@@ -74,7 +74,7 @@ export const DevicesPage: React.FC = () => {
         meta: { headerLabel: "Trạng thái" },
         header: "Trạng thái",
         cell: ({ row }) => (
-          <Badge tone={STATUS_TONE[row.original.status]}>{STATUS_LABEL[row.original.status]}</Badge>
+          <Badge dot tone={STATUS_TONE[row.original.status]}>{STATUS_LABEL[row.original.status]}</Badge>
         ),
       },
     ],

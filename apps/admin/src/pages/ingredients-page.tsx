@@ -209,7 +209,7 @@ const IngredientsCard: React.FC<{ units: Unit[]; groups: Group[]; api: ReturnTyp
         cell: ({ row }) => {
           const active = row.original.status === "ACTIVE";
           return (
-            <Badge tone={active ? "success" : "neutral"}>
+            <Badge dot tone={active ? "success" : "neutral"}>
               {active ? "Đang dùng" : "Ngưng"}
             </Badge>
           );

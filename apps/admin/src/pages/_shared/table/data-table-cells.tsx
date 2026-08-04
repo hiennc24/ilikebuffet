@@ -37,17 +37,20 @@ const TONE_VARS: Record<BadgeTone, { bg: string; text: string }> = {
 
 export interface BadgeProps {
   tone?: BadgeTone;
+  /** When true, renders a small leading ● dot in the tone's text colour. */
+  dot?: boolean;
   children: React.ReactNode;
 }
 
 /** Status badge pill with warm brand status tokens. */
-export const Badge: React.FC<BadgeProps> = ({ tone = "neutral", children }) => {
+export const Badge: React.FC<BadgeProps> = ({ tone = "neutral", dot = false, children }) => {
   const { bg, text } = TONE_VARS[tone];
   return (
     <span
       style={{
         display: "inline-flex",
         alignItems: "center",
+        gap: "6px",
         padding: "2px var(--space-2)",
         borderRadius: "var(--radius-full)",
         background: bg,
@@ -59,6 +62,18 @@ export const Badge: React.FC<BadgeProps> = ({ tone = "neutral", children }) => {
         lineHeight: 1.4,
       }}
     >
+      {dot && (
+        <span
+          aria-hidden="true"
+          style={{
+            width: "6px",
+            height: "6px",
+            borderRadius: "var(--radius-full)",
+            background: "currentColor",
+            flexShrink: 0,
+          }}
+        />
+      )}
       {children}
     </span>
   );

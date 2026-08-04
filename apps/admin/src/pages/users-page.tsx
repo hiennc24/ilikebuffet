@@ -18,7 +18,6 @@ import { toast } from "../lib/toast";
 import {
   Card,
   PageStack,
-  FilterBar,
   DetailDrawer,
   Select,
   InlineError,
@@ -26,6 +25,7 @@ import {
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 import {
   DataTable,
   useDataTable,
@@ -163,7 +163,7 @@ export const UsersPage: React.FC = () => {
           const u = row.original;
           const locked = isLocked(u);
           return (
-            <Badge tone={locked ? "warn" : "success"}>
+            <Badge dot tone={locked ? "warn" : "success"}>
               {locked ? "Đã khoá" : "Hoạt động"}
             </Badge>
           );
@@ -219,7 +219,15 @@ export const UsersPage: React.FC = () => {
           </Button>
         }
       >
-        <FilterBar>
+        <PageToolbar
+          left={
+            <PageTabs
+              value="list"
+              onChange={() => {}}
+              items={[{ value: "list", label: "Danh sách", count: total }]}
+            />
+          }
+        >
           <input type="search" aria-label="Tìm người dùng" placeholder="Tìm tên đăng nhập…" value={filters.search} onChange={(e) => patch({ search: e.target.value })} style={inputStyle} />
           <Select aria-label="Vai trò" value={filters.role} onChange={(e) => patch({ role: e.target.value })}>
             <option value="">Tất cả vai trò</option>
@@ -240,7 +248,7 @@ export const UsersPage: React.FC = () => {
             <option value="active">Hoạt động</option>
             <option value="locked">Đã khoá</option>
           </Select>
-        </FilterBar>
+        </PageToolbar>
 
         {isLoading ? (
           <LoadingState />
