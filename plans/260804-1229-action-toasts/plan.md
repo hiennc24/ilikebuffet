@@ -23,9 +23,9 @@ decisions:
 
 | Phase | Tên | Nội dung | Status |
 |-------|-----|----------|--------|
-| T1 | Toast infra | src/lib/toast.tsx: store singleton + toast.success/error/info + useToasts + <Toaster/> (stack, aria-live, auto-dismiss ~4s, dismiss, on-token, safe-area, reduced-motion). Mount <Toaster/> trong app.tsx | planned |
-| T2 | Wire MutationCache | queryClient dùng new MutationCache({ onSuccess, onError }); onError→toast.error(toErrorMessage); onSuccess→toast.success(meta.successMessage ?? "Thành công") | planned |
-| T3 | Tests + verify | toast store (emit/subscribe/auto-dismiss), Toaster render, MutationCache toast on success/error; full admin suite + build | planned |
+| T1 | Toast infra | src/lib/toast.tsx: store singleton + toast.success/error/info + useToasts + <Toaster/> (stack, aria-live, auto-dismiss ~4s, dismiss, on-token, safe-area, reduced-motion). Mount <Toaster/> trong app.tsx | done |
+| T2 | Wire MutationCache | queryClient dùng new MutationCache({ onSuccess, onError }); onError→toast.error(toErrorMessage); onSuccess→toast.success(meta.successMessage ?? "Thành công") | done |
+| T3 | Tests + verify | toast store (emit/subscribe/auto-dismiss), Toaster render, MutationCache toast on success/error; full admin suite + build | done |
 
 ## Acceptance
 - Mọi mutation thành công → toast xanh (mặc định "Thành công" hoặc meta.successMessage).

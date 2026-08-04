@@ -17,8 +17,10 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, MutationCache } from "@tanstack/react-query";
 import { AuthProvider, useAuth } from "./auth/auth-context";
+import { toast, Toaster } from "./lib/toast";
+import { toErrorMessage } from "./pages/_shared/admin-ui";
 import { LoginPage } from "./auth/login-page";
 import { ChooseBranchPage } from "./auth/choose-branch-page";
 import { ChangePasswordPage } from "./auth/change-password-page";
@@ -57,6 +59,16 @@ import { ThemeProvider } from "./lib/theme";
 import "@ilikebuffet/ui/tokens.css";
 
 const queryClient = new QueryClient({
+  // Every mutation gets action feedback via a toast, from one place (no per-page
+  // wiring). A mutation can override the success text with `meta.successMessage`
+  // or opt out of the success toast with `meta.silent`.
+  mutationCache: new MutationCache({
+    onError: (error) => toast.error(toErrorMessage(error)),
+    onSuccess: (_data, _vars, _ctx, mutation) => {
+      if (mutation.meta?.silent) return;
+      toast.success((mutation.meta?.successMessage as string | undefined) ?? "Thành công");
+    },
+  }),
   defaultOptions: {
     queries: {
       retry: 1,
@@ -103,6 +115,7 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
+      <Toaster />
       <BrowserRouter>
         <AuthProvider>
           <Routes>
