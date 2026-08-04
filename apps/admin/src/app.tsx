@@ -174,7 +174,7 @@ export function App() {
                     <Route
                       path="/settings/discounts"
                       element={
-                        <ShellLayout pageTitle="Giảm giá">
+                        <ShellLayout bareChrome>
                           <DiscountsPage />
                         </ShellLayout>
                       }

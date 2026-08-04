@@ -16,6 +16,7 @@ import * as React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MemoryRouter } from "react-router-dom";
 import { AuthProvider } from "../auth/auth-context";
 import { DiscountsPage } from "./discounts-page";
 
@@ -107,11 +108,13 @@ function renderPage(fetchImpl: typeof globalThis.fetch) {
   });
 
   return render(
-    <QueryClientProvider client={qc}>
-      <AuthProvider apiBaseUrl="">
-        <DiscountsPage />
-      </AuthProvider>
-    </QueryClientProvider>,
+    <MemoryRouter>
+      <QueryClientProvider client={qc}>
+        <AuthProvider apiBaseUrl="">
+          <DiscountsPage />
+        </AuthProvider>
+      </QueryClientProvider>
+    </MemoryRouter>,
   );
 }
 
@@ -315,8 +318,8 @@ describe("DiscountsPage — create VOUCHER program", () => {
       expect(screen.getByText("Thêm chương trình giảm giá")).toBeTruthy();
     });
 
-    // Switch kind to VOUCHER
-    const kindSelect = screen.getByRole("combobox");
+    // Switch kind to VOUCHER — use label query to disambiguate from pagination's page-size select
+    const kindSelect = screen.getByLabelText(/Loại giảm giá/);
     await act(async () => {
       fireEvent.change(kindSelect, { target: { value: "VOUCHER" } });
     });

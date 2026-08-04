@@ -16,21 +16,21 @@
 
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Button, FormField, Dialog } from "@ilikebuffet/ui";
 import { formatVnd } from "@ilikebuffet/shared";
 import {
   Card,
-  DataTable,
-  Badge,
-  PageStack,
   LoadingState,
   ErrorState,
   Select,
   InlineError,
   toErrorMessage,
-  type Column,
-  type BadgeTone,
 } from "./_shared/admin-ui";
+import { DataTable, useDataTable, DataTablePagination, Badge } from "./_shared/table";
+import type { BadgeTone } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 import { useAuth } from "../auth/auth-context";
 import { QUERY_KEYS } from "../lib/query-keys";
 
@@ -103,7 +103,7 @@ function kindLabel(kind: DiscountKind): string {
 }
 
 function kindTone(kind: DiscountKind): BadgeTone {
-  if (kind === "PERCENT") return "active";
+  if (kind === "PERCENT") return "success";
   if (kind === "FIXED_AMOUNT") return "warn";
   return "neutral";
 }
@@ -699,185 +699,248 @@ export const DiscountsPage: React.FC = () => {
     await createReasonMutation.mutateAsync(name);
   };
 
-  // ── Programs table columns ──────────────────────────────────────────────────
+  // ── Programs table columns (new react-table ColumnDef) ─────────────────────
 
-  const programColumns: Column<DiscountProgram>[] = [
-    {
-      key: "name",
-      header: "Tên chương trình",
-      render: (row) => (
-        <span
-          style={{
-            color: "var(--text-primary)",
-            fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"],
-          }}
-        >
-          {row.name}
-        </span>
-      ),
-    },
-    {
-      key: "kind",
-      header: "Loại",
-      width: "120px",
-      render: (row) => <Badge tone={kindTone(row.kind)}>{kindLabel(row.kind)}</Badge>,
-    },
-    {
-      key: "value",
-      header: "Giá trị",
-      width: "140px",
-      render: (row) => (
-        <span style={{ color: "var(--text-secondary)", fontVariantNumeric: "tabular-nums" }}>
-          {programValue(row)}
-        </span>
-      ),
-    },
-    {
-      key: "quota",
-      header: "Hạn mức",
-      width: "120px",
-      align: "right",
-      render: (row) => (
-        <span style={{ color: "var(--text-secondary)", fontVariantNumeric: "tabular-nums" }}>
-          {quotaDisplay(row)}
-        </span>
-      ),
-    },
-    {
-      key: "validity",
-      header: "Hiệu lực",
-      width: "180px",
-      render: (row) => (
-        <span style={{ color: "var(--text-secondary)" }}>{validityRange(row)}</span>
-      ),
-    },
-    {
-      key: "status",
-      header: "Trạng thái",
-      width: "120px",
-      render: (row) => (
-        <Badge tone={row.status === "ACTIVE" ? "active" : "muted"}>
-          {row.status === "ACTIVE" ? "Đang áp dụng" : "Ngưng"}
-        </Badge>
-      ),
-    },
-    {
-      key: "actions",
-      header: "",
-      width: "160px",
-      align: "right",
-      render: (row) => (
-        <span
-          style={{ display: "inline-flex", gap: "var(--space-2)", alignItems: "center" }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Button
-            variant="ghost"
-            onClick={(e) => {
-              e.stopPropagation();
-              openEditProgram(row);
+  const programRows = programs ?? [];
+
+  const programColumns = React.useMemo<ColumnDef<DiscountProgram>[]>(
+    () => [
+      {
+        id: "name",
+        enableSorting: false,
+        meta: { headerLabel: "Tên chương trình" },
+        header: "Tên chương trình",
+        cell: ({ row }) => (
+          <span
+            style={{
+              color: "var(--text-primary)",
+              fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"],
             }}
-            style={{ height: "30px", padding: "0 var(--space-3)", fontSize: "var(--text-xs)" }}
           >
-            Sửa
-          </Button>
-          {row.status === "ACTIVE" && (
+            {row.original.name}
+          </span>
+        ),
+      },
+      {
+        id: "kind",
+        enableSorting: false,
+        meta: { headerLabel: "Loại", width: "120px" },
+        header: "Loại",
+        cell: ({ row }) => (
+          <Badge tone={kindTone(row.original.kind)}>{kindLabel(row.original.kind)}</Badge>
+        ),
+      },
+      {
+        id: "value",
+        enableSorting: false,
+        meta: { headerLabel: "Giá trị", width: "140px" },
+        header: "Giá trị",
+        cell: ({ row }) => (
+          <span style={{ color: "var(--text-secondary)", fontVariantNumeric: "tabular-nums" }}>
+            {programValue(row.original)}
+          </span>
+        ),
+      },
+      {
+        id: "quota",
+        enableSorting: false,
+        meta: { headerLabel: "Hạn mức", width: "120px", align: "right" },
+        header: "Hạn mức",
+        cell: ({ row }) => (
+          <span style={{ color: "var(--text-secondary)", fontVariantNumeric: "tabular-nums" }}>
+            {quotaDisplay(row.original)}
+          </span>
+        ),
+      },
+      {
+        id: "validity",
+        enableSorting: false,
+        meta: { headerLabel: "Hiệu lực", width: "180px" },
+        header: "Hiệu lực",
+        cell: ({ row }) => (
+          <span style={{ color: "var(--text-secondary)" }}>{validityRange(row.original)}</span>
+        ),
+      },
+      {
+        id: "status",
+        enableSorting: false,
+        meta: { headerLabel: "Trạng thái", width: "120px" },
+        header: "Trạng thái",
+        cell: ({ row }) => (
+          <Badge tone={row.original.status === "ACTIVE" ? "success" : "neutral"}>
+            {row.original.status === "ACTIVE" ? "Đang áp dụng" : "Ngưng"}
+          </Badge>
+        ),
+      },
+      {
+        id: "actions",
+        enableSorting: false,
+        meta: { headerLabel: "", width: "160px", align: "right" },
+        header: "",
+        cell: ({ row }) => (
+          <span
+            style={{ display: "inline-flex", gap: "var(--space-2)", alignItems: "center" }}
+            onClick={(e) => e.stopPropagation()}
+          >
             <Button
-              variant="danger"
-              onClick={(e) => openDeactivateProgram(row, e)}
+              variant="ghost"
+              onClick={(e) => {
+                e.stopPropagation();
+                openEditProgram(row.original);
+              }}
               style={{ height: "30px", padding: "0 var(--space-3)", fontSize: "var(--text-xs)" }}
             >
-              Ngưng
+              Sửa
             </Button>
-          )}
-        </span>
-      ),
-    },
-  ];
+            {row.original.status === "ACTIVE" && (
+              <Button
+                variant="danger"
+                onClick={(e) => openDeactivateProgram(row.original, e)}
+                style={{ height: "30px", padding: "0 var(--space-3)", fontSize: "var(--text-xs)" }}
+              >
+                Ngưng
+              </Button>
+            )}
+          </span>
+        ),
+      },
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
-  // ── Reasons table columns ───────────────────────────────────────────────────
+  // ── Reasons table columns (new react-table ColumnDef) ──────────────────────
 
-  const reasonColumns: Column<DiscountReason>[] = [
-    {
-      key: "name",
-      header: "Tên lý do",
-      render: (row) => (
-        <span
-          style={{
-            color: "var(--text-primary)",
-            fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"],
-          }}
-        >
-          {row.name}
-        </span>
-      ),
-    },
-    {
-      key: "status",
-      header: "Trạng thái",
-      width: "120px",
-      render: (row) => (
-        <Badge tone={row.isActive ? "active" : "muted"}>
-          {row.isActive ? "Đang dùng" : "Ngưng"}
-        </Badge>
-      ),
-    },
-  ];
+  const reasonRows = reasons ?? [];
+
+  const reasonColumns = React.useMemo<ColumnDef<DiscountReason>[]>(
+    () => [
+      {
+        id: "name",
+        enableSorting: false,
+        meta: { headerLabel: "Tên lý do" },
+        header: "Tên lý do",
+        cell: ({ row }) => (
+          <span
+            style={{
+              color: "var(--text-primary)",
+              fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"],
+            }}
+          >
+            {row.original.name}
+          </span>
+        ),
+      },
+      {
+        id: "status",
+        enableSorting: false,
+        meta: { headerLabel: "Trạng thái", width: "120px" },
+        header: "Trạng thái",
+        cell: ({ row }) => (
+          <Badge tone={row.original.isActive ? "success" : "neutral"}>
+            {row.original.isActive ? "Đang dùng" : "Ngưng"}
+          </Badge>
+        ),
+      },
+    ],
+    [],
+  );
+
+  // ── Table instances ─────────────────────────────────────────────────────────
+
+  const programTable = useDataTable<DiscountProgram>({
+    data: programRows,
+    columns: programColumns,
+    total: programRows.length,
+    page: 1,
+    limit: programRows.length || 50,
+    sort: null,
+    setPage: () => {},
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (row) => row.id,
+  });
+
+  const reasonTable = useDataTable<DiscountReason>({
+    data: reasonRows,
+    columns: reasonColumns,
+    total: reasonRows.length,
+    page: 1,
+    limit: reasonRows.length || 50,
+    sort: null,
+    setPage: () => {},
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (row) => row.id,
+  });
 
   // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
     <>
-      <PageStack>
-        {/* Programs card */}
-        <Card
-          title="Chương trình giảm giá"
-          description="Quản lý các chương trình giảm giá. Chỉ QUAN_TRI_HQ có thể thêm, sửa, ngưng."
-          actions={
-            <Button variant="action" onClick={openCreateProgram}>
-              Thêm chương trình
-            </Button>
-          }
-        >
-          {programsLoading && <LoadingState />}
-          {!programsLoading && programsError && (
+      <ListPageShell
+        activePath="/settings/discounts"
+        pageTitle="Giảm giá"
+        actions={
+          <Button variant="action" onClick={openCreateProgram}>
+            Thêm chương trình
+          </Button>
+        }
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: programRows.length }]}
+              />
+            }
+          />
+        }
+        pagination={
+          !programsLoading && !programsError
+            ? <DataTablePagination table={programTable} total={programRows.length} />
+            : undefined
+        }
+      >
+        {programsLoading ? (
+          <div style={{ padding: "var(--space-5)" }}>
+            <LoadingState />
+          </div>
+        ) : programsError ? (
+          <div style={{ padding: "var(--space-5)" }}>
             <ErrorState message={toErrorMessage(programsError)} />
-          )}
-          {!programsLoading && !programsError && (
-            <DataTable<DiscountProgram>
-              columns={programColumns}
-              rows={programs ?? []}
-              rowKey={(row) => row.id}
-              onRowClick={openEditProgram}
-              emptyText="Chưa có chương trình giảm giá nào. Nhấn 'Thêm chương trình' để bắt đầu."
-            />
-          )}
-        </Card>
+          </div>
+        ) : (
+          <DataTable
+            table={programTable}
+            onRowClick={openEditProgram}
+            empty="Chưa có chương trình giảm giá nào. Nhấn 'Thêm chương trình' để bắt đầu."
+          />
+        )}
+      </ListPageShell>
 
-        {/* Reasons card */}
-        <Card
-          title="Lý do giảm giá thủ công"
-          description="Danh sách lý do giảm giá thủ công dùng khi thu ngân áp dụng giảm giá tại quầy."
-          actions={
-            <Button variant="action" onClick={openCreateReason}>
-              Thêm lý do
-            </Button>
-          }
-        >
-          {reasonsLoading && <LoadingState />}
-          {!reasonsLoading && reasonsError && (
-            <ErrorState message={toErrorMessage(reasonsError)} />
-          )}
-          {!reasonsLoading && !reasonsError && (
-            <DataTable<DiscountReason>
-              columns={reasonColumns}
-              rows={reasons ?? []}
-              rowKey={(row) => row.id}
-              emptyText="Chưa có lý do giảm giá nào."
-            />
-          )}
-        </Card>
-      </PageStack>
+      {/* Reasons card — kept as titled Card below the shell */}
+      <Card
+        title="Lý do giảm giá thủ công"
+        description="Danh sách lý do giảm giá thủ công dùng khi thu ngân áp dụng giảm giá tại quầy."
+        actions={
+          <Button variant="action" onClick={openCreateReason}>
+            Thêm lý do
+          </Button>
+        }
+      >
+        {reasonsLoading && <LoadingState />}
+        {!reasonsLoading && reasonsError && (
+          <ErrorState message={toErrorMessage(reasonsError)} />
+        )}
+        {!reasonsLoading && !reasonsError && (
+          <DataTable
+            table={reasonTable}
+            empty="Chưa có lý do giảm giá nào."
+          />
+        )}
+      </Card>
 
       {/* Program dialogs */}
       {programDialog === "create" && (
