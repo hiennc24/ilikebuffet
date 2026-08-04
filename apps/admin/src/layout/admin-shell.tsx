@@ -889,6 +889,256 @@ function CommandPalette({ role, onNavigate, compact }: CommandPaletteProps) {
   );
 }
 
+// ── Branch switcher ───────────────────────────────────────────────────────────
+
+interface BranchOption {
+  id: string;
+  name: string;
+}
+
+interface BranchSwitcherProps {
+  /** topbar = auto-width pill (desktop header); sidebar = full-width (mobile drawer). */
+  variant: "topbar" | "sidebar";
+  selectedBranch: BranchOption | undefined;
+  selectedBranchId: string | null;
+  availableBranches: BranchOption[];
+  onSelect: (id: string) => void;
+}
+
+function BranchSwitcher({ variant, selectedBranch, selectedBranchId, availableBranches, onSelect }: BranchSwitcherProps) {
+  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef<HTMLDivElement>(null);
+  const canSwitch = availableBranches.length > 1;
+
+  // Close on outside click.
+  React.useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  // Close on Esc.
+  React.useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [open]);
+
+  const isTopbar = variant === "topbar";
+
+  return (
+    <div ref={ref} style={{ position: "relative", flexShrink: 0 }}>
+      <button
+        type="button"
+        onClick={() => canSwitch && setOpen((v) => !v)}
+        aria-label="Đổi chi nhánh"
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        style={{
+          width: isTopbar ? "auto" : "100%",
+          maxWidth: isTopbar ? "240px" : undefined,
+          height: "36px",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          padding: "0 12px",
+          background: "var(--bg-page, #FAF8F6)",
+          border: "1px solid var(--border-subtle)",
+          borderRadius: "var(--radius-md)",
+          cursor: canSwitch ? "pointer" : "default",
+          fontFamily: "var(--font-sans)",
+          textAlign: "left",
+        }}
+      >
+        <span
+          aria-hidden="true"
+          style={{
+            width: "20px",
+            height: "20px",
+            borderRadius: "4px",
+            background: "var(--nav-active-bg, #EFF6F5)",
+            color: "var(--action-bg, #235B54)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "10px",
+            fontWeight: 600,
+            flexShrink: 0,
+          }}
+        >
+          {selectedBranch?.name?.slice(0, 2).toUpperCase() ?? "–"}
+        </span>
+        <span
+          style={{
+            flex: 1,
+            minWidth: 0,
+            overflow: "hidden",
+            fontSize: "var(--text-sm)",
+            fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"],
+            color: "var(--text-primary)",
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {selectedBranch?.name ?? "Chọn chi nhánh"}
+        </span>
+        {canSwitch && (
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--text-muted)"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            style={{ flexShrink: 0 }}
+          >
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        )}
+      </button>
+
+      {/* Native select for branch switching — selectBranch() re-scopes x-branch-id. */}
+      {open && canSwitch && (
+        <select
+          aria-label="Chọn chi nhánh"
+          size={Math.min(availableBranches.length, 6)}
+          defaultValue={selectedBranchId ?? ""}
+          onChange={(e) => {
+            onSelect(e.target.value);
+            setOpen(false);
+          }}
+          autoFocus
+          style={{
+            position: "absolute",
+            top: "calc(100% + 4px)",
+            left: 0,
+            minWidth: "220px",
+            width: "100%",
+            zIndex: 200,
+            border: "1px solid var(--border-default)",
+            borderRadius: "var(--radius-md)",
+            background: "var(--bg-raised, #FFFFFF)",
+            boxShadow: "var(--shadow-md)",
+            fontFamily: "var(--font-sans)",
+            fontSize: "var(--text-sm)",
+            padding: "var(--space-1)",
+          }}
+        >
+          {availableBranches.map((b) => (
+            <option key={b.id} value={b.id}>
+              {b.name}
+            </option>
+          ))}
+        </select>
+      )}
+    </div>
+  );
+}
+
+// ── Breadcrumb ────────────────────────────────────────────────────────────────
+
+/** Path → parent nav-group label, longest path first so sub-routes prefix-match. */
+const PATH_GROUPS: { path: string; group: string }[] = [
+  ...DEFAULT_GROUPS.flatMap((g) => g.items.map((i) => ({ path: i.path, group: g.label ?? "" }))),
+  ...SYSTEM_ITEMS.map((i) => ({ path: i.path, group: "Hệ thống" })),
+].sort((a, b) => b.path.length - a.path.length);
+
+/** The nav group a route belongs to (exact match, else longest matching prefix). */
+function groupForPath(path: string): string | null {
+  const hit = PATH_GROUPS.find((e) => path === e.path || path.startsWith(`${e.path}/`));
+  return hit && hit.group ? hit.group : null;
+}
+
+interface Crumb {
+  label: string;
+  /** Present → clickable link; absent → plain text (group / current page). */
+  path?: string;
+}
+
+interface BreadcrumbProps {
+  activePath?: string;
+  pageTitle?: string;
+  onNavigate: (path: string) => void;
+}
+
+/** "Tổng quan › Nhóm › Trang" — home links to the overview; group + page are text. */
+function Breadcrumb({ activePath, pageTitle, onNavigate }: BreadcrumbProps) {
+  const path = activePath ?? "/";
+  const page = pageTitle ?? "";
+
+  const crumbs: Crumb[] = [];
+  if (path === "/") {
+    // On the overview itself there is nowhere higher to go.
+    crumbs.push({ label: page || "Tổng quan" });
+  } else {
+    crumbs.push({ label: "Tổng quan", path: "/" });
+    const group = groupForPath(path);
+    if (group) crumbs.push({ label: group });
+    if (page) crumbs.push({ label: page });
+  }
+
+  return (
+    <nav aria-label="Breadcrumb" style={{ marginBottom: "var(--space-4)" }}>
+      <ol
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          gap: "6px",
+          listStyle: "none",
+          margin: 0,
+          padding: 0,
+          fontFamily: "var(--font-sans)",
+          fontSize: "var(--text-sm)",
+        }}
+      >
+        {crumbs.map((c, i) => {
+          const last = i === crumbs.length - 1;
+          return (
+            <li key={`${c.label}-${i}`} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              {i > 0 && <span aria-hidden="true" style={{ color: "var(--text-muted)" }}>›</span>}
+              {c.path && !last ? (
+                <button
+                  type="button"
+                  onClick={() => onNavigate(c.path as string)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    padding: 0,
+                    cursor: "pointer",
+                    color: "var(--text-muted)",
+                    fontFamily: "inherit",
+                    fontSize: "inherit",
+                  }}
+                >
+                  {c.label}
+                </button>
+              ) : (
+                <span
+                  aria-current={last ? "page" : undefined}
+                  style={{
+                    color: last ? "var(--text-primary)" : "var(--text-muted)",
+                    fontWeight: last ? ("var(--fw-medium)" as React.CSSProperties["fontWeight"]) : undefined,
+                  }}
+                >
+                  {c.label}
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+}
+
 // ── AdminShell ────────────────────────────────────────────────────────────────
 
 export const AdminShell: React.FC<AdminShellProps> = ({
@@ -901,9 +1151,6 @@ export const AdminShell: React.FC<AdminShellProps> = ({
   const { selectedBranchId, availableBranches, selectBranch, logout, role, username } = useAuth();
 
   const selectedBranch = availableBranches.find((b) => b.id === selectedBranchId);
-
-  // Branch switcher state — show native select on click.
-  const [switcherOpen, setSwitcherOpen] = React.useState(false);
 
   // Below the desktop breakpoint the sidebar becomes an off-canvas drawer.
   const compact = useIsCompact();
@@ -1024,106 +1271,19 @@ export const AdminShell: React.FC<AdminShellProps> = ({
           </span>
         </div>
 
-        {/* Branch switcher (wired to selectBranch) */}
-        <div style={{ padding: "12px", borderBottom: "1px solid var(--bg-page, #FAF8F6)", position: "relative" }}>
-          {/* Native select for branch switching — opens on button click.
-              selectBranch() updates auth context which re-scopes x-branch-id. */}
-          {switcherOpen && availableBranches.length > 1 && (
-            <select
-              aria-label="Chọn chi nhánh"
-              size={Math.min(availableBranches.length, 6)}
-              defaultValue={selectedBranchId ?? ""}
-              onChange={(e) => {
-                selectBranch(e.target.value);
-                setSwitcherOpen(false);
-              }}
-              onBlur={() => setSwitcherOpen(false)}
-              autoFocus
-              style={{
-                position: "absolute",
-                top: "48px",
-                left: "12px",
-                right: "12px",
-                zIndex: 100,
-                border: "1px solid var(--border-default)",
-                borderRadius: "var(--radius-md)",
-                background: "var(--bg-raised, #FFFFFF)",
-                boxShadow: "var(--shadow-md)",
-                fontFamily: "var(--font-sans)",
-                fontSize: "var(--text-sm)",
-                padding: "var(--space-1)",
-              }}
-            >
-              {availableBranches.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name}
-                </option>
-              ))}
-            </select>
-          )}
-          <button
-            onClick={() => setSwitcherOpen((v) => !v)}
-            style={{
-              width: "100%",
-              height: "36px",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "0 12px",
-              background: "var(--bg-page, #FAF8F6)",
-              border: "1px solid var(--border-subtle)",
-              borderRadius: "var(--radius-md)",
-              cursor: "pointer",
-              fontFamily: "var(--font-sans)",
-              textAlign: "left",
-            }}
-            aria-label="Đổi chi nhánh"
-            aria-expanded={switcherOpen}
-          >
-            <span
-              style={{
-                width: "20px",
-                height: "20px",
-                borderRadius: "4px",
-                background: "var(--nav-active-bg, #EFF6F5)",
-                color: "var(--action-bg, #235B54)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "10px",
-                fontWeight: 600,
-              }}
-            >
-              {selectedBranch?.name?.slice(0, 2).toUpperCase() ?? "–"}
-            </span>
-            <span
-              style={{
-                flex: 1,
-                overflow: "hidden",
-                fontSize: "var(--text-sm)",
-                fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"],
-                color: "var(--text-primary)",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {selectedBranch?.name ?? "Chọn chi nhánh"}
-            </span>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="var(--text-muted)"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </button>
-        </div>
+        {/* Branch switcher — sidebar placement is for compact widths only; on desktop
+            it lives in the topbar (see below), so we don't render it twice. */}
+        {compact && (
+          <div style={{ padding: "12px", borderBottom: "1px solid var(--bg-page, #FAF8F6)" }}>
+            <BranchSwitcher
+              variant="sidebar"
+              selectedBranch={selectedBranch}
+              selectedBranchId={selectedBranchId}
+              availableBranches={availableBranches}
+              onSelect={selectBranch}
+            />
+          </div>
+        )}
 
         {/* Nav groups */}
         <nav
@@ -1261,7 +1421,12 @@ export const AdminShell: React.FC<AdminShellProps> = ({
             display: "flex",
             alignItems: "center",
             padding: compact ? "0 var(--space-3)" : "0 var(--space-5)",
-            paddingLeft: compact ? "max(var(--space-3), env(safe-area-inset-left))" : undefined,
+            // Desktop: give the bordered branch-switcher pill a deliberate left gutter
+            // off the sidebar (one step past the content padding) so it doesn't read as
+            // flush against the sidebar edge; right cluster stays right-aligned via the flex spacer.
+            paddingLeft: compact
+              ? "max(var(--space-3), env(safe-area-inset-left))"
+              : "var(--space-6)",
             background: "var(--topbar-bg, #FFFFFF)",
             borderBottom: "1px solid var(--border-subtle)",
             gap: compact ? "var(--space-2)" : "var(--space-4)",
@@ -1295,21 +1460,18 @@ export const AdminShell: React.FC<AdminShellProps> = ({
               </svg>
             </button>
           )}
-          <h1
-            style={{
-              flex: 1,
-              margin: 0,
-              fontSize: "var(--text-base)",
-              fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"],
-              fontFamily: "var(--font-sans)",
-              color: "var(--text-primary)",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {pageTitle ?? ""}
-          </h1>
+          {/* Branch context lives here on desktop (replaces the page title, which
+              now reads from the breadcrumb below). Compact keeps it in the drawer. */}
+          {!compact && (
+            <BranchSwitcher
+              variant="topbar"
+              selectedBranch={selectedBranch}
+              selectedBranchId={selectedBranchId}
+              availableBranches={availableBranches}
+              onSelect={selectBranch}
+            />
+          )}
+          <div style={{ flex: 1 }} />
 
           {/* ── Right-side topbar cluster ── */}
           <div
@@ -1359,6 +1521,7 @@ export const AdminShell: React.FC<AdminShellProps> = ({
             paddingBottom: compact ? "max(var(--space-3), env(safe-area-inset-bottom))" : undefined,
           }}
         >
+          <Breadcrumb activePath={activePath} pageTitle={pageTitle} onNavigate={navigate} />
           {children}
         </main>
       </div>

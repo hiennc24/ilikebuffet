@@ -17,7 +17,7 @@
 
 import * as React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act, within } from "@testing-library/react";
 import { App } from "../app";
 
 // ── helpers ────────────────────────────────────────────────────────────────
@@ -154,8 +154,9 @@ describe("Auth routing — screen transitions after login", () => {
 
     // Should skip choose-branch and land on dashboard.
     await waitFor(() => {
-      // Dashboard page renders inside AdminShell — check the topbar title.
-      expect(screen.getByRole("heading", { name: /tổng quan/i })).toBeTruthy();
+      // Overview renders inside AdminShell — the breadcrumb marks it as the current page.
+      const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
+      expect(within(nav).getByText(/tổng quan/i).getAttribute("aria-current")).toBe("page");
     });
 
     // Choose-branch must NOT have appeared.
@@ -201,7 +202,8 @@ describe("Auth routing — screen transitions after login", () => {
 
     // With the fix, the token is sent → /branches 200 → land on dashboard.
     await waitFor(() => {
-      expect(screen.getByRole("heading", { name: /tổng quan/i })).toBeTruthy();
+      const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
+      expect(within(nav).getByText(/tổng quan/i).getAttribute("aria-current")).toBe("page");
     });
     // Must NOT have been bounced back to the login form.
     expect(screen.queryByLabelText(/email hoặc số điện thoại/i)).toBeNull();
