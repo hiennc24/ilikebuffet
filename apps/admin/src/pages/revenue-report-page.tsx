@@ -4,6 +4,7 @@
  */
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { formatVnd } from "@ilikebuffet/shared";
 import { Button } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
@@ -11,7 +12,10 @@ import { unwrapList } from "../lib/unwrap-list";
 import { useReport } from "../lib/use-report";
 import { buildQuery } from "../lib/use-paged-list";
 import { QUERY_KEYS } from "../lib/query-keys";
-import { Card, PageStack, DataTable, Column, Select, LoadingState, ErrorState, toErrorMessage } from "./_shared/admin-ui";
+import { Select, LoadingState, ErrorState, toErrorMessage } from "./_shared/admin-ui";
+import { DataTable, useDataTable, DataTablePagination } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 import { KpiCard, KpiRow, DateRangeBar, TotalsBar, type Branch } from "./_shared/report-ui";
 
 const CHAIN_WIDE = new Set(["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI"]);
@@ -25,11 +29,19 @@ interface RevRow {
   billCount: number;
   guestCount: number;
 }
+
+interface TicketTypeRow {
+  ticketTypeId: string;
+  name: string;
+  qty: number;
+  grossVnd: number;
+}
+
 interface RevReport {
   groupBy: "day" | "branch" | "shift";
   totals: { grossVnd: number; refundedVnd: number; netVnd: number; billCount: number; cancelledCount: number; guestCount: number };
   rows: RevRow[];
-  byTicketType: { ticketTypeId: string; name: string; qty: number; grossVnd: number }[];
+  byTicketType: TicketTypeRow[];
 }
 
 export const RevenueReportPage: React.FC = () => {
@@ -71,76 +83,189 @@ export const RevenueReportPage: React.FC = () => {
   };
 
   const keyLabel = (key: string) => (groupBy === "branch" ? branchName(key) : key);
-  const columns: Column<RevRow>[] = [
-    { key: "key", header: groupBy === "day" ? "Ngày" : groupBy === "branch" ? "Chi nhánh" : "Ca", render: (r) => keyLabel(r.key) },
-    { key: "gross", header: "Doanh thu gộp", align: "right", render: (r) => formatVnd(r.grossVnd) },
-    { key: "refund", header: "Hoàn tiền", align: "right", render: (r) => formatVnd(r.refundedVnd) },
-    { key: "net", header: "Doanh thu thuần", align: "right", render: (r) => formatVnd(r.netVnd) },
-    { key: "bills", header: "Số bill", align: "right", render: (r) => r.billCount },
-    { key: "guests", header: "Khách", align: "right", render: (r) => r.guestCount },
-  ];
+
+  const rows = data?.rows ?? [];
+  const ticketRows = data?.byTicketType ?? [];
+
+  const mainColumns = React.useMemo<ColumnDef<RevRow>[]>(
+    () => [
+      {
+        id: "key",
+        enableSorting: false,
+        meta: { headerLabel: groupBy === "day" ? "Ngày" : groupBy === "branch" ? "Chi nhánh" : "Ca" },
+        header: groupBy === "day" ? "Ngày" : groupBy === "branch" ? "Chi nhánh" : "Ca",
+        cell: ({ row }) => keyLabel(row.original.key),
+      },
+      {
+        id: "gross",
+        enableSorting: false,
+        meta: { headerLabel: "Doanh thu gộp", align: "right" },
+        header: "Doanh thu gộp",
+        cell: ({ row }) => formatVnd(row.original.grossVnd),
+      },
+      {
+        id: "refund",
+        enableSorting: false,
+        meta: { headerLabel: "Hoàn tiền", align: "right" },
+        header: "Hoàn tiền",
+        cell: ({ row }) => formatVnd(row.original.refundedVnd),
+      },
+      {
+        id: "net",
+        enableSorting: false,
+        meta: { headerLabel: "Doanh thu thuần", align: "right" },
+        header: "Doanh thu thuần",
+        cell: ({ row }) => formatVnd(row.original.netVnd),
+      },
+      {
+        id: "bills",
+        enableSorting: false,
+        meta: { headerLabel: "Số bill", align: "right" },
+        header: "Số bill",
+        cell: ({ row }) => row.original.billCount,
+      },
+      {
+        id: "guests",
+        enableSorting: false,
+        meta: { headerLabel: "Khách", align: "right" },
+        header: "Khách",
+        cell: ({ row }) => row.original.guestCount,
+      },
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [groupBy, branchName],
+  );
+
+  const ticketColumns = React.useMemo<ColumnDef<TicketTypeRow>[]>(
+    () => [
+      {
+        id: "name",
+        enableSorting: false,
+        meta: { headerLabel: "Loại vé" },
+        header: "Loại vé",
+        cell: ({ row }) => row.original.name,
+      },
+      {
+        id: "qty",
+        enableSorting: false,
+        meta: { headerLabel: "SL", align: "right" },
+        header: "SL",
+        cell: ({ row }) => row.original.qty,
+      },
+      {
+        id: "gross",
+        enableSorting: false,
+        meta: { headerLabel: "Doanh thu", align: "right" },
+        header: "Doanh thu",
+        cell: ({ row }) => formatVnd(row.original.grossVnd),
+      },
+    ],
+    [],
+  );
+
+  // Flat-array tables: total = rows.length, limit covers all rows, no real pagination.
+  const mainTable = useDataTable<RevRow>({
+    data: rows,
+    columns: mainColumns,
+    total: rows.length,
+    page: 1,
+    limit: rows.length || 50,
+    sort: null,
+    setPage: () => {},
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (r) => r.key,
+  });
+
+  const ticketTable = useDataTable<TicketTypeRow>({
+    data: ticketRows,
+    columns: ticketColumns,
+    total: ticketRows.length,
+    page: 1,
+    limit: ticketRows.length || 50,
+    sort: null,
+    setPage: () => {},
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (r) => r.ticketTypeId,
+  });
 
   return (
-    <PageStack>
-      <Card title="Báo cáo doanh thu" description="Doanh thu thuần = gộp − hoàn tiền; bill huỷ không tính.">
-        <DateRangeBar
-          value={filter}
-          onChange={patch}
-          branches={isChainWide ? branches : undefined}
-          right={
-            <div style={{ display: "flex", gap: "var(--space-2)", alignItems: "center" }}>
-              <Select aria-label="Nhóm theo" value={groupBy} onChange={(e) => setGroupBy(e.target.value as typeof groupBy)}>
-                <option value="day">Theo ngày</option>
-                <option value="branch">Theo chi nhánh</option>
-                <option value="shift">Theo ca</option>
-              </Select>
-              <Button variant="ghost" disabled={exporting} onClick={doExport}>
-                {exporting ? "Đang xuất…" : "Xuất Excel"}
-              </Button>
-            </div>
-          }
-        />
+    <>
+      {/* KPI cards and totals bar appear above the shell, only when data loaded */}
+      {data && (
+        <>
+          <KpiRow>
+            <KpiCard label="Doanh thu thuần" value={formatVnd(data.totals.netVnd)} sub={`${data.totals.billCount} bill · ${data.totals.guestCount} khách`} />
+            <KpiCard label="Doanh thu gộp" value={formatVnd(data.totals.grossVnd)} />
+            <KpiCard label="Hoàn tiền" value={formatVnd(data.totals.refundedVnd)} tone={data.totals.refundedVnd > 0 ? "warn" : "default"} />
+            <KpiCard label="Bill huỷ" value={String(data.totals.cancelledCount)} />
+          </KpiRow>
+          <TotalsBar
+            items={[
+              { label: "Gộp", value: formatVnd(data.totals.grossVnd) },
+              { label: "Hoàn", value: formatVnd(data.totals.refundedVnd) },
+              { label: "Thuần", value: formatVnd(data.totals.netVnd) },
+            ]}
+          />
+        </>
+      )}
 
+      <ListPageShell
+        activePath="/reports/revenue"
+        pageTitle="Báo cáo doanh thu"
+        actions={
+          <Button variant="ghost" disabled={exporting} onClick={doExport}>
+            {exporting ? "Đang xuất…" : "Xuất Excel"}
+          </Button>
+        }
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: rows.length }]}
+              />
+            }
+          >
+            <DateRangeBar
+              value={filter}
+              onChange={patch}
+              branches={isChainWide ? branches : undefined}
+              right={
+                <Select aria-label="Nhóm theo" value={groupBy} onChange={(e) => setGroupBy(e.target.value as typeof groupBy)}>
+                  <option value="day">Theo ngày</option>
+                  <option value="branch">Theo chi nhánh</option>
+                  <option value="shift">Theo ca</option>
+                </Select>
+              }
+            />
+          </PageToolbar>
+        }
+        pagination={
+          !isLoading && !isError && data
+            ? <DataTablePagination table={mainTable} total={rows.length} />
+            : undefined
+        }
+      >
         {isLoading ? (
           <LoadingState />
         ) : isError ? (
           <ErrorState message={toErrorMessage(error, "Không tải được báo cáo")} />
         ) : data ? (
           <>
-            <KpiRow>
-              <KpiCard label="Doanh thu thuần" value={formatVnd(data.totals.netVnd)} sub={`${data.totals.billCount} bill · ${data.totals.guestCount} khách`} />
-              <KpiCard label="Doanh thu gộp" value={formatVnd(data.totals.grossVnd)} />
-              <KpiCard label="Hoàn tiền" value={formatVnd(data.totals.refundedVnd)} tone={data.totals.refundedVnd > 0 ? "warn" : "default"} />
-              <KpiCard label="Bill huỷ" value={String(data.totals.cancelledCount)} />
-            </KpiRow>
+            <DataTable table={mainTable} empty="Không có dữ liệu trong khoảng đã chọn." />
 
-            <DataTable columns={columns} rows={data.rows} rowKey={(r) => r.key} emptyText="Không có dữ liệu trong khoảng đã chọn." />
-            <TotalsBar
-              items={[
-                { label: "Gộp", value: formatVnd(data.totals.grossVnd) },
-                { label: "Hoàn", value: formatVnd(data.totals.refundedVnd) },
-                { label: "Thuần", value: formatVnd(data.totals.netVnd) },
-              ]}
-            />
-
-            {data.byTicketType.length > 0 && (
-              <div style={{ marginTop: "var(--space-5)" }}>
+            {ticketRows.length > 0 && (
+              <div style={{ marginTop: "var(--space-5)", padding: "0 var(--space-4) var(--space-4)" }}>
                 <h3 style={{ margin: "0 0 var(--space-2)", fontSize: "var(--text-sm)", color: "var(--text-secondary)" }}>Theo loại vé</h3>
-                <DataTable
-                  columns={[
-                    { key: "name", header: "Loại vé", render: (t: { name: string }) => t.name },
-                    { key: "qty", header: "SL", align: "right", render: (t: { qty: number }) => t.qty },
-                    { key: "gross", header: "Doanh thu", align: "right", render: (t: { grossVnd: number }) => formatVnd(t.grossVnd) },
-                  ]}
-                  rows={data.byTicketType}
-                  rowKey={(t) => t.ticketTypeId}
-                  emptyText=""
-                />
+                <DataTable table={ticketTable} empty="" />
               </div>
             )}
           </>
         ) : null}
-      </Card>
-    </PageStack>
+      </ListPageShell>
+    </>
   );
 };

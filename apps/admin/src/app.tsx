@@ -323,7 +323,7 @@ export function App() {
                       path="/reports/revenue"
                       element={
                         <RequireAccess path="/reports/revenue">
-                          <ShellLayout pageTitle="Báo cáo doanh thu">
+                          <ShellLayout bareChrome>
                             <RevenueReportPage />
                           </ShellLayout>
                         </RequireAccess>
@@ -333,7 +333,7 @@ export function App() {
                       path="/reports/gross-margin"
                       element={
                         <RequireAccess path="/reports/gross-margin">
-                          <ShellLayout pageTitle="Báo cáo lãi gộp">
+                          <ShellLayout bareChrome>
                             <GrossMarginReportPage />
                           </ShellLayout>
                         </RequireAccess>
@@ -343,7 +343,7 @@ export function App() {
                       path="/reports/pnl"
                       element={
                         <RequireAccess path="/reports/pnl">
-                          <ShellLayout pageTitle="Báo cáo lãi/lỗ">
+                          <ShellLayout bareChrome>
                             <PnlReportPage />
                           </ShellLayout>
                         </RequireAccess>
