@@ -8,6 +8,7 @@
  */
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { formatVnd, roundVnd } from "@ilikebuffet/shared";
 import { Button, Dialog } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
@@ -16,21 +17,18 @@ import { usePagedList } from "../lib/use-paged-list";
 import { canApprovePo } from "../lib/rbac";
 import { QUERY_KEYS } from "../lib/query-keys";
 import {
-  Card,
   PageStack,
-  DataTable,
-  Column,
-  FilterBar,
-  Pagination,
   DetailDrawer,
   Select,
   InlineError,
-  Badge,
-  BadgeTone,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import { DataTable, useDataTable, DataTablePagination, Badge } from "./_shared/table";
+import type { BadgeTone } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 
 const PAGE_SIZE = 20;
 
@@ -84,11 +82,15 @@ const STATUS_LABEL: Record<PoRow["status"], string> = {
   RECEIVED: "Đã nhập",
   CANCELLED: "Đã huỷ",
 };
+
+// Map PO statuses to the new table Badge tones (neutral/success/warn/danger/info).
+// DRAFT=neutral (not yet actionable), APPROVED=info (queued), SENT=info (in-transit),
+// RECEIVED=success (completed), CANCELLED=warn (terminal failure).
 const STATUS_TONE: Record<PoRow["status"], BadgeTone> = {
-  DRAFT: "muted",
-  APPROVED: "neutral",
-  SENT: "active",
-  RECEIVED: "active",
+  DRAFT: "neutral",
+  APPROVED: "info",
+  SENT: "info",
+  RECEIVED: "success",
   CANCELLED: "warn",
 };
 
@@ -107,7 +109,7 @@ export const PurchaseOrdersPage: React.FC = () => {
   });
   const supplierList = unwrapList(suppliers.data).filter((s) => s.status !== "INACTIVE");
 
-  const { rows, total, pageCount, isLoading, isError, error } = usePagedList<PoRow>({
+  const { rows, total, isLoading, isError, error } = usePagedList<PoRow>({
     queryKey: QUERY_KEYS.purchaseOrders(),
     path: "/inventory/purchase-orders",
     page,
@@ -120,67 +122,128 @@ export const PurchaseOrdersPage: React.FC = () => {
     setPage(1);
   };
 
-  const columns: Column<PoRow>[] = [
-    { key: "code", header: "Mã đơn", render: (p) => p.code },
-    { key: "supplier", header: "Nhà cung cấp", render: (p) => p.supplierName },
-    { key: "date", header: "Ngày tạo", render: (p) => vnDate(p.createdAt) },
-    { key: "total", header: "Tổng tiền", align: "right", render: (p) => formatVnd(p.totalVnd) },
-    {
-      key: "status",
-      header: "Trạng thái",
-      render: (p) => <Badge tone={STATUS_TONE[p.status]}>{STATUS_LABEL[p.status]}</Badge>,
-    },
-  ];
+  const columns = React.useMemo<ColumnDef<PoRow>[]>(
+    () => [
+      {
+        id: "code",
+        enableSorting: false,
+        meta: { headerLabel: "Mã đơn" },
+        header: "Mã đơn",
+        cell: ({ row }) => row.original.code,
+      },
+      {
+        id: "supplier",
+        enableSorting: false,
+        meta: { headerLabel: "Nhà cung cấp" },
+        header: "Nhà cung cấp",
+        cell: ({ row }) => row.original.supplierName,
+      },
+      {
+        id: "date",
+        enableSorting: false,
+        meta: { headerLabel: "Ngày tạo" },
+        header: "Ngày tạo",
+        cell: ({ row }) => vnDate(row.original.createdAt),
+      },
+      {
+        id: "total",
+        enableSorting: false,
+        meta: { headerLabel: "Tổng tiền", align: "right" as const },
+        header: "Tổng tiền",
+        cell: ({ row }) => formatVnd(row.original.totalVnd),
+      },
+      {
+        id: "status",
+        enableSorting: false,
+        meta: { headerLabel: "Trạng thái" },
+        header: "Trạng thái",
+        cell: ({ row }) => (
+          <Badge tone={STATUS_TONE[row.original.status]}>
+            {STATUS_LABEL[row.original.status]}
+          </Badge>
+        ),
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<PoRow>({
+    data: rows,
+    columns,
+    total,
+    page,
+    limit: PAGE_SIZE,
+    sort: null,
+    setPage,
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (r) => r.id,
+  });
 
   return (
     <PageStack>
-      <Card
-        title="Đơn mua"
-        description="Tạo và quản lý đơn mua hàng tới nhà cung cấp."
+      <ListPageShell
+        activePath="/inventory/purchase-orders"
+        pageTitle="Đơn mua"
         actions={
           <Button variant="action" onClick={() => setCreating(true)}>
             Đơn mua mới
           </Button>
         }
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: total }]}
+              />
+            }
+          >
+            <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
+              <option value="">Tất cả trạng thái</option>
+              <option value="DRAFT">Nháp</option>
+              <option value="APPROVED">Đã duyệt</option>
+              <option value="SENT">Đã gửi</option>
+              <option value="RECEIVED">Đã nhập</option>
+              <option value="CANCELLED">Đã huỷ</option>
+            </Select>
+            <Select aria-label="Nhà cung cấp" value={filters.supplierId} onChange={(e) => patch({ supplierId: e.target.value })}>
+              <option value="">Tất cả NCC</option>
+              {supplierList.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </Select>
+            <input
+              type="search"
+              aria-label="Tìm mã đơn"
+              placeholder="Tìm mã đơn…"
+              value={filters.q}
+              onChange={(e) => patch({ q: e.target.value })}
+              style={inputStyle}
+            />
+          </PageToolbar>
+        }
+        pagination={
+          !isLoading && !isError
+            ? <DataTablePagination table={table} total={total} />
+            : undefined
+        }
       >
-        <FilterBar>
-          <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
-            <option value="">Tất cả trạng thái</option>
-            <option value="DRAFT">Nháp</option>
-            <option value="APPROVED">Đã duyệt</option>
-            <option value="SENT">Đã gửi</option>
-            <option value="RECEIVED">Đã nhập</option>
-            <option value="CANCELLED">Đã huỷ</option>
-          </Select>
-          <Select aria-label="Nhà cung cấp" value={filters.supplierId} onChange={(e) => patch({ supplierId: e.target.value })}>
-            <option value="">Tất cả NCC</option>
-            {supplierList.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
-            ))}
-          </Select>
-          <input
-            type="search"
-            aria-label="Tìm mã đơn"
-            placeholder="Tìm mã đơn…"
-            value={filters.q}
-            onChange={(e) => patch({ q: e.target.value })}
-            style={inputStyle}
-          />
-        </FilterBar>
-
         {isLoading ? (
           <LoadingState />
         ) : isError ? (
           <ErrorState message={toErrorMessage(error, "Không tải được danh sách đơn mua")} />
         ) : (
-          <>
-            <DataTable columns={columns} rows={rows} rowKey={(p) => p.id} onRowClick={(p) => setSelectedId(p.id)} emptyText="Chưa có đơn mua." />
-            <Pagination page={page} pageCount={pageCount} total={total} onPageChange={setPage} />
-          </>
+          <DataTable
+            table={table}
+            onRowClick={(row) => setSelectedId(row.id)}
+            empty="Chưa có đơn mua."
+          />
         )}
-      </Card>
+      </ListPageShell>
 
       {creating && <PoCreateDialog suppliers={supplierList} onClose={() => setCreating(false)} />}
       <PoDetailDrawer poId={selectedId} onClose={() => setSelectedId(null)} />

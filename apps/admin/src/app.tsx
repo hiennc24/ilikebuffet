@@ -273,7 +273,7 @@ export function App() {
                       path="/inventory/purchase-orders"
                       element={
                         <RequireAccess path="/inventory/purchase-orders">
-                          <ShellLayout pageTitle="Đơn mua">
+                          <ShellLayout bareChrome>
                             <PurchaseOrdersPage />
                           </ShellLayout>
                         </RequireAccess>
