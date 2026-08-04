@@ -6,6 +6,7 @@
  */
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { formatVnd } from "@ilikebuffet/shared";
 import { Button, Dialog, FormField } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
@@ -13,17 +14,15 @@ import { unwrapList } from "../lib/unwrap-list";
 import { QUERY_KEYS } from "../lib/query-keys";
 import {
   Card,
-  PageStack,
-  DataTable,
-  Column,
-  FilterBar,
   Select,
   InlineError,
-  Badge,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import { DataTable, useDataTable, DataTablePagination, Badge } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 
 type Flow = "INCOME" | "EXPENSE";
 interface AccountGroup {
@@ -61,46 +60,120 @@ export const AccountsPage: React.FC = () => {
   });
   const rows = unwrapList(accountsQuery.data);
 
-  const columns: Column<Account>[] = [
-    { key: "name", header: "Tên", render: (a) => a.name },
-    { key: "group", header: "Nhóm", render: (a) => a.group?.name ?? "—" },
-    { key: "flow", header: "Loại", render: (a) => <Badge tone={a.flow === "INCOME" ? "active" : "warn"}>{FLOW_LABEL[a.flow]}</Badge> },
-    { key: "threshold", header: "Ngưỡng duyệt", align: "right", render: (a) => (a.approvalThresholdVnd > 0 ? formatVnd(a.approvalThresholdVnd) : "—") },
-  ];
+  const columns = React.useMemo<ColumnDef<Account>[]>(
+    () => [
+      {
+        id: "name",
+        enableSorting: false,
+        meta: { headerLabel: "Tên" },
+        header: "Tên",
+        cell: ({ row }) => row.original.name,
+      },
+      {
+        id: "group",
+        enableSorting: false,
+        meta: { headerLabel: "Nhóm" },
+        header: "Nhóm",
+        cell: ({ row }) => row.original.group?.name ?? "—",
+      },
+      {
+        id: "flow",
+        enableSorting: false,
+        meta: { headerLabel: "Loại", width: "100px" },
+        header: "Loại",
+        cell: ({ row }) => (
+          <Badge tone={row.original.flow === "INCOME" ? "success" : "warn"}>
+            {FLOW_LABEL[row.original.flow]}
+          </Badge>
+        ),
+      },
+      {
+        id: "threshold",
+        enableSorting: false,
+        meta: { headerLabel: "Ngưỡng duyệt", align: "right" },
+        header: "Ngưỡng duyệt",
+        cell: ({ row }) =>
+          row.original.approvalThresholdVnd > 0 ? formatVnd(row.original.approvalThresholdVnd) : "—",
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<Account>({
+    data: rows,
+    columns,
+    total: rows.length,
+    page: 1,
+    limit: rows.length || 50,
+    sort: null,
+    setPage: () => {},
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (a) => a.id,
+  });
 
   return (
-    <PageStack>
-      <AccountGroupsCard groups={groupList} api={api} />
-
-      <Card
-        title="Tài khoản kế toán"
-        description="Danh mục thu/chi + ngưỡng duyệt."
+    <>
+      <ListPageShell
+        activePath="/master-data/accounts"
+        pageTitle="Tài khoản kế toán"
         actions={
           <Button variant="action" disabled={groupList.length === 0} onClick={() => setDialog({ mode: "create" })}>
             Tài khoản mới
           </Button>
         }
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: rows.length }]}
+              />
+            }
+          >
+            <input
+              type="search"
+              aria-label="Tìm tài khoản"
+              placeholder="Tìm tên…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={inputStyle}
+            />
+            <Select aria-label="Loại" value={flow} onChange={(e) => setFlow(e.target.value)}>
+              <option value="">Tất cả</option>
+              <option value="INCOME">Thu</option>
+              <option value="EXPENSE">Chi</option>
+            </Select>
+          </PageToolbar>
+        }
+        pagination={
+          !accountsQuery.isLoading && !accountsQuery.isError
+            ? <DataTablePagination table={table} total={rows.length} />
+            : undefined
+        }
       >
-        <FilterBar>
-          <input type="search" aria-label="Tìm tài khoản" placeholder="Tìm tên…" value={search} onChange={(e) => setSearch(e.target.value)} style={inputStyle} />
-          <Select aria-label="Loại" value={flow} onChange={(e) => setFlow(e.target.value)}>
-            <option value="">Tất cả</option>
-            <option value="INCOME">Thu</option>
-            <option value="EXPENSE">Chi</option>
-          </Select>
-        </FilterBar>
-
         {accountsQuery.isLoading ? (
-          <LoadingState />
+          <div style={{ padding: "var(--space-5)" }}>
+            <LoadingState />
+          </div>
         ) : accountsQuery.isError ? (
-          <ErrorState message={toErrorMessage(accountsQuery.error, "Không tải được tài khoản")} />
+          <div style={{ padding: "var(--space-5)" }}>
+            <ErrorState message={toErrorMessage(accountsQuery.error, "Không tải được tài khoản")} />
+          </div>
         ) : (
-          <DataTable columns={columns} rows={rows} rowKey={(a) => a.id} onRowClick={(a) => setDialog({ mode: "edit", account: a })} emptyText="Chưa có tài khoản." />
+          <DataTable
+            table={table}
+            onRowClick={(a) => setDialog({ mode: "edit", account: a })}
+            empty="Chưa có tài khoản."
+          />
         )}
-      </Card>
+      </ListPageShell>
+
+      <AccountGroupsCard groups={groupList} api={api} />
 
       {dialog && <AccountDialog dialog={dialog} groups={groupList} api={api} onClose={() => setDialog(null)} />}
-    </PageStack>
+    </>
   );
 };
 
@@ -215,9 +288,9 @@ const AccountDialog: React.FC<{
 };
 
 const inputStyle: React.CSSProperties = {
-  height: "var(--input-height, 44px)",
+  height: "40px",
   padding: "0 var(--space-3)",
-  border: "1px solid var(--border-default)",
+  border: "1px solid var(--border-subtle)",
   borderRadius: "var(--radius-md)",
   fontFamily: "var(--font-sans)",
   fontSize: "var(--text-sm)",

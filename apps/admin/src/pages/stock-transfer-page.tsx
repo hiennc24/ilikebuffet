@@ -7,13 +7,17 @@
  */
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { formatVnd, roundVnd } from "@ilikebuffet/shared";
 import { Button, Dialog } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
 import { usePagedList } from "../lib/use-paged-list";
 import { QUERY_KEYS } from "../lib/query-keys";
-import { Card, PageStack, DataTable, Column, Pagination, Select, InlineError, LoadingState, ErrorState, toErrorMessage } from "./_shared/admin-ui";
+import { Select, InlineError, LoadingState, ErrorState, toErrorMessage } from "./_shared/admin-ui";
+import { DataTable, useDataTable, DataTablePagination } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 
 const PAGE_SIZE = 20;
 
@@ -56,7 +60,7 @@ export const StockTransferPage: React.FC = () => {
   const branchesQuery = useQuery({ queryKey: QUERY_KEYS.branches(), queryFn: () => api.get<Branch[] | { data: Branch[] }>("/branches") });
   const branches = unwrapList(branchesQuery.data);
 
-  const { rows, total, pageCount, isLoading, isError, error } = usePagedList<TransferRow>({
+  const { rows, total, isLoading, isError, error } = usePagedList<TransferRow>({
     queryKey: QUERY_KEYS.stockTransfers(),
     path: "/inventory/transfers",
     page,
@@ -64,23 +68,85 @@ export const StockTransferPage: React.FC = () => {
     filters: {},
   });
 
-  const columns: Column<TransferRow>[] = [
-    { key: "code", header: "Mã phiếu", render: (t) => t.code },
-    { key: "route", header: "Chuyển", render: (t) => `${t.fromBranchCode} → ${t.toBranchCode}` },
-    { key: "items", header: "Số dòng", align: "right", render: (t) => t.lines.length },
-    { key: "value", header: "Giá trị", align: "right", render: (t) => formatVnd(t.lines.reduce((s, l) => s + lineValueVnd(l), 0)) },
-    { key: "date", header: "Ngày", render: (t) => vnDate(t.createdAt) },
-  ];
+  const columns = React.useMemo<ColumnDef<TransferRow>[]>(
+    () => [
+      {
+        id: "code",
+        enableSorting: false,
+        meta: { headerLabel: "Mã phiếu" },
+        header: "Mã phiếu",
+        cell: ({ row }) => row.original.code,
+      },
+      {
+        id: "route",
+        enableSorting: false,
+        meta: { headerLabel: "Chuyển" },
+        header: "Chuyển",
+        cell: ({ row }) => `${row.original.fromBranchCode} → ${row.original.toBranchCode}`,
+      },
+      {
+        id: "items",
+        enableSorting: false,
+        meta: { headerLabel: "Số dòng", align: "right" },
+        header: "Số dòng",
+        cell: ({ row }) => row.original.lines.length,
+      },
+      {
+        id: "value",
+        enableSorting: false,
+        meta: { headerLabel: "Giá trị", align: "right" },
+        header: "Giá trị",
+        cell: ({ row }) => formatVnd(row.original.lines.reduce((s, l) => s + lineValueVnd(l), 0)),
+      },
+      {
+        id: "date",
+        enableSorting: false,
+        meta: { headerLabel: "Ngày" },
+        header: "Ngày",
+        cell: ({ row }) => vnDate(row.original.createdAt),
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<TransferRow>({
+    data: rows,
+    columns,
+    total: rows.length,
+    page: 1,
+    limit: rows.length || 50,
+    sort: null,
+    setPage: () => {},
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (t) => t.id,
+  });
 
   return (
-    <PageStack>
-      <Card
-        title="Điều chuyển kho"
-        description="Chuyển nguyên liệu giữa các chi nhánh (tức thời, mang giá vốn nguồn)."
+    <>
+      <ListPageShell
+        activePath="/inventory/transfers"
+        pageTitle="Điều chuyển kho"
         actions={
           <Button variant="action" onClick={() => setCreating(true)}>
             Phiếu chuyển mới
           </Button>
+        }
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: rows.length }]}
+              />
+            }
+          />
+        }
+        pagination={
+          !isLoading && !isError
+            ? <DataTablePagination table={table} total={rows.length} />
+            : undefined
         }
       >
         {isLoading ? (
@@ -88,15 +154,17 @@ export const StockTransferPage: React.FC = () => {
         ) : isError ? (
           <ErrorState message={toErrorMessage(error, "Không tải được phiếu chuyển")} />
         ) : (
-          <>
-            <DataTable columns={columns} rows={rows} rowKey={(t) => t.id} emptyText="Chưa có phiếu chuyển." />
-            <Pagination page={page} pageCount={pageCount} total={total} onPageChange={setPage} />
-          </>
+          <DataTable
+            table={table}
+            isLoading={false}
+            isError={false}
+            empty="Chưa có phiếu chuyển."
+          />
         )}
-      </Card>
+      </ListPageShell>
 
       {creating && <TransferDialog branches={branches} onClose={() => setCreating(false)} />}
-    </PageStack>
+    </>
   );
 };
 

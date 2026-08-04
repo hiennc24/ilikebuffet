@@ -9,21 +9,21 @@
  */
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Button, Dialog, FormField } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
 import { QUERY_KEYS } from "../lib/query-keys";
 import {
-  Card,
-  PageStack,
-  DataTable,
-  Column,
   DetailDrawer,
   InlineError,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import { DataTable, useDataTable, DataTablePagination } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 
 interface HolidayEntry {
   date: string;
@@ -51,22 +51,78 @@ export const HolidaysPage: React.FC = () => {
   });
   const rows = unwrapList(listQuery.data);
 
-  const columns: Column<HolidayCalendar>[] = [
-    { key: "year", header: "Năm", width: "80px", render: (c) => c.year },
-    { key: "name", header: "Tên", render: (c) => c.name },
-    { key: "scope", header: "Phạm vi", render: (c) => (c.branchId ? "Chi nhánh" : "Toàn chuỗi") },
-    { key: "count", header: "Số ngày lễ", align: "right", render: (c) => c.entries.length },
-  ];
+  const columns = React.useMemo<ColumnDef<HolidayCalendar>[]>(
+    () => [
+      {
+        id: "year",
+        enableSorting: false,
+        meta: { headerLabel: "Năm", width: "80px", align: "right" },
+        header: "Năm",
+        cell: ({ row }) => row.original.year,
+      },
+      {
+        id: "name",
+        enableSorting: false,
+        meta: { headerLabel: "Tên" },
+        header: "Tên",
+        cell: ({ row }) => row.original.name,
+      },
+      {
+        id: "scope",
+        enableSorting: false,
+        meta: { headerLabel: "Phạm vi" },
+        header: "Phạm vi",
+        cell: ({ row }) => (row.original.branchId ? "Chi nhánh" : "Toàn chuỗi"),
+      },
+      {
+        id: "count",
+        enableSorting: false,
+        meta: { headerLabel: "Số ngày lễ", align: "right" },
+        header: "Số ngày lễ",
+        cell: ({ row }) => row.original.entries.length,
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<HolidayCalendar>({
+    data: rows,
+    columns,
+    total: rows.length,
+    page: 1,
+    limit: rows.length || 50,
+    sort: null,
+    setPage: () => {},
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (c) => c.id,
+  });
 
   return (
-    <PageStack>
-      <Card
-        title="Lịch lễ"
-        description="Ngày lễ ảnh hưởng khung giá (day-type HOLIDAY)."
+    <>
+      <ListPageShell
+        activePath="/master-data/holidays"
+        pageTitle="Lịch lễ"
         actions={
           <Button variant="action" onClick={() => setCreating(true)}>
             Lịch mới
           </Button>
+        }
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: rows.length }]}
+              />
+            }
+          />
+        }
+        pagination={
+          !listQuery.isLoading && !listQuery.isError
+            ? <DataTablePagination table={table} total={rows.length} />
+            : undefined
         }
       >
         {listQuery.isLoading ? (
@@ -74,13 +130,19 @@ export const HolidaysPage: React.FC = () => {
         ) : listQuery.isError ? (
           <ErrorState message={toErrorMessage(listQuery.error, "Không tải được lịch lễ")} />
         ) : (
-          <DataTable columns={columns} rows={rows} rowKey={(c) => c.id} onRowClick={(c) => setSelected(c)} emptyText="Chưa có lịch lễ." />
+          <DataTable
+            table={table}
+            isLoading={false}
+            isError={false}
+            onRowClick={(c) => setSelected(c)}
+            empty="Chưa có lịch lễ."
+          />
         )}
-      </Card>
+      </ListPageShell>
 
       {creating && <CreateCalendarDialog api={api} onClose={() => setCreating(false)} />}
       <EntriesDrawer calendar={selected} api={api} onClose={() => setSelected(null)} />
-    </PageStack>
+    </>
   );
 };
 

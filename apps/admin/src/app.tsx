@@ -253,7 +253,7 @@ export function App() {
                       path="/master-data/holidays"
                       element={
                         <RequireAccess path="/master-data/holidays">
-                          <ShellLayout pageTitle="Lịch lễ">
+                          <ShellLayout bareChrome>
                             <HolidaysPage />
                           </ShellLayout>
                         </RequireAccess>
@@ -293,7 +293,7 @@ export function App() {
                       path="/inventory/transfers"
                       element={
                         <RequireAccess path="/inventory/transfers">
-                          <ShellLayout pageTitle="Điều chuyển kho">
+                          <ShellLayout bareChrome>
                             <StockTransferPage />
                           </ShellLayout>
                         </RequireAccess>
@@ -313,7 +313,7 @@ export function App() {
                       path="/master-data/accounts"
                       element={
                         <RequireAccess path="/master-data/accounts">
-                          <ShellLayout pageTitle="Tài khoản kế toán">
+                          <ShellLayout bareChrome>
                             <AccountsPage />
                           </ShellLayout>
                         </RequireAccess>
