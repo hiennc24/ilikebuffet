@@ -1,13 +1,14 @@
 /**
  * AdminShell responsive tests — hamburger + drawer below the desktop breakpoint,
- * fixed sidebar (no hamburger) at desktop width.
+ * fixed sidebar (no hamburger) at desktop width, and desktop sidebar rail toggle.
  */
 import * as React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, within } from "@testing-library/react";
+import { render, screen, fireEvent, within, act } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "../auth/auth-context";
 import { AdminShell } from "./admin-shell";
+import { _resetSidebarStore } from "../lib/use-sidebar";
 
 /** Stub window.matchMedia so `(max-width: 1023px)` reports the given compact state. */
 function stubMatchMedia(compact: boolean) {
@@ -123,5 +124,90 @@ describe("AdminShell breadcrumb", () => {
     const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
     expect(within(nav).queryByRole("button", { name: "Tổng quan" })).toBeNull();
     expect(within(nav).getByText("Tổng quan").getAttribute("aria-current")).toBe("page");
+  });
+});
+
+// ── Desktop rail toggle ───────────────────────────────────────────────────────
+
+describe("AdminShell desktop rail toggle", () => {
+  beforeEach(() => {
+    stubMatchMedia(false); // desktop
+    sessionStorage.setItem("ibb_admin_at", "at");
+    sessionStorage.setItem("ibb_admin_rt", "rt");
+    localStorage.setItem("ibb_admin_branch", "b1");
+    localStorage.removeItem("ibb_admin_sidebar");
+    act(() => { _resetSidebarStore(); });
+    globalThis.fetch = vi.fn(async () =>
+      new Response(JSON.stringify({ data: [] }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    ) as typeof globalThis.fetch;
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+    sessionStorage.clear();
+    localStorage.clear();
+    act(() => { _resetSidebarStore(); });
+  });
+
+  it("shows the rail toggle button on desktop with label 'Thu gọn thanh bên'", () => {
+    render(<AdminShell pageTitle="Test"><div /></AdminShell>, { wrapper });
+    expect(screen.getByLabelText("Thu gọn thanh bên")).toBeInTheDocument();
+  });
+
+  it("does NOT show the rail toggle button on compact (mobile/tablet)", () => {
+    stubMatchMedia(true);
+    render(<AdminShell pageTitle="Test"><div /></AdminShell>, { wrapper });
+    expect(screen.queryByLabelText(/thanh bên/i)).toBeNull();
+  });
+
+  it("clicking the toggle collapses the sidebar — nav item text labels are removed while the nav itself remains accessible by aria-label", () => {
+    // Use /pos (Bán hàng) — unrestricted, visible with null role.
+    render(
+      <AdminShell activePath="/pos" pageTitle="Bán hàng"><div /></AdminShell>,
+      { wrapper },
+    );
+
+    // Before: "Bán hàng" label text is visible in the nav as a child <span>.
+    const navRegion = screen.getByRole("navigation", { name: "Điều hướng chính" });
+    expect(within(navRegion).getByText("Bán hàng")).toBeInTheDocument();
+
+    // Collapse.
+    fireEvent.click(screen.getByLabelText("Thu gọn thanh bên"));
+
+    // After: the text label span is gone, but the button is still accessible
+    // via aria-label (rail mode adds aria-label={item.label} to each nav button).
+    expect(within(navRegion).queryByText("Bán hàng")).toBeNull();
+    expect(within(navRegion).getByLabelText("Bán hàng")).toBeInTheDocument();
+  });
+
+  it("toggle button label flips to 'Mở rộng thanh bên' after collapsing", () => {
+    render(<AdminShell pageTitle="Test"><div /></AdminShell>, { wrapper });
+
+    fireEvent.click(screen.getByLabelText("Thu gọn thanh bên"));
+
+    expect(screen.getByLabelText("Mở rộng thanh bên")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Thu gọn thanh bên")).toBeNull();
+  });
+
+  it("collapsed state is persisted to localStorage", () => {
+    render(<AdminShell pageTitle="Test"><div /></AdminShell>, { wrapper });
+
+    fireEvent.click(screen.getByLabelText("Thu gọn thanh bên"));
+
+    expect(localStorage.getItem("ibb_admin_sidebar")).toBe("collapsed");
+  });
+
+  it("starts collapsed when localStorage was preset to 'collapsed'", () => {
+    localStorage.setItem("ibb_admin_sidebar", "collapsed");
+    act(() => { _resetSidebarStore(); });
+
+    render(<AdminShell pageTitle="Test"><div /></AdminShell>, { wrapper });
+
+    // Button label should reflect the already-collapsed state.
+    expect(screen.getByLabelText("Mở rộng thanh bên")).toBeInTheDocument();
   });
 });

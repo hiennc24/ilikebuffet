@@ -16,6 +16,7 @@ import { useAuth } from "../auth/auth-context";
 import { canAccessPath } from "../lib/rbac";
 import { useIsCompact } from "../lib/use-media-query";
 import { useTheme } from "../lib/theme";
+import { useSidebarCollapsed } from "../lib/use-sidebar";
 import { PageHeader, buildPathGroups } from "./page-header";
 
 export interface NavItem {
@@ -1069,6 +1070,9 @@ export const AdminShell: React.FC<AdminShellProps> = ({
 
   // Below the desktop breakpoint the sidebar becomes an off-canvas drawer.
   const compact = useIsCompact();
+  const { collapsed, toggle: toggleSidebar } = useSidebarCollapsed();
+  // Rail = icon-only desktop sidebar. Only active when desktop (not compact).
+  const rail = collapsed && !compact;
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   // Close the drawer whenever we grow back to desktop so it can't get stuck open.
   React.useEffect(() => {
@@ -1122,7 +1126,6 @@ export const AdminShell: React.FC<AdminShellProps> = ({
       <aside
         aria-hidden={compact && !drawerOpen ? true : undefined}
         style={{
-          width: "var(--sidebar-width, 248px)",
           display: "flex",
           flexDirection: "column",
           background: "var(--sidebar-bg, #FFFFFF)",
@@ -1132,6 +1135,8 @@ export const AdminShell: React.FC<AdminShellProps> = ({
           ...(compact
             ? {
                 // Off-canvas: fixed, slides in from the left, above the scrim.
+                // Compact drawer always uses full sidebar width regardless of collapsed state.
+                width: "var(--sidebar-width, 248px)",
                 position: "fixed",
                 top: 0,
                 left: 0,
@@ -1141,11 +1146,14 @@ export const AdminShell: React.FC<AdminShellProps> = ({
                 boxShadow: drawerOpen ? "var(--shadow-lg, 0 10px 40px rgba(0,0,0,0.2))" : "none",
               }
             : {
-                // Desktop: sticky column.
-                flex: "0 0 var(--sidebar-width, 248px)",
+                // Desktop: sticky column; animates between full and rail width.
+                width: rail ? "var(--sidebar-rail-width, 72px)" : "var(--sidebar-width, 248px)",
+                flex: `0 0 ${rail ? "var(--sidebar-rail-width, 72px)" : "var(--sidebar-width, 248px)"}`,
                 position: "sticky",
                 top: 0,
                 alignSelf: "flex-start",
+                transition: "width var(--dur-med, 220ms) ease, flex-basis var(--dur-med, 220ms) ease",
+                overflow: "hidden",
               }),
         }}
       >
@@ -1156,8 +1164,9 @@ export const AdminShell: React.FC<AdminShellProps> = ({
             flex: "0 0 var(--topbar-height, 56px)",
             display: "flex",
             alignItems: "center",
-            gap: "12px",
-            padding: "0 16px",
+            justifyContent: rail ? "center" : undefined,
+            gap: rail ? 0 : "12px",
+            padding: rail ? "0" : "0 16px",
             borderBottom: "1px solid var(--border-subtle)",
           }}
         >
@@ -1174,16 +1183,19 @@ export const AdminShell: React.FC<AdminShellProps> = ({
               justifyContent: "center",
               fontSize: "14px",
               fontWeight: 600,
+              flexShrink: 0,
             }}
           >
             i
           </span>
-          <span style={{ display: "flex", flexDirection: "column", lineHeight: 1.15 }}>
-            <strong style={{ fontSize: "var(--text-sm)", fontWeight: 600 }}>ilikebuffet</strong>
-            <span style={{ fontSize: "11px", color: "var(--nav-label-color, #6E665C)" }}>
-              Admin
+          {!rail && (
+            <span style={{ display: "flex", flexDirection: "column", lineHeight: 1.15 }}>
+              <strong style={{ fontSize: "var(--text-sm)", fontWeight: 600 }}>ilikebuffet</strong>
+              <span style={{ fontSize: "11px", color: "var(--nav-label-color, #6E665C)" }}>
+                Admin
+              </span>
             </span>
-          </span>
+          )}
         </div>
 
         {/* Branch switcher — sidebar placement is for compact widths only; on desktop
@@ -1206,7 +1218,7 @@ export const AdminShell: React.FC<AdminShellProps> = ({
           style={{
             flex: 1,
             overflowY: "auto",
-            padding: "8px 12px 16px",
+            padding: rail ? "8px 4px 16px" : "8px 12px 16px",
             display: "flex",
             flexDirection: "column",
             gap: "2px",
@@ -1217,7 +1229,8 @@ export const AdminShell: React.FC<AdminShellProps> = ({
               key={group.label ?? "default"}
               style={{ display: "flex", flexDirection: "column", gap: "2px", marginBottom: "10px" }}
             >
-              {group.label && (
+              {/* Group section labels are hidden in rail mode */}
+              {group.label && !rail && (
                 <div
                   style={{
                     fontSize: "11px",
@@ -1236,7 +1249,18 @@ export const AdminShell: React.FC<AdminShellProps> = ({
                   <button
                     key={item.id}
                     onClick={() => navigate(item.path)}
-                    style={navItemStyle(isActive)}
+                    title={rail ? item.label : undefined}
+                    aria-label={rail ? item.label : undefined}
+                    style={{
+                      ...navItemStyle(isActive),
+                      ...(rail
+                        ? {
+                            justifyContent: "center",
+                            padding: "0",
+                            gap: 0,
+                          }
+                        : {}),
+                    }}
                     aria-current={isActive ? "page" : undefined}
                   >
                     {isActive && (
@@ -1254,15 +1278,17 @@ export const AdminShell: React.FC<AdminShellProps> = ({
                       />
                     )}
                     <NavIcon d={item.iconPath} />
-                    <span
-                      style={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {item.label}
-                    </span>
+                    {!rail && (
+                      <span
+                        style={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {item.label}
+                      </span>
+                    )}
                   </button>
                 );
               })}
@@ -1274,39 +1300,62 @@ export const AdminShell: React.FC<AdminShellProps> = ({
         <div
           style={{
             borderTop: "1px solid var(--border-subtle)",
-            padding: "8px 12px 12px",
+            padding: rail ? "8px 4px 12px" : "8px 12px 12px",
             display: "flex",
             flexDirection: "column",
             gap: "2px",
           }}
         >
-          <div
-            style={{
-              fontSize: "11px",
-              letterSpacing: "0.04em",
-              textTransform: "uppercase",
-              color: "var(--nav-label-color)",
-              padding: "8px 12px 4px",
-            }}
-          >
-            Hệ thống
-          </div>
+          {/* "Hệ thống" section label is hidden in rail mode */}
+          {!rail && (
+            <div
+              style={{
+                fontSize: "11px",
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                color: "var(--nav-label-color)",
+                padding: "8px 12px 4px",
+              }}
+            >
+              Hệ thống
+            </div>
+          )}
           {SYSTEM_ITEMS.filter((item) => canAccessPath(role, item.path)).map((item) => (
             <button
               key={item.id}
               onClick={() => navigate(item.path)}
-              style={navItemStyle(activePath === item.path)}
+              title={rail ? item.label : undefined}
+              aria-label={rail ? item.label : undefined}
+              style={{
+                ...navItemStyle(activePath === item.path),
+                ...(rail
+                  ? {
+                      justifyContent: "center",
+                      padding: "0",
+                      gap: 0,
+                    }
+                  : {}),
+              }}
             >
               <NavIcon d={item.iconPath} />
-              <span>{item.label}</span>
+              {!rail && <span>{item.label}</span>}
             </button>
           ))}
           <button
             onClick={logout}
+            title={rail ? "Đăng xuất" : undefined}
+            aria-label={rail ? "Đăng xuất" : undefined}
             style={{
               ...navItemStyle(false),
               color: "#C0392B",
               marginTop: "var(--space-2)",
+              ...(rail
+                ? {
+                    justifyContent: "center",
+                    padding: "0",
+                    gap: 0,
+                  }
+                : {}),
             }}
           >
             <svg
@@ -1321,7 +1370,7 @@ export const AdminShell: React.FC<AdminShellProps> = ({
             >
               <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
             </svg>
-            <span>Đăng xuất</span>
+            {!rail && <span>Đăng xuất</span>}
           </button>
         </div>
       </aside>
@@ -1372,6 +1421,31 @@ export const AdminShell: React.FC<AdminShellProps> = ({
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
                 <path d="M3 6h18M3 12h18M3 18h18" />
+              </svg>
+            </button>
+          )}
+          {/* Desktop-only: sidebar rail toggle (collapse/expand). */}
+          {!compact && (
+            <button
+              type="button"
+              aria-label={collapsed ? "Mở rộng thanh bên" : "Thu gọn thanh bên"}
+              onClick={toggleSidebar}
+              style={topbarIconBtnStyle()}
+            >
+              {/* Panel icon: outer rectangle with a vertical divider line */}
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M9 3v18" />
               </svg>
             </button>
           )}
