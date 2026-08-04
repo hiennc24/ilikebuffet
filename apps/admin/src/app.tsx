@@ -353,7 +353,7 @@ export function App() {
                       path="/reports/bank-reconcile"
                       element={
                         <RequireAccess path="/reports/bank-reconcile">
-                          <ShellLayout pageTitle="Đối soát ngân hàng">
+                          <ShellLayout bareChrome>
                             <BankReconcilePage />
                           </ShellLayout>
                         </RequireAccess>
@@ -383,7 +383,7 @@ export function App() {
                       path="/finance/payables"
                       element={
                         <RequireAccess path="/finance/payables">
-                          <ShellLayout pageTitle="Công nợ nhà cung cấp">
+                          <ShellLayout bareChrome>
                             <SupplierDebtPage />
                           </ShellLayout>
                         </RequireAccess>
@@ -393,7 +393,7 @@ export function App() {
                       path="/finance/aging"
                       element={
                         <RequireAccess path="/finance/aging">
-                          <ShellLayout pageTitle="Tuổi nợ NCC">
+                          <ShellLayout bareChrome>
                             <SupplierAgingPage />
                           </ShellLayout>
                         </RequireAccess>

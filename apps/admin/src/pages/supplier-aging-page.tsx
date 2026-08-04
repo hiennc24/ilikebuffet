@@ -7,14 +7,18 @@
  */
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { formatVnd } from "@ilikebuffet/shared";
 import { Button } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
 import { useReport } from "../lib/use-report";
 import { QUERY_KEYS } from "../lib/query-keys";
-import { Card, PageStack, DataTable, Column, Select, Badge, LoadingState, ErrorState, toErrorMessage } from "./_shared/admin-ui";
+import { Card, Select, LoadingState, ErrorState, toErrorMessage } from "./_shared/admin-ui";
+import { DataTable, useDataTable, DataTablePagination, Badge } from "./_shared/table";
 import { KpiCard, KpiRow, TotalsBar, type Branch } from "./_shared/report-ui";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 
 const CHAIN_WIDE = new Set(["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI"]);
 
@@ -74,88 +78,206 @@ export const SupplierAgingPage: React.FC = () => {
     }
   };
 
-  const columns: Column<AgingRow>[] = [
-    { key: "supplier", header: "Nhà cung cấp", render: (r) => r.supplierName },
-    { key: "notDue", header: "Chưa đến hạn", align: "right", render: (r) => formatVnd(r.notDueVnd) },
-    { key: "d1_30", header: "1-30 ngày", align: "right", render: (r) => formatVnd(r.d1_30Vnd) },
-    { key: "d31_60", header: "31-60 ngày", align: "right", render: (r) => formatVnd(r.d31_60Vnd) },
-    { key: "d60", header: "60+ ngày", align: "right", render: (r) => formatVnd(r.d60plusVnd) },
-    { key: "total", header: "Tổng nợ", align: "right", render: (r) => formatVnd(r.totalOutstandingVnd) },
-  ];
+  const agingRows = aging.data?.suppliers ?? [];
 
-  const dueColumns: Column<DueSoonItem>[] = [
-    { key: "supplier", header: "Nhà cung cấp", render: (r) => r.supplierName },
-    { key: "out", header: "Còn nợ", align: "right", render: (r) => formatVnd(r.outstandingVnd) },
-    { key: "due", header: "Hạn", render: (r) => vnDate(r.dueDate) },
-    {
-      key: "days",
-      header: "Trạng thái hạn",
-      render: (r) => (r.daysOverdue > 0 ? <Badge tone="warn">{`Quá ${r.daysOverdue} ngày`}</Badge> : `Còn ${-r.daysOverdue} ngày`),
-    },
-  ];
+  const columns = React.useMemo<ColumnDef<AgingRow>[]>(
+    () => [
+      {
+        id: "supplier",
+        enableSorting: false,
+        meta: { headerLabel: "Nhà cung cấp" },
+        header: "Nhà cung cấp",
+        cell: ({ row }) => row.original.supplierName,
+      },
+      {
+        id: "notDue",
+        enableSorting: false,
+        meta: { headerLabel: "Chưa đến hạn", align: "right" },
+        header: "Chưa đến hạn",
+        cell: ({ row }) => formatVnd(row.original.notDueVnd),
+      },
+      {
+        id: "d1_30",
+        enableSorting: false,
+        meta: { headerLabel: "1-30 ngày", align: "right" },
+        header: "1-30 ngày",
+        cell: ({ row }) => formatVnd(row.original.d1_30Vnd),
+      },
+      {
+        id: "d31_60",
+        enableSorting: false,
+        meta: { headerLabel: "31-60 ngày", align: "right" },
+        header: "31-60 ngày",
+        cell: ({ row }) => formatVnd(row.original.d31_60Vnd),
+      },
+      {
+        id: "d60",
+        enableSorting: false,
+        meta: { headerLabel: "60+ ngày", align: "right" },
+        header: "60+ ngày",
+        cell: ({ row }) => formatVnd(row.original.d60plusVnd),
+      },
+      {
+        id: "total",
+        enableSorting: false,
+        meta: { headerLabel: "Tổng nợ", align: "right" },
+        header: "Tổng nợ",
+        cell: ({ row }) => formatVnd(row.original.totalOutstandingVnd),
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<AgingRow>({
+    data: agingRows,
+    columns,
+    total: agingRows.length,
+    page: 1,
+    limit: agingRows.length || 50,
+    sort: null,
+    setPage: () => {},
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (r) => r.supplierId,
+  });
+
+  const dueSoonRows = dueSoon.data?.items ?? [];
+
+  const dueColumns = React.useMemo<ColumnDef<DueSoonItem>[]>(
+    () => [
+      {
+        id: "supplier",
+        enableSorting: false,
+        meta: { headerLabel: "Nhà cung cấp" },
+        header: "Nhà cung cấp",
+        cell: ({ row }) => row.original.supplierName,
+      },
+      {
+        id: "out",
+        enableSorting: false,
+        meta: { headerLabel: "Còn nợ", align: "right" },
+        header: "Còn nợ",
+        cell: ({ row }) => formatVnd(row.original.outstandingVnd),
+      },
+      {
+        id: "due",
+        enableSorting: false,
+        meta: { headerLabel: "Hạn" },
+        header: "Hạn",
+        cell: ({ row }) => vnDate(row.original.dueDate),
+      },
+      {
+        id: "days",
+        enableSorting: false,
+        meta: { headerLabel: "Trạng thái hạn" },
+        header: "Trạng thái hạn",
+        cell: ({ row }) =>
+          row.original.daysOverdue > 0 ? (
+            <Badge tone="warn">{`Quá ${row.original.daysOverdue} ngày`}</Badge>
+          ) : (
+            `Còn ${-row.original.daysOverdue} ngày`
+          ),
+      },
+    ],
+    [],
+  );
+
+  const dueTable = useDataTable<DueSoonItem>({
+    data: dueSoonRows,
+    columns: dueColumns,
+    total: dueSoonRows.length,
+    page: 1,
+    limit: dueSoonRows.length || 50,
+    sort: null,
+    setPage: () => {},
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (r) => r.id,
+  });
 
   const overdueVnd = aging.data ? aging.data.totals.d1_30Vnd + aging.data.totals.d31_60Vnd + aging.data.totals.d60plusVnd : 0;
 
   return (
-    <PageStack>
-      <Card
-        title="Tuổi nợ nhà cung cấp"
-        description="Công nợ NCC còn nợ, phân theo tuổi nợ so với hạn thanh toán."
+    <>
+      <ListPageShell
+        activePath="/finance/aging"
+        pageTitle="Tuổi nợ NCC"
         actions={
           <Button variant="ghost" disabled={exporting} onClick={doExport}>
             {exporting ? "Đang xuất…" : "Xuất Excel"}
           </Button>
         }
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: agingRows.length }]}
+              />
+            }
+          >
+            {isChainWide && (
+              <Select aria-label="Chi nhánh" value={branchId} onChange={(e) => setBranchId(e.target.value)}>
+                <option value="">Tất cả chi nhánh</option>
+                {branches.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.code} — {b.name}
+                  </option>
+                ))}
+              </Select>
+            )}
+          </PageToolbar>
+        }
+        pagination={
+          !aging.isLoading && !aging.isError
+            ? <DataTablePagination table={table} total={agingRows.length} />
+            : undefined
+        }
       >
-        {isChainWide && (
-          <div style={{ marginBottom: "var(--space-3)" }}>
-            <Select aria-label="Chi nhánh" value={branchId} onChange={(e) => setBranchId(e.target.value)}>
-              <option value="">Tất cả chi nhánh</option>
-              {branches.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.code} — {b.name}
-                </option>
-              ))}
-            </Select>
-          </div>
-        )}
-
         {aging.isLoading ? (
-          <LoadingState />
+          <div style={{ padding: "var(--space-5)" }}>
+            <LoadingState />
+          </div>
         ) : aging.isError ? (
-          <ErrorState message={toErrorMessage(aging.error, "Không tải được tuổi nợ")} />
+          <div style={{ padding: "var(--space-5)" }}>
+            <ErrorState message={toErrorMessage(aging.error, "Không tải được tuổi nợ")} />
+          </div>
         ) : aging.data ? (
           <>
-            <KpiRow>
-              <KpiCard label="Tổng công nợ" value={formatVnd(aging.data.totals.totalOutstandingVnd)} />
-              <KpiCard label="Quá hạn" value={formatVnd(overdueVnd)} />
-              <KpiCard label="Chưa đến hạn" value={formatVnd(aging.data.totals.notDueVnd)} />
-              <KpiCard label="Số NCC còn nợ" value={String(aging.data.totals.supplierCount)} />
-            </KpiRow>
-
-            <DataTable columns={columns} rows={aging.data.suppliers} rowKey={(r) => r.supplierId} emptyText="Không có công nợ." />
-            <TotalsBar
-              items={[
-                { label: "Chưa đến hạn", value: formatVnd(aging.data.totals.notDueVnd) },
-                { label: "1-30", value: formatVnd(aging.data.totals.d1_30Vnd) },
-                { label: "31-60", value: formatVnd(aging.data.totals.d31_60Vnd) },
-                { label: "60+", value: formatVnd(aging.data.totals.d60plusVnd) },
-                { label: "Tổng nợ", value: formatVnd(aging.data.totals.totalOutstandingVnd) },
-              ]}
-            />
+            <div style={{ padding: "var(--space-4)" }}>
+              <KpiRow>
+                <KpiCard label="Tổng công nợ" value={formatVnd(aging.data.totals.totalOutstandingVnd)} />
+                <KpiCard label="Quá hạn" value={formatVnd(overdueVnd)} />
+                <KpiCard label="Chưa đến hạn" value={formatVnd(aging.data.totals.notDueVnd)} />
+                <KpiCard label="Số NCC còn nợ" value={String(aging.data.totals.supplierCount)} />
+              </KpiRow>
+            </div>
+            <DataTable table={table} empty="Không có công nợ." />
+            <div style={{ padding: "var(--space-4)" }}>
+              <TotalsBar
+                items={[
+                  { label: "Chưa đến hạn", value: formatVnd(aging.data.totals.notDueVnd) },
+                  { label: "1-30", value: formatVnd(aging.data.totals.d1_30Vnd) },
+                  { label: "31-60", value: formatVnd(aging.data.totals.d31_60Vnd) },
+                  { label: "60+", value: formatVnd(aging.data.totals.d60plusVnd) },
+                  { label: "Tổng nợ", value: formatVnd(aging.data.totals.totalOutstandingVnd) },
+                ]}
+              />
+            </div>
           </>
         ) : null}
-      </Card>
+      </ListPageShell>
 
-      <Card title="Sắp / đã đến hạn" description="Công nợ đến hạn trong 7 ngày hoặc đã quá hạn.">
+      <Card title="Sắp / đã đến hạn">
         {dueSoon.isLoading ? (
           <LoadingState />
         ) : dueSoon.isError ? (
           <ErrorState message={toErrorMessage(dueSoon.error, "Không tải được danh sách đến hạn")} />
         ) : (
-          <DataTable columns={dueColumns} rows={dueSoon.data?.items ?? []} rowKey={(r) => r.id} emptyText="Không có khoản nào sắp đến hạn." />
+          <DataTable table={dueTable} empty="Không có khoản nào sắp đến hạn." />
         )}
       </Card>
-    </PageStack>
+    </>
   );
 };

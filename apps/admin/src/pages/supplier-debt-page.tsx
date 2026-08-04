@@ -7,13 +7,23 @@
  */
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { formatVnd } from "@ilikebuffet/shared";
 import { Button, Dialog } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
 import { usePagedList } from "../lib/use-paged-list";
 import { QUERY_KEYS } from "../lib/query-keys";
-import { Card, PageStack, DataTable, Column, FilterBar, Pagination, Select, InlineError, Badge, LoadingState, ErrorState, toErrorMessage } from "./_shared/admin-ui";
+import {
+  Select,
+  InlineError,
+  LoadingState,
+  ErrorState,
+  toErrorMessage,
+} from "./_shared/admin-ui";
+import { DataTable, useDataTable, DataTablePagination, Badge } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 
 const PAGE_SIZE = 20;
 
@@ -45,7 +55,7 @@ export const SupplierDebtPage: React.FC = () => {
   const accountsQuery = useQuery({ queryKey: QUERY_KEYS.accounts(), queryFn: () => api.get<Account[] | { data: Account[] }>("/master-data/accounts") });
   const expenseAccounts = unwrapList(accountsQuery.data).filter((a) => a.flow === "EXPENSE");
 
-  const { rows, total, pageCount, isLoading, isError, error } = usePagedList<PayableRow>({
+  const { rows, total, isLoading, isError, error } = usePagedList<PayableRow>({
     queryKey: QUERY_KEYS.payables(),
     path: "/sales/finance/payables",
     page,
@@ -58,40 +68,120 @@ export const SupplierDebtPage: React.FC = () => {
     setPage(1);
   };
 
-  const columns: Column<PayableRow>[] = [
-    { key: "supplier", header: "Nhà cung cấp", render: (r) => r.supplierName },
-    { key: "amount", header: "Tổng nợ", align: "right", render: (r) => formatVnd(r.amountVnd) },
-    { key: "paid", header: "Đã trả", align: "right", render: (r) => formatVnd(r.paidVnd) },
-    { key: "out", header: "Còn nợ", align: "right", render: (r) => formatVnd(r.outstandingVnd) },
-    { key: "due", header: "Hạn", render: (r) => (r.overdue ? <Badge tone="warn">{vnDate(r.dueDate)}</Badge> : vnDate(r.dueDate)) },
-    { key: "status", header: "Trạng thái", render: (r) => <Badge tone={r.status === "PAID" ? "active" : "muted"}>{r.status === "PAID" ? "Đã trả" : "Còn nợ"}</Badge> },
-  ];
+  const columns = React.useMemo<ColumnDef<PayableRow>[]>(
+    () => [
+      {
+        id: "supplier",
+        enableSorting: false,
+        meta: { headerLabel: "Nhà cung cấp" },
+        header: "Nhà cung cấp",
+        cell: ({ row }) => row.original.supplierName,
+      },
+      {
+        id: "amount",
+        enableSorting: false,
+        meta: { headerLabel: "Tổng nợ", align: "right" },
+        header: "Tổng nợ",
+        cell: ({ row }) => formatVnd(row.original.amountVnd),
+      },
+      {
+        id: "paid",
+        enableSorting: false,
+        meta: { headerLabel: "Đã trả", align: "right" },
+        header: "Đã trả",
+        cell: ({ row }) => formatVnd(row.original.paidVnd),
+      },
+      {
+        id: "out",
+        enableSorting: false,
+        meta: { headerLabel: "Còn nợ", align: "right" },
+        header: "Còn nợ",
+        cell: ({ row }) => formatVnd(row.original.outstandingVnd),
+      },
+      {
+        id: "due",
+        enableSorting: false,
+        meta: { headerLabel: "Hạn" },
+        header: "Hạn",
+        cell: ({ row }) => {
+          const r = row.original;
+          return r.overdue ? <Badge tone="warn">{vnDate(r.dueDate)}</Badge> : vnDate(r.dueDate);
+        },
+      },
+      {
+        id: "status",
+        enableSorting: false,
+        meta: { headerLabel: "Trạng thái" },
+        header: "Trạng thái",
+        cell: ({ row }) => {
+          const r = row.original;
+          return (
+            <Badge tone={r.status === "PAID" ? "success" : "neutral"}>
+              {r.status === "PAID" ? "Đã trả" : "Còn nợ"}
+            </Badge>
+          );
+        },
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<PayableRow>({
+    data: rows,
+    columns,
+    total: rows.length,
+    page: 1,
+    limit: rows.length || 50,
+    sort: null,
+    setPage: () => {},
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (r) => r.id,
+  });
 
   return (
-    <PageStack>
-      <Card title="Công nợ nhà cung cấp" description="Công nợ phát sinh khi nhập kho theo đơn mua. Ghi thanh toán để giảm nợ.">
-        <FilterBar>
-          <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
-            <option value="">Tất cả</option>
-            <option value="OPEN">Còn nợ</option>
-            <option value="PAID">Đã trả</option>
-          </Select>
-        </FilterBar>
-
+    <>
+      <ListPageShell
+        activePath="/finance/payables"
+        pageTitle="Công nợ nhà cung cấp"
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: rows.length }]}
+              />
+            }
+          >
+            <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
+              <option value="">Tất cả</option>
+              <option value="OPEN">Còn nợ</option>
+              <option value="PAID">Đã trả</option>
+            </Select>
+          </PageToolbar>
+        }
+        pagination={
+          !isLoading && !isError
+            ? <DataTablePagination table={table} total={total} />
+            : undefined
+        }
+      >
         {isLoading ? (
           <LoadingState />
         ) : isError ? (
           <ErrorState message={toErrorMessage(error, "Không tải được công nợ")} />
         ) : (
-          <>
-            <DataTable columns={columns} rows={rows} rowKey={(r) => r.id} onRowClick={(r) => r.status === "OPEN" && setPaying(r)} emptyText="Chưa có công nợ." />
-            <Pagination page={page} pageCount={pageCount} total={total} onPageChange={setPage} />
-          </>
+          <DataTable
+            table={table}
+            onRowClick={(r) => r.status === "OPEN" && setPaying(r)}
+            empty="Chưa có công nợ."
+          />
         )}
-      </Card>
+      </ListPageShell>
 
       {paying && <PayDialog payable={paying} accounts={expenseAccounts} onClose={() => setPaying(null)} />}
-    </PageStack>
+    </>
   );
 };
 

@@ -7,6 +7,7 @@
  * transfers already carry their bill number.
  */
 import * as React from "react";
+import type { ColumnDef } from "@tanstack/react-table";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatVnd } from "@ilikebuffet/shared";
 import { Button } from "@ilikebuffet/ui";
@@ -14,21 +15,17 @@ import { useAuth } from "../auth/auth-context";
 import { usePagedList } from "../lib/use-paged-list";
 import { QUERY_KEYS } from "../lib/query-keys";
 import {
-  Card,
-  PageStack,
-  DataTable,
-  Column,
-  FilterBar,
-  Pagination,
-  DetailDrawer,
   Select,
   InlineError,
-  Badge,
-  BadgeTone,
+  DetailDrawer,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import { DataTable, useDataTable, DataTablePagination, Badge } from "./_shared/table";
+import type { BadgeTone } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 
 const PAGE_SIZE = 20;
 
@@ -46,7 +43,7 @@ interface BankTxRow {
 }
 
 const STATUS_LABEL: Record<BankTxRow["status"], string> = { UNMATCHED: "Chờ đối soát", MATCHED: "Đã khớp", IGNORED: "Bỏ qua" };
-const STATUS_TONE: Record<BankTxRow["status"], BadgeTone> = { UNMATCHED: "warn", MATCHED: "active", IGNORED: "muted" };
+const STATUS_TONE: Record<BankTxRow["status"], BadgeTone> = { UNMATCHED: "warn", MATCHED: "success", IGNORED: "neutral" };
 const vnDateTime = (iso: string) => `${iso.slice(0, 10)} ${new Date(iso).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}`;
 
 export const BankReconcilePage: React.FC = () => {
@@ -67,41 +64,113 @@ export const BankReconcilePage: React.FC = () => {
     setPage(1);
   };
 
-  const columns: Column<BankTxRow>[] = [
-    { key: "date", header: "Thời gian", render: (t) => vnDateTime(t.transferredAt) },
-    { key: "gateway", header: "Ngân hàng", render: (t) => t.gateway ?? "—" },
-    { key: "amount", header: "Số tiền", align: "right", render: (t) => formatVnd(t.amountVnd) },
-    { key: "content", header: "Nội dung", render: (t) => t.content },
-    { key: "bill", header: "Bill", render: (t) => t.matchedBillNumber ?? "—" },
-    { key: "status", header: "Trạng thái", render: (t) => <Badge tone={STATUS_TONE[t.status]}>{STATUS_LABEL[t.status]}</Badge> },
-  ];
+  const columns = React.useMemo<ColumnDef<BankTxRow>[]>(
+    () => [
+      {
+        id: "date",
+        enableSorting: false,
+        meta: { headerLabel: "Thời gian" },
+        header: "Thời gian",
+        cell: ({ row }) => vnDateTime(row.original.transferredAt),
+      },
+      {
+        id: "gateway",
+        enableSorting: false,
+        meta: { headerLabel: "Ngân hàng" },
+        header: "Ngân hàng",
+        cell: ({ row }) => row.original.gateway ?? "—",
+      },
+      {
+        id: "amount",
+        enableSorting: false,
+        meta: { headerLabel: "Số tiền", align: "right" },
+        header: "Số tiền",
+        cell: ({ row }) => formatVnd(row.original.amountVnd),
+      },
+      {
+        id: "content",
+        enableSorting: false,
+        meta: { headerLabel: "Nội dung" },
+        header: "Nội dung",
+        cell: ({ row }) => row.original.content,
+      },
+      {
+        id: "bill",
+        enableSorting: false,
+        meta: { headerLabel: "Bill" },
+        header: "Bill",
+        cell: ({ row }) => row.original.matchedBillNumber ?? "—",
+      },
+      {
+        id: "status",
+        enableSorting: false,
+        meta: { headerLabel: "Trạng thái" },
+        header: "Trạng thái",
+        cell: ({ row }) => (
+          <Badge tone={STATUS_TONE[row.original.status]}>{STATUS_LABEL[row.original.status]}</Badge>
+        ),
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<BankTxRow>({
+    data: rows,
+    columns,
+    total,
+    page,
+    limit: PAGE_SIZE,
+    sort: null,
+    setPage,
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (t) => t.id,
+  });
 
   return (
-    <PageStack>
-      <Card title="Đối soát ngân hàng" description="Giao dịch chuyển khoản VietQR (Sepay). Giao dịch chờ đối soát có thể khớp bill thủ công hoặc bỏ qua.">
-        <FilterBar>
-          <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
-            <option value="">Tất cả trạng thái</option>
-            <option value="UNMATCHED">Chờ đối soát</option>
-            <option value="MATCHED">Đã khớp</option>
-            <option value="IGNORED">Bỏ qua</option>
-          </Select>
-        </FilterBar>
-
+    <>
+      <ListPageShell
+        activePath="/reports/bank-reconcile"
+        pageTitle="Đối soát ngân hàng"
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: rows.length }]}
+              />
+            }
+          >
+            <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
+              <option value="">Tất cả trạng thái</option>
+              <option value="UNMATCHED">Chờ đối soát</option>
+              <option value="MATCHED">Đã khớp</option>
+              <option value="IGNORED">Bỏ qua</option>
+            </Select>
+          </PageToolbar>
+        }
+        pagination={
+          !isLoading && !isError
+            ? <DataTablePagination table={table} total={total} />
+            : undefined
+        }
+      >
         {isLoading ? (
           <LoadingState />
         ) : isError ? (
           <ErrorState message={toErrorMessage(error, "Không tải được giao dịch")} />
         ) : (
-          <>
-            <DataTable columns={columns} rows={rows} rowKey={(t) => t.id} onRowClick={(t) => setSelected(t)} emptyText="Chưa có giao dịch." />
-            <Pagination page={page} pageCount={pageCount} total={total} onPageChange={setPage} />
-          </>
+          <DataTable
+            table={table}
+            onRowClick={(t) => setSelected(t)}
+            empty="Chưa có giao dịch."
+          />
         )}
-      </Card>
+      </ListPageShell>
 
       <ReconcileDrawer tx={selected} onClose={() => setSelected(null)} />
-    </PageStack>
+    </>
   );
 };
 
