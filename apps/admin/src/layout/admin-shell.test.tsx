@@ -94,21 +94,22 @@ describe("AdminShell breadcrumb", () => {
     localStorage.clear();
   });
 
-  it("shows 'Group › Page' derived from the nav for a nested route", () => {
+  it("shows a 2-level 'home › page' breadcrumb (no group crumb, DTV style)", () => {
     render(<AdminShell activePath="/monitor" pageTitle="Theo dõi ca"><div /></AdminShell>, { wrapper });
     const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
     // Home crumb links back to the overview.
     expect(within(nav).getByRole("button", { name: "Tổng quan" })).toBeInTheDocument();
-    expect(within(nav).getByText("Vận hành")).toBeInTheDocument();
+    // No intermediate group crumb (e.g. "Vận hành").
+    expect(within(nav).queryByText("Vận hành")).toBeNull();
     // Current page is marked and not a link.
     expect(within(nav).getByText("Theo dõi ca").getAttribute("aria-current")).toBe("page");
   });
 
-  it("derives the group from the report section", () => {
+  it("shows the current page as the last crumb for a report route", () => {
     render(<AdminShell activePath="/reports/revenue" pageTitle="Báo cáo doanh thu"><div /></AdminShell>, { wrapper });
     const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
-    expect(within(nav).getByText("Báo cáo & Đối soát")).toBeInTheDocument();
-    expect(within(nav).getByText("Báo cáo doanh thu")).toBeInTheDocument();
+    expect(within(nav).queryByText("Báo cáo & Đối soát")).toBeNull();
+    expect(within(nav).getByText("Báo cáo doanh thu").getAttribute("aria-current")).toBe("page");
   });
 
   it("navigates home when the 'Tổng quan' crumb is clicked", () => {

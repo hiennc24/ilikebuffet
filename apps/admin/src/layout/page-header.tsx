@@ -239,12 +239,11 @@ export function PageHeader({
     if (path === "/") {
       return [{ label: page || "Tổng quan", isCurrent: true }];
     }
+    // DTV breadcrumb is 2-level: home › current page (no intermediate group crumb).
     const crumbs: CrumbDef[] = [{ label: "Tổng quan", path: "/" }];
-    const group = groupForPath(path, pathGroups);
-    if (group) crumbs.push({ label: group });
     if (page) crumbs.push({ label: page, isCurrent: true });
     return crumbs;
-  }, [path, page, pathGroups]);
+  }, [path, page]);
 
   const crumbs = collapseCrumbs(rawCrumbs);
 

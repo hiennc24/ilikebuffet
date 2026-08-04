@@ -1521,10 +1521,11 @@ export const AdminShell: React.FC<AdminShellProps> = ({
         >
           <div
             style={{
-              maxWidth: "1440px",
+              // Match the DTV container: ~1200px centered with 24px side padding.
+              maxWidth: "1200px",
               margin: "0 auto",
               width: "100%",
-              padding: compact ? "var(--space-3)" : "var(--space-5) var(--space-6)",
+              padding: compact ? "var(--space-3)" : "var(--space-5)",
               paddingBottom: compact ? "max(var(--space-3), env(safe-area-inset-bottom))" : "var(--space-6)",
             }}
           >

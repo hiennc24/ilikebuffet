@@ -87,8 +87,8 @@ describe("PageHeader", () => {
     // Home crumb — clickable button.
     expect(within(nav).getByRole("button", { name: "Tổng quan" })).toBeInTheDocument();
 
-    // Group label.
-    expect(within(nav).getByText("Vận hành")).toBeInTheDocument();
+    // No intermediate group crumb (2-level DTV breadcrumb).
+    expect(within(nav).queryByText("Vận hành")).toBeNull();
 
     // Current page: h1 with aria-current="page".
     const heading = within(nav).getByRole("heading", { name: "Theo dõi ca" });
@@ -176,7 +176,7 @@ describe("PageHeader", () => {
       />,
     );
     const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
-    expect(within(nav).getByText("Báo cáo & Đối soát")).toBeInTheDocument();
+    expect(within(nav).queryByText("Báo cáo & Đối soát")).toBeNull();
     expect(within(nav).getByRole("heading", { name: "Báo cáo doanh thu" })).toBeInTheDocument();
   });
 });
