@@ -72,6 +72,18 @@
   --accent-strong:  var(--lam-700);
   --accent-warm:    var(--burl-500);
 
+  /* ── Status (badges / pills) — soft bg + readable text, brand-warm ── */
+  --status-neutral-bg:   var(--plaster-200);
+  --status-neutral-text: var(--ink-700);
+  --status-success-bg:   #E4EFE7;
+  --status-success-text: #2E6B42;
+  --status-warn-bg:      #F6E8D8;
+  --status-warn-text:    #8A5220;
+  --status-danger-bg:    #F5E0DB;
+  --status-danger-text:  #A6382A;
+  --status-info-bg:      #E2ECEB;
+  --status-info-text:    #2F6058;
+
   /* ── Typography (from tokens/typography.css) ── */
   --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
   --font-sans:    'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
@@ -193,6 +205,18 @@
   --accent:      #8FA39D;
   --accent-strong: #A9BAB4;
   --accent-warm:   #C08A5B;
+
+  /* ── Status (dark): deep translucent bg + light text ── */
+  --status-neutral-bg:   #2E2820;
+  --status-neutral-text: #C3B7A5;
+  --status-success-bg:   #23342A;
+  --status-success-text: #8FC7A2;
+  --status-warn-bg:      #3A2E1F;
+  --status-warn-text:    #E0B483;
+  --status-danger-bg:    #3A2622;
+  --status-danger-text:  #E6A499;
+  --status-info-bg:      #24322F;
+  --status-info-text:    #9BC0B8;
 
   --shadow-xs: 0 1px 2px rgba(0,0,0,0.4);
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.45);
