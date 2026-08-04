@@ -26,10 +26,10 @@ export interface DataTablePaginationProps<TData extends RowData> {
  * Returns the sequence of page numbers (1-based) and "…" ellipsis markers
  * to render, capped at 7 visible slots.
  *
- * Examples (current / total):
- *   1/10  → [1, 2, 3, "…", 8, 9, 10]   — wait, that is 7 — correct
+ * Always ≤7 slots. Examples (current / total):
+ *   1/10  → [1, 2, "…", 10]
  *   5/10  → [1, "…", 4, 5, 6, "…", 10]
- *   9/10  → [1, 2, 3, "…", 8, 9, 10]
+ *   9/10  → [1, "…", 8, 9, 10]
  */
 function buildPageWindow(current: number, total: number): (number | "…")[] {
   if (total <= 7) {

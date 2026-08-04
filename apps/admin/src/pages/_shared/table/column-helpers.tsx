@@ -82,6 +82,38 @@ function ActionsCell<T>({
 }) {
   const [open, setOpen] = React.useState(false);
   const ref = React.useRef<HTMLDivElement>(null);
+  const menuRef = React.useRef<HTMLDivElement>(null);
+
+  // Focusable (enabled) menu items, in DOM order.
+  const menuItems = React.useCallback(
+    () => Array.from(menuRef.current?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not([disabled])') ?? []),
+    [],
+  );
+
+  // Move focus into the menu when it opens (keyboard operability).
+  React.useEffect(() => {
+    if (open) menuItems()[0]?.focus();
+  }, [open, menuItems]);
+
+  // Roving focus with Arrow/Home/End while the menu is open.
+  const onMenuKeyDown = (e: React.KeyboardEvent) => {
+    const items = menuItems();
+    if (items.length === 0) return;
+    const idx = items.indexOf(document.activeElement as HTMLButtonElement);
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      items[(idx + 1) % items.length]?.focus();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      items[(idx - 1 + items.length) % items.length]?.focus();
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      items[0]?.focus();
+    } else if (e.key === "End") {
+      e.preventDefault();
+      items[items.length - 1]?.focus();
+    }
+  };
 
   // Close on outside click — same pattern as admin-shell.tsx dropdowns.
   React.useEffect(() => {
@@ -160,8 +192,10 @@ function ActionsCell<T>({
 
       {open && visibleItems.length > 0 && (
         <div
+          ref={menuRef}
           role="menu"
           aria-label="Thao tác hàng"
+          onKeyDown={onMenuKeyDown}
           style={{
             position: "absolute",
             top: "calc(100% + 4px)",

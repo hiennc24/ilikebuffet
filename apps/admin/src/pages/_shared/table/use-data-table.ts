@@ -100,7 +100,8 @@ export function useDataTable<TData extends RowData>({
 
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
 
-  const pageCount = Math.ceil(total / limit);
+  // Guard against limit === 0 (would yield Infinity); matches usePagedList.
+  const pageCount = limit > 0 ? Math.ceil(total / limit) : 0;
 
   const table = useReactTable<TData>({
     data,

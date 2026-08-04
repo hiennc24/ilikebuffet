@@ -174,6 +174,19 @@ export function DataTable<TData extends RowData>({
             <div
               key={row.id}
               onClick={onRowClick ? () => onRowClick(row.original) : undefined}
+              // Keyboard parity with desktop rows: a clickable card is a button.
+              role={onRowClick ? "button" : undefined}
+              tabIndex={onRowClick ? 0 : undefined}
+              onKeyDown={
+                onRowClick
+                  ? (e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        onRowClick(row.original);
+                      }
+                    }
+                  : undefined
+              }
               style={{
                 border: "1px solid var(--border-subtle)",
                 borderRadius: "var(--radius-md)",
@@ -256,6 +269,9 @@ export function DataTable<TData extends RowData>({
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   const meta = header.column.columnDef.meta;
+                  // aria-sort lives on the <th> (invalid on the inner button).
+                  const sorted = header.column.getCanSort() ? header.column.getIsSorted() : false;
+                  const ariaSort = sorted === "asc" ? "ascending" : sorted === "desc" ? "descending" : header.column.getCanSort() ? "none" : undefined;
                   return (
                     <TH
                       key={header.id}
@@ -263,6 +279,7 @@ export function DataTable<TData extends RowData>({
                       width={meta?.width}
                       pinnedLeft={meta?.pinnedLeft}
                       pinnedRight={meta?.pinnedRight}
+                      aria-sort={ariaSort}
                     >
                       {header.isPlaceholder
                         ? null

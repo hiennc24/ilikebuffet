@@ -71,13 +71,11 @@ export function DataTableColumnHeader<TData, TValue>({
 
   const sorted = column.getIsSorted(); // "asc" | "desc" | false
 
-  const ariaSort =
-    sorted === "asc" ? "ascending" : sorted === "desc" ? "descending" : "none";
-
+  // Note: aria-sort belongs on the <th> (a11y-invalid on <button>); the parent
+  // TH renders it via headerAriaSort() in data-table.tsx.
   return (
     <button
       type="button"
-      aria-sort={ariaSort}
       onClick={() => column.toggleSorting(sorted === "asc")}
       style={{
         display: "inline-flex",
