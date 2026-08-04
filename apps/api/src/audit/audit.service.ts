@@ -36,6 +36,8 @@ export interface AuditQuery {
 export interface AuditRecordView {
   id: string;
   actorId: string | null;
+  /** Username of the actor, resolved at query time (null if unknown/deleted). */
+  actorName: string | null;
   actorRole: string | null;
   action: string;
   objectType: string;
@@ -117,9 +119,17 @@ export class AuditService {
       this.prisma.auditLog.count({ where }),
     ]);
 
+    // Resolve actor ids → usernames for display (the log stores only the id).
+    const actorIds = [...new Set(rows.map((r) => r.actorId).filter((v): v is string => !!v))];
+    const actors = actorIds.length
+      ? await this.prisma.appUser.findMany({ where: { id: { in: actorIds } }, select: { id: true, username: true } })
+      : [];
+    const nameById = new Map(actors.map((a) => [a.id, a.username]));
+
     const data = rows.map((r) => ({
       id: r.id.toString(),
       actorId: r.actorId,
+      actorName: r.actorId ? nameById.get(r.actorId) ?? null : null,
       actorRole: r.actorRole,
       action: r.action,
       objectType: r.objectType,

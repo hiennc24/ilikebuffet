@@ -25,6 +25,7 @@ describe("Audit query (integration)", () => {
 
   let branchAId: string;
   let branchBId: string;
+  let hqUserId: string;
   let hqToken: string;
   let managerAToken: string;
   let cashierToken: string;
@@ -56,9 +57,10 @@ describe("Audit query (integration)", () => {
     branchAId = a.id;
     branchBId = b.id;
 
-    await prisma.appUser.create({
+    const hq = await prisma.appUser.create({
       data: { username: "hq-a", passwordHash: await argon2.hash("Password123"), role: "QUAN_TRI_HQ", chainWide: true, mustChangePassword: false },
     });
+    hqUserId = hq.id;
     const mgr = await prisma.appUser.create({
       data: { username: "mgr-audit", passwordHash: await argon2.hash("Password123"), role: "QUAN_LY_CN", chainWide: false, mustChangePassword: false },
     });
@@ -71,7 +73,7 @@ describe("Audit query (integration)", () => {
     // Seed audit rows for both branches (testcontainer role bypasses the append guard).
     await prisma.auditLog.createMany({
       data: [
-        { action: "bill.create", objectType: "bill", objectId: "x1", branchId: branchAId },
+        { action: "bill.create", objectType: "bill", objectId: "x1", branchId: branchAId, actorId: hqUserId, actorRole: "QUAN_TRI_HQ" },
         { action: "bill.cancel", objectType: "bill", objectId: "x1", branchId: branchAId },
         { action: "bill.create", objectType: "bill", objectId: "y1", branchId: branchBId },
       ],
@@ -93,6 +95,15 @@ describe("Audit query (integration)", () => {
     expect(branchIds.has(branchAId)).toBe(true);
     expect(branchIds.has(branchBId)).toBe(true);
     expect(typeof res.body.total).toBe("number");
+  });
+
+  it("resolves the actor id to a username for display", async () => {
+    const res = await request(app.getHttpServer()).get("/audit?action=bill.create&pageSize=50").set("Authorization", `Bearer ${hqToken}`).expect(200);
+    const rows = res.body.data as { actorId: string | null; actorName: string | null }[];
+    const seeded = rows.find((r) => r.actorId === hqUserId);
+    expect(seeded?.actorName).toBe("hq-a");
+    // Rows without an actor resolve to null, never a dangling id.
+    expect(rows.every((r) => (r.actorId ? r.actorName !== undefined : r.actorName === null))).toBe(true);
   });
 
   it("a branch manager sees only their branch's events", async () => {

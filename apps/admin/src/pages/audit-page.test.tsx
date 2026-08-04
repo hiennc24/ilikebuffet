@@ -13,6 +13,7 @@ const AUDIT = {
     {
       id: "1",
       actorId: "u1",
+      actorName: "quanly@ilikebuffet.vn",
       actorRole: "QUAN_LY_CN",
       action: "bill.cancel",
       objectType: "bill",
@@ -63,15 +64,17 @@ describe("AuditPage", () => {
   it("lists audit rows", async () => {
     globalThis.fetch = makeFetch();
     render(<AuditPage />, { wrapper });
-    await waitFor(() => expect(screen.getByText("bill.cancel")).toBeTruthy());
+    await waitFor(() => expect(screen.getByText("Huỷ hoá đơn")).toBeTruthy());
     expect(screen.getByText("Khách đổi ý")).toBeTruthy();
+    // Actor shows the resolved username + Vietnamese role, not the raw id/code.
+    expect(screen.getByText("quanly@ilikebuffet.vn (Quản lý CN)")).toBeTruthy();
   });
 
   it("passes the action filter to the request", async () => {
     const seen: string[] = [];
     globalThis.fetch = makeFetch(seen);
     render(<AuditPage />, { wrapper });
-    await waitFor(() => expect(screen.getByText("bill.cancel")).toBeTruthy());
+    await waitFor(() => expect(screen.getByText("Huỷ hoá đơn")).toBeTruthy());
 
     fireEvent.change(screen.getByLabelText("Hành động"), { target: { value: "bill.refund" } });
     await waitFor(() => expect(seen.some((p) => p.includes("action=bill.refund"))).toBe(true));
@@ -84,7 +87,7 @@ describe("AuditPage", () => {
     vi.stubGlobal("URL", { ...URL, createObjectURL: createObjURL, revokeObjectURL: vi.fn() });
 
     render(<AuditPage />, { wrapper });
-    await waitFor(() => expect(screen.getByText("bill.cancel")).toBeTruthy());
+    await waitFor(() => expect(screen.getByText("Huỷ hoá đơn")).toBeTruthy());
 
     fireEvent.change(screen.getByLabelText("Hành động"), { target: { value: "bill.cancel" } });
     fireEvent.click(screen.getByText("Xuất Excel"));
@@ -96,10 +99,10 @@ describe("AuditPage", () => {
   it("opens a before/after detail drawer", async () => {
     globalThis.fetch = makeFetch();
     render(<AuditPage />, { wrapper });
-    await waitFor(() => expect(screen.getByText("bill.cancel")).toBeTruthy());
+    await waitFor(() => expect(screen.getByText("Huỷ hoá đơn")).toBeTruthy());
 
-    fireEvent.click(screen.getByText("bill.cancel"));
-    await waitFor(() => expect(screen.getByRole("dialog", { name: "Nhật ký bill.cancel" })).toBeTruthy());
+    fireEvent.click(screen.getByText("Huỷ hoá đơn"));
+    await waitFor(() => expect(screen.getByRole("dialog", { name: "Nhật ký · Huỷ hoá đơn" })).toBeTruthy());
     // before/after JSON rendered (the section titles "Trước"/"Sau" collide with the
     // pagination buttons, so assert on the unique JSON content instead).
     expect(screen.getByText(/COMPLETED/)).toBeTruthy();

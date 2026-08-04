@@ -14,19 +14,20 @@ import {
   PageStack,
   DataTable,
   Column,
-  FilterBar,
   Pagination,
   DetailDrawer,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import { describeAction, describeObject, ROLE_LABELS } from "./_shared/audit-labels";
 
 const PAGE_SIZE = 20;
 
 interface AuditRow {
   id: string;
   actorId: string | null;
+  actorName: string | null;
   actorRole: string | null;
   action: string;
   objectType: string;
@@ -41,6 +42,20 @@ interface AuditRow {
 }
 
 const fmt = (iso: string) => new Date(iso).toLocaleString("vi-VN", { dateStyle: "short", timeStyle: "medium" });
+
+/** "Tên user (Vai trò)" — falls back to the id, then "hệ thống" for system events. */
+function describeActor(r: { actorName: string | null; actorId: string | null; actorRole: string | null }): string {
+  const who = r.actorName ?? r.actorId;
+  if (!who) return "hệ thống";
+  const role = r.actorRole ? ROLE_LABELS[r.actorRole] ?? r.actorRole : null;
+  return role ? `${who} (${role})` : who;
+}
+
+/** Object label + a short code when the id is a human code (role/branch), not a cuid. */
+function describeTarget(objectType: string, objectId: string | null): string {
+  const label = describeObject(objectType);
+  return objectId && objectId.length <= 16 ? `${label} · ${objectId}` : label;
+}
 
 export const AuditPage: React.FC = () => {
   const { api } = useAuth();
@@ -80,9 +95,9 @@ export const AuditPage: React.FC = () => {
 
   const columns: Column<AuditRow>[] = [
     { key: "time", header: "Thời gian", render: (r) => fmt(r.createdAt) },
-    { key: "actor", header: "Người thực hiện", render: (r) => (r.actorRole ? `${r.actorId ?? "—"} (${r.actorRole})` : r.actorId ?? "hệ thống") },
-    { key: "action", header: "Hành động", render: (r) => r.action },
-    { key: "object", header: "Đối tượng", render: (r) => `${r.objectType}${r.objectId ? `:${r.objectId}` : ""}` },
+    { key: "actor", header: "Người thực hiện", render: (r) => describeActor(r) },
+    { key: "action", header: "Hành động", render: (r) => describeAction(r.action) },
+    { key: "object", header: "Đối tượng", render: (r) => describeTarget(r.objectType, r.objectId) },
     { key: "reason", header: "Lý do", render: (r) => r.reason ?? "" },
   ];
 
@@ -97,7 +112,7 @@ export const AuditPage: React.FC = () => {
           </Button>
         }
       >
-        <FilterBar>
+        <div style={filterGridStyle}>
           <label style={fieldStyle}>
             Hành động
             <input type="search" aria-label="Hành động" placeholder="vd. bill.cancel" value={filters.action} onChange={(e) => patch({ action: e.target.value })} style={inputStyle} />
@@ -118,7 +133,7 @@ export const AuditPage: React.FC = () => {
             Đến ngày
             <input type="date" aria-label="Đến ngày" value={filters.to} onChange={(e) => patch({ to: e.target.value })} style={inputStyle} />
           </label>
-        </FilterBar>
+        </div>
 
         {isLoading ? (
           <LoadingState />
@@ -132,12 +147,13 @@ export const AuditPage: React.FC = () => {
         )}
       </Card>
 
-      <DetailDrawer open={!!selected} title={selected ? `Nhật ký ${selected.action}` : ""} onClose={() => setSelected(null)}>
+      <DetailDrawer open={!!selected} title={selected ? `Nhật ký · ${describeAction(selected.action)}` : ""} onClose={() => setSelected(null)}>
         {selected && (
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)", fontFamily: "var(--font-sans)", fontSize: "var(--text-sm)" }}>
             <div>Thời gian: {fmt(selected.createdAt)}</div>
-            <div>Người thực hiện: {selected.actorId ?? "hệ thống"} {selected.actorRole ? `(${selected.actorRole})` : ""}</div>
-            <div>Đối tượng: {selected.objectType}{selected.objectId ? `:${selected.objectId}` : ""}</div>
+            <div>Hành động: {describeAction(selected.action)}</div>
+            <div>Người thực hiện: {describeActor(selected)}</div>
+            <div>Đối tượng: {describeObject(selected.objectType)}{selected.objectId ? ` · ${selected.objectId}` : ""}</div>
             {selected.branchId && <div>Chi nhánh: {selected.branchId}</div>}
             {selected.reason && <div>Lý do: {selected.reason}</div>}
             {selected.approvedBy && <div>Người duyệt: {selected.approvedBy}</div>}
@@ -173,14 +189,19 @@ const inputStyle: React.CSSProperties = {
   colorScheme: "light",
   accentColor: "var(--action-bg, #235B54)",
 };
-// A labelled filter field: muted label above a full-width control. `flex: 1 1 200px`
-// lets fields share rows on desktop and stack full-width on mobile — keeping the
-// search and date inputs visually uniform.
+// Filter fields lay out in an even auto-fit grid: 5 columns share one row on
+// desktop and collapse to a single column on mobile — no lopsided 4+1 wrapping.
+const filterGridStyle: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  gap: "var(--space-3)",
+  marginBottom: "var(--space-4)",
+};
+// A labelled filter field: muted label above a full-width control.
 const fieldStyle: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
   gap: "6px",
-  flex: "1 1 200px",
   minWidth: 0,
   fontSize: "var(--text-xs)",
   color: "var(--text-muted)",

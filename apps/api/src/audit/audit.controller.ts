@@ -92,7 +92,7 @@ export class AuditController {
     for (const r of data as AuditRecordView[]) {
       sheet.addRow({
         at: r.createdAt.toISOString(),
-        actor: r.actorId ?? "hệ thống",
+        actor: r.actorName ?? r.actorId ?? "hệ thống",
         role: r.actorRole ?? "",
         action: r.action,
         object: `${r.objectType}${r.objectId ? `:${r.objectId}` : ""}`,
