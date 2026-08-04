@@ -1,9 +1,9 @@
 /**
  * admin-ui tests — the P0 list-screen primitives (Pagination, DetailDrawer, FilterBar).
  */
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { Pagination, DetailDrawer, FilterBar } from "./admin-ui";
+import { Pagination, DetailDrawer, FilterBar, DataTable, Column } from "./admin-ui";
 
 describe("Pagination", () => {
   it("shows page/total and disables prev on the first page", () => {
@@ -73,5 +73,46 @@ describe("FilterBar", () => {
     );
     expect(screen.getByText("filter")).toBeTruthy();
     expect(screen.getByText("Tạo")).toBeTruthy();
+  });
+});
+
+describe("DataTable responsive", () => {
+  interface Row {
+    id: string;
+    name: string;
+    total: string;
+  }
+  const rows: Row[] = [{ id: "1", name: "Chi nhánh A", total: "1.000.000" }];
+  const columns: Column<Row>[] = [
+    { key: "name", header: "Tên", render: (r) => r.name },
+    { key: "total", header: "Doanh thu", align: "right", render: (r) => r.total },
+  ];
+  const stubMatchMedia = (compact: boolean) =>
+    vi.stubGlobal("matchMedia", (query: string) => ({
+      matches: query.includes("max-width") ? compact : false,
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      onchange: null,
+      dispatchEvent: () => false,
+    }));
+
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("renders a table at desktop width", () => {
+    stubMatchMedia(false);
+    const { container } = render(<DataTable columns={columns} rows={rows} rowKey={(r) => r.id} />);
+    expect(container.querySelector("table")).toBeTruthy();
+    expect(screen.getByText("Chi nhánh A")).toBeTruthy();
+  });
+
+  it("renders label:value cards (no table) on compact widths", () => {
+    stubMatchMedia(true);
+    const { container } = render(<DataTable columns={columns} rows={rows} rowKey={(r) => r.id} />);
+    expect(container.querySelector("table")).toBeNull();
+    expect(screen.getByText("Doanh thu")).toBeTruthy();
+    expect(screen.getByText("1.000.000")).toBeTruthy();
   });
 });

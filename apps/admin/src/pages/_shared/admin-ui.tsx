@@ -108,8 +108,52 @@ export function DataTable<T>({
   onRowClick,
   emptyText = "Chưa có dữ liệu.",
 }: DataTableProps<T>) {
+  const compact = useIsCompact();
   if (rows.length === 0) {
     return <EmptyState text={emptyText} />;
+  }
+
+  // Phone: render each row as a label:value card instead of a wide table, so data
+  // is readable without horizontal scrolling. The first column is the card title.
+  if (compact) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+        {rows.map((row) => (
+          <div
+            key={rowKey(row)}
+            onClick={onRowClick ? () => onRowClick(row) : undefined}
+            style={{
+              border: "1px solid var(--border-subtle)",
+              borderRadius: "var(--radius-md)",
+              padding: "var(--space-3)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "var(--space-1)",
+              cursor: onRowClick ? "pointer" : "default",
+              background: "var(--bg-raised, #FFFFFF)",
+            }}
+          >
+            {columns.map((col, i) => (
+              <div
+                key={col.key}
+                style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  justifyContent: "space-between",
+                  gap: "var(--space-3)",
+                  ...(i === 0
+                    ? { fontSize: "var(--text-sm)", fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"], color: "var(--text-primary)", marginBottom: "2px" }
+                    : { fontSize: "var(--text-xs)" }),
+                }}
+              >
+                <span style={{ color: "var(--text-muted)", whiteSpace: "nowrap", flexShrink: 0 }}>{col.header}</span>
+                <span style={{ color: "var(--text-primary)", textAlign: "right", minWidth: 0, overflowWrap: "anywhere" }}>{col.render(row)}</span>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
   }
   return (
     // Scrolls horizontally within the card on narrow screens (cells are nowrap),
