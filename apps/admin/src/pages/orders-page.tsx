@@ -8,26 +8,23 @@
  */
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { formatVnd } from "@ilikebuffet/shared";
 import { Button } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { usePagedList } from "../lib/use-paged-list";
 import { QUERY_KEYS } from "../lib/query-keys";
 import {
-  Card,
-  PageStack,
-  DataTable,
-  Column,
-  FilterBar,
-  Pagination,
-  DetailDrawer,
   Select,
   InlineError,
-  Badge,
+  DetailDrawer,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import { DataTable, useDataTable, DataTablePagination, Badge } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 
 const PAGE_SIZE = 20;
 
@@ -79,7 +76,7 @@ export const OrdersPage: React.FC = () => {
   const [page, setPage] = React.useState(1);
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
 
-  const { rows, total, pageCount, isLoading, isError, error } = usePagedList<BillListRow>({
+  const { rows, total, isLoading, isError, error } = usePagedList<BillListRow>({
     queryKey: QUERY_KEYS.orders(),
     path: "/sales/bills",
     page,
@@ -92,76 +89,146 @@ export const OrdersPage: React.FC = () => {
     setPage(1);
   };
 
-  const columns: Column<BillListRow>[] = [
-    { key: "number", header: "Số bill", render: (b) => b.number },
-    { key: "date", header: "Ngày", render: (b) => `${vnDate(b.businessDate)} ${vnTime(b.createdAt)}` },
-    { key: "guests", header: "Khách", align: "right", render: (b) => b.guestCount },
-    { key: "total", header: "Tổng", align: "right", render: (b) => formatVnd(b.totalVnd) },
-    {
-      key: "status",
-      header: "Trạng thái",
-      render: (b) => (
-        <Badge tone={b.status === "CANCELLED" ? "warn" : "active"}>
-          {b.status === "CANCELLED" ? "Đã huỷ" : "Hoàn tất"}
-        </Badge>
-      ),
-    },
-    {
-      key: "flags",
-      header: "",
-      render: (b) =>
-        b.quarantined ? <Badge tone="warn">Cách ly</Badge> : b.refunds.length > 0 ? <Badge tone="muted">Đã hoàn</Badge> : null,
-    },
-  ];
+  const columns = React.useMemo<ColumnDef<BillListRow>[]>(
+    () => [
+      {
+        id: "number",
+        enableSorting: false,
+        meta: { headerLabel: "Số bill" },
+        header: "Số bill",
+        cell: ({ row }) => row.original.number,
+      },
+      {
+        id: "date",
+        enableSorting: false,
+        meta: { headerLabel: "Ngày" },
+        header: "Ngày",
+        cell: ({ row }) => `${vnDate(row.original.businessDate)} ${vnTime(row.original.createdAt)}`,
+      },
+      {
+        id: "guests",
+        enableSorting: false,
+        meta: { headerLabel: "Khách", align: "right" },
+        header: "Khách",
+        cell: ({ row }) => row.original.guestCount,
+      },
+      {
+        id: "total",
+        enableSorting: false,
+        meta: { headerLabel: "Tổng", align: "right" },
+        header: "Tổng",
+        cell: ({ row }) => formatVnd(row.original.totalVnd),
+      },
+      {
+        id: "status",
+        enableSorting: false,
+        meta: { headerLabel: "Trạng thái" },
+        header: "Trạng thái",
+        cell: ({ row }) => (
+          <Badge tone={row.original.status === "CANCELLED" ? "warn" : "success"}>
+            {row.original.status === "CANCELLED" ? "Đã huỷ" : "Hoàn tất"}
+          </Badge>
+        ),
+      },
+      {
+        id: "flags",
+        enableSorting: false,
+        meta: { headerLabel: "" },
+        header: "",
+        cell: ({ row }) =>
+          row.original.quarantined ? (
+            <Badge tone="warn">Cách ly</Badge>
+          ) : row.original.refunds.length > 0 ? (
+            <Badge tone="neutral">Đã hoàn</Badge>
+          ) : null,
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<BillListRow>({
+    data: rows,
+    columns,
+    total,
+    page,
+    limit: PAGE_SIZE,
+    sort: null,
+    setPage,
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (b) => b.id,
+  });
 
   return (
-    <PageStack>
-      <Card title="Đơn hàng" description="Tra cứu bill theo ngày, trạng thái, số bill.">
-        <FilterBar>
-          <label style={{ display: "flex", flexDirection: "column", gap: "4px", fontSize: "var(--text-xs)", color: "var(--text-muted)" }}>
-            Từ ngày
-            <input type="date" aria-label="Từ ngày" value={filters.from} onChange={(e) => patch({ from: e.target.value })} />
-          </label>
-          <label style={{ display: "flex", flexDirection: "column", gap: "4px", fontSize: "var(--text-xs)", color: "var(--text-muted)" }}>
-            Đến ngày
-            <input type="date" aria-label="Đến ngày" value={filters.to} onChange={(e) => patch({ to: e.target.value })} />
-          </label>
-          <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
-            <option value="">Tất cả trạng thái</option>
-            <option value="COMPLETED">Hoàn tất</option>
-            <option value="CANCELLED">Đã huỷ</option>
-          </Select>
-          <input
-            type="search"
-            aria-label="Tìm số bill"
-            placeholder="Tìm số bill…"
-            value={filters.q}
-            onChange={(e) => patch({ q: e.target.value })}
-            style={{
-              height: "var(--input-height, 44px)",
-              padding: "0 var(--space-3)",
-              border: "1px solid var(--border-default)",
-              borderRadius: "var(--radius-md)",
-              fontFamily: "var(--font-sans)",
-              fontSize: "var(--text-sm)",
-            }}
-          />
-        </FilterBar>
-
+    <>
+      <ListPageShell
+        activePath="/orders"
+        pageTitle="Đơn hàng"
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: rows.length }]}
+              />
+            }
+          >
+            <label style={{ display: "flex", flexDirection: "column", gap: "4px", fontSize: "var(--text-xs)", color: "var(--text-muted)" }}>
+              Từ ngày
+              <input type="date" aria-label="Từ ngày" value={filters.from} onChange={(e) => patch({ from: e.target.value })} />
+            </label>
+            <label style={{ display: "flex", flexDirection: "column", gap: "4px", fontSize: "var(--text-xs)", color: "var(--text-muted)" }}>
+              Đến ngày
+              <input type="date" aria-label="Đến ngày" value={filters.to} onChange={(e) => patch({ to: e.target.value })} />
+            </label>
+            <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
+              <option value="">Tất cả trạng thái</option>
+              <option value="COMPLETED">Hoàn tất</option>
+              <option value="CANCELLED">Đã huỷ</option>
+            </Select>
+            <input
+              type="search"
+              aria-label="Tìm số bill"
+              placeholder="Tìm số bill…"
+              value={filters.q}
+              onChange={(e) => patch({ q: e.target.value })}
+              style={{
+                height: "var(--input-height, 44px)",
+                padding: "0 var(--space-3)",
+                border: "1px solid var(--border-default)",
+                borderRadius: "var(--radius-md)",
+                fontFamily: "var(--font-sans)",
+                fontSize: "var(--text-sm)",
+              }}
+            />
+          </PageToolbar>
+        }
+        pagination={
+          !isLoading && !isError
+            ? <DataTablePagination table={table} total={total} />
+            : undefined
+        }
+      >
         {isLoading ? (
-          <LoadingState />
+          <div style={{ padding: "var(--space-5)" }}>
+            <LoadingState />
+          </div>
         ) : isError ? (
-          <ErrorState message={toErrorMessage(error, "Không tải được danh sách bill")} />
+          <div style={{ padding: "var(--space-5)" }}>
+            <ErrorState message={toErrorMessage(error, "Không tải được danh sách bill")} />
+          </div>
         ) : (
-          <>
-            <DataTable columns={columns} rows={rows} rowKey={(b) => b.id} onRowClick={(b) => setSelectedId(b.id)} emptyText="Không có bill khớp bộ lọc." />
-            <Pagination page={page} pageCount={pageCount} total={total} onPageChange={setPage} />
-          </>
+          <DataTable
+            table={table}
+            onRowClick={(b) => setSelectedId(b.id)}
+            empty="Không có bill khớp bộ lọc."
+          />
         )}
-      </Card>
+      </ListPageShell>
 
       <OrderDetailDrawer billId={selectedId} onClose={() => setSelectedId(null)} />
-    </PageStack>
+    </>
   );
 };
 

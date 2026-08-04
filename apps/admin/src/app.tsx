@@ -183,7 +183,7 @@ export function App() {
                       path="/orders"
                       element={
                         <RequireAccess path="/orders">
-                          <ShellLayout pageTitle="Đơn hàng">
+                          <ShellLayout bareChrome>
                             <OrdersPage />
                           </ShellLayout>
                         </RequireAccess>
@@ -233,7 +233,7 @@ export function App() {
                       path="/settings/log"
                       element={
                         <RequireAccess path="/settings/log">
-                          <ShellLayout pageTitle="Nhật ký">
+                          <ShellLayout bareChrome>
                             <AuditPage />
                           </ShellLayout>
                         </RequireAccess>
@@ -283,7 +283,7 @@ export function App() {
                       path="/inventory/stock"
                       element={
                         <RequireAccess path="/inventory/stock">
-                          <ShellLayout pageTitle="Tồn kho">
+                          <ShellLayout bareChrome>
                             <StockPage />
                           </ShellLayout>
                         </RequireAccess>

@@ -8,6 +8,7 @@
  */
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { formatVnd } from "@ilikebuffet/shared";
 import { Button, Dialog } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
@@ -16,17 +17,16 @@ import { QUERY_KEYS } from "../lib/query-keys";
 import {
   Card,
   PageStack,
-  DataTable,
-  Column,
   FilterBar,
-  Pagination,
   DetailDrawer,
   InlineError,
-  Badge,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import { DataTable, useDataTable, DataTablePagination, Badge } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 import { KpiCard, KpiRow } from "./_shared/report-ui";
 
 const PAGE_SIZE = 20;
@@ -76,7 +76,7 @@ export const StockPage: React.FC = () => {
     queryFn: () => api.get<Valuation>("/inventory/reports/valuation"),
   });
 
-  const { rows, total, pageCount, isLoading, isError, error } = usePagedList<StockRow>({
+  const { rows, total, isLoading, isError, error } = usePagedList<StockRow>({
     queryKey: QUERY_KEYS.stock(),
     path: "/inventory/stock",
     page,
@@ -89,57 +89,136 @@ export const StockPage: React.FC = () => {
     setPage(1);
   };
 
-  const columns: Column<StockRow>[] = [
-    { key: "name", header: "Nguyên liệu", render: (r) => r.ingredientName },
-    { key: "qty", header: "Tồn", align: "right", render: (r) => `${fmtQty(r.qtyBase)} ${r.unitCode}` },
-    { key: "avg", header: "Giá vốn TB", align: "right", render: (r) => formatVnd(r.avgCostVnd) },
-    { key: "value", header: "Giá trị", align: "right", render: (r) => formatVnd(r.valueVnd) },
-    {
-      key: "low",
-      header: "",
-      render: (r) => (r.lowStock ? <Badge tone="warn">Tồn thấp</Badge> : null),
-    },
-  ];
+  const columns = React.useMemo<ColumnDef<StockRow>[]>(
+    () => [
+      {
+        id: "name",
+        enableSorting: false,
+        meta: { headerLabel: "Nguyên liệu" },
+        header: "Nguyên liệu",
+        cell: ({ row }) => row.original.ingredientName,
+      },
+      {
+        id: "qty",
+        enableSorting: false,
+        meta: { headerLabel: "Tồn", align: "right" as const },
+        header: "Tồn",
+        cell: ({ row }) => `${fmtQty(row.original.qtyBase)} ${row.original.unitCode}`,
+      },
+      {
+        id: "avg",
+        enableSorting: false,
+        meta: { headerLabel: "Giá vốn TB", align: "right" as const },
+        header: "Giá vốn TB",
+        cell: ({ row }) => formatVnd(row.original.avgCostVnd),
+      },
+      {
+        id: "value",
+        enableSorting: false,
+        meta: { headerLabel: "Giá trị", align: "right" as const },
+        header: "Giá trị",
+        cell: ({ row }) => formatVnd(row.original.valueVnd),
+      },
+      {
+        id: "low",
+        enableSorting: false,
+        meta: { headerLabel: "", width: "100px" },
+        header: "",
+        cell: ({ row }) =>
+          row.original.lowStock ? <Badge tone="warn">Tồn thấp</Badge> : null,
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<StockRow>({
+    data: rows,
+    columns,
+    total,
+    page,
+    limit: PAGE_SIZE,
+    sort: null,
+    setPage,
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (r) => r.ingredientId,
+  });
 
   return (
-    <PageStack>
-      {valuation.data && (
-        <KpiRow>
-          <KpiCard label="Giá trị tồn" value={formatVnd(valuation.data.totalValueVnd)} />
-          <KpiCard label="Số mặt hàng" value={String(valuation.data.itemCount)} />
-          <KpiCard
-            label="Tồn thấp"
-            value={String(valuation.data.lowStockCount)}
-            tone={valuation.data.lowStockCount > 0 ? "warn" : "default"}
-          />
-        </KpiRow>
-      )}
-
-      <Card title="Tồn kho" description="Tồn hiện tại theo chi nhánh, giá vốn trung bình và cảnh báo tồn thấp.">
-        <FilterBar>
-          <input type="search" aria-label="Tìm nguyên liệu" placeholder="Tìm mã/tên…" value={filters.q} onChange={(e) => patch({ q: e.target.value })} style={inputStyle} />
-          <label style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", fontSize: "var(--text-sm)", color: "var(--text-secondary)" }}>
-            <input type="checkbox" aria-label="Chỉ tồn thấp" checked={filters.lowOnly === "true"} onChange={(e) => patch({ lowOnly: e.target.checked ? "true" : "" })} />
-            Chỉ tồn thấp
-          </label>
-        </FilterBar>
-
-        {isLoading ? (
-          <LoadingState />
-        ) : isError ? (
-          <ErrorState message={toErrorMessage(error, "Không tải được tồn kho")} />
-        ) : (
-          <>
-            <DataTable columns={columns} rows={rows} rowKey={(r) => r.ingredientId} onRowClick={(r) => setSelected(r)} emptyText="Chưa có tồn kho." />
-            <Pagination page={page} pageCount={pageCount} total={total} onPageChange={setPage} />
-          </>
+    <>
+      <PageStack>
+        {valuation.data && (
+          <KpiRow>
+            <KpiCard label="Giá trị tồn" value={formatVnd(valuation.data.totalValueVnd)} />
+            <KpiCard label="Số mặt hàng" value={String(valuation.data.itemCount)} />
+            <KpiCard
+              label="Tồn thấp"
+              value={String(valuation.data.lowStockCount)}
+              tone={valuation.data.lowStockCount > 0 ? "warn" : "default"}
+            />
+          </KpiRow>
         )}
-      </Card>
 
-      <ConsumptionCard />
+        <ListPageShell
+          activePath="/inventory/stock"
+          pageTitle="Tồn kho"
+          toolbar={
+            <PageToolbar
+              left={
+                <PageTabs
+                  value="list"
+                  onChange={() => {}}
+                  items={[{ value: "list", label: "Danh sách", count: total }]}
+                />
+              }
+            >
+              <input
+                type="search"
+                aria-label="Tìm nguyên liệu"
+                placeholder="Tìm mã/tên…"
+                value={filters.q}
+                onChange={(e) => patch({ q: e.target.value })}
+                style={inputStyle}
+              />
+              <label style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", fontSize: "var(--text-sm)", color: "var(--text-secondary)" }}>
+                <input
+                  type="checkbox"
+                  aria-label="Chỉ tồn thấp"
+                  checked={filters.lowOnly === "true"}
+                  onChange={(e) => patch({ lowOnly: e.target.checked ? "true" : "" })}
+                />
+                Chỉ tồn thấp
+              </label>
+            </PageToolbar>
+          }
+          pagination={
+            !isLoading && !isError
+              ? <DataTablePagination table={table} total={total} />
+              : undefined
+          }
+        >
+          {isLoading ? (
+            <div style={{ padding: "var(--space-5)" }}>
+              <LoadingState />
+            </div>
+          ) : isError ? (
+            <div style={{ padding: "var(--space-5)" }}>
+              <ErrorState message={toErrorMessage(error, "Không tải được tồn kho")} />
+            </div>
+          ) : (
+            <DataTable
+              table={table}
+              onRowClick={(r) => setSelected(r)}
+              empty="Chưa có tồn kho."
+            />
+          )}
+        </ListPageShell>
+
+        <ConsumptionCard />
+      </PageStack>
 
       <StockDrawer row={selected} onClose={() => setSelected(null)} />
-    </PageStack>
+    </>
   );
 };
 

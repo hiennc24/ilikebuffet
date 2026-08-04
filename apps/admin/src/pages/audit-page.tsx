@@ -5,22 +5,21 @@
  * screen only reads. No mutations — the trail is append-only.
  */
 import * as React from "react";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { usePagedList, buildQuery } from "../lib/use-paged-list";
 import { QUERY_KEYS } from "../lib/query-keys";
 import {
-  Card,
-  PageStack,
-  DataTable,
-  Column,
-  Pagination,
   DetailDrawer,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import { DataTable, useDataTable, DataTablePagination } from "./_shared/table";
 import { describeAction, describeObject, ROLE_LABELS } from "./_shared/audit-labels";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 
 const PAGE_SIZE = 20;
 
@@ -80,7 +79,7 @@ export const AuditPage: React.FC = () => {
     }
   };
 
-  const { rows, total, pageCount, isLoading, isError, error } = usePagedList<AuditRow>({
+  const { rows, total, isLoading, isError, error } = usePagedList<AuditRow>({
     queryKey: QUERY_KEYS.audit(),
     path: "/audit",
     page,
@@ -93,59 +92,122 @@ export const AuditPage: React.FC = () => {
     setPage(1);
   };
 
-  const columns: Column<AuditRow>[] = [
-    { key: "time", header: "Thời gian", render: (r) => fmt(r.createdAt) },
-    { key: "actor", header: "Người thực hiện", render: (r) => describeActor(r) },
-    { key: "action", header: "Hành động", render: (r) => describeAction(r.action) },
-    { key: "object", header: "Đối tượng", render: (r) => describeTarget(r.objectType, r.objectId) },
-    { key: "reason", header: "Lý do", render: (r) => r.reason ?? "" },
-  ];
+  const columns = React.useMemo<ColumnDef<AuditRow>[]>(
+    () => [
+      {
+        id: "time",
+        enableSorting: false,
+        meta: { headerLabel: "Thời gian" },
+        header: "Thời gian",
+        cell: ({ row }) => fmt(row.original.createdAt),
+      },
+      {
+        id: "actor",
+        enableSorting: false,
+        meta: { headerLabel: "Người thực hiện" },
+        header: "Người thực hiện",
+        cell: ({ row }) => describeActor(row.original),
+      },
+      {
+        id: "action",
+        enableSorting: false,
+        meta: { headerLabel: "Hành động" },
+        header: "Hành động",
+        cell: ({ row }) => describeAction(row.original.action),
+      },
+      {
+        id: "object",
+        enableSorting: false,
+        meta: { headerLabel: "Đối tượng" },
+        header: "Đối tượng",
+        cell: ({ row }) => describeTarget(row.original.objectType, row.original.objectId),
+      },
+      {
+        id: "reason",
+        enableSorting: false,
+        meta: { headerLabel: "Lý do" },
+        header: "Lý do",
+        cell: ({ row }) => row.original.reason ?? "",
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<AuditRow>({
+    data: rows,
+    columns,
+    total,
+    page,
+    limit: PAGE_SIZE,
+    sort: null,
+    setPage,
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (r) => r.id,
+  });
 
   return (
-    <PageStack>
-      <Card
-        title="Nhật ký"
-        description="Lịch sử thao tác (chỉ đọc, không thể sửa/xoá)."
+    <>
+      <ListPageShell
+        activePath="/settings/log"
+        pageTitle="Nhật ký"
         actions={
           <Button variant="ghost" disabled={exporting} onClick={doExport}>
             {exporting ? "Đang xuất…" : "Xuất Excel"}
           </Button>
         }
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: total }]}
+              />
+            }
+          >
+            <div style={filterGridStyle}>
+              <label style={fieldStyle}>
+                Hành động
+                <input type="search" aria-label="Hành động" placeholder="vd. bill.cancel" value={filters.action} onChange={(e) => patch({ action: e.target.value })} style={inputStyle} />
+              </label>
+              <label style={fieldStyle}>
+                Loại đối tượng
+                <input type="search" aria-label="Loại đối tượng" placeholder="vd. bill" value={filters.objectType} onChange={(e) => patch({ objectType: e.target.value })} style={inputStyle} />
+              </label>
+              <label style={fieldStyle}>
+                Người thực hiện
+                <input type="search" aria-label="Người thực hiện" placeholder="ID người thực hiện" value={filters.actorId} onChange={(e) => patch({ actorId: e.target.value })} style={inputStyle} />
+              </label>
+              <label style={fieldStyle}>
+                Từ ngày
+                <input type="date" aria-label="Từ ngày" value={filters.from} onChange={(e) => patch({ from: e.target.value })} style={inputStyle} />
+              </label>
+              <label style={fieldStyle}>
+                Đến ngày
+                <input type="date" aria-label="Đến ngày" value={filters.to} onChange={(e) => patch({ to: e.target.value })} style={inputStyle} />
+              </label>
+            </div>
+          </PageToolbar>
+        }
+        pagination={
+          !isLoading && !isError
+            ? <DataTablePagination table={table} total={total} />
+            : undefined
+        }
       >
-        <div style={filterGridStyle}>
-          <label style={fieldStyle}>
-            Hành động
-            <input type="search" aria-label="Hành động" placeholder="vd. bill.cancel" value={filters.action} onChange={(e) => patch({ action: e.target.value })} style={inputStyle} />
-          </label>
-          <label style={fieldStyle}>
-            Loại đối tượng
-            <input type="search" aria-label="Loại đối tượng" placeholder="vd. bill" value={filters.objectType} onChange={(e) => patch({ objectType: e.target.value })} style={inputStyle} />
-          </label>
-          <label style={fieldStyle}>
-            Người thực hiện
-            <input type="search" aria-label="Người thực hiện" placeholder="ID người thực hiện" value={filters.actorId} onChange={(e) => patch({ actorId: e.target.value })} style={inputStyle} />
-          </label>
-          <label style={fieldStyle}>
-            Từ ngày
-            <input type="date" aria-label="Từ ngày" value={filters.from} onChange={(e) => patch({ from: e.target.value })} style={inputStyle} />
-          </label>
-          <label style={fieldStyle}>
-            Đến ngày
-            <input type="date" aria-label="Đến ngày" value={filters.to} onChange={(e) => patch({ to: e.target.value })} style={inputStyle} />
-          </label>
-        </div>
-
         {isLoading ? (
           <LoadingState />
         ) : isError ? (
           <ErrorState message={toErrorMessage(error, "Không tải được nhật ký")} />
         ) : (
-          <>
-            <DataTable columns={columns} rows={rows} rowKey={(r) => r.id} onRowClick={(r) => setSelected(r)} emptyText="Không có bản ghi khớp bộ lọc." />
-            <Pagination page={page} pageCount={pageCount} total={total} onPageChange={setPage} />
-          </>
+          <DataTable
+            table={table}
+            onRowClick={(r) => setSelected(r)}
+            empty="Không có bản ghi khớp bộ lọc."
+          />
         )}
-      </Card>
+      </ListPageShell>
 
       <DetailDrawer open={!!selected} title={selected ? `Nhật ký · ${describeAction(selected.action)}` : ""} onClose={() => setSelected(null)}>
         {selected && (
@@ -162,7 +224,7 @@ export const AuditPage: React.FC = () => {
           </div>
         )}
       </DetailDrawer>
-    </PageStack>
+    </>
   );
 };
 
