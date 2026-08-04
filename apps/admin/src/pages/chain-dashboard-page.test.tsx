@@ -5,6 +5,7 @@ import * as React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MemoryRouter } from "react-router-dom";
 import { AuthProvider } from "../auth/auth-context";
 import { ChainDashboardPage } from "./chain-dashboard-page";
 
@@ -34,9 +35,11 @@ function seedAuth() {
 function wrapper({ children }: { children: React.ReactNode }) {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return (
-    <QueryClientProvider client={qc}>
-      <AuthProvider apiBaseUrl="">{children}</AuthProvider>
-    </QueryClientProvider>
+    <MemoryRouter initialEntries={["/reports/chain"]}>
+      <QueryClientProvider client={qc}>
+        <AuthProvider apiBaseUrl="">{children}</AuthProvider>
+      </QueryClientProvider>
+    </MemoryRouter>
   );
 }
 

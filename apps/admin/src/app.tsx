@@ -363,7 +363,7 @@ export function App() {
                       path="/reports/chain"
                       element={
                         <RequireAccess path="/reports/chain">
-                          <ShellLayout pageTitle="Tổng quan chuỗi">
+                          <ShellLayout bareChrome>
                             <ChainDashboardPage />
                           </ShellLayout>
                         </RequireAccess>
@@ -403,7 +403,7 @@ export function App() {
                       path="/reports/shift-cash"
                       element={
                         <RequireAccess path="/reports/shift-cash">
-                          <ShellLayout pageTitle="Đối soát tiền mặt">
+                          <ShellLayout bareChrome>
                             <ShiftCashReportPage />
                           </ShellLayout>
                         </RequireAccess>
@@ -422,7 +422,7 @@ export function App() {
                     <Route
                       path="/monitor"
                       element={
-                        <ShellLayout pageTitle="Theo dõi ca">
+                        <ShellLayout bareChrome>
                           <ShiftMonitorPage />
                         </ShellLayout>
                       }

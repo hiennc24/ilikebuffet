@@ -11,6 +11,7 @@ import * as React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor, act } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MemoryRouter } from "react-router-dom";
 import { AuthProvider } from "../auth/auth-context";
 import { ShiftMonitorPage } from "./shift-monitor-page";
 
@@ -40,9 +41,11 @@ function makeWrapper() {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return function Wrapper({ children }: { children: React.ReactNode }) {
     return (
-      <QueryClientProvider client={qc}>
-        <AuthProvider apiBaseUrl="">{children}</AuthProvider>
-      </QueryClientProvider>
+      <MemoryRouter>
+        <QueryClientProvider client={qc}>
+          <AuthProvider apiBaseUrl="">{children}</AuthProvider>
+        </QueryClientProvider>
+      </MemoryRouter>
     );
   };
 }
@@ -115,9 +118,11 @@ describe("ShiftMonitorPage", () => {
       defaultOptions: { queries: { retry: false } },
     });
     const Wrapper = ({ children }: { children: React.ReactNode }) => (
-      <QueryClientProvider client={qc}>
-        <AuthProvider apiBaseUrl="">{children}</AuthProvider>
-      </QueryClientProvider>
+      <MemoryRouter>
+        <QueryClientProvider client={qc}>
+          <AuthProvider apiBaseUrl="">{children}</AuthProvider>
+        </QueryClientProvider>
+      </MemoryRouter>
     );
 
     render(<ShiftMonitorPage />, { wrapper: Wrapper });
