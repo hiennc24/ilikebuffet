@@ -1,0 +1,42 @@
+/**
+ * Global reset for the admin SPA.
+ *
+ * Critical for responsiveness: without box-sizing:border-box, every width:100%
+ * element that also has padding (main, cards, inputs) overflows its container and
+ * forces horizontal scroll, so the layout can't shrink on small screens. Also
+ * zeroes the default body margin and makes the root fill the viewport height.
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+}
+
+body,
+#root {
+  min-height: 100dvh;
+}
+
+body {
+  /* Prevent stray horizontal scroll from any single overflowing child. */
+  overflow-x: hidden;
+}
+
+/* Media should never blow out the layout width. */
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}

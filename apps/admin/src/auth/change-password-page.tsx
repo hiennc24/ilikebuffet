@@ -54,7 +54,7 @@ export const ChangePasswordPage: React.FC = () => {
         fontFamily: "var(--font-sans)",
       }}
     >
-      <div style={{ width: "400px" }}>
+      <div style={{ width: "min(400px, 100%)" }}>
         <form
           onSubmit={handleSubmit}
           style={{

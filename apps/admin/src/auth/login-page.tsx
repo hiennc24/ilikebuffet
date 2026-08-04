@@ -54,7 +54,7 @@ export const LoginPage: React.FC = () => {
     >
       <div
         style={{
-          width: "400px",
+          width: "min(400px, 100%)",
           display: "flex",
           flexDirection: "column",
           gap: "var(--space-6)",
