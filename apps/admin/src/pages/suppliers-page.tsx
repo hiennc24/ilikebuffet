@@ -17,17 +17,16 @@ import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
 import { QUERY_KEYS } from "../lib/query-keys";
 import {
-  Card,
-  PageStack,
-  FilterBar,
   Select,
   InlineError,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
-import { DataTable, useDataTable, Badge } from "./_shared/table";
+import { DataTable, useDataTable, DataTablePagination, Badge } from "./_shared/table";
 import type { BadgeTone } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 
 type SupplierStatus = "ACTIVE" | "PENDING_HQ" | "INACTIVE";
 type SupplierScope = "CHAIN_WIDE" | "BRANCH_SPECIFIC";
@@ -133,30 +132,51 @@ export const SuppliersPage: React.FC = () => {
   });
 
   return (
-    <PageStack>
-      <Card
-        title="Nhà cung cấp"
-        description="Quản lý NCC. NCC theo chi nhánh chờ HQ duyệt trước khi dùng."
+    <>
+      <ListPageShell
+        activePath="/master-data/suppliers"
+        pageTitle="Nhà cung cấp"
         actions={
           <Button variant="action" onClick={() => setMode({ kind: "create" })}>
             NCC mới
           </Button>
         }
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: rows.length }]}
+              />
+            }
+          >
+            <input
+              type="search"
+              aria-label="Tìm NCC"
+              placeholder="Tìm theo tên…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={inputStyle}
+            />
+            <Select aria-label="Trạng thái" value={status} onChange={(e) => setStatus(e.target.value)}>
+              <option value="">Tất cả trạng thái</option>
+              <option value="ACTIVE">Đang dùng</option>
+              <option value="PENDING_HQ">Chờ HQ duyệt</option>
+              <option value="INACTIVE">Ngưng</option>
+            </Select>
+          </PageToolbar>
+        }
+        pagination={<DataTablePagination table={table} total={rows.length} />}
       >
-        <FilterBar>
-          <input type="search" aria-label="Tìm NCC" placeholder="Tìm theo tên…" value={search} onChange={(e) => setSearch(e.target.value)} style={inputStyle} />
-          <Select aria-label="Trạng thái" value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option value="">Tất cả trạng thái</option>
-            <option value="ACTIVE">Đang dùng</option>
-            <option value="PENDING_HQ">Chờ HQ duyệt</option>
-            <option value="INACTIVE">Ngưng</option>
-          </Select>
-        </FilterBar>
-
         {listQuery.isLoading ? (
-          <LoadingState />
+          <div style={{ padding: "var(--space-5)" }}>
+            <LoadingState />
+          </div>
         ) : listQuery.isError ? (
-          <ErrorState message={toErrorMessage(listQuery.error, "Không tải được danh sách NCC")} />
+          <div style={{ padding: "var(--space-5)" }}>
+            <ErrorState message={toErrorMessage(listQuery.error, "Không tải được danh sách NCC")} />
+          </div>
         ) : (
           <DataTable
             table={table}
@@ -166,10 +186,10 @@ export const SuppliersPage: React.FC = () => {
             empty="Chưa có nhà cung cấp."
           />
         )}
-      </Card>
+      </ListPageShell>
 
       {mode.kind !== "closed" && <SupplierDialog mode={mode} onClose={() => setMode({ kind: "closed" })} api={api} />}
-    </PageStack>
+    </>
   );
 };
 

@@ -193,7 +193,7 @@ export function App() {
                       path="/settings/branches"
                       element={
                         <RequireAccess path="/settings/branches">
-                          <ShellLayout pageTitle="Chi nhánh">
+                          <ShellLayout bareChrome>
                             <BranchesPage />
                           </ShellLayout>
                         </RequireAccess>
@@ -203,7 +203,7 @@ export function App() {
                       path="/master-data/suppliers"
                       element={
                         <RequireAccess path="/master-data/suppliers">
-                          <ShellLayout pageTitle="Nhà cung cấp">
+                          <ShellLayout bareChrome>
                             <SuppliersPage />
                           </ShellLayout>
                         </RequireAccess>
@@ -223,7 +223,7 @@ export function App() {
                       path="/settings/permissions"
                       element={
                         <RequireAccess path="/settings/permissions">
-                          <ShellLayout pageTitle="Vai trò & phân quyền">
+                          <ShellLayout bareChrome>
                             <PermissionsPage />
                           </ShellLayout>
                         </RequireAccess>
@@ -243,7 +243,7 @@ export function App() {
                       path="/devices"
                       element={
                         <RequireAccess path="/devices">
-                          <ShellLayout pageTitle="Thiết bị">
+                          <ShellLayout bareChrome>
                             <DevicesPage />
                           </ShellLayout>
                         </RequireAccess>
@@ -263,7 +263,7 @@ export function App() {
                       path="/inventory"
                       element={
                         <RequireAccess path="/inventory">
-                          <ShellLayout pageTitle="Kho nguyên liệu">
+                          <ShellLayout bareChrome>
                             <IngredientsPage />
                           </ShellLayout>
                         </RequireAccess>

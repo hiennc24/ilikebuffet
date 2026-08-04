@@ -4,6 +4,8 @@
  *
  * HQ-only (backend enforces). Units/groups are the selects an ingredient needs,
  * so they're managed here too. Accounts remain a separate carry-over (P3d).
+ *
+ * Layout: DTV-style ListPageShell for the ingredients table.
  */
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -13,10 +15,10 @@ import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
 import { usePagedList } from "../lib/use-paged-list";
 import { QUERY_KEYS } from "../lib/query-keys";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 import {
   Card,
-  PageStack,
-  FilterBar,
   Select,
   InlineError,
   LoadingState,
@@ -60,78 +62,6 @@ interface Ingredient {
 
 export const IngredientsPage: React.FC = () => {
   const { api } = useAuth();
-
-  const units = useQuery({ queryKey: QUERY_KEYS.units(), queryFn: () => api.get<Unit[] | { data: Unit[] }>("/master-data/units") });
-  const groups = useQuery({ queryKey: QUERY_KEYS.ingredientGroups(), queryFn: () => api.get<Group[] | { data: Group[] }>("/master-data/ingredient-groups") });
-  const unitList = unwrapList(units.data);
-  const groupList = unwrapList(groups.data);
-
-  return (
-    <PageStack>
-      <div style={{ display: "flex", gap: "var(--space-5)", flexWrap: "wrap" }}>
-        <div style={{ flex: 1, minWidth: "280px" }}>
-          <SimpleListCard title="Đơn vị" placeholder="Mã (VD KG)" secondaryPlaceholder="Tên (Kilogram)" rows={unitList.map((u) => `${u.code} — ${u.name}`)} onCreate={(code, name) => api.post("/master-data/units", { code, name })} invalidateKey={QUERY_KEYS.units()} api={api} />
-        </div>
-        <div style={{ flex: 1, minWidth: "280px" }}>
-          <SimpleListCard title="Nhóm nguyên liệu" placeholder="Tên nhóm" rows={groupList.map((g) => g.name)} onCreate={(name) => api.post("/master-data/ingredient-groups", { name })} invalidateKey={QUERY_KEYS.ingredientGroups()} api={api} />
-        </div>
-      </div>
-
-      <IngredientsCard units={unitList} groups={groupList} api={api} />
-    </PageStack>
-  );
-};
-
-// ── Units / groups quick-manage card ────────────────────────────────────────
-
-const SimpleListCard: React.FC<{
-  title: string;
-  placeholder: string;
-  secondaryPlaceholder?: string;
-  rows: string[];
-  onCreate: (a: string, b: string) => Promise<unknown>;
-  invalidateKey: readonly unknown[];
-  api: ReturnType<typeof useAuth>["api"];
-}> = ({ title, placeholder, secondaryPlaceholder, rows, onCreate, invalidateKey }) => {
-  const qc = useQueryClient();
-  const [a, setA] = React.useState("");
-  const [b, setB] = React.useState("");
-  const [error, setError] = React.useState<string | null>(null);
-  const mutation = useMutation({
-    mutationFn: () => onCreate(a, b),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: invalidateKey });
-      setA("");
-      setB("");
-      setError(null);
-    },
-    onError: (e) => setError(toErrorMessage(e)),
-  });
-  return (
-    <Card title={title}>
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
-        <div style={{ display: "flex", gap: "var(--space-2)" }}>
-          <input aria-label={`${title} - trường 1`} placeholder={placeholder} value={a} onChange={(e) => setA(e.target.value)} style={inputStyle} />
-          {secondaryPlaceholder && <input aria-label={`${title} - trường 2`} placeholder={secondaryPlaceholder} value={b} onChange={(e) => setB(e.target.value)} style={inputStyle} />}
-          <Button variant="action" disabled={!a.trim() || mutation.isPending} onClick={() => mutation.mutate()}>
-            Thêm
-          </Button>
-        </div>
-        <InlineError message={error} />
-        <ul style={{ margin: 0, paddingLeft: "var(--space-4)", fontSize: "var(--text-sm)", color: "var(--text-secondary)" }}>
-          {rows.map((r, i) => (
-            <li key={i}>{r}</li>
-          ))}
-          {rows.length === 0 && <li style={{ listStyle: "none", color: "var(--text-muted)" }}>Chưa có.</li>}
-        </ul>
-      </div>
-    </Card>
-  );
-};
-
-// ── Ingredients table + create/edit + import ─────────────────────────────────
-
-const IngredientsCard: React.FC<{ units: Unit[]; groups: Group[]; api: ReturnType<typeof useAuth>["api"] }> = ({ units, groups, api }) => {
   const qc = useQueryClient();
   const [filters, setFilters] = React.useState({ search: "", status: "", groupId: "" });
   const [page, setPage] = React.useState(1);
@@ -140,6 +70,11 @@ const IngredientsCard: React.FC<{ units: Unit[]; groups: Group[]; api: ReturnTyp
   const [importResult, setImportResult] = React.useState<string | null>(null);
   const [importError, setImportError] = React.useState<string | null>(null);
   const fileRef = React.useRef<HTMLInputElement>(null);
+
+  const units = useQuery({ queryKey: QUERY_KEYS.units(), queryFn: () => api.get<Unit[] | { data: Unit[] }>("/master-data/units") });
+  const groups = useQuery({ queryKey: QUERY_KEYS.ingredientGroups(), queryFn: () => api.get<Group[] | { data: Group[] }>("/master-data/ingredient-groups") });
+  const unitList = unwrapList(units.data);
+  const groupList = unwrapList(groups.data);
 
   const { rows, total, isLoading, isError, error } = usePagedList<Ingredient>({
     queryKey: QUERY_KEYS.ingredients(),
@@ -233,62 +168,92 @@ const IngredientsCard: React.FC<{ units: Unit[]; groups: Group[]; api: ReturnTyp
   });
 
   return (
-    <Card
-      title="Nguyên liệu"
-      description="Quản lý nguyên liệu và đơn vị mua. Nhập nhiều từ Excel."
-      actions={
-        <div style={{ display: "flex", gap: "var(--space-2)" }}>
-          <input
-            ref={fileRef}
-            type="file"
-            accept=".xlsx,.xls"
-            aria-label="Chọn file Excel"
-            style={{ display: "none" }}
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) importMutation.mutate(f);
-              e.target.value = "";
-            }}
-          />
-          <Button variant="ghost" disabled={importMutation.isPending} onClick={() => fileRef.current?.click()}>
-            {importMutation.isPending ? "Đang nhập…" : "Nhập Excel"}
-          </Button>
-          <Button variant="action" onClick={() => setCreating(true)}>
-            Nguyên liệu mới
-          </Button>
+    <>
+      {/* Unit + group quick-manage cards */}
+      <div style={{ display: "flex", gap: "var(--space-5)", flexWrap: "wrap", marginBottom: "var(--space-5)" }}>
+        <div style={{ flex: 1, minWidth: "280px" }}>
+          <SimpleListCard title="Đơn vị" placeholder="Mã (VD KG)" secondaryPlaceholder="Tên (Kilogram)" rows={unitList.map((u) => `${u.code} — ${u.name}`)} onCreate={(code, name) => api.post("/master-data/units", { code, name })} invalidateKey={QUERY_KEYS.units()} api={api} />
         </div>
-      }
-    >
-      {(importResult || importError) && (
-        <div style={{ marginBottom: "var(--space-3)" }}>
-          {importResult && <Badge tone="success">{importResult}</Badge>}
-          <InlineError message={importError} />
+        <div style={{ flex: 1, minWidth: "280px" }}>
+          <SimpleListCard title="Nhóm nguyên liệu" placeholder="Tên nhóm" rows={groupList.map((g) => g.name)} onCreate={(name) => api.post("/master-data/ingredient-groups", { name })} invalidateKey={QUERY_KEYS.ingredientGroups()} api={api} />
         </div>
-      )}
+      </div>
 
-      <FilterBar>
-        <input type="search" aria-label="Tìm nguyên liệu" placeholder="Tìm mã/tên…" value={filters.search} onChange={(e) => patch({ search: e.target.value })} style={inputStyle} />
-        <Select aria-label="Nhóm" value={filters.groupId} onChange={(e) => patch({ groupId: e.target.value })}>
-          <option value="">Tất cả nhóm</option>
-          {groups.map((g) => (
-            <option key={g.id} value={g.id}>
-              {g.name}
-            </option>
-          ))}
-        </Select>
-        <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
-          <option value="">Tất cả</option>
-          <option value="ACTIVE">Đang dùng</option>
-          <option value="INACTIVE">Ngưng</option>
-        </Select>
-      </FilterBar>
-
-      {isLoading ? (
-        <LoadingState />
-      ) : isError ? (
-        <ErrorState message={toErrorMessage(error, "Không tải được nguyên liệu")} />
-      ) : (
-        <>
+      <ListPageShell
+        activePath="/inventory"
+        pageTitle="Kho nguyên liệu"
+        actions={
+          <div style={{ display: "flex", gap: "var(--space-2)" }}>
+            <input
+              ref={fileRef}
+              type="file"
+              accept=".xlsx,.xls"
+              aria-label="Chọn file Excel"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) importMutation.mutate(f);
+                e.target.value = "";
+              }}
+            />
+            <Button variant="ghost" disabled={importMutation.isPending} onClick={() => fileRef.current?.click()}>
+              {importMutation.isPending ? "Đang nhập…" : "Nhập Excel"}
+            </Button>
+            <Button variant="action" onClick={() => setCreating(true)}>
+              Nguyên liệu mới
+            </Button>
+          </div>
+        }
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: total }]}
+              />
+            }
+          >
+            <input
+              type="search"
+              aria-label="Tìm nguyên liệu"
+              placeholder="Tìm mã/tên…"
+              value={filters.search}
+              onChange={(e) => patch({ search: e.target.value })}
+              style={inputStyle}
+            />
+            <Select aria-label="Nhóm" value={filters.groupId} onChange={(e) => patch({ groupId: e.target.value })}>
+              <option value="">Tất cả nhóm</option>
+              {groupList.map((g) => (
+                <option key={g.id} value={g.id}>
+                  {g.name}
+                </option>
+              ))}
+            </Select>
+            <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
+              <option value="">Tất cả</option>
+              <option value="ACTIVE">Đang dùng</option>
+              <option value="INACTIVE">Ngưng</option>
+            </Select>
+          </PageToolbar>
+        }
+        pagination={!isLoading && !isError ? <DataTablePagination table={table} total={total} /> : undefined}
+      >
+        {(importResult || importError) && (
+          <div style={{ padding: "var(--space-3) var(--space-4)", borderBottom: "1px solid var(--border-subtle)" }}>
+            {importResult && <Badge tone="success">{importResult}</Badge>}
+            <InlineError message={importError} />
+          </div>
+        )}
+        {isLoading ? (
+          <div style={{ padding: "var(--space-5)" }}>
+            <LoadingState />
+          </div>
+        ) : isError ? (
+          <div style={{ padding: "var(--space-5)" }}>
+            <ErrorState message={toErrorMessage(error, "Không tải được nguyên liệu")} />
+          </div>
+        ) : (
           <DataTable
             table={table}
             isLoading={false}
@@ -296,16 +261,70 @@ const IngredientsCard: React.FC<{ units: Unit[]; groups: Group[]; api: ReturnTyp
             onRowClick={(i) => setEditing(i)}
             empty="Chưa có nguyên liệu."
           />
-          <DataTablePagination table={table} total={total} />
-        </>
-      )}
+        )}
+      </ListPageShell>
 
       {(creating || editing) && (
-        <IngredientDialog ingredient={editing} units={units} groups={groups} api={api} onClose={() => { setCreating(false); setEditing(null); }} />
+        <IngredientDialog
+          ingredient={editing}
+          units={unitList}
+          groups={groupList}
+          api={api}
+          onClose={() => { setCreating(false); setEditing(null); }}
+        />
       )}
+    </>
+  );
+};
+
+// ── Units / groups quick-manage card ────────────────────────────────────────
+
+const SimpleListCard: React.FC<{
+  title: string;
+  placeholder: string;
+  secondaryPlaceholder?: string;
+  rows: string[];
+  onCreate: (a: string, b: string) => Promise<unknown>;
+  invalidateKey: readonly unknown[];
+  api: ReturnType<typeof useAuth>["api"];
+}> = ({ title, placeholder, secondaryPlaceholder, rows, onCreate, invalidateKey }) => {
+  const qc = useQueryClient();
+  const [a, setA] = React.useState("");
+  const [b, setB] = React.useState("");
+  const [error, setError] = React.useState<string | null>(null);
+  const mutation = useMutation({
+    mutationFn: () => onCreate(a, b),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: invalidateKey });
+      setA("");
+      setB("");
+      setError(null);
+    },
+    onError: (e) => setError(toErrorMessage(e)),
+  });
+  return (
+    <Card title={title}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+        <div style={{ display: "flex", gap: "var(--space-2)" }}>
+          <input aria-label={`${title} - trường 1`} placeholder={placeholder} value={a} onChange={(e) => setA(e.target.value)} style={inputStyle} />
+          {secondaryPlaceholder && <input aria-label={`${title} - trường 2`} placeholder={secondaryPlaceholder} value={b} onChange={(e) => setB(e.target.value)} style={inputStyle} />}
+          <Button variant="action" disabled={!a.trim() || mutation.isPending} onClick={() => mutation.mutate()}>
+            Thêm
+          </Button>
+        </div>
+        <InlineError message={error} />
+        <ul style={{ margin: 0, paddingLeft: "var(--space-4)", fontSize: "var(--text-sm)", color: "var(--text-secondary)" }}>
+          {rows.map((r, i) => (
+            <li key={i}>{r}</li>
+          ))}
+          {rows.length === 0 && <li style={{ listStyle: "none", color: "var(--text-muted)" }}>Chưa có.</li>}
+        </ul>
+      </div>
     </Card>
   );
 };
+
+// ── Ingredient create/edit dialog ────────────────────────────────────────────
 
 const IngredientDialog: React.FC<{ ingredient: Ingredient | null; units: Unit[]; groups: Group[]; api: ReturnType<typeof useAuth>["api"]; onClose: () => void }> = ({ ingredient, units, groups, api, onClose }) => {
   const qc = useQueryClient();

@@ -19,15 +19,15 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Button, Dialog, FormField } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { QUERY_KEYS } from "../lib/query-keys";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 import {
-  Card,
-  PageStack,
   InlineError,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
-import { DataTable, useDataTable, Badge } from "./_shared/table";
+import { DataTable, useDataTable, DataTablePagination, Badge } from "./_shared/table";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -133,20 +133,40 @@ export const PermissionsPage: React.FC = () => {
   });
 
   return (
-    <PageStack>
-      <Card
-        title="Vai trò & phân quyền"
-        description="Quản lý vai trò và quyền hạn trong hệ thống."
+    <>
+      <ListPageShell
+        activePath="/settings/permissions"
+        pageTitle="Vai trò & phân quyền"
         actions={
           <Button variant="action" onClick={() => setMode({ kind: "create" })}>
             Vai trò mới
           </Button>
         }
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: roles.length }]}
+              />
+            }
+          />
+        }
+        pagination={
+          !rolesQuery.isLoading && !rolesQuery.isError ? (
+            <DataTablePagination table={table} total={roles.length} />
+          ) : undefined
+        }
       >
         {rolesQuery.isLoading ? (
-          <LoadingState />
+          <div style={{ padding: "var(--space-5)" }}>
+            <LoadingState />
+          </div>
         ) : rolesQuery.isError ? (
-          <ErrorState message={toErrorMessage(rolesQuery.error, "Không tải được danh sách vai trò")} />
+          <div style={{ padding: "var(--space-5)" }}>
+            <ErrorState message={toErrorMessage(rolesQuery.error, "Không tải được danh sách vai trò")} />
+          </div>
         ) : (
           <DataTable
             table={table}
@@ -156,12 +176,12 @@ export const PermissionsPage: React.FC = () => {
             empty="Chưa có vai trò nào."
           />
         )}
-      </Card>
+      </ListPageShell>
 
       {mode.kind !== "closed" && (
         <RoleDialog mode={mode} onClose={() => setMode({ kind: "closed" })} api={api} />
       )}
-    </PageStack>
+    </>
   );
 };
 

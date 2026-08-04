@@ -11,16 +11,16 @@ import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
 import { QUERY_KEYS } from "../lib/query-keys";
 import {
-  Card,
-  PageStack,
   DetailDrawer,
   InlineError,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
-import { DataTable, useDataTable, Badge } from "./_shared/table";
+import { DataTable, useDataTable, DataTablePagination, Badge } from "./_shared/table";
 import type { BadgeTone } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 
 type DeviceStatus = "ACTIVE" | "SUSPENDED";
 interface Device {
@@ -95,12 +95,35 @@ export const DevicesPage: React.FC = () => {
   });
 
   return (
-    <PageStack>
-      <Card title="Thiết bị POS" description="Danh sách thiết bị đã đăng ký. Tạm ngưng thiết bị bị mất/đánh cắp.">
+    <>
+      <ListPageShell
+        activePath="/devices"
+        pageTitle="Thiết bị"
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: rows.length }]}
+              />
+            }
+          />
+        }
+        pagination={
+          !listQuery.isLoading && !listQuery.isError
+            ? <DataTablePagination table={table} total={rows.length} />
+            : undefined
+        }
+      >
         {listQuery.isLoading ? (
-          <LoadingState />
+          <div style={{ padding: "var(--space-5)" }}>
+            <LoadingState />
+          </div>
         ) : listQuery.isError ? (
-          <ErrorState message={toErrorMessage(listQuery.error, "Không tải được danh sách thiết bị")} />
+          <div style={{ padding: "var(--space-5)" }}>
+            <ErrorState message={toErrorMessage(listQuery.error, "Không tải được danh sách thiết bị")} />
+          </div>
         ) : (
           <DataTable
             table={table}
@@ -110,10 +133,10 @@ export const DevicesPage: React.FC = () => {
             empty="Chưa có thiết bị."
           />
         )}
-      </Card>
+      </ListPageShell>
 
       <DeviceDrawer device={selected} onClose={() => setSelected(null)} api={api} />
-    </PageStack>
+    </>
   );
 };
 

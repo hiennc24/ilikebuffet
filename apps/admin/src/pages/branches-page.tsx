@@ -13,17 +13,16 @@ import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
 import { QUERY_KEYS } from "../lib/query-keys";
 import {
-  Card,
-  PageStack,
-  FilterBar,
   Select,
   InlineError,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
-import { DataTable, useDataTable, Badge } from "./_shared/table";
+import { DataTable, useDataTable, DataTablePagination, Badge } from "./_shared/table";
 import type { BadgeTone } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 
 type BranchStatus = "ACTIVE" | "SUSPENDED" | "CLOSED";
 
@@ -127,33 +126,47 @@ export const BranchesPage: React.FC = () => {
   });
 
   return (
-    <PageStack>
-      <Card
-        title="Chi nhánh"
-        description="Quản lý chi nhánh trong chuỗi."
+    <>
+      <ListPageShell
+        activePath="/settings/branches"
+        pageTitle="Chi nhánh"
         actions={
           <Button variant="action" onClick={() => setMode({ kind: "create" })}>
             Chi nhánh mới
           </Button>
         }
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: rows.length }]}
+              />
+            }
+          >
+            <input
+              type="search"
+              aria-label="Tìm chi nhánh"
+              placeholder="Tìm theo mã/tên…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={inputStyle}
+            />
+            <Select aria-label="Trạng thái" value={status} onChange={(e) => setStatus(e.target.value)}>
+              <option value="">Tất cả trạng thái</option>
+              <option value="ACTIVE">Đang hoạt động</option>
+              <option value="SUSPENDED">Tạm ngưng</option>
+              <option value="CLOSED">Đã đóng</option>
+            </Select>
+          </PageToolbar>
+        }
+        pagination={
+          !listQuery.isLoading && !listQuery.isError
+            ? <DataTablePagination table={table} total={rows.length} />
+            : undefined
+        }
       >
-        <FilterBar>
-          <input
-            type="search"
-            aria-label="Tìm chi nhánh"
-            placeholder="Tìm theo mã/tên…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={inputStyle}
-          />
-          <Select aria-label="Trạng thái" value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option value="">Tất cả trạng thái</option>
-            <option value="ACTIVE">Đang hoạt động</option>
-            <option value="SUSPENDED">Tạm ngưng</option>
-            <option value="CLOSED">Đã đóng</option>
-          </Select>
-        </FilterBar>
-
         {listQuery.isLoading ? (
           <LoadingState />
         ) : listQuery.isError ? (
@@ -167,12 +180,12 @@ export const BranchesPage: React.FC = () => {
             empty="Chưa có chi nhánh."
           />
         )}
-      </Card>
+      </ListPageShell>
 
       {mode.kind !== "closed" && (
         <BranchDialog mode={mode} onClose={() => setMode({ kind: "closed" })} api={api} />
       )}
-    </PageStack>
+    </>
   );
 };
 
@@ -302,9 +315,9 @@ const BranchDialog: React.FC<BranchDialogProps> = ({ mode, onClose, api }) => {
 };
 
 const inputStyle: React.CSSProperties = {
-  height: "var(--input-height, 44px)",
+  height: "40px",
   padding: "0 var(--space-3)",
-  border: "1px solid var(--border-default)",
+  border: "1px solid var(--border-subtle)",
   borderRadius: "var(--radius-md)",
   fontFamily: "var(--font-sans)",
   fontSize: "var(--text-sm)",
