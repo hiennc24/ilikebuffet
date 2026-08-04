@@ -4,6 +4,7 @@
  * registration on the POS side and is never shown here.
  */
 import * as React from "react";
+import type { ColumnDef } from "@tanstack/react-table";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
@@ -12,16 +13,14 @@ import { QUERY_KEYS } from "../lib/query-keys";
 import {
   Card,
   PageStack,
-  DataTable,
-  Column,
   DetailDrawer,
-  Badge,
-  BadgeTone,
   InlineError,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import { DataTable, useDataTable, Badge } from "./_shared/table";
+import type { BadgeTone } from "./_shared/table";
 
 type DeviceStatus = "ACTIVE" | "SUSPENDED";
 interface Device {
@@ -32,7 +31,8 @@ interface Device {
   status: DeviceStatus;
   createdAt: string;
 }
-const STATUS_TONE: Record<DeviceStatus, BadgeTone> = { ACTIVE: "active", SUSPENDED: "warn" };
+
+const STATUS_TONE: Record<DeviceStatus, BadgeTone> = { ACTIVE: "success", SUSPENDED: "warn" };
 const STATUS_LABEL: Record<DeviceStatus, string> = { ACTIVE: "Hoạt động", SUSPENDED: "Tạm ngưng" };
 
 export const DevicesPage: React.FC = () => {
@@ -45,12 +45,54 @@ export const DevicesPage: React.FC = () => {
   });
   const rows = unwrapList(listQuery.data);
 
-  const columns: Column<Device>[] = [
-    { key: "label", header: "Nhãn", render: (d) => d.label ?? "—" },
-    { key: "deviceId", header: "Device ID", render: (d) => d.deviceId },
-    { key: "branch", header: "Chi nhánh", render: (d) => d.branchId },
-    { key: "status", header: "Trạng thái", render: (d) => <Badge tone={STATUS_TONE[d.status]}>{STATUS_LABEL[d.status]}</Badge> },
-  ];
+  const columns = React.useMemo<ColumnDef<Device>[]>(
+    () => [
+      {
+        id: "label",
+        enableSorting: false,
+        meta: { headerLabel: "Nhãn" },
+        header: "Nhãn",
+        cell: ({ row }) => row.original.label ?? "—",
+      },
+      {
+        id: "deviceId",
+        enableSorting: false,
+        meta: { headerLabel: "Device ID" },
+        header: "Device ID",
+        cell: ({ row }) => row.original.deviceId,
+      },
+      {
+        id: "branch",
+        enableSorting: false,
+        meta: { headerLabel: "Chi nhánh" },
+        header: "Chi nhánh",
+        cell: ({ row }) => row.original.branchId,
+      },
+      {
+        id: "status",
+        enableSorting: false,
+        meta: { headerLabel: "Trạng thái" },
+        header: "Trạng thái",
+        cell: ({ row }) => (
+          <Badge tone={STATUS_TONE[row.original.status]}>{STATUS_LABEL[row.original.status]}</Badge>
+        ),
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<Device>({
+    data: rows,
+    columns,
+    total: rows.length,
+    page: 1,
+    limit: rows.length || 50,
+    sort: null,
+    setPage: () => {},
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (d) => d.id,
+  });
 
   return (
     <PageStack>
@@ -60,7 +102,13 @@ export const DevicesPage: React.FC = () => {
         ) : listQuery.isError ? (
           <ErrorState message={toErrorMessage(listQuery.error, "Không tải được danh sách thiết bị")} />
         ) : (
-          <DataTable columns={columns} rows={rows} rowKey={(d) => d.id} onRowClick={(d) => setSelected(d)} emptyText="Chưa có thiết bị." />
+          <DataTable
+            table={table}
+            isLoading={false}
+            isError={false}
+            onRowClick={(d) => setSelected(d)}
+            empty="Chưa có thiết bị."
+          />
         )}
       </Card>
 

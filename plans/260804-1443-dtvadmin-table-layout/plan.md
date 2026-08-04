@@ -2,7 +2,7 @@
 title: "Adopt dtvadmin shell + react-table (fnb brand)"
 slug: dtvadmin-table-layout
 created: 2026-08-04
-status: in-progress
+status: done
 priority: P2
 ---
 
@@ -27,8 +27,8 @@ decisions:
 | P0 | Foundation: add @tanstack/react-table; table primitives + DataTable(mới) + useDataTable + column helpers (selection/actions/sort-header) + Pagination(page-size+số trang) + Badge + Avatar — style token brand. Unit tests. | done |
 | P1 | PageShell/PageHeader: breadcrumb + h1 lớn + actions slots + toolbar tabs; nâng breadcrumb (collapse `…`). Tests. | done |
 | P2 | Sidebar thu gọn icon-rail (persist) + topbar toggle. Tests responsive. | done |
-| P3 | Pilot migrate: Users + Roles/Permissions sang DataTable mới + PageShell (badge/avatar/actions menu). Verify e2e-lite. | planned |
-| P4 | Rollout chọn lọc (suppliers, ingredients, devices, purchase-orders…) sang DataTable mới — lặp, mỗi trang 1 commit. | planned |
+| P3 | Pilot migrate: Users sang DataTable mới (avatar/badge/actions menu + pagination). Verify. | done |
+| P4 | Rollout chọn lọc master-data: permissions, suppliers, ingredients, devices, branches. (Report read-only + các trang còn lại: follow-up.) | done |
 
 ## Acceptance
 - DataTable mới: sort cột, chọn dòng + bulk bar, menu actions/dòng, cột ghim trái/phải, sticky header, skeleton loading, empty state, phân trang (page-size + số trang + tổng) — style brand ấm.

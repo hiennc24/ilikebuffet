@@ -7,6 +7,7 @@
  */
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Button, Dialog, FormField } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
@@ -14,17 +15,15 @@ import { QUERY_KEYS } from "../lib/query-keys";
 import {
   Card,
   PageStack,
-  DataTable,
-  Column,
   FilterBar,
   Select,
   InlineError,
-  Badge,
-  BadgeTone,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import { DataTable, useDataTable, Badge } from "./_shared/table";
+import type { BadgeTone } from "./_shared/table";
 
 type BranchStatus = "ACTIVE" | "SUSPENDED" | "CLOSED";
 
@@ -44,9 +43,9 @@ const STATUS_LABEL: Record<BranchStatus, string> = {
   CLOSED: "Đã đóng",
 };
 const STATUS_TONE: Record<BranchStatus, BadgeTone> = {
-  ACTIVE: "active",
+  ACTIVE: "success",
   SUSPENDED: "warn",
-  CLOSED: "muted",
+  CLOSED: "neutral",
 };
 
 type Mode = { kind: "closed" } | { kind: "create" } | { kind: "edit"; branch: Branch };
@@ -70,17 +69,62 @@ export const BranchesPage: React.FC = () => {
 
   const rows = unwrapList(listQuery.data);
 
-  const columns: Column<Branch>[] = [
-    { key: "code", header: "Mã", width: "80px", render: (b) => b.code },
-    { key: "name", header: "Tên", render: (b) => b.name },
-    { key: "address", header: "Địa chỉ", render: (b) => b.address },
-    { key: "phone", header: "SĐT", render: (b) => b.phone },
-    {
-      key: "status",
-      header: "Trạng thái",
-      render: (b) => <Badge tone={STATUS_TONE[b.status]}>{STATUS_LABEL[b.status]}</Badge>,
-    },
-  ];
+  const columns = React.useMemo<ColumnDef<Branch>[]>(
+    () => [
+      {
+        id: "code",
+        enableSorting: false,
+        meta: { headerLabel: "Mã", width: "80px" },
+        header: "Mã",
+        cell: ({ row }) => row.original.code,
+      },
+      {
+        id: "name",
+        enableSorting: false,
+        meta: { headerLabel: "Tên" },
+        header: "Tên",
+        cell: ({ row }) => row.original.name,
+      },
+      {
+        id: "address",
+        enableSorting: false,
+        meta: { headerLabel: "Địa chỉ" },
+        header: "Địa chỉ",
+        cell: ({ row }) => row.original.address,
+      },
+      {
+        id: "phone",
+        enableSorting: false,
+        meta: { headerLabel: "SĐT" },
+        header: "SĐT",
+        cell: ({ row }) => row.original.phone,
+      },
+      {
+        id: "status",
+        enableSorting: false,
+        meta: { headerLabel: "Trạng thái" },
+        header: "Trạng thái",
+        cell: ({ row }) => {
+          const b = row.original;
+          return <Badge tone={STATUS_TONE[b.status]}>{STATUS_LABEL[b.status]}</Badge>;
+        },
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<Branch>({
+    data: rows,
+    columns,
+    total: rows.length,
+    page: 1,
+    limit: rows.length || 50,
+    sort: null,
+    setPage: () => {},
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (b) => b.id,
+  });
 
   return (
     <PageStack>
@@ -116,11 +160,11 @@ export const BranchesPage: React.FC = () => {
           <ErrorState message={toErrorMessage(listQuery.error, "Không tải được danh sách chi nhánh")} />
         ) : (
           <DataTable
-            columns={columns}
-            rows={rows}
-            rowKey={(b) => b.id}
+            table={table}
+            isLoading={false}
+            isError={false}
             onRowClick={(b) => setMode({ kind: "edit", branch: b })}
-            emptyText="Chưa có chi nhánh."
+            empty="Chưa có chi nhánh."
           />
         )}
       </Card>
