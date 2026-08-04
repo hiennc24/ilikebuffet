@@ -317,8 +317,8 @@ export const UsersPage: React.FC = () => {
               onRowClick={(u) => setSelected(u)}
               empty="Không có người dùng."
             />
-            {/* Pagination lives inside the card, separated by a top divider (DTV). */}
-            <div style={{ padding: "var(--space-2) var(--space-4)", borderTop: "1px solid var(--border-subtle)" }}>
+            {/* Pagination inside the card; the last table row's border is the divider. */}
+            <div style={{ padding: "var(--space-3) var(--space-4)" }}>
               <DataTablePagination table={table} total={total} />
             </div>
           </>

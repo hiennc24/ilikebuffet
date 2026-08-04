@@ -521,7 +521,7 @@ export const DetailDrawer: React.FC<DetailDrawerProps> = ({ open, title, onClose
 
   if (!open) return null;
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", justifyContent: "flex-end" }}>
+    <div style={{ position: "fixed", inset: 0, zIndex: 1300, display: "flex", justifyContent: "flex-end" }}>
       <div
         aria-hidden="true"
         onClick={onClose}

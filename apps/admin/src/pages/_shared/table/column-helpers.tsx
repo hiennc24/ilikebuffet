@@ -7,6 +7,7 @@
  */
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import type { ColumnDef, Row } from "@tanstack/react-table";
 
 // ── Selection column ──────────────────────────────────────────────────────────
@@ -82,7 +83,17 @@ function ActionsCell<T>({
 }) {
   const [open, setOpen] = React.useState(false);
   const ref = React.useRef<HTMLDivElement>(null);
+  const btnRef = React.useRef<HTMLButtonElement>(null);
   const menuRef = React.useRef<HTMLDivElement>(null);
+  // Portal position (viewport coords) so the menu escapes the card's overflow:hidden
+  // and the table's horizontal scroll container instead of being clipped.
+  const [pos, setPos] = React.useState<{ top: number; right: number } | null>(null);
+
+  const openMenu = () => {
+    const rect = btnRef.current?.getBoundingClientRect();
+    if (rect) setPos({ top: rect.bottom + 4, right: window.innerWidth - rect.right });
+    setOpen((v) => !v);
+  };
 
   // Focusable (enabled) menu items, in DOM order.
   const menuItems = React.useCallback(
@@ -119,7 +130,10 @@ function ActionsCell<T>({
   React.useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      const t = e.target as Node;
+      // Menu is portaled to body, so check both the trigger wrapper and the menu.
+      if (ref.current?.contains(t) || menuRef.current?.contains(t)) return;
+      setOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -143,13 +157,14 @@ function ActionsCell<T>({
       style={{ position: "relative", display: "inline-flex", alignItems: "center" }}
     >
       <button
+        ref={btnRef}
         type="button"
         aria-label="Thao tác"
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={(e) => {
           e.stopPropagation();
-          setOpen((v) => !v);
+          openMenu();
         }}
         style={{
           width: "28px",
@@ -189,22 +204,22 @@ function ActionsCell<T>({
         </svg>
       </button>
 
-      {open && visibleItems.length > 0 && (
+      {open && visibleItems.length > 0 && pos && createPortal(
         <div
           ref={menuRef}
           role="menu"
           aria-label="Thao tác hàng"
           onKeyDown={onMenuKeyDown}
           style={{
-            position: "absolute",
-            top: "calc(100% + 4px)",
-            right: 0,
+            position: "fixed",
+            top: pos.top,
+            right: pos.right,
             minWidth: "160px",
             background: "var(--bg-raised)",
             border: "1px solid var(--border-subtle)",
             borderRadius: "var(--radius-lg)",
             boxShadow: "var(--shadow-md)",
-            zIndex: 300,
+            zIndex: 1200,
             overflow: "hidden",
             padding: "var(--space-1)",
           }}
@@ -271,7 +286,8 @@ function ActionsCell<T>({
               </button>
             );
           })}
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );
