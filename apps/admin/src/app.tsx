@@ -96,7 +96,17 @@ function RequireAccess({ path, children }: { path: string; children: React.React
 }
 
 /** Shell wrapper that wires router navigation to AdminShell. */
-function ShellLayout({ children, pageTitle }: { children: React.ReactNode; pageTitle?: string }) {
+function ShellLayout({
+  children,
+  pageTitle,
+  pageActions,
+  pageToolbar,
+}: {
+  children: React.ReactNode;
+  pageTitle?: string;
+  pageActions?: React.ReactNode;
+  pageToolbar?: React.ReactNode;
+}) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -105,6 +115,8 @@ function ShellLayout({ children, pageTitle }: { children: React.ReactNode; pageT
       activePath={location.pathname}
       onNavigate={navigate}
       pageTitle={pageTitle}
+      pageActions={pageActions}
+      pageToolbar={pageToolbar}
     >
       {children}
     </AdminShell>

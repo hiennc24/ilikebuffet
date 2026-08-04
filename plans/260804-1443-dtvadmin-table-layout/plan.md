@@ -24,8 +24,8 @@ decisions:
 
 | Phase | Nội dung | Trạng thái |
 |-------|----------|-----------|
-| P0 | Foundation: add @tanstack/react-table; table primitives + DataTable(mới) + useDataTable + column helpers (selection/actions/sort-header) + Pagination(page-size+số trang) + Badge + Avatar — style token brand. Unit tests. | planned |
-| P1 | PageShell/PageHeader: breadcrumb + h1 lớn + actions slots + toolbar tabs; nâng breadcrumb (collapse `…`). Tests. | planned |
+| P0 | Foundation: add @tanstack/react-table; table primitives + DataTable(mới) + useDataTable + column helpers (selection/actions/sort-header) + Pagination(page-size+số trang) + Badge + Avatar — style token brand. Unit tests. | done |
+| P1 | PageShell/PageHeader: breadcrumb + h1 lớn + actions slots + toolbar tabs; nâng breadcrumb (collapse `…`). Tests. | done |
 | P2 | Sidebar thu gọn icon-rail (persist) + topbar toggle. Tests responsive. | planned |
 | P3 | Pilot migrate: Users + Roles/Permissions sang DataTable mới + PageShell (badge/avatar/actions menu). Verify e2e-lite. | planned |
 | P4 | Rollout chọn lọc (suppliers, ingredients, devices, purchase-orders…) sang DataTable mới — lặp, mỗi trang 1 commit. | planned |

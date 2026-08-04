@@ -16,6 +16,7 @@ import { useAuth } from "../auth/auth-context";
 import { canAccessPath } from "../lib/rbac";
 import { useIsCompact } from "../lib/use-media-query";
 import { useTheme } from "../lib/theme";
+import { PageHeader, buildPathGroups } from "./page-header";
 
 export interface NavItem {
   id: string;
@@ -37,6 +38,10 @@ export interface AdminShellProps {
   onNavigate?: (path: string) => void;
   pageTitle?: string;
   topbarActions?: React.ReactNode;
+  /** Right-aligned action slot rendered inside the in-content PageHeader. */
+  pageActions?: React.ReactNode;
+  /** Optional toolbar row (e.g. PageTabs) rendered below the breadcrumb row. */
+  pageToolbar?: React.ReactNode;
 }
 
 const DEFAULT_GROUPS: NavGroup[] = [
@@ -1042,102 +1047,10 @@ function BranchSwitcher({ variant, selectedBranch, selectedBranchId, availableBr
   );
 }
 
-// ── Breadcrumb ────────────────────────────────────────────────────────────────
+// ── PATH_GROUPS (derived once from nav data, passed to PageHeader) ────────────
 
 /** Path → parent nav-group label, longest path first so sub-routes prefix-match. */
-const PATH_GROUPS: { path: string; group: string }[] = [
-  ...DEFAULT_GROUPS.flatMap((g) => g.items.map((i) => ({ path: i.path, group: g.label ?? "" }))),
-  ...SYSTEM_ITEMS.map((i) => ({ path: i.path, group: "Hệ thống" })),
-].sort((a, b) => b.path.length - a.path.length);
-
-/** The nav group a route belongs to (exact match, else longest matching prefix). */
-function groupForPath(path: string): string | null {
-  const hit = PATH_GROUPS.find((e) => path === e.path || path.startsWith(`${e.path}/`));
-  return hit && hit.group ? hit.group : null;
-}
-
-interface Crumb {
-  label: string;
-  /** Present → clickable link; absent → plain text (group / current page). */
-  path?: string;
-}
-
-interface BreadcrumbProps {
-  activePath?: string;
-  pageTitle?: string;
-  onNavigate: (path: string) => void;
-}
-
-/** "Tổng quan › Nhóm › Trang" — home links to the overview; group + page are text. */
-function Breadcrumb({ activePath, pageTitle, onNavigate }: BreadcrumbProps) {
-  const path = activePath ?? "/";
-  const page = pageTitle ?? "";
-
-  const crumbs: Crumb[] = [];
-  if (path === "/") {
-    // On the overview itself there is nowhere higher to go.
-    crumbs.push({ label: page || "Tổng quan" });
-  } else {
-    crumbs.push({ label: "Tổng quan", path: "/" });
-    const group = groupForPath(path);
-    if (group) crumbs.push({ label: group });
-    if (page) crumbs.push({ label: page });
-  }
-
-  return (
-    <nav aria-label="Breadcrumb" style={{ marginBottom: "var(--space-4)" }}>
-      <ol
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          gap: "6px",
-          listStyle: "none",
-          margin: 0,
-          padding: 0,
-          fontFamily: "var(--font-sans)",
-          fontSize: "var(--text-sm)",
-        }}
-      >
-        {crumbs.map((c, i) => {
-          const last = i === crumbs.length - 1;
-          return (
-            <li key={`${c.label}-${i}`} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              {i > 0 && <span aria-hidden="true" style={{ color: "var(--text-muted)" }}>›</span>}
-              {c.path && !last ? (
-                <button
-                  type="button"
-                  onClick={() => onNavigate(c.path as string)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    padding: 0,
-                    cursor: "pointer",
-                    color: "var(--text-muted)",
-                    fontFamily: "inherit",
-                    fontSize: "inherit",
-                  }}
-                >
-                  {c.label}
-                </button>
-              ) : (
-                <span
-                  aria-current={last ? "page" : undefined}
-                  style={{
-                    color: last ? "var(--text-primary)" : "var(--text-muted)",
-                    fontWeight: last ? ("var(--fw-medium)" as React.CSSProperties["fontWeight"]) : undefined,
-                  }}
-                >
-                  {c.label}
-                </span>
-              )}
-            </li>
-          );
-        })}
-      </ol>
-    </nav>
-  );
-}
+const PATH_GROUPS = buildPathGroups(DEFAULT_GROUPS, SYSTEM_ITEMS);
 
 // ── AdminShell ────────────────────────────────────────────────────────────────
 
@@ -1147,6 +1060,8 @@ export const AdminShell: React.FC<AdminShellProps> = ({
   onNavigate,
   pageTitle,
   topbarActions,
+  pageActions,
+  pageToolbar,
 }) => {
   const { selectedBranchId, availableBranches, selectBranch, logout, role, username } = useAuth();
 
@@ -1521,7 +1436,14 @@ export const AdminShell: React.FC<AdminShellProps> = ({
             paddingBottom: compact ? "max(var(--space-3), env(safe-area-inset-bottom))" : undefined,
           }}
         >
-          <Breadcrumb activePath={activePath} pageTitle={pageTitle} onNavigate={navigate} />
+          <PageHeader
+            activePath={activePath}
+            pageTitle={pageTitle}
+            actions={pageActions}
+            toolbar={pageToolbar}
+            onNavigate={navigate}
+            pathGroups={PATH_GROUPS}
+          />
           {children}
         </main>
       </div>
