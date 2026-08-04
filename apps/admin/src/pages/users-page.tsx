@@ -12,7 +12,7 @@
  * so there is no double-title when this page is mounted inside the shell.
  */
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
+import { ListPageShell } from "../layout/list-page-shell";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Button, Dialog, FormField } from "@ilikebuffet/ui";
@@ -29,7 +29,7 @@ import {
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
-import { PageHeader, PageToolbar, PageTabs } from "../layout/page-header";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 import {
   DataTable,
   useDataTable,
@@ -81,7 +81,6 @@ interface Branch {
 const isLocked = (u: AdminUser) => !!u.lockedUntil && new Date(u.lockedUntil) > new Date();
 
 /** PATH_GROUPS for the users page standalone breadcrumb. */
-const USERS_PATH_GROUPS = [{ path: "/settings/users", group: "Hệ thống" }];
 
 export const UsersPage: React.FC = () => {
   const { api } = useAuth();
@@ -91,7 +90,6 @@ export const UsersPage: React.FC = () => {
   const [selected, setSelected] = React.useState<AdminUser | null>(null);
   const [creating, setCreating] = React.useState(false);
 
-  const navigate = useNavigate();
 
   const rolesQuery = useQuery({
     queryKey: QUERY_KEYS.roles(),
@@ -220,14 +218,11 @@ export const UsersPage: React.FC = () => {
   });
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
-      {/* Chrome (breadcrumb + h1 + action). PageHeader owns its own bottom margin,
-          so there's no column gap here — avoids a doubled toolbar↔table gap. */}
-      <PageHeader
+    <>
+      <ListPageShell
         activePath="/settings/users"
         pageTitle="Người dùng & vai trò"
-        onNavigate={navigate}
-        pathGroups={USERS_PATH_GROUPS}
+        pagination={!isLoading && !isError ? <DataTablePagination table={table} total={total} /> : undefined}
         actions={
           <Button variant="action" onClick={() => setCreating(true)}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-2)" }}>
@@ -289,17 +284,6 @@ export const UsersPage: React.FC = () => {
             </Select>
           </PageToolbar>
         }
-      />
-
-      {/* ── Body panel — white card containing only table + pagination ──── */}
-      <section
-        style={{
-          background: "var(--bg-raised, #FFFFFF)",
-          border: "1px solid var(--border-subtle)",
-          borderRadius: "var(--radius-lg)",
-          boxShadow: "var(--shadow-sm)",
-          overflow: "hidden",
-        }}
       >
         {isLoading ? (
           <div style={{ padding: "var(--space-5)" }}>
@@ -310,25 +294,19 @@ export const UsersPage: React.FC = () => {
             <ErrorState message={toErrorMessage(error, "Không tải được danh sách người dùng")} />
           </div>
         ) : (
-          <>
-            <DataTable
-              table={table}
-              isLoading={false}
-              isError={false}
-              onRowClick={(u) => setSelected(u)}
-              empty="Không có người dùng."
-            />
-            {/* Pagination inside the card; the last table row's border is the divider. */}
-            <div style={{ padding: "var(--space-3) var(--space-4)" }}>
-              <DataTablePagination table={table} total={total} />
-            </div>
-          </>
+          <DataTable
+            table={table}
+            isLoading={false}
+            isError={false}
+            onRowClick={(u) => setSelected(u)}
+            empty="Không có người dùng."
+          />
         )}
-      </section>
+      </ListPageShell>
 
       {creating && <CreateUserDialog onClose={() => setCreating(false)} dbRoles={dbRoles} />}
       <UserDetailDrawer user={selected} onClose={() => setSelected(null)} />
-    </div>
+    </>
   );
 };
 
