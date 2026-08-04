@@ -8,27 +8,32 @@
  */
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Button, Dialog, FormField } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
 import { usePagedList } from "../lib/use-paged-list";
 import { QUERY_KEYS } from "../lib/query-keys";
+import { toast } from "../lib/toast";
 import {
   Card,
   PageStack,
-  DataTable,
-  Column,
   FilterBar,
-  Pagination,
   DetailDrawer,
   Select,
   InlineError,
-  Badge,
-  BadgeTone,
   LoadingState,
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import {
+  DataTable,
+  useDataTable,
+  DataTablePagination,
+  Badge,
+  Avatar,
+  createActionsColumn,
+} from "./_shared/table";
 
 const PAGE_SIZE = 20;
 
@@ -72,6 +77,7 @@ const isLocked = (u: AdminUser) => !!u.lockedUntil && new Date(u.lockedUntil) > 
 
 export const UsersPage: React.FC = () => {
   const { api } = useAuth();
+  const qc = useQueryClient();
   const [filters, setFilters] = React.useState({ role: "", status: "", search: "" });
   const [page, setPage] = React.useState(1);
   const [selected, setSelected] = React.useState<AdminUser | null>(null);
@@ -89,7 +95,7 @@ export const UsersPage: React.FC = () => {
     return map;
   }, [dbRoles]);
 
-  const { rows, total, pageCount, isLoading, isError, error } = usePagedList<AdminUser>({
+  const { rows, total, isLoading, isError, error } = usePagedList<AdminUser>({
     queryKey: QUERY_KEYS.users(),
     path: "/users",
     page,
@@ -97,24 +103,110 @@ export const UsersPage: React.FC = () => {
     filters,
   });
 
+  const lockMutation = useMutation({
+    mutationFn: (u: AdminUser) =>
+      api.request<unknown>(`/users/${u.id}/${isLocked(u) ? "unlock" : "lock"}`, { method: "POST" }),
+    onSuccess: (_data, u) => {
+      void qc.invalidateQueries({ queryKey: QUERY_KEYS.users() });
+      toast.success(isLocked(u) ? "Đã mở khoá tài khoản." : "Đã khoá tài khoản.");
+    },
+    onError: (e) => toast.error(toErrorMessage(e)),
+  });
+
   const patch = (p: Partial<typeof filters>) => {
     setFilters((f) => ({ ...f, ...p }));
     setPage(1);
   };
 
-  const columns: Column<AdminUser>[] = [
-    { key: "username", header: "Tên đăng nhập", render: (u) => u.username },
-    { key: "role", header: "Vai trò", render: (u) => roleLabelMap[u.role] ?? u.role },
-    { key: "scope", header: "Phạm vi", render: (u) => (u.chainWide ? "Toàn chuỗi" : `${u.branches.length} CN`) },
-    {
-      key: "status",
-      header: "Trạng thái",
-      render: (u) => {
-        const tone: BadgeTone = isLocked(u) ? "warn" : "active";
-        return <Badge tone={tone}>{isLocked(u) ? "Đã khoá" : "Hoạt động"}</Badge>;
+  const columns = React.useMemo<ColumnDef<AdminUser>[]>(
+    () => [
+      {
+        id: "user",
+        enableSorting: false,
+        meta: { headerLabel: "Người dùng" },
+        header: "Người dùng",
+        cell: ({ row }) => {
+          const u = row.original;
+          return (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-2)" }}>
+              <Avatar name={u.username} />
+              <span style={{ fontFamily: "var(--font-sans)", fontSize: "var(--text-sm)", color: "var(--text-primary)" }}>
+                {u.username}
+              </span>
+            </span>
+          );
+        },
       },
-    },
-  ];
+      {
+        id: "role",
+        enableSorting: false,
+        meta: { headerLabel: "Vai trò" },
+        header: "Vai trò",
+        cell: ({ row }) => roleLabelMap[row.original.role] ?? row.original.role,
+      },
+      {
+        id: "scope",
+        enableSorting: false,
+        meta: { headerLabel: "Phạm vi" },
+        header: "Phạm vi",
+        cell: ({ row }) => {
+          const u = row.original;
+          return u.chainWide ? "Toàn chuỗi" : `${u.branches.length} CN`;
+        },
+      },
+      {
+        id: "status",
+        enableSorting: false,
+        meta: { headerLabel: "Trạng thái" },
+        header: "Trạng thái",
+        cell: ({ row }) => {
+          const u = row.original;
+          const locked = isLocked(u);
+          return (
+            <Badge tone={locked ? "warn" : "success"}>
+              {locked ? "Đã khoá" : "Hoạt động"}
+            </Badge>
+          );
+        },
+      },
+      createActionsColumn<AdminUser>({
+        menu: [
+          {
+            key: "detail",
+            label: "Chi tiết",
+            onSelect: (u) => setSelected(u),
+          },
+          {
+            key: "lock",
+            label: "Khoá",
+            hidden: (u) => isLocked(u),
+            onSelect: (u) => lockMutation.mutate(u),
+          },
+          {
+            key: "unlock",
+            label: "Mở khoá",
+            hidden: (u) => !isLocked(u),
+            onSelect: (u) => lockMutation.mutate(u),
+          },
+        ],
+      }),
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [roleLabelMap],
+  );
+
+  const table = useDataTable<AdminUser>({
+    data: rows,
+    columns,
+    total,
+    page,
+    limit: PAGE_SIZE,
+    sort: null,
+    setPage,
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (u) => u.id,
+  });
 
   return (
     <PageStack>
@@ -156,8 +248,14 @@ export const UsersPage: React.FC = () => {
           <ErrorState message={toErrorMessage(error, "Không tải được danh sách người dùng")} />
         ) : (
           <>
-            <DataTable columns={columns} rows={rows} rowKey={(u) => u.id} onRowClick={(u) => setSelected(u)} emptyText="Không có người dùng." />
-            <Pagination page={page} pageCount={pageCount} total={total} onPageChange={setPage} />
+            <DataTable
+              table={table}
+              isLoading={false}
+              isError={false}
+              onRowClick={(u) => setSelected(u)}
+              empty="Không có người dùng."
+            />
+            <DataTablePagination table={table} total={total} />
           </>
         )}
       </Card>
