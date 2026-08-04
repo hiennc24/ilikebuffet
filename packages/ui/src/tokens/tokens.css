@@ -47,10 +47,6 @@
   --steel-500: #9C9890;
   --brass-500: #A98B53;
 
-  /* Line / hairline */
-  --line:        #E0D5C4;
-  --line-strong: #C9BBA4;
-
   /* Cool neutral surfaces (DTV-aligned) — used by the semantic surface/border/text
      tokens below so the app reads as clean near-white rather than warm cream, while
      the green brand accents (action/nav) stay warm-green. */

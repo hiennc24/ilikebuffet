@@ -101,9 +101,12 @@ function ActionsCell<T>({
     [],
   );
 
-  // Move focus into the menu when it opens (keyboard operability).
+  // Move focus into the menu when it opens; restore it to the trigger on close.
+  const wasOpen = React.useRef(false);
   React.useEffect(() => {
     if (open) menuItems()[0]?.focus();
+    else if (wasOpen.current) btnRef.current?.focus();
+    wasOpen.current = open;
   }, [open, menuItems]);
 
   // Roving focus with Arrow/Home/End while the menu is open.

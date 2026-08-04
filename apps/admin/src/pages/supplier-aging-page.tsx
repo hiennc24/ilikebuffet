@@ -199,6 +199,17 @@ export const SupplierAgingPage: React.FC = () => {
 
   return (
     <>
+      {/* KPI summary floats above the panel, like the other report pages. */}
+      {aging.data && (
+        <div style={{ marginBottom: "var(--space-4)" }}>
+          <KpiRow>
+            <KpiCard label="Tổng công nợ" value={formatVnd(aging.data.totals.totalOutstandingVnd)} />
+            <KpiCard label="Quá hạn" value={formatVnd(overdueVnd)} />
+            <KpiCard label="Chưa đến hạn" value={formatVnd(aging.data.totals.notDueVnd)} />
+            <KpiCard label="Số NCC còn nợ" value={String(aging.data.totals.supplierCount)} />
+          </KpiRow>
+        </div>
+      )}
       <ListPageShell
         activePath="/finance/aging"
         pageTitle="Tuổi nợ NCC"
@@ -245,14 +256,6 @@ export const SupplierAgingPage: React.FC = () => {
           </div>
         ) : aging.data ? (
           <>
-            <div style={{ padding: "var(--space-4)" }}>
-              <KpiRow>
-                <KpiCard label="Tổng công nợ" value={formatVnd(aging.data.totals.totalOutstandingVnd)} />
-                <KpiCard label="Quá hạn" value={formatVnd(overdueVnd)} />
-                <KpiCard label="Chưa đến hạn" value={formatVnd(aging.data.totals.notDueVnd)} />
-                <KpiCard label="Số NCC còn nợ" value={String(aging.data.totals.supplierCount)} />
-              </KpiRow>
-            </div>
             <DataTable table={table} empty="Không có công nợ." />
             <div style={{ padding: "var(--space-4)" }}>
               <TotalsBar

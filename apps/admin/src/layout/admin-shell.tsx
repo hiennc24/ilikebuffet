@@ -17,7 +17,7 @@ import { canAccessPath } from "../lib/rbac";
 import { useIsCompact, useMediaQuery } from "../lib/use-media-query";
 import { useTheme } from "../lib/theme";
 import { useSidebarCollapsed } from "../lib/use-sidebar";
-import { PageHeader, buildPathGroups } from "./page-header";
+import { PageHeader } from "./page-header";
 
 export interface NavItem {
   id: string;
@@ -1055,11 +1055,6 @@ function BranchSwitcher({ variant, selectedBranch, selectedBranchId, availableBr
   );
 }
 
-// ── PATH_GROUPS (derived once from nav data, passed to PageHeader) ────────────
-
-/** Path → parent nav-group label, longest path first so sub-routes prefix-match. */
-const PATH_GROUPS = buildPathGroups(DEFAULT_GROUPS, SYSTEM_ITEMS);
-
 // ── AdminShell ────────────────────────────────────────────────────────────────
 
 export const AdminShell: React.FC<AdminShellProps> = ({
@@ -1539,7 +1534,6 @@ export const AdminShell: React.FC<AdminShellProps> = ({
                 actions={pageActions}
                 toolbar={pageToolbar}
                 onNavigate={navigate}
-                pathGroups={PATH_GROUPS}
               />
             )}
             {children}

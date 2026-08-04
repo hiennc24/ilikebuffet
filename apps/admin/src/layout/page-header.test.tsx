@@ -13,19 +13,6 @@ import * as React from "react";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, within } from "@testing-library/react";
 import { PageHeader, PageTabs, collapseCrumbs } from "./page-header";
-import { buildPathGroups } from "./page-header";
-
-// Build a minimal path-groups fixture.
-const TEST_PATH_GROUPS = buildPathGroups(
-  [
-    { label: "Vận hành", items: [{ id: "monitor", label: "Theo dõi ca", path: "/monitor", iconPath: "" }] },
-    {
-      label: "Báo cáo & Đối soát",
-      items: [{ id: "revenue", label: "Doanh thu", path: "/reports/revenue", iconPath: "" }],
-    },
-  ],
-  [],
-);
 
 // ── collapseCrumbs ────────────────────────────────────────────────────────────
 
@@ -78,7 +65,6 @@ describe("PageHeader", () => {
         activePath="/monitor"
         pageTitle="Theo dõi ca"
         onNavigate={vi.fn()}
-        pathGroups={TEST_PATH_GROUPS}
       />,
     );
 
@@ -101,7 +87,6 @@ describe("PageHeader", () => {
         activePath="/monitor"
         pageTitle="Theo dõi ca"
         onNavigate={vi.fn()}
-        pathGroups={TEST_PATH_GROUPS}
       />,
     );
     const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
@@ -116,7 +101,6 @@ describe("PageHeader", () => {
         activePath="/monitor"
         pageTitle="Theo dõi ca"
         onNavigate={onNavigate}
-        pathGroups={TEST_PATH_GROUPS}
       />,
     );
     const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
@@ -130,7 +114,6 @@ describe("PageHeader", () => {
         activePath="/"
         pageTitle="Tổng quan"
         onNavigate={vi.fn()}
-        pathGroups={TEST_PATH_GROUPS}
       />,
     );
     const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
@@ -147,7 +130,6 @@ describe("PageHeader", () => {
         pageTitle="Tổng quan"
         onNavigate={vi.fn()}
         actions={<button type="button">Tạo mới</button>}
-        pathGroups={TEST_PATH_GROUPS}
       />,
     );
     expect(screen.getByRole("button", { name: "Tạo mới" })).toBeInTheDocument();
@@ -160,7 +142,6 @@ describe("PageHeader", () => {
         pageTitle="Tổng quan"
         onNavigate={vi.fn()}
         toolbar={<div data-testid="toolbar">Tabs here</div>}
-        pathGroups={TEST_PATH_GROUPS}
       />,
     );
     expect(screen.getByTestId("toolbar")).toBeInTheDocument();
@@ -172,7 +153,6 @@ describe("PageHeader", () => {
         activePath="/reports/revenue"
         pageTitle="Báo cáo doanh thu"
         onNavigate={vi.fn()}
-        pathGroups={TEST_PATH_GROUPS}
       />,
     );
     const nav = screen.getByRole("navigation", { name: "Breadcrumb" });

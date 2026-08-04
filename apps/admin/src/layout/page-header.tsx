@@ -12,43 +12,6 @@
  */
 
 import * as React from "react";
-import type { NavGroup, NavItem } from "./admin-shell";
-
-// ── Path → group lookup (built from the nav arrays imported from admin-shell) ──
-
-/**
- * Build PATH_GROUPS from nav arrays. Exported so admin-shell can consume the
- * same derivation without duplicating the nav data.
- */
-export function buildPathGroups(
-  defaultGroups: NavGroup[],
-  systemItems: NavItem[],
-): { path: string; group: string }[] {
-  return [
-    ...defaultGroups.flatMap((g) =>
-      g.items.map((i) => ({ path: i.path, group: g.label ?? "" })),
-    ),
-    ...systemItems.map((i) => ({ path: i.path, group: "Hệ thống" })),
-  ].sort((a, b) => b.path.length - a.path.length);
-}
-
-/** Cached PATH_GROUPS — populated on first call to groupForPath. */
-let _pathGroups: { path: string; group: string }[] | null = null;
-
-/**
- * Lazily-initialised lookup. Accepts an optional override for testing.
- * In production the admin-shell passes its nav arrays at first render.
- */
-export function initPathGroups(groups: { path: string; group: string }[]): void {
-  _pathGroups = groups;
-}
-
-/** The nav group a route belongs to (exact match, else longest matching prefix). */
-export function groupForPath(path: string, pathGroups?: { path: string; group: string }[]): string | null {
-  const pg = pathGroups ?? _pathGroups ?? [];
-  const hit = pg.find((e) => path === e.path || path.startsWith(`${e.path}/`));
-  return hit && hit.group ? hit.group : null;
-}
 
 // ── Collapse helper ────────────────────────────────────────────────────────────
 
@@ -219,8 +182,6 @@ export interface PageHeaderProps {
   /** Optional toolbar row below the breadcrumb row (e.g. <PageTabs />). */
   toolbar?: React.ReactNode;
   onNavigate: (path: string) => void;
-  /** Pre-built path groups (from admin-shell); avoids re-deriving on every render. */
-  pathGroups?: { path: string; group: string }[];
 }
 
 export function PageHeader({
@@ -229,7 +190,6 @@ export function PageHeader({
   actions,
   toolbar,
   onNavigate,
-  pathGroups,
 }: PageHeaderProps) {
   const path = activePath ?? "/";
   const page = pageTitle ?? "";
