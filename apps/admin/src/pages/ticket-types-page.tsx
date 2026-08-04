@@ -9,18 +9,17 @@
 
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Button, FormField, Dialog } from "@ilikebuffet/ui";
 import {
-  Card,
-  DataTable,
-  Badge,
-  PageStack,
+  InlineError,
   LoadingState,
   ErrorState,
-  InlineError,
   toErrorMessage,
-  type Column,
 } from "./_shared/admin-ui";
+import { DataTable, useDataTable, DataTablePagination, Badge } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 import { useAuth } from "../auth/auth-context";
 import { QUERY_KEYS } from "../lib/query-keys";
 
@@ -280,6 +279,8 @@ export const TicketTypesPage: React.FC = () => {
     queryFn: () => api.get<TicketType[]>("/sales/ticket-types"),
   });
 
+  const rows: TicketType[] = Array.isArray(data) ? data : [];
+
   // ── Create mutation ─────────────────────────────────────────────────────────
 
   const createMutation = useMutation({
@@ -413,117 +414,142 @@ export const TicketTypesPage: React.FC = () => {
 
   // ── Table columns ───────────────────────────────────────────────────────────
 
-  const columns: Column<TicketType>[] = [
-    {
-      key: "color-name",
-      header: "Tên loại vé",
-      render: (row) => (
-        <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-3)" }}>
-          <span
-            aria-hidden="true"
-            style={{
-              display: "inline-block",
-              width: "16px",
-              height: "16px",
-              borderRadius: "4px",
-              background: row.color || DEFAULT_COLOR,
-              flexShrink: 0,
-            }}
-          />
-          <span style={{ color: "var(--text-primary)", fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"] }}>
-            {row.name}
+  const columns = React.useMemo<ColumnDef<TicketType>[]>(
+    () => [
+      {
+        id: "color-name",
+        enableSorting: false,
+        meta: { headerLabel: "Tên loại vé" },
+        header: "Tên loại vé",
+        cell: ({ row }) => (
+          <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-3)" }}>
+            <span
+              aria-hidden="true"
+              style={{
+                display: "inline-block",
+                width: "16px",
+                height: "16px",
+                borderRadius: "4px",
+                background: row.original.color || DEFAULT_COLOR,
+                flexShrink: 0,
+              }}
+            />
+            <span style={{ color: "var(--text-primary)", fontWeight: "var(--fw-medium)" as React.CSSProperties["fontWeight"] }}>
+              {row.original.name}
+            </span>
           </span>
-        </span>
-      ),
-    },
-    {
-      key: "description",
-      header: "Mô tả",
-      render: (row) => (
-        <span
-          style={{
-            color: row.description ? "var(--text-secondary)" : "var(--text-muted)",
-            maxWidth: "280px",
-            display: "inline-block",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {row.description || "—"}
-        </span>
-      ),
-    },
-    {
-      key: "displayOrder",
-      header: "Thứ tự",
-      align: "right",
-      width: "80px",
-      render: (row) => (
-        <span style={{ color: "var(--text-secondary)", fontVariantNumeric: "tabular-nums" }}>
-          {row.displayOrder}
-        </span>
-      ),
-    },
-    {
-      key: "isFree",
-      header: "Loại giá",
-      width: "120px",
-      render: (row) =>
-        row.isFree ? (
-          <span
-            title="Vé miễn phí vẫn tính vào số lượng khách nhưng giá = 0 đ"
-            style={{ cursor: "help" }}
-          >
-            <Badge tone="warn">Miễn phí</Badge>
-          </span>
-        ) : (
-          <span style={{ color: "var(--text-muted)", fontSize: "var(--text-xs)" }}>—</span>
         ),
-    },
-    {
-      key: "status",
-      header: "Trạng thái",
-      width: "120px",
-      render: (row) => (
-        <Badge tone={row.status === "ACTIVE" ? "active" : "muted"}>
-          {row.status === "ACTIVE" ? "Đang dùng" : "Ngưng"}
-        </Badge>
-      ),
-    },
-    {
-      key: "actions",
-      header: "",
-      width: "140px",
-      align: "right",
-      render: (row) => (
-        <span
-          style={{ display: "inline-flex", gap: "var(--space-2)", alignItems: "center" }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Button
-            variant="ghost"
-            onClick={(e) => {
-              e.stopPropagation();
-              openEdit(row);
+      },
+      {
+        id: "description",
+        enableSorting: false,
+        meta: { headerLabel: "Mô tả" },
+        header: "Mô tả",
+        cell: ({ row }) => (
+          <span
+            style={{
+              color: row.original.description ? "var(--text-secondary)" : "var(--text-muted)",
+              maxWidth: "280px",
+              display: "inline-block",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
             }}
-            style={{ height: "30px", padding: "0 var(--space-3)", fontSize: "var(--text-xs)" }}
           >
-            Sửa
-          </Button>
-          {row.status === "ACTIVE" && (
+            {row.original.description || "—"}
+          </span>
+        ),
+      },
+      {
+        id: "displayOrder",
+        enableSorting: false,
+        meta: { headerLabel: "Thứ tự", width: "80px", align: "right" },
+        header: "Thứ tự",
+        cell: ({ row }) => (
+          <span style={{ color: "var(--text-secondary)", fontVariantNumeric: "tabular-nums" }}>
+            {row.original.displayOrder}
+          </span>
+        ),
+      },
+      {
+        id: "isFree",
+        enableSorting: false,
+        meta: { headerLabel: "Loại giá", width: "120px" },
+        header: "Loại giá",
+        cell: ({ row }) =>
+          row.original.isFree ? (
+            <span
+              title="Vé miễn phí vẫn tính vào số lượng khách nhưng giá = 0 đ"
+              style={{ cursor: "help" }}
+            >
+              <Badge tone="warn">Miễn phí</Badge>
+            </span>
+          ) : (
+            <span style={{ color: "var(--text-muted)", fontSize: "var(--text-xs)" }}>—</span>
+          ),
+      },
+      {
+        id: "status",
+        enableSorting: false,
+        meta: { headerLabel: "Trạng thái", width: "120px" },
+        header: "Trạng thái",
+        cell: ({ row }) => (
+          <Badge tone={row.original.status === "ACTIVE" ? "success" : "neutral"}>
+            {row.original.status === "ACTIVE" ? "Đang dùng" : "Ngưng"}
+          </Badge>
+        ),
+      },
+      {
+        id: "actions",
+        enableSorting: false,
+        meta: { headerLabel: "", width: "140px", align: "right" },
+        header: "",
+        cell: ({ row }) => (
+          <span
+            style={{ display: "inline-flex", gap: "var(--space-2)", alignItems: "center" }}
+            onClick={(e) => e.stopPropagation()}
+          >
             <Button
-              variant="danger"
-              onClick={(e) => openDeactivate(row, e)}
+              variant="ghost"
+              onClick={(e) => {
+                e.stopPropagation();
+                openEdit(row.original);
+              }}
               style={{ height: "30px", padding: "0 var(--space-3)", fontSize: "var(--text-xs)" }}
             >
-              Ngưng
+              Sửa
             </Button>
-          )}
-        </span>
-      ),
-    },
-  ];
+            {row.original.status === "ACTIVE" && (
+              <Button
+                variant="danger"
+                onClick={(e) => openDeactivate(row.original, e)}
+                style={{ height: "30px", padding: "0 var(--space-3)", fontSize: "var(--text-xs)" }}
+              >
+                Ngưng
+              </Button>
+            )}
+          </span>
+        ),
+      },
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  // ── Table instance ──────────────────────────────────────────────────────────
+
+  const table = useDataTable<TicketType>({
+    data: rows,
+    columns,
+    total: rows.length,
+    page: 1,
+    limit: rows.length || 50,
+    sort: null,
+    setPage: () => {},
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (row) => row.id,
+  });
 
   // ── Render ──────────────────────────────────────────────────────────────────
 
@@ -542,29 +568,47 @@ export const TicketTypesPage: React.FC = () => {
 
   return (
     <>
-      <PageStack>
-        <Card
-          title="Loại vé"
-          description="Quản lý các loại vé phục vụ trong buffet. HQ có thể thêm, sửa, ngưng loại vé."
-          actions={
-            <Button variant="action" onClick={openCreate}>
-              Thêm loại vé
-            </Button>
-          }
-        >
-          {isLoading && <LoadingState />}
-          {!isLoading && error && <ErrorState message={toErrorMessage(error)} />}
-          {!isLoading && !error && (
-            <DataTable<TicketType>
-              columns={columns}
-              rows={data ?? []}
-              rowKey={(row) => row.id}
-              onRowClick={openEdit}
-              emptyText="Chưa có loại vé nào. Nhấn 'Thêm loại vé' để bắt đầu."
-            />
-          )}
-        </Card>
-      </PageStack>
+      <ListPageShell
+        activePath="/settings/ticket-types"
+        pageTitle="Loại vé"
+        actions={
+          <Button variant="action" onClick={openCreate}>
+            Thêm loại vé
+          </Button>
+        }
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: rows.length }]}
+              />
+            }
+          />
+        }
+        pagination={
+          !isLoading && !error
+            ? <DataTablePagination table={table} total={rows.length} />
+            : undefined
+        }
+      >
+        {isLoading ? (
+          <div style={{ padding: "var(--space-5)" }}>
+            <LoadingState />
+          </div>
+        ) : error ? (
+          <div style={{ padding: "var(--space-5)" }}>
+            <ErrorState message={toErrorMessage(error)} />
+          </div>
+        ) : (
+          <DataTable
+            table={table}
+            onRowClick={openEdit}
+            empty="Chưa có loại vé nào. Nhấn 'Thêm loại vé' để bắt đầu."
+          />
+        )}
+      </ListPageShell>
 
       {(dialogMode === "create" || dialogMode === "edit") && (
         <TicketTypeFormDialog

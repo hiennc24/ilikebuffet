@@ -4,6 +4,7 @@
  */
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { formatVnd } from "@ilikebuffet/shared";
 import { Button, FormField } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
@@ -11,7 +12,10 @@ import { unwrapList } from "../lib/unwrap-list";
 import { usePagedList } from "../lib/use-paged-list";
 import { useReport } from "../lib/use-report";
 import { QUERY_KEYS } from "../lib/query-keys";
-import { Card, PageStack, DataTable, Column, FilterBar, Pagination, DetailDrawer, Select, InlineError, Badge, LoadingState, ErrorState, toErrorMessage } from "./_shared/admin-ui";
+import { Card, FilterBar, DetailDrawer, Select, InlineError, LoadingState, ErrorState, toErrorMessage } from "./_shared/admin-ui";
+import { DataTable, useDataTable, DataTablePagination, Badge } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 import type { Branch } from "./_shared/report-ui";
 
 const CHAIN_WIDE = new Set(["QUAN_TRI_HQ", "CHU_CHUOI", "KE_TOAN_CHUOI"]);
@@ -36,20 +40,11 @@ export const OfflineReconPage: React.FC = () => {
   const branchesQuery = useQuery({ queryKey: QUERY_KEYS.branches(), enabled: isChainWide, queryFn: () => api.get<Branch[] | { data: Branch[] }>("/branches") });
   const branches = unwrapList(branchesQuery.data);
 
-  return (
-    <PageStack>
-      <QuarantineCard api={api} />
-      <NumberGapsCard api={api} branches={isChainWide ? branches : undefined} />
-    </PageStack>
-  );
-};
-
-const QuarantineCard: React.FC<{ api: ReturnType<typeof useAuth>["api"] }> = ({ api }) => {
   const [resolved, setResolved] = React.useState("false");
   const [page, setPage] = React.useState(1);
   const [selected, setSelected] = React.useState<QRow | null>(null);
 
-  const { rows, total, pageCount, isLoading, isError, error } = usePagedList<QRow>({
+  const { rows, total, isLoading, isError, error } = usePagedList<QRow>({
     queryKey: QUERY_KEYS.quarantineReport(),
     path: "/sales/reports/quarantine",
     page,
@@ -57,34 +52,102 @@ const QuarantineCard: React.FC<{ api: ReturnType<typeof useAuth>["api"] }> = ({ 
     filters: { resolved },
   });
 
-  const columns: Column<QRow>[] = [
-    { key: "number", header: "Số bill", render: (r) => r.number },
-    { key: "reason", header: "Lý do cách ly", render: (r) => r.quarantineReason ?? "—" },
-    { key: "total", header: "Tổng", align: "right", render: (r) => formatVnd(r.totalVnd) },
-    { key: "status", header: "Trạng thái", render: (r) => <Badge tone={r.quarantineResolvedAt ? "active" : "warn"}>{r.quarantineResolvedAt ? "Đã xử lý" : "Chờ xử lý"}</Badge> },
-  ];
+  const columns = React.useMemo<ColumnDef<QRow>[]>(
+    () => [
+      {
+        id: "number",
+        enableSorting: false,
+        meta: { headerLabel: "Số bill" },
+        header: "Số bill",
+        cell: ({ row }) => row.original.number,
+      },
+      {
+        id: "reason",
+        enableSorting: false,
+        meta: { headerLabel: "Lý do cách ly" },
+        header: "Lý do cách ly",
+        cell: ({ row }) => row.original.quarantineReason ?? "—",
+      },
+      {
+        id: "total",
+        enableSorting: false,
+        meta: { headerLabel: "Tổng", align: "right" },
+        header: "Tổng",
+        cell: ({ row }) => formatVnd(row.original.totalVnd),
+      },
+      {
+        id: "status",
+        enableSorting: false,
+        meta: { headerLabel: "Trạng thái" },
+        header: "Trạng thái",
+        cell: ({ row }) => (
+          <Badge tone={row.original.quarantineResolvedAt ? "success" : "warn"}>
+            {row.original.quarantineResolvedAt ? "Đã xử lý" : "Chờ xử lý"}
+          </Badge>
+        ),
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<QRow>({
+    data: rows,
+    columns,
+    total,
+    page,
+    limit: PAGE_SIZE,
+    sort: null,
+    setPage,
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (r) => r.id,
+  });
 
   return (
-    <Card title="Bill cách ly" description="Bill offline bất thường cần soát (lệch giờ, force-close, lệch thanh toán…).">
-      <FilterBar>
-        <Select aria-label="Trạng thái xử lý" value={resolved} onChange={(e) => { setResolved(e.target.value); setPage(1); }}>
-          <option value="false">Chờ xử lý</option>
-          <option value="true">Đã xử lý</option>
-          <option value="">Tất cả</option>
-        </Select>
-      </FilterBar>
-      {isLoading ? (
-        <LoadingState />
-      ) : isError ? (
-        <ErrorState message={toErrorMessage(error, "Không tải được danh sách cách ly")} />
-      ) : (
-        <>
-          <DataTable columns={columns} rows={rows} rowKey={(r) => r.id} onRowClick={(r) => setSelected(r)} emptyText="Không có bill cách ly." />
-          <Pagination page={page} pageCount={pageCount} total={total} onPageChange={setPage} />
-        </>
-      )}
+    <>
+      <ListPageShell
+        activePath="/reports/offline"
+        pageTitle="Đối soát offline"
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: rows.length }]}
+              />
+            }
+          >
+            <Select aria-label="Trạng thái xử lý" value={resolved} onChange={(e) => { setResolved(e.target.value); setPage(1); }}>
+              <option value="false">Chờ xử lý</option>
+              <option value="true">Đã xử lý</option>
+              <option value="">Tất cả</option>
+            </Select>
+          </PageToolbar>
+        }
+        pagination={
+          !isLoading && !isError
+            ? <DataTablePagination table={table} total={total} />
+            : undefined
+        }
+      >
+        {isLoading ? (
+          <LoadingState />
+        ) : isError ? (
+          <ErrorState message={toErrorMessage(error, "Không tải được danh sách cách ly")} />
+        ) : (
+          <DataTable
+            table={table}
+            onRowClick={(r) => setSelected(r)}
+            empty="Không có bill cách ly."
+          />
+        )}
+      </ListPageShell>
+
+      <NumberGapsCard api={api} branches={isChainWide ? branches : undefined} />
+
       <QuarantineDrawer row={selected} api={api} onClose={() => setSelected(null)} />
-    </Card>
+    </>
   );
 };
 
@@ -112,7 +175,7 @@ const QuarantineDrawer: React.FC<{ row: QRow | null; api: ReturnType<typeof useA
         {row.tempNumber && <div>Số tạm: {row.tempNumber}</div>}
         <div>Tổng: {formatVnd(row.totalVnd)}</div>
         {row.quarantineResolvedAt ? (
-          <Badge tone="active">Đã xử lý — {row.quarantineResolveNote ?? ""}</Badge>
+          <Badge tone="success">Đã xử lý — {row.quarantineResolveNote ?? ""}</Badge>
         ) : (
           <>
             <FormField name="note" label="Ghi chú xử lý" value={note} onChange={(e) => setNote(e.target.value)} />
@@ -163,7 +226,7 @@ const NumberGapsCard: React.FC<{ api: ReturnType<typeof useAuth>["api"]; branche
         <ErrorState message={toErrorMessage(error, "Không soát được")} />
       ) : data ? (
         data.missing.length === 0 ? (
-          <Badge tone="active">Không thiếu số bill nào (seq {data.min}–{data.max}).</Badge>
+          <Badge tone="success">Không thiếu số bill nào (seq {data.min}–{data.max}).</Badge>
         ) : (
           <div>
             <Badge tone="warn">Thiếu {data.missing.length} số bill</Badge>

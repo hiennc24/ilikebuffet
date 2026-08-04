@@ -158,7 +158,7 @@ export function App() {
                     <Route
                       path="/settings/ticket-types"
                       element={
-                        <ShellLayout pageTitle="Loại vé">
+                        <ShellLayout bareChrome>
                           <TicketTypesPage />
                         </ShellLayout>
                       }
@@ -373,7 +373,7 @@ export function App() {
                       path="/finance"
                       element={
                         <RequireAccess path="/finance">
-                          <ShellLayout pageTitle="Thu - Chi">
+                          <ShellLayout bareChrome>
                             <FinancePage />
                           </ShellLayout>
                         </RequireAccess>
@@ -413,7 +413,7 @@ export function App() {
                       path="/reports/offline"
                       element={
                         <RequireAccess path="/reports/offline">
-                          <ShellLayout pageTitle="Đối soát offline">
+                          <ShellLayout bareChrome>
                             <OfflineReconPage />
                           </ShellLayout>
                         </RequireAccess>

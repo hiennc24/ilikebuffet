@@ -8,13 +8,23 @@
  */
 import * as React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import { formatVnd } from "@ilikebuffet/shared";
 import { Button, Dialog } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
 import { usePagedList, buildQuery } from "../lib/use-paged-list";
 import { QUERY_KEYS } from "../lib/query-keys";
-import { Card, PageStack, DataTable, Column, FilterBar, Pagination, Select, InlineError, Badge, LoadingState, ErrorState, toErrorMessage } from "./_shared/admin-ui";
+import {
+  Select,
+  InlineError,
+  LoadingState,
+  ErrorState,
+  toErrorMessage,
+} from "./_shared/admin-ui";
+import { DataTable, useDataTable, DataTablePagination, Badge } from "./_shared/table";
+import { ListPageShell } from "../layout/list-page-shell";
+import { PageToolbar, PageTabs } from "../layout/page-header";
 import { KpiCard, KpiRow } from "./_shared/report-ui";
 
 const PAGE_SIZE = 20;
@@ -53,7 +63,7 @@ export const FinancePage: React.FC = () => {
   const accountsQuery = useQuery({ queryKey: QUERY_KEYS.accounts(), queryFn: () => api.get<Account[] | { data: Account[] }>("/master-data/accounts") });
   const accounts = unwrapList(accountsQuery.data);
 
-  const { rows, total, pageCount, isLoading, isError, error } = usePagedList<FinanceRow>({
+  const { rows, total, isLoading, isError, error } = usePagedList<FinanceRow>({
     queryKey: QUERY_KEYS.finance(),
     path: "/sales/finance",
     page,
@@ -71,17 +81,73 @@ export const FinancePage: React.FC = () => {
     setPage(1);
   };
 
-  const columns: Column<FinanceRow>[] = [
-    { key: "date", header: "Ngày", render: (r) => vnDate(r.occurredAt) },
-    { key: "code", header: "Mã phiếu", render: (r) => r.code },
-    { key: "account", header: "Tài khoản", render: (r) => r.accountName },
-    { key: "flow", header: "Loại", render: (r) => <Badge tone={r.flow === "INCOME" ? "active" : "warn"}>{r.flow === "INCOME" ? "Thu" : "Chi"}</Badge> },
-    { key: "amount", header: "Số tiền", align: "right", render: (r) => formatVnd(r.amountVnd) },
-    { key: "method", header: "Phương thức", render: (r) => r.method },
-  ];
+  const columns = React.useMemo<ColumnDef<FinanceRow>[]>(
+    () => [
+      {
+        id: "date",
+        enableSorting: false,
+        meta: { headerLabel: "Ngày" },
+        header: "Ngày",
+        cell: ({ row }) => vnDate(row.original.occurredAt),
+      },
+      {
+        id: "code",
+        enableSorting: false,
+        meta: { headerLabel: "Mã phiếu" },
+        header: "Mã phiếu",
+        cell: ({ row }) => row.original.code,
+      },
+      {
+        id: "account",
+        enableSorting: false,
+        meta: { headerLabel: "Tài khoản" },
+        header: "Tài khoản",
+        cell: ({ row }) => row.original.accountName,
+      },
+      {
+        id: "flow",
+        enableSorting: false,
+        meta: { headerLabel: "Loại", width: "100px" },
+        header: "Loại",
+        cell: ({ row }) => (
+          <Badge tone={row.original.flow === "INCOME" ? "success" : "warn"}>
+            {row.original.flow === "INCOME" ? "Thu" : "Chi"}
+          </Badge>
+        ),
+      },
+      {
+        id: "amount",
+        enableSorting: false,
+        meta: { headerLabel: "Số tiền", align: "right" },
+        header: "Số tiền",
+        cell: ({ row }) => formatVnd(row.original.amountVnd),
+      },
+      {
+        id: "method",
+        enableSorting: false,
+        meta: { headerLabel: "Phương thức" },
+        header: "Phương thức",
+        cell: ({ row }) => row.original.method,
+      },
+    ],
+    [],
+  );
+
+  const table = useDataTable<FinanceRow>({
+    data: rows,
+    columns,
+    total,
+    page,
+    limit: PAGE_SIZE,
+    sort: null,
+    setPage,
+    setLimit: () => {},
+    setSort: () => {},
+    getRowId: (r) => r.id,
+  });
 
   return (
-    <PageStack>
+    <>
       {summary.data && (
         <KpiRow>
           <KpiCard label="Tổng thu" value={formatVnd(summary.data.totals.incomeVnd)} />
@@ -90,39 +156,54 @@ export const FinancePage: React.FC = () => {
         </KpiRow>
       )}
 
-      <Card
-        title="Thu - Chi"
-        description="Phiếu thu-chi theo tài khoản kế toán. Vượt ngưỡng cần quản lý duyệt PIN."
+      <ListPageShell
+        activePath="/finance"
+        pageTitle="Thu - Chi"
         actions={<Button variant="action" onClick={() => setCreating(true)}>Phiếu mới</Button>}
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: rows.length }]}
+              />
+            }
+          >
+            <Select aria-label="Loại" value={filters.flow} onChange={(e) => patch({ flow: e.target.value })}>
+              <option value="">Tất cả thu/chi</option>
+              <option value="INCOME">Thu</option>
+              <option value="EXPENSE">Chi</option>
+            </Select>
+            <Select aria-label="Tài khoản" value={filters.accountId} onChange={(e) => patch({ accountId: e.target.value })}>
+              <option value="">Tất cả tài khoản</option>
+              {accounts.map((a) => (<option key={a.id} value={a.id}>{a.name}</option>))}
+            </Select>
+            <input type="date" aria-label="Từ ngày" value={filters.from} onChange={(e) => patch({ from: e.target.value })} style={inputStyle} />
+            <input type="date" aria-label="Đến ngày" value={filters.to} onChange={(e) => patch({ to: e.target.value })} style={inputStyle} />
+          </PageToolbar>
+        }
+        pagination={
+          !isLoading && !isError
+            ? <DataTablePagination table={table} total={total} />
+            : undefined
+        }
       >
-        <FilterBar>
-          <Select aria-label="Loại" value={filters.flow} onChange={(e) => patch({ flow: e.target.value })}>
-            <option value="">Tất cả thu/chi</option>
-            <option value="INCOME">Thu</option>
-            <option value="EXPENSE">Chi</option>
-          </Select>
-          <Select aria-label="Tài khoản" value={filters.accountId} onChange={(e) => patch({ accountId: e.target.value })}>
-            <option value="">Tất cả tài khoản</option>
-            {accounts.map((a) => (<option key={a.id} value={a.id}>{a.name}</option>))}
-          </Select>
-          <input type="date" aria-label="Từ ngày" value={filters.from} onChange={(e) => patch({ from: e.target.value })} style={inputStyle} />
-          <input type="date" aria-label="Đến ngày" value={filters.to} onChange={(e) => patch({ to: e.target.value })} style={inputStyle} />
-        </FilterBar>
-
         {isLoading ? (
-          <LoadingState />
+          <div style={{ padding: "var(--space-5)" }}>
+            <LoadingState />
+          </div>
         ) : isError ? (
-          <ErrorState message={toErrorMessage(error, "Không tải được phiếu thu-chi")} />
+          <div style={{ padding: "var(--space-5)" }}>
+            <ErrorState message={toErrorMessage(error, "Không tải được phiếu thu-chi")} />
+          </div>
         ) : (
-          <>
-            <DataTable columns={columns} rows={rows} rowKey={(r) => r.id} emptyText="Chưa có phiếu." />
-            <Pagination page={page} pageCount={pageCount} total={total} onPageChange={setPage} />
-          </>
+          <DataTable table={table} empty="Chưa có phiếu." />
         )}
-      </Card>
+      </ListPageShell>
 
       {creating && <FinanceDialog accounts={accounts} onClose={() => setCreating(false)} />}
-    </PageStack>
+    </>
   );
 };
 
