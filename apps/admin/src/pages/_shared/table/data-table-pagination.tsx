@@ -139,9 +139,9 @@ export function DataTablePagination<TData extends RowData>({
         display: "flex",
         flexWrap: "wrap",
         alignItems: "center",
-        justifyContent: "space-between",
-        gap: "var(--space-3)",
-        marginTop: "var(--space-3)",
+        // DTV groups the whole control on the right (size selector + page buttons).
+        justifyContent: "flex-end",
+        gap: "var(--space-5)",
         fontFamily: "var(--font-sans)",
       }}
     >

@@ -305,7 +305,6 @@ export function DataTable<TData extends RowData>({
             ) : (
               rows.map((row) => {
                 const isSelected = row.getIsSelected();
-                const rowBg = isSelected ? "var(--nav-active-bg)" : "var(--bg-raised)";
 
                 return (
                   <TR
@@ -335,7 +334,6 @@ export function DataTable<TData extends RowData>({
                           align={meta?.align ?? "left"}
                           pinnedLeft={meta?.pinnedLeft}
                           pinnedRight={meta?.pinnedRight}
-                          rowBg={rowBg}
                         >
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TD>

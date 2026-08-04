@@ -79,6 +79,11 @@ export const TBody: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
 // ── TR ────────────────────────────────────────────────────────────────────────
 
+/** The current row's background, shared with every cell (incl. sticky/pinned ones)
+ *  so hover/selected colours span the whole row edge-to-edge — no white gaps at
+ *  the pinned checkbox/actions cells. */
+const RowBgContext = React.createContext<string>("var(--bg-raised)");
+
 export interface TRProps {
   children: React.ReactNode;
   selected?: boolean;
@@ -104,32 +109,35 @@ export const TR: React.FC<TRProps> = ({
 }) => {
   const [hovered, setHovered] = React.useState(false);
 
+  // Opaque by default so sticky/pinned cells never let scrolled content bleed
+  // through; the whole row (every cell) reads this via RowBgContext.
   const bgColor = selected
     ? "var(--nav-active-bg)"
     : hovered && clickable
       ? "var(--bg-surface)"
-      : "transparent";
+      : "var(--bg-raised)";
 
   return (
-    <tr
-      role={role}
-      tabIndex={tabIndex}
-      aria-selected={ariaSelected}
-      onClick={onClick}
-      onKeyDown={onKeyDown}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        borderBottom: "1px solid var(--border-subtle)",
-        background: bgColor,
-        transition: "background var(--dur-fast)",
-        cursor: clickable ? "pointer" : "default",
-        outline: "none",
-        ...style,
-      }}
-    >
-      {children}
-    </tr>
+    <RowBgContext.Provider value={bgColor}>
+      <tr
+        role={role}
+        tabIndex={tabIndex}
+        aria-selected={ariaSelected}
+        onClick={onClick}
+        onKeyDown={onKeyDown}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{
+          background: bgColor,
+          transition: "background var(--dur-fast)",
+          cursor: clickable ? "pointer" : "default",
+          outline: "none",
+          ...style,
+        }}
+      >
+        {children}
+      </tr>
+    </RowBgContext.Provider>
   );
 };
 
@@ -214,33 +222,30 @@ export const TD: React.FC<TDProps> = ({
   pinnedRight,
   rowBg,
   style,
-}) => (
-  <td
-    style={{
-      textAlign: align,
-      // ≈56px row height for a comfortable, un-cramped density (DTV default).
-      padding: "14px var(--space-3)",
-      verticalAlign: "middle",
-      color: "var(--text-primary)",
-      fontSize: "var(--text-sm)",
-      fontFamily: "var(--font-sans)",
-      whiteSpace: "nowrap",
-      ...(pinnedLeft && {
-        position: "sticky",
-        left: 0,
-        zIndex: 1,
-        // Inherit the current row background so scrolled content is hidden.
-        background: rowBg ?? "var(--bg-raised)",
-      }),
-      ...(pinnedRight && {
-        position: "sticky",
-        right: 0,
-        zIndex: 1,
-        background: rowBg ?? "var(--bg-raised)",
-      }),
-      ...style,
-    }}
-  >
-    {children}
-  </td>
-);
+}) => {
+  const ctxBg = React.useContext(RowBgContext);
+  const bg = rowBg ?? ctxBg;
+  return (
+    <td
+      style={{
+        textAlign: align,
+        // ≈56px row height for a comfortable, un-cramped density (DTV default).
+        padding: "14px var(--space-3)",
+        verticalAlign: "middle",
+        color: "var(--text-primary)",
+        fontSize: "var(--text-sm)",
+        fontFamily: "var(--font-sans)",
+        whiteSpace: "nowrap",
+        // Every cell shares the row background so hover/selected spans the whole
+        // row; the divider lives on the cell so it isn't hidden by pinned cells.
+        background: bg,
+        borderBottom: "1px solid var(--border-subtle)",
+        ...(pinnedLeft && { position: "sticky", left: 0, zIndex: 1 }),
+        ...(pinnedRight && { position: "sticky", right: 0, zIndex: 1 }),
+        ...style,
+      }}
+    >
+      {children}
+    </td>
+  );
+};
