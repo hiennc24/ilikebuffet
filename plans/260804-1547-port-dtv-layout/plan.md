@@ -2,7 +2,7 @@
 title: "Port toàn bộ layout DTV sang fnb admin"
 slug: port-dtv-layout
 created: 2026-08-04
-status: in-progress
+status: done
 priority: P1
 decisions: cool DTV surfaces + keep green brand; global tokens (admin+POS); pilot users-roles first
 progress: |
@@ -11,8 +11,11 @@ progress: |
   + iterated to match DTV (centered 1200/1440 container, 2-level breadcrumb, floating
   panel, full-row hover, portaled row-actions menu, drawer z-index, right-aligned
   pagination). D4 rollout applied to permissions/suppliers/ingredients/devices/branches.
-  Remaining (D5, follow-up): reports + orders/stock/pricing/finance/accounts/ticket-types/
-  audit/holidays still on legacy Card+DataTable; optional accent green→teal.
+  D5 rollout COMPLETE: every list/report/editor page migrated to the DTV chrome
+  (ListPageShell for lists, standalone PageHeader for editors like pricing/recipes),
+  all on react-table where a real table exists; only the overview keeps the global
+  header. 223 admin tests + 67 POS tests green throughout. Optional follow-up: accent
+  green→teal (user kept green).
 ---
 
 context: |

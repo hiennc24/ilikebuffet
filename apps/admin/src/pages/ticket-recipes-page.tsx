@@ -11,7 +11,9 @@ import { Button } from "@ilikebuffet/ui";
 import { useAuth } from "../auth/auth-context";
 import { unwrapList } from "../lib/unwrap-list";
 import { QUERY_KEYS } from "../lib/query-keys";
-import { Card, PageStack, Select, InlineError, LoadingState, toErrorMessage } from "./_shared/admin-ui";
+import { useNavigate } from "react-router-dom";
+import { Select, InlineError, LoadingState, toErrorMessage } from "./_shared/admin-ui";
+import { PageHeader } from "../layout/page-header";
 
 interface TicketType {
   id: string;
@@ -70,9 +72,23 @@ export const TicketRecipesPage: React.FC = () => {
     if (!isChainWide && selectedBranchId) setScope(selectedBranchId);
   }, [isChainWide, selectedBranchId]);
 
+  const navigate = useNavigate();
   return (
-    <PageStack>
-      <Card title="Định mức theo loại vé" description="Ước tính nguyên liệu tiêu hao cho 1 vé — dùng để tự trừ kho khi bán.">
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <PageHeader
+        activePath="/inventory/recipes"
+        pageTitle="Định mức theo loại vé"
+        onNavigate={(p) => navigate(p)}
+      />
+      <section
+        style={{
+          background: "var(--bg-raised, #FFFFFF)",
+          border: "1px solid var(--border-subtle)",
+          borderRadius: "var(--radius-lg)",
+          boxShadow: "var(--shadow-sm)",
+          padding: "var(--space-5)",
+        }}
+      >
         <div style={{ display: "flex", gap: "var(--space-4)", flexWrap: "wrap" }}>
           <label style={labelCol}>
             Loại vé
@@ -104,8 +120,8 @@ export const TicketRecipesPage: React.FC = () => {
         </div>
 
         {ticketTypeId && <RecipeEditor ticketTypeId={ticketTypeId} branchId={scope} ingredients={ingredientList} />}
-      </Card>
-    </PageStack>
+      </section>
+    </div>
   );
 };
 

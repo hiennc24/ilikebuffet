@@ -303,7 +303,7 @@ export function App() {
                       path="/inventory/recipes"
                       element={
                         <RequireAccess path="/inventory/recipes">
-                          <ShellLayout pageTitle="Định mức theo loại vé">
+                          <ShellLayout bareChrome>
                             <TicketRecipesPage />
                           </ShellLayout>
                         </RequireAccess>
