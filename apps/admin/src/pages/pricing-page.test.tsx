@@ -16,6 +16,7 @@ import * as React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MemoryRouter } from "react-router-dom";
 import { AuthProvider } from "../auth/auth-context";
 import { PricingPage } from "./pricing-page";
 
@@ -181,11 +182,13 @@ function renderPage(fetchMock: typeof globalThis.fetch) {
   });
 
   return render(
-    <QueryClientProvider client={qc}>
-      <AuthProvider apiBaseUrl="">
-        <PricingPage />
-      </AuthProvider>
-    </QueryClientProvider>,
+    <MemoryRouter>
+      <QueryClientProvider client={qc}>
+        <AuthProvider apiBaseUrl="">
+          <PricingPage />
+        </AuthProvider>
+      </QueryClientProvider>
+    </MemoryRouter>,
   );
 }
 
@@ -384,11 +387,13 @@ describe("PricingPage — create time window", () => {
       defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
     });
     render(
-      <QueryClientProvider client={qc}>
-        <AuthProvider apiBaseUrl="">
-          <PricingPage />
-        </AuthProvider>
-      </QueryClientProvider>,
+      <MemoryRouter>
+        <QueryClientProvider client={qc}>
+          <AuthProvider apiBaseUrl="">
+            <PricingPage />
+          </AuthProvider>
+        </QueryClientProvider>
+      </MemoryRouter>,
     );
 
     // Wait for initial render of time windows table
@@ -497,11 +502,13 @@ describe("PricingPage — xlsx export (ME-5)", () => {
     sessionStorage.setItem("ibb_admin_rt", "test-refresh-token");
     localStorage.setItem("ibb_admin_branch", "branch-1");
     render(
-      <QueryClientProvider client={qc}>
-        <AuthProvider apiBaseUrl="">
-          <PricingPage />
-        </AuthProvider>
-      </QueryClientProvider>,
+      <MemoryRouter>
+        <QueryClientProvider client={qc}>
+          <AuthProvider apiBaseUrl="">
+            <PricingPage />
+          </AuthProvider>
+        </QueryClientProvider>
+      </MemoryRouter>,
     );
 
     // Wait for versions to load so the selector appears.

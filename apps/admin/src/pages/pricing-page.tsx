@@ -11,6 +11,7 @@
  */
 
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { FormField, Button, Dialog } from "@ilikebuffet/ui";
 import { formatVnd } from "@ilikebuffet/shared";
@@ -20,7 +21,6 @@ import {
   Card,
   DataTable,
   Column,
-  PageStack,
   LoadingState,
   ErrorState,
   EmptyState,
@@ -28,6 +28,7 @@ import {
   InlineError,
   toErrorMessage,
 } from "./_shared/admin-ui";
+import { PageHeader } from "../layout/page-header";
 
 // ── Domain types ───────────────────────────────────────────────────────────────
 
@@ -789,19 +790,27 @@ const PriceMatrixCard: React.FC<PriceMatrixCardProps> = ({ api, versionId }) => 
 
 export const PricingPage: React.FC = () => {
   const { api } = useAuth();
+  const navigate = useNavigate();
   const [selectedVersionId, setSelectedVersionId] = React.useState<string | null>(null);
 
   return (
-    <PageStack>
-      <TimeWindowCard api={api} />
-      <VersionCard
-        api={api}
-        selectedVersionId={selectedVersionId}
-        onSelectVersion={setSelectedVersionId}
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <PageHeader
+        activePath="/settings/pricing"
+        pageTitle="Bảng giá"
+        onNavigate={(p) => navigate(p)}
       />
-      {selectedVersionId && (
-        <PriceMatrixCard api={api} versionId={selectedVersionId} />
-      )}
-    </PageStack>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
+        <TimeWindowCard api={api} />
+        <VersionCard
+          api={api}
+          selectedVersionId={selectedVersionId}
+          onSelectVersion={setSelectedVersionId}
+        />
+        {selectedVersionId && (
+          <PriceMatrixCard api={api} versionId={selectedVersionId} />
+        )}
+      </div>
+    </div>
   );
 };
