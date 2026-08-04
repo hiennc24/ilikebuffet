@@ -220,8 +220,9 @@ export const UsersPage: React.FC = () => {
   });
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
-      {/* ── Own chrome (breadcrumb + h1 + action) ───────────────────────── */}
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      {/* Chrome (breadcrumb + h1 + action). PageHeader owns its own bottom margin,
+          so there's no column gap here — avoids a doubled toolbar↔table gap. */}
       <PageHeader
         activePath="/settings/users"
         pageTitle="Người dùng & vai trò"

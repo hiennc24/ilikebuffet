@@ -388,9 +388,9 @@ export function PageHeader({
         )}
       </nav>
 
-      {/* Optional toolbar row (e.g. tabs) */}
+      {/* Optional toolbar row (e.g. tabs) — DTV spaces this a full step below. */}
       {toolbar && (
-        <div style={{ marginTop: "var(--space-3)" }}>{toolbar}</div>
+        <div style={{ marginTop: "var(--space-4)" }}>{toolbar}</div>
       )}
     </header>
   );

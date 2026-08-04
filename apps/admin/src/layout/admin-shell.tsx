@@ -14,7 +14,7 @@
 import * as React from "react";
 import { useAuth } from "../auth/auth-context";
 import { canAccessPath } from "../lib/rbac";
-import { useIsCompact } from "../lib/use-media-query";
+import { useIsCompact, useMediaQuery } from "../lib/use-media-query";
 import { useTheme } from "../lib/theme";
 import { useSidebarCollapsed } from "../lib/use-sidebar";
 import { PageHeader, buildPathGroups } from "./page-header";
@@ -1078,6 +1078,8 @@ export const AdminShell: React.FC<AdminShellProps> = ({
 
   // Below the desktop breakpoint the sidebar becomes an off-canvas drawer.
   const compact = useIsCompact();
+  // Wide screens get the roomier 1440px container (DTV parity).
+  const wide = useMediaQuery("(min-width: 1536px)");
   const { collapsed, toggle: toggleSidebar } = useSidebarCollapsed();
   // Rail = icon-only desktop sidebar. Only active when desktop (not compact).
   const rail = collapsed && !compact;
@@ -1521,8 +1523,9 @@ export const AdminShell: React.FC<AdminShellProps> = ({
         >
           <div
             style={{
-              // Match the DTV container: ~1200px centered with 24px side padding.
-              maxWidth: "1200px",
+              // Match the DTV container: 1200px centered (1440 on wide screens),
+              // 24px side padding.
+              maxWidth: wide ? "1440px" : "1200px",
               margin: "0 auto",
               width: "100%",
               padding: compact ? "var(--space-3)" : "var(--space-5)",
