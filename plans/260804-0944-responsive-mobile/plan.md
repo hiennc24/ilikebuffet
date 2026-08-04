@@ -23,8 +23,8 @@ decisions:
 
 | Phase | Tên | Nội dung | Status |
 |-------|-----|----------|--------|
-| A | Admin shell responsive | index.html viewport=device-width; useMediaQuery hook; AdminShell: bỏ minWidth 1440; <1024 sidebar → drawer trượt + hamburger + scrim; content fluid + safe gutters | in-progress |
-| B | Admin shared primitives | DataTable cuộn ngang (mobile) / card mode; Dialog full-width→bottom-sheet mobile; FilterBar xếp dọc; form full-width. Ở _shared/admin-ui → toàn app hưởng | planned |
+| A | Admin shell responsive | index.html viewport=device-width; useMediaQuery hook; AdminShell: bỏ minWidth 1440; <1024 sidebar → drawer trượt + hamburger + scrim; content fluid + safe gutters | done |
+| B | Admin shared primitives | DataTable cuộn ngang (mobile) / card mode; Dialog full-width→bottom-sheet mobile; FilterBar xếp dọc; form full-width. Ở _shared/admin-ui → toàn app hưởng | done |
 | C | Admin page passes | rà các trang nặng (bảng rộng, dialog phức tạp); tối ưu spacing/hierarchy mobile | planned |
 | D | POS responsive audit | POS đã mobile-first; rà gap responsive (sell, pay, shift) + bottom nav chuẩn 44pt | planned |
 | E | Verify + docs | test 375/768/1024/1440; reduced-motion; design-guidelines cập nhật; report | planned |

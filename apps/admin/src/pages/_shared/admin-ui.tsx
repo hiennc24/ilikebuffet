@@ -9,6 +9,7 @@
  */
 
 import * as React from "react";
+import { useIsCompact } from "../../lib/use-media-query";
 
 // ── Card / section ────────────────────────────────────────────────────────────
 
@@ -20,7 +21,9 @@ export interface CardProps {
   children: React.ReactNode;
 }
 
-export const Card: React.FC<CardProps> = ({ title, description, actions, children }) => (
+export const Card: React.FC<CardProps> = ({ title, description, actions, children }) => {
+  const compact = useIsCompact();
+  return (
   <section
     style={{
       background: "var(--bg-raised, #FFFFFF)",
@@ -34,10 +37,11 @@ export const Card: React.FC<CardProps> = ({ title, description, actions, childre
       <header
         style={{
           display: "flex",
-          alignItems: "flex-start",
+          alignItems: compact ? "stretch" : "flex-start",
           justifyContent: "space-between",
-          gap: "var(--space-4)",
-          padding: "var(--space-4) var(--space-5)",
+          flexWrap: "wrap",
+          gap: compact ? "var(--space-2)" : "var(--space-4)",
+          padding: compact ? "var(--space-3)" : "var(--space-4) var(--space-5)",
           borderBottom: "1px solid var(--border-subtle)",
         }}
       >
@@ -68,12 +72,13 @@ export const Card: React.FC<CardProps> = ({ title, description, actions, childre
             </p>
           )}
         </div>
-        {actions && <div style={{ display: "flex", gap: "var(--space-2)" }}>{actions}</div>}
+        {actions && <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" }}>{actions}</div>}
       </header>
     )}
-    <div style={{ padding: "var(--space-5)" }}>{children}</div>
+    <div style={{ padding: compact ? "var(--space-3)" : "var(--space-5)" }}>{children}</div>
   </section>
-);
+  );
+};
 
 // ── Table ──────────────────────────────────────────────────────────────────────
 
@@ -107,7 +112,9 @@ export function DataTable<T>({
     return <EmptyState text={emptyText} />;
   }
   return (
-    <div style={{ overflowX: "auto" }}>
+    // Scrolls horizontally within the card on narrow screens (cells are nowrap),
+    // so wide tables never break the page layout on mobile.
+    <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch", margin: "0 calc(-1 * var(--space-1))", padding: "0 var(--space-1)" }}>
       <table
         style={{
           width: "100%",
