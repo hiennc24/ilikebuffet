@@ -26,6 +26,7 @@ import { refreshCatalog, getCachedCatalog } from "../offline/catalog-cache";
 import { resolveOfflinePrice } from "../offline/offline-pricing";
 import type { CatalogCache } from "../db/pos-db";
 import { PayDialog } from "./pay-dialog";
+import { useIsNarrow } from "../lib/use-media-query";
 
 // ── API types ──────────────────────────────────────────────────────────────
 
@@ -87,6 +88,8 @@ function useTicketTypesWithPrices(branchId: string | null) {
 export const SellPage: React.FC = () => {
   const { selectedBranchId } = usePosAuth();
   const { branchId } = usePosSession();
+  // Phone: stack the payment panel under the product grid instead of side-by-side.
+  const narrow = useIsNarrow();
   const effectiveBranchId = branchId ?? selectedBranchId;
 
   const { data: ticketTypes = [], isLoading, error } = useTicketTypesWithPrices(effectiveBranchId);
@@ -231,7 +234,7 @@ export const SellPage: React.FC = () => {
           </Button>
         </div>
 
-        <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+        <div style={{ display: "flex", flexDirection: narrow ? "column" : "row", flex: 1, overflow: "hidden" }}>
         {/* Sell grid */}
         <div
           style={{
@@ -239,7 +242,7 @@ export const SellPage: React.FC = () => {
             overflowY: "auto",
             padding: "var(--space-4)",
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+            gridTemplateColumns: narrow ? "repeat(auto-fill, minmax(96px, 1fr))" : "repeat(auto-fill, minmax(140px, 1fr))",
             gap: "var(--space-3)",
             alignContent: "start",
           }}
@@ -267,8 +270,8 @@ export const SellPage: React.FC = () => {
           )}
         </div>
 
-        {/* Payment panel */}
-        <div style={{ width: "300px", flexShrink: 0 }}>
+        {/* Payment panel — fixed side column on tablet+, full-width bottom panel on phone. */}
+        <div style={{ width: narrow ? "100%" : "300px", flexShrink: 0, borderTop: narrow ? "1px solid var(--border-subtle)" : undefined }}>
           <PaymentPanel
             items={cartItems}
             onConfirm={() => setPayOpen(true)}
