@@ -2,7 +2,7 @@
 title: "Nhật ký — nhãn tiếng Việt (action/đối tượng), tên người thực hiện, filter desktop"
 slug: audit-log-readable
 created: 2026-08-04
-status: in-progress
+status: done
 priority: P2
 
 context: |
@@ -25,10 +25,10 @@ decisions:
 
 | Phase | Tên | Nội dung | Status |
 |-------|-----|----------|--------|
-| A1 | Backend actorName | audit.service.query resolve actorId→username (map query), thêm actorName vào AuditRecordView; e2e giữ xanh | planned |
-| A2 | Nhãn VN | apps/admin/src/pages/_shared/audit-labels.ts: ACTION_LABELS + OBJECT_LABELS + ROLE_LABELS + describeAction/describeObject (fallback dễ đọc) | planned |
-| A3 | Audit page + filter | audit-page dùng nhãn (action/đối tượng/người thực hiện=actorName) + đổi FilterBar sang grid auto-fit; tests | planned |
-| A4 | Verify | tsc + audit e2e + admin vitest + build | planned |
+| A1 | Backend actorName | audit.service.query resolve actorId→username (map query), thêm actorName vào AuditRecordView; e2e giữ xanh | done |
+| A2 | Nhãn VN | apps/admin/src/pages/_shared/audit-labels.ts: ACTION_LABELS + OBJECT_LABELS + ROLE_LABELS + describeAction/describeObject (fallback dễ đọc) | done |
+| A3 | Audit page + filter | audit-page dùng nhãn (action/đối tượng/người thực hiện=actorName) + đổi FilterBar sang grid auto-fit; tests | done |
+| A4 | Verify | tsc + audit e2e + admin vitest + build | done |
 
 ## Acceptance
 - Cột Hành động: text VN (role.create → "Tạo vai trò"); Đối tượng: nhãn VN;
