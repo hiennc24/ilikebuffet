@@ -43,6 +43,13 @@ export interface AdminShellProps {
   pageActions?: React.ReactNode;
   /** Optional toolbar row (e.g. PageTabs) rendered below the breadcrumb row. */
   pageToolbar?: React.ReactNode;
+  /**
+   * When true, AdminShell renders the frame + children but skips the global
+   * PageHeader (breadcrumb + title row). Use on pages that render their own
+   * chrome (e.g. UsersPage with its DTV-style header). Additive — all other
+   * pages are unaffected (default false).
+   */
+  bareChrome?: boolean;
 }
 
 const DEFAULT_GROUPS: NavGroup[] = [
@@ -1063,6 +1070,7 @@ export const AdminShell: React.FC<AdminShellProps> = ({
   topbarActions,
   pageActions,
   pageToolbar,
+  bareChrome = false,
 }) => {
   const { selectedBranchId, availableBranches, selectBranch, logout, role, username } = useAuth();
 
@@ -1510,14 +1518,16 @@ export const AdminShell: React.FC<AdminShellProps> = ({
             paddingBottom: compact ? "max(var(--space-3), env(safe-area-inset-bottom))" : undefined,
           }}
         >
-          <PageHeader
-            activePath={activePath}
-            pageTitle={pageTitle}
-            actions={pageActions}
-            toolbar={pageToolbar}
-            onNavigate={navigate}
-            pathGroups={PATH_GROUPS}
-          />
+          {!bareChrome && (
+            <PageHeader
+              activePath={activePath}
+              pageTitle={pageTitle}
+              actions={pageActions}
+              toolbar={pageToolbar}
+              onNavigate={navigate}
+              pathGroups={PATH_GROUPS}
+            />
+          )}
           {children}
         </main>
       </div>

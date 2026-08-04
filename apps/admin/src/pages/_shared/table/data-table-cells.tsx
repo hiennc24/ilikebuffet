@@ -139,6 +139,9 @@ export const Avatar: React.FC<AvatarProps> = ({ src, name, size = 28 }) => {
         fontWeight: "var(--fw-semi)" as React.CSSProperties["fontWeight"],
         fontFamily: "var(--font-sans)",
         userSelect: "none",
+        // 2px ring matching DTV reference
+        outline: "2px solid var(--border-subtle)",
+        outlineOffset: "1px",
       }}
     >
       {getInitials(name)}

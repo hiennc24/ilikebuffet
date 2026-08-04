@@ -5,8 +5,14 @@
  * warehouse roles in their branch) and returns a one-time temp password on create
  * and reset. This screen surfaces that temp password once for the admin to hand
  * over. Nav-hiding by role lands in P6.
+ *
+ * Layout: DTV-style PageShell — own PageHeader (breadcrumb + h1 + "Người dùng mới"
+ * action) + PageToolbar (PageTabs left, search/filter right) + body panel containing
+ * only the DataTable + pagination. AdminShell.bareChrome suppresses the global header
+ * so there is no double-title when this page is mounted inside the shell.
  */
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Button, Dialog, FormField } from "@ilikebuffet/ui";
@@ -16,8 +22,6 @@ import { usePagedList } from "../lib/use-paged-list";
 import { QUERY_KEYS } from "../lib/query-keys";
 import { toast } from "../lib/toast";
 import {
-  Card,
-  PageStack,
   DetailDrawer,
   Select,
   InlineError,
@@ -25,13 +29,14 @@ import {
   ErrorState,
   toErrorMessage,
 } from "./_shared/admin-ui";
-import { PageToolbar, PageTabs } from "../layout/page-header";
+import { PageHeader, PageToolbar, PageTabs } from "../layout/page-header";
 import {
   DataTable,
   useDataTable,
   DataTablePagination,
   Badge,
   Avatar,
+  createSelectionColumn,
   createActionsColumn,
 } from "./_shared/table";
 
@@ -75,6 +80,9 @@ interface Branch {
 
 const isLocked = (u: AdminUser) => !!u.lockedUntil && new Date(u.lockedUntil) > new Date();
 
+/** PATH_GROUPS for the users page standalone breadcrumb. */
+const USERS_PATH_GROUPS = [{ path: "/settings/users", group: "Hệ thống" }];
+
 export const UsersPage: React.FC = () => {
   const { api } = useAuth();
   const qc = useQueryClient();
@@ -82,6 +90,8 @@ export const UsersPage: React.FC = () => {
   const [page, setPage] = React.useState(1);
   const [selected, setSelected] = React.useState<AdminUser | null>(null);
   const [creating, setCreating] = React.useState(false);
+
+  const navigate = useNavigate();
 
   const rolesQuery = useQuery({
     queryKey: QUERY_KEYS.roles(),
@@ -120,6 +130,7 @@ export const UsersPage: React.FC = () => {
 
   const columns = React.useMemo<ColumnDef<AdminUser>[]>(
     () => [
+      createSelectionColumn<AdminUser>(),
       {
         id: "user",
         enableSorting: false,
@@ -209,51 +220,77 @@ export const UsersPage: React.FC = () => {
   });
 
   return (
-    <PageStack>
-      <Card
-        title="Người dùng & vai trò"
-        description="Tạo tài khoản, gán vai trò/chi nhánh, reset mật khẩu/PIN, khoá."
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+      {/* ── Own chrome (breadcrumb + h1 + action) ───────────────────────── */}
+      <PageHeader
+        activePath="/settings/users"
+        pageTitle="Người dùng & vai trò"
+        onNavigate={navigate}
+        pathGroups={USERS_PATH_GROUPS}
         actions={
           <Button variant="action" onClick={() => setCreating(true)}>
             Người dùng mới
           </Button>
         }
-      >
-        <PageToolbar
-          left={
-            <PageTabs
-              value="list"
-              onChange={() => {}}
-              items={[{ value: "list", label: "Danh sách", count: total }]}
+        toolbar={
+          <PageToolbar
+            left={
+              <PageTabs
+                value="list"
+                onChange={() => {}}
+                items={[{ value: "list", label: "Danh sách", count: total }]}
+              />
+            }
+          >
+            <input
+              type="search"
+              aria-label="Tìm người dùng"
+              placeholder="Tìm tên đăng nhập…"
+              value={filters.search}
+              onChange={(e) => patch({ search: e.target.value })}
+              style={inputStyle}
             />
-          }
-        >
-          <input type="search" aria-label="Tìm người dùng" placeholder="Tìm tên đăng nhập…" value={filters.search} onChange={(e) => patch({ search: e.target.value })} style={inputStyle} />
-          <Select aria-label="Vai trò" value={filters.role} onChange={(e) => patch({ role: e.target.value })}>
-            <option value="">Tất cả vai trò</option>
-            {dbRoles.length > 0
-              ? dbRoles.map((r) => (
-                  <option key={r.code} value={r.code}>
-                    {r.name}
-                  </option>
-                ))
-              : ROLES.map((r) => (
-                  <option key={r} value={r}>
-                    {ROLE_LABEL[r]}
-                  </option>
-                ))}
-          </Select>
-          <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
-            <option value="">Tất cả</option>
-            <option value="active">Hoạt động</option>
-            <option value="locked">Đã khoá</option>
-          </Select>
-        </PageToolbar>
+            <Select aria-label="Vai trò" value={filters.role} onChange={(e) => patch({ role: e.target.value })}>
+              <option value="">Tất cả vai trò</option>
+              {dbRoles.length > 0
+                ? dbRoles.map((r) => (
+                    <option key={r.code} value={r.code}>
+                      {r.name}
+                    </option>
+                  ))
+                : ROLES.map((r) => (
+                    <option key={r} value={r}>
+                      {ROLE_LABEL[r]}
+                    </option>
+                  ))}
+            </Select>
+            <Select aria-label="Trạng thái" value={filters.status} onChange={(e) => patch({ status: e.target.value })}>
+              <option value="">Tất cả</option>
+              <option value="active">Hoạt động</option>
+              <option value="locked">Đã khoá</option>
+            </Select>
+          </PageToolbar>
+        }
+      />
 
+      {/* ── Body panel — white card containing only table + pagination ──── */}
+      <section
+        style={{
+          background: "var(--bg-raised, #FFFFFF)",
+          border: "1px solid var(--border-subtle)",
+          borderRadius: "var(--radius-lg)",
+          boxShadow: "var(--shadow-sm)",
+          overflow: "hidden",
+        }}
+      >
         {isLoading ? (
-          <LoadingState />
+          <div style={{ padding: "var(--space-5)" }}>
+            <LoadingState />
+          </div>
         ) : isError ? (
-          <ErrorState message={toErrorMessage(error, "Không tải được danh sách người dùng")} />
+          <div style={{ padding: "var(--space-5)" }}>
+            <ErrorState message={toErrorMessage(error, "Không tải được danh sách người dùng")} />
+          </div>
         ) : (
           <>
             <DataTable
@@ -266,11 +303,11 @@ export const UsersPage: React.FC = () => {
             <DataTablePagination table={table} total={total} />
           </>
         )}
-      </Card>
+      </section>
 
       {creating && <CreateUserDialog onClose={() => setCreating(false)} dbRoles={dbRoles} />}
       <UserDetailDrawer user={selected} onClose={() => setSelected(null)} />
-    </PageStack>
+    </div>
   );
 };
 
@@ -444,10 +481,13 @@ const UserDetailDrawer: React.FC<{ user: AdminUser | null; onClose: () => void }
 };
 
 const inputStyle: React.CSSProperties = {
-  height: "var(--input-height, 44px)",
+  height: "40px",
   padding: "0 var(--space-3)",
   border: "1px solid var(--border-default)",
   borderRadius: "var(--radius-md)",
   fontFamily: "var(--font-sans)",
   fontSize: "var(--text-sm)",
+  background: "var(--bg-raised)",
+  color: "var(--text-primary)",
+  outline: "none",
 };

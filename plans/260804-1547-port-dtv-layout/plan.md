@@ -2,8 +2,10 @@
 title: "Port toàn bộ layout DTV sang fnb admin"
 slug: port-dtv-layout
 created: 2026-08-04
-status: draft-awaiting-approval
+status: in-progress
 priority: P1
+decisions: cool DTV surfaces + keep green brand; global tokens (admin+POS); pilot users-roles first
+progress: D0 tokens done; D1/D2/D3 core + D4 users-roles pilot done (paused for review); D4 rollout + D5 pending
 ---
 
 context: |

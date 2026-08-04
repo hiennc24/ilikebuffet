@@ -63,8 +63,8 @@ export const THead: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       top: 0,
       // Must sit above pinned body cells (z-index 1) so header stays on top.
       zIndex: 2,
-      // Mint/teal tint matching the reference header row.
-      background: "var(--nav-active-bg)",
+      // Cool near-white surface matching the DTV reference header row.
+      background: "var(--bg-surface, var(--nav-active-bg))",
     }}
   >
     {children}
@@ -176,13 +176,13 @@ export const TH: React.FC<THProps> = ({
         position: "sticky",
         left: 0,
         zIndex: 1,
-        background: "var(--nav-active-bg)",
+        background: "var(--bg-surface, var(--nav-active-bg))",
       }),
       ...(pinnedRight && {
         position: "sticky",
         right: 0,
         zIndex: 1,
-        background: "var(--nav-active-bg)",
+        background: "var(--bg-surface, var(--nav-active-bg))",
       }),
       ...style,
     }}

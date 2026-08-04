@@ -101,11 +101,15 @@ function ShellLayout({
   pageTitle,
   pageActions,
   pageToolbar,
+  bareChrome,
 }: {
   children: React.ReactNode;
   pageTitle?: string;
   pageActions?: React.ReactNode;
   pageToolbar?: React.ReactNode;
+  /** Pass-through to AdminShell.bareChrome — suppresses the global PageHeader
+   *  for pages that render their own chrome (e.g. UsersPage). */
+  bareChrome?: boolean;
 }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -117,6 +121,7 @@ function ShellLayout({
       pageTitle={pageTitle}
       pageActions={pageActions}
       pageToolbar={pageToolbar}
+      bareChrome={bareChrome}
     >
       {children}
     </AdminShell>
@@ -208,7 +213,7 @@ export function App() {
                       path="/settings/users"
                       element={
                         <RequireAccess path="/settings/users">
-                          <ShellLayout pageTitle="Người dùng & vai trò">
+                          <ShellLayout bareChrome>
                             <UsersPage />
                           </ShellLayout>
                         </RequireAccess>
