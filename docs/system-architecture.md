@@ -183,9 +183,36 @@ Sepay ──POST /webhooks/sepay (Apikey, fail-closed)──▶ store BankTransa
 
 ## Frontend
 
-- **admin SPA** — operations, master data, inventory, and reports on the design
-  tokens; routes guarded by `RequireAccess`; reusable `usePagedList`/`useReport`,
-  `DataTable`/`Dialog`, `admin-ui`/`report-ui`. Dev proxies API controller roots
-  (`vite.config.ts`) to avoid CORS.
-- **POS PWA** — offline-first cashier app; queues bills and syncs to the server,
-  which remains the arbiter (numbering, price, quarantine).
+### Admin SPA
+
+Operations, master data, inventory, and reports. Routes guarded by `RequireAccess`.
+
+**Design system & tokens** (`packages/ui/src/tokens/tokens.css`):
+- Surfaces: COOL near-white — `--bg-page` #FAFAF8, `--bg-raised` #FFFFFF (cards), `--bg-surface` cool gray (1–2 levels).
+- Brand: `--action-bg` #235B54 (green), `--accent` #6E7B77 (sage nav accents).
+- Font: `--font-sans` = "Be Vietnam Pro".
+- Status badges: `--status-{neutral,success,warn,danger,info}-{bg,text}`.
+
+**Shell layout** (`apps/admin/src/layout/admin-shell.tsx`):
+- **Sidebar** (248px, collapsible icon-rail via `lib/use-sidebar.ts`, persisted).
+- **Topbar** (56px): branch switcher, search, notifications, dark-mode toggle, user menu.
+- **Content**: max-width 1200px (1440px on ≥1536px viewport), centered; `--bg-page` background.
+- **bareChrome flag**: suppresses global `PageHeader` for pages rendering their own chrome (e.g., editors).
+
+**Page layout system** (`apps/admin/src/layout/`):
+- **`ListPageShell`** — scaffold for list/table pages: page-owned 2-level breadcrumb (home › page h1) + big title + right actions + toolbar (tabs/search/filters) over a single white panel (`--bg-raised`). Routes set `bareChrome` on `<ShellLayout>` to avoid header duplication.
+- **`PageHeader`**, **`PageToolbar`**, **`PageTabs`** — building blocks for standalone or shared headers.
+- **Editor pages** render a `<PageHeader>` above their form body in a white panel (not `ListPageShell`).
+
+**Table system** (`apps/admin/src/pages/_shared/table/`):
+- **`DataTable`** — @tanstack/react-table layer; desktop table with sticky header, pinned columns (left/right), full-row hover, mobile card fallback.
+- **`useDataTable`** — server-driven pagination + sort.
+- **`DataTablePagination`**, **`DataTableColumnHeader`**, **`Badge`**, **`Avatar`**, **`MutedCell`** — reusable cells.
+- **`createSelectionColumn`**, **`createActionsColumn`** — helpers for checkboxes + row action menus (portal-rendered).
+- **Status rendering**: use `<Badge tone="success|warn|danger|info|neutral">` (colors from `--status-*` tokens).
+- All ~26 admin list/report/editor pages use this system; legacy `_shared/admin-ui` `DataTable` remains for backward-compat only.
+
+### POS PWA
+
+Offline-first cashier app; queues bills and syncs to the server,
+which remains the arbiter (numbering, price, quarantine).

@@ -66,6 +66,19 @@ Living document. Update when a convention changes.
 - Concurrency tests (bill numbering) must isolate state (own schema or
   rolled-back tx) so leftover rows can't fake a gapless result (Red Team AD7/M4).
 
+## Admin frontend — list & editor pages
+
+New admin **list pages** must use the `ListPageShell` + `_shared/table` react-table system:
+- Wrap the table + pagination in `<ListPageShell activePath="..." pageTitle="..." actions={...}>`.
+- Set `bareChrome` on the route's `<ShellLayout>` to suppress the global `PageHeader`.
+- Build columns with `ColumnDef[]` + `useDataTable` (server pagination/sort); render the `DataTable`.
+- Status values use `<Badge tone="success|warn|danger|info|neutral">` (CSS tokens `--status-*`).
+- Money stays integer VND with shared formatters (`formatVnd`).
+
+Do NOT use the legacy `Card` + `admin-ui` `DataTable` for new list pages.
+
+Editor pages render a standalone `<PageHeader>` above their form body in a white panel.
+
 ## Naming & structure
 
 - pnpm monorepo: `apps/*` (api, admin, pos), `packages/*` (shared, print-agent).
