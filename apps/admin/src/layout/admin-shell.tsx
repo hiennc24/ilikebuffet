@@ -1508,29 +1508,38 @@ export const AdminShell: React.FC<AdminShellProps> = ({
           </div>
         </header>
 
-        {/* Page content */}
+        {/* Page content — bg-page fills the full width; the inner container centers
+            the content in a max-width column (like the DTV reference) so panels
+            don't stretch edge-to-edge on wide screens. */}
         <main
           style={{
             flex: 1,
             overflowY: "auto",
             // Explicit page colour so raised white panels visibly float on it.
             background: "var(--bg-page)",
-            padding: compact ? "var(--space-3)" : "var(--space-5)",
-            // Keep content clear of the notch / home indicator on mobile.
-            paddingBottom: compact ? "max(var(--space-3), env(safe-area-inset-bottom))" : undefined,
           }}
         >
-          {!bareChrome && (
-            <PageHeader
-              activePath={activePath}
-              pageTitle={pageTitle}
-              actions={pageActions}
-              toolbar={pageToolbar}
-              onNavigate={navigate}
-              pathGroups={PATH_GROUPS}
-            />
-          )}
-          {children}
+          <div
+            style={{
+              maxWidth: "1440px",
+              margin: "0 auto",
+              width: "100%",
+              padding: compact ? "var(--space-3)" : "var(--space-5) var(--space-6)",
+              paddingBottom: compact ? "max(var(--space-3), env(safe-area-inset-bottom))" : "var(--space-6)",
+            }}
+          >
+            {!bareChrome && (
+              <PageHeader
+                activePath={activePath}
+                pageTitle={pageTitle}
+                actions={pageActions}
+                toolbar={pageToolbar}
+                onNavigate={navigate}
+                pathGroups={PATH_GROUPS}
+              />
+            )}
+            {children}
+          </div>
         </main>
       </div>
     </div>

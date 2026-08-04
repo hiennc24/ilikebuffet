@@ -151,9 +151,9 @@ export const UsersPage: React.FC = () => {
       {
         id: "role",
         enableSorting: false,
-        meta: { headerLabel: "Vai trò", width: "160px" },
+        meta: { headerLabel: "Vai trò", width: "180px" },
         header: "Vai trò",
-        cell: ({ row }) => roleLabelMap[row.original.role] ?? row.original.role,
+        cell: ({ row }) => <Badge tone="neutral">{roleLabelMap[row.original.role] ?? row.original.role}</Badge>,
       },
       {
         id: "scope",
@@ -317,7 +317,10 @@ export const UsersPage: React.FC = () => {
               onRowClick={(u) => setSelected(u)}
               empty="Không có người dùng."
             />
-            <DataTablePagination table={table} total={total} />
+            {/* Pagination lives inside the card, separated by a top divider (DTV). */}
+            <div style={{ padding: "var(--space-2) var(--space-4)", borderTop: "1px solid var(--border-subtle)" }}>
+              <DataTablePagination table={table} total={total} />
+            </div>
           </>
         )}
       </section>
